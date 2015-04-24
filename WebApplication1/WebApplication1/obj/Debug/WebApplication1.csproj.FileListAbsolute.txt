@@ -1,0 +1,16 @@
+c:\users\kathrine chua\documents\visual studio 2010\Projects\WebApplication1\WebApplication1\bin\WebApplication1.dll
+c:\users\kathrine chua\documents\visual studio 2010\Projects\WebApplication1\WebApplication1\bin\WebApplication1.pdb
+c:\users\kathrine chua\documents\visual studio 2010\Projects\WebApplication1\WebApplication1\obj\Debug\WebApplication1.dll
+c:\users\kathrine chua\documents\visual studio 2010\Projects\WebApplication1\WebApplication1\obj\Debug\WebApplication1.pdb
+c:\users\kathrine chua\documents\visual studio 2010\Projects\WebApplication1\WebApplication1\bin\DotCMIS.dll
+c:\users\kathrine chua\documents\visual studio 2010\Projects\WebApplication1\WebApplication1\obj\Debug\WebApplication1.csprojResolveAssemblyReference.cache
+C:\Users\Jules\Desktop\WebApplication1\WebApplication1\bin\WebApplication1.dll
+C:\Users\Jules\Desktop\WebApplication1\WebApplication1\bin\WebApplication1.pdb
+C:\Users\Jules\Desktop\WebApplication1\WebApplication1\obj\Debug\WebApplication1.csprojResolveAssemblyReference.cache
+C:\Users\Jules\Desktop\WebApplication1\WebApplication1\obj\Debug\WebApplication1.dll
+C:\Users\Jules\Desktop\WebApplication1\WebApplication1\obj\Debug\WebApplication1.pdb
+C:\Users\Kathrine Chua\Desktop\WebApplication1\WebApplication1\bin\WebApplication1.dll
+C:\Users\Kathrine Chua\Desktop\WebApplication1\WebApplication1\bin\WebApplication1.pdb
+C:\Users\Kathrine Chua\Desktop\WebApplication1\WebApplication1\obj\Debug\WebApplication1.csprojResolveAssemblyReference.cache
+C:\Users\Kathrine Chua\Desktop\WebApplication1\WebApplication1\obj\Debug\WebApplication1.dll
+C:\Users\Kathrine Chua\Desktop\WebApplication1\WebApplication1\obj\Debug\WebApplication1.pdb
