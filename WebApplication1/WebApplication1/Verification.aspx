@@ -23,6 +23,7 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <asp:FileUpload ID="FileUpload1" runat="server" AllowMultiple="true"/>
     <asp:Button ID="uploadDoc" runat="server" Text="Upload Document" OnClick="uploadDoc_Click"/>
+    <asp:Button ID="insertSig" runat="server" Text="Insert Signature" />
     <br />
     <br/>
     <div class ="grid_scroll">
@@ -40,15 +41,16 @@
     <asp:Label ID="Label1" runat="server" Text="1_01"></asp:Label>
 <asp:Label ID="Label2" runat="server" Text="1_02"></asp:Label>
     <br/><br/>
-    <asp:SqlDataSource ID="SqlDataSource1" runat="server" 
-    ConnectionString="<%$ ConnectionStrings:ConnectionString %>" >
-</asp:SqlDataSource>
     <br/>
     <asp:Image ID="Image1" runat="server" CssClass="style2" Height="181px" 
         Width="449px" Visible="False" /> &nbsp&nbsp&nbsp
     <asp:Image ID="Image2" runat="server" CssClass="style3" Height="180px" 
         Width="444px" Visible="False" />
-    <br/><br/><br/>
+    <br/>
+    <asp:SqlDataSource ID="SqlDataSource1" runat="server" 
+        ConnectionString="<%$ ConnectionStrings:ConnectionString %>" 
+    </asp:SqlDataSource>
+    <br/><br/>
 
     <asp:Button ID="acceptButton" runat="server" CssClass="style4" Height="36px" 
         Text="Accept" Width="86px" />

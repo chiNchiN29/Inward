@@ -178,6 +178,11 @@ namespace WebApplication1
             }
         }
 
+        //private void insertSig_Click(Object sender, EventArgs e)
+        //{
+        //    SqlConnection connection;
+        //    string con = "Data Source=.\SQLEXPRESS;Integrated Security=True;User Instance=True";
+        //}
         private void UploadADocument(ISession session, byte[] ImageFile)
         {
             IFolder folder = (IFolder)session.GetObjectByPath("/Uploads/" + DateTime.Now.Year.ToString() + "/" + DateTime.Now.ToString("MM") + "/" + DateTime.Now.ToString("dd"));
@@ -208,6 +213,8 @@ namespace WebApplication1
             session = factory.GetRepositories(parameters)[0].CreateSession();
                 UploadADocument(session, imageToByteArray(System.Drawing.Image.FromStream(FileUpload1.PostedFile.InputStream)));
         }
+
+       
 
         private void LoadDocument()
         {
