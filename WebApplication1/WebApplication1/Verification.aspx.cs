@@ -16,8 +16,10 @@ using System.Drawing;
 
 namespace WebApplication1
 {
-    public partial class WebForm1 : System.Web.UI.Page
+    public partial class Verification : System.Web.UI.Page
     {
+      
+
         int x = 1;
         int i = 1;
 
@@ -39,8 +41,8 @@ namespace WebApplication1
             parameters[DotCMIS.SessionParameter.User] = "admin";
             parameters[DotCMIS.SessionParameter.Password] = "admin";
             parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
-            //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
-            parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
+            parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
+            //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
             session = factory.GetRepositories(parameters)[0].CreateSession();
 
             #region Getting the Root Folder and it Children Folders
@@ -167,13 +169,13 @@ namespace WebApplication1
                 return ms.ToArray();
             }
         }
-     
+
         private static void UploadADocument(ISession session, byte[] ImageFile)
         {
             IFolder folder = (IFolder)session.GetObjectByPath("/Uploads/" + DateTime.Now.Year.ToString() + "/" + DateTime.Now.ToString("MM") + "/" + DateTime.Now.ToString("dd"));
             Dictionary<String, object> DocumentProperties = new Dictionary<string, object>();
             string id = PropertyIds.ObjectTypeId;
-            DocumentProperties[PropertyIds.Name] = "3.jpg";
+            DocumentProperties[PropertyIds.Name] = "1.jpg";
             DocumentProperties[PropertyIds.ObjectTypeId] = "cmis:document";
             ContentStream contentStream = new ContentStream
             {
@@ -193,11 +195,11 @@ namespace WebApplication1
             parameters[DotCMIS.SessionParameter.User] = "admin";
             parameters[DotCMIS.SessionParameter.Password] = "admin";
             parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
-            //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
-            parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
+            parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
+            //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
             session = factory.GetRepositories(parameters)[0].CreateSession();
-            
-            UploadADocument(session, imageToByteArray(System.Drawing.Image.FromFile(@"C:\Users\Kathrine Chua\Google Drive\H2\sig3.png")));
+
+            UploadADocument(session, imageToByteArray(System.Drawing.Image.FromFile(@"C:\Users\Kathrine Chua\Google Drive\H2\sig1.png")));
         }
 
         private void LoadDocument()
@@ -208,13 +210,18 @@ namespace WebApplication1
             parameters[DotCMIS.SessionParameter.User] = "admin";
             parameters[DotCMIS.SessionParameter.Password] = "admin";
             parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
-            //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
-            parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
+            parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
+            //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
             session = factory.GetRepositories(parameters)[0].CreateSession();
 
             int valueFromSession = Convert.ToInt32(Session["X"]);
             int sigval = Convert.ToInt32(Session["Y"]);
-            var label = (Label)Page.FindControl("Label" + valueFromSession);
+
+            var label = (Label)FindControlRecursive(this.Master, "Label" + valueFromSession);
+            //var label = (Label)Page.FindControl("Label" + valueFromSession);
+            //Response.Write(valueFromSession);
+            //Response.Write(sigval.ToString());
+
             if (valueFromSession < 11)
             {
                 if (label.Text[0].ToString().Equals(sigval.ToString()))
@@ -222,7 +229,7 @@ namespace WebApplication1
                     ShowChequeImage(session, label.Text);
                     ShowSigImage(session, sigval.ToString());
                     valueFromSession++;
-                    Session["X"] = valueFromSession;       
+                    Session["X"] = valueFromSession;
                 }
                 else
                 {
@@ -244,6 +251,7 @@ namespace WebApplication1
                 result = streamReader.ToArray();
             }
             string base64string = Convert.ToBase64String(result, 0, result.Length);
+
             Image1.ImageUrl = "data:image/jpeg;base64," + base64string;
             Image1.Visible = true;
         }
@@ -262,26 +270,40 @@ namespace WebApplication1
             string base64string2 = Convert.ToBase64String(result2, 0, result2.Length);
             Image2.ImageUrl = "data:image/jpeg;base64," + base64string2;
             Image2.Visible = true;
-      
+
         }
-        
+
         protected void loadDoc_Click(Object sender, EventArgs e)
         {
             LoadDocument();
             int valueFromSession = Convert.ToInt32(Session["X"]);
-           
-            //Session["X"] = valueFromSession;
+
+            Session["X"] = valueFromSession;
             //string str = "Kill_me_now";
             //char[] split = new char[] { '_' };
             //string first = str.Split(split)[0];
             //Response.Write(first);
 
-            Response.Write(valueFromSession);
-            int sigval = Convert.ToInt32(Session["Y"]);
-            Response.Write(sigval);
+            //Response.Write(valueFromSession);
+            //int sigval = Convert.ToInt32(Session["Y"]);
+            //Response.Write(sigval);
 
         }
 
+        public static Control FindControlRecursive(Control Root, string Id)
+{
+    if (Root.ID == Id)
+        return Root;
+ 
+    foreach (Control Ctl in Root.Controls)
+    {
+        Control FoundCtl = FindControlRecursive(Ctl, Id);
+        if (FoundCtl != null)
+            return FoundCtl;
+    }
+ 
+    return null;
+}
         /* private void LoadDocument()
          {
               Dictionary<string, string> parameters = new Dictionary<string, string>();

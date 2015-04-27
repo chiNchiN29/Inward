@@ -14,7 +14,4 @@
         You can also find <a href="http://go.microsoft.com/fwlink/?LinkID=152368&amp;clcid=0x409"
             title="MSDN ASP.NET Docs">documentation on ASP.NET at MSDN</a>.
     </p>
-    <p>
-       <a href="WebForm1.aspx">Click to navigate to WebForm1.aspx</a> 
-    </p>
 </asp:Content>
