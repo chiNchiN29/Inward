@@ -21,20 +21,25 @@ namespace WebApplication1
 {
     public partial class Verification : System.Web.UI.Page
     {
-      
-
         int x = 1;
         int i = 1;
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            SqlDataSource1.SelectCommand = "SELECT check_number AS CheckNo, customer_name AS Name, CHEQUE.account_number AS AcctNo, check_date AS Date, amount, balance, drawee_bank AS DraweeBank, drawee_bank_branch AS DraweeBankBranch, verification, funded FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number ORDER BY CHEQUE.account_number";
+            GridView1.DataSource = SqlDataSource1;
+            GridView1.DataBind();
             CreatingSessionUsingAtomPub();
             if (!Page.IsPostBack)
             {
                 Session["X"] = x;
                 Session["Y"] = i;
 
-                SqlDataSource1.SelectCommand = "SELECT customer_id, customer_name, CUSTOMER.account_number, balance, funded, verification FROM CUSTOMER, ACCOUNT, CHEQUE WHERE CUSTOMER.account_number = ACCOUNT.account_number"; 
+<<<<<<< HEAD
+                SqlDataSource1.SelectCommand = "SELECT check_number AS CheckNo, customer_name AS Name, CHEQUE.account_number AS AcctNo, check_date AS Date, amount, balance, drawee_bank AS DraweeBank, drawee_bank_branch AS DraweeBankBranch, verification, funded  FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number ORDER BY CHEQUE.account_number";
+=======
+                SqlDataSource1.SelectCommand = "SELECT customer_id, customer_name, CUSTOMER.account_number, balance, funded, verification FROM CUSTOMER, ACCOUNT, CHEQUE WHERE CUSTOMER.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CHEQUE.account_number "; 
+>>>>>>> origin/master
                 GridView1.DataSource = SqlDataSource1;
                 GridView1.DataBind();
             }
@@ -46,8 +51,7 @@ namespace WebApplication1
             SessionFactory factory = SessionFactory.NewInstance();
             ISession session;
             parameters[DotCMIS.SessionParameter.User] = "admin";
-            //parameters[DotCMIS.SessionParameter.Password] = "092095";
-            parameters[DotCMIS.SessionParameter.Password] = "admin";
+            parameters[DotCMIS.SessionParameter.Password] = "092095";
             parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
             parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
             //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
@@ -178,11 +182,6 @@ namespace WebApplication1
             }
         }
 
-        //private void insertSig_Click(Object sender, EventArgs e)
-        //{
-        //    SqlConnection connection;
-        //    string con = "Data Source=.\SQLEXPRESS;Integrated Security=True;User Instance=True";
-        //}
         private void UploadADocument(ISession session, byte[] ImageFile)
         {
             IFolder folder = (IFolder)session.GetObjectByPath("/Uploads/" + DateTime.Now.Year.ToString() + "/" + DateTime.Now.ToString("MM") + "/" + DateTime.Now.ToString("dd"));
@@ -206,17 +205,17 @@ namespace WebApplication1
             SessionFactory factory = SessionFactory.NewInstance();
             ISession session;
             parameters[DotCMIS.SessionParameter.User] = "admin";
-            parameters[DotCMIS.SessionParameter.Password] = "092095";
+            //parameters[DotCMIS.SessionParameter.Password] = "092095";
+            parameters[DotCMIS.SessionParameter.Password] = "admin";
             parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
             parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
             //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
             session = factory.GetRepositories(parameters)[0].CreateSession();
-                UploadADocument(session, imageToByteArray(System.Drawing.Image.FromStream(FileUpload1.PostedFile.InputStream)));
+            UploadADocument(session, imageToByteArray(System.Drawing.Image.FromStream(FileUpload1.PostedFile.InputStream)));
         }
 
-       
-
-        private void LoadDocument()
+<<<<<<< HEAD
+        protected void GridView1_SelectedIndexChanged(object sender, EventArgs e)
         {
             Dictionary<string, string> parameters = new Dictionary<string, string>();
             SessionFactory factory = SessionFactory.NewInstance();
@@ -228,7 +227,28 @@ namespace WebApplication1
             parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
             //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
             session = factory.GetRepositories(parameters)[0].CreateSession();
+            string im = GridView1.SelectedRow.Cells[3].Text;
+            string age = GridView1.SelectedRow.Cells[1].Text;
+            string image = im + "_" + age + ".jpg";
+            ShowChequeImage(session, image);
+            ShowSigDTImage();
+            
+        }  
 
+=======
+>>>>>>> origin/master
+        private void LoadDocument()
+        {
+            Dictionary<string, string> parameters = new Dictionary<string, string>();
+            SessionFactory factory = SessionFactory.NewInstance();
+            ISession session;
+            parameters[DotCMIS.SessionParameter.User] = "admin";
+            parameters[DotCMIS.SessionParameter.Password] = "092095";
+            parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
+            parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
+            //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
+            session = factory.GetRepositories(parameters)[0].CreateSession();
+            
             ShowChequeImage(session, "conceal.jpg");
             
             /*
@@ -275,6 +295,22 @@ namespace WebApplication1
             Image1.Visible = true;
         }
 
+        //Signature image in Database
+        private void ShowSigDTImage()
+        {
+            SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+            connection.Open();
+            SqlCommand select = new SqlCommand("select signature_image from SIGNATURE WHERE account_number=@acctnumber", connection);
+            select.Parameters.AddWithValue("@acctnumber", GridView1.SelectedRow.Cells[3].Text);
+           
+            byte[] result = select.ExecuteScalar() as byte[];
+            string base64string2 = Convert.ToBase64String(result, 0, result.Length);
+            Image2.ImageUrl = "data:image/jpeg;base64," + base64string2;
+            Image2.Visible = true;
+            connection.Close();
+        }
+
+        //Signature image in Alfresco
         private void ShowSigImage(ISession session, string fileName)
         {
             IDocument doc2 = (IDocument)session.GetObjectByPath("/Uploads/" + DateTime.Now.Year.ToString() + "/" + DateTime.Now.ToString("MM") + "/" + DateTime.Now.ToString("dd") + "/" + fileName + ".jpg");
@@ -289,7 +325,6 @@ namespace WebApplication1
             string base64string2 = Convert.ToBase64String(result2, 0, result2.Length);
             Image2.ImageUrl = "data:image/jpeg;base64," + base64string2;
             Image2.Visible = true;
-
         }
 
         protected void loadDoc_Click(Object sender, EventArgs e)
@@ -309,6 +344,7 @@ namespace WebApplication1
 
         }
 
+        //for controls in not master page
         public static Control FindControlRecursive(Control Root, string Id)
         {
             if (Root.ID == Id)
@@ -399,7 +435,85 @@ namespace WebApplication1
             con.Open();
             objbulk.WriteToServer(csvdt);
             con.Close();
-        }  
+        }
+
+<<<<<<< HEAD
+
+        //insert signatures in database
+        protected void insertSig_Click(object sender, EventArgs e)
+        {
+            SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+            connection.Open();
+            SqlCommand insert = new SqlCommand("insert into SIGNATURE(signature_image, account_number) values (@Sig, @ID)", connection);
+            insert.Parameters.AddWithValue("@Sig", imageToByteArray(System.Drawing.Image.FromStream(FileUpload1.PostedFile.InputStream)));
+            insert.Parameters.AddWithValue("@ID", "10");
+            insert.ExecuteNonQuery();
+            connection.Close();
+        }
+
+        protected void acceptButton_Click(object sender, EventArgs e)
+        {
+            SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+            connection.Open();
+            SqlCommand update = new SqlCommand("update CHEQUE SET verification = @verify WHERE account_number = @acctnumber AND check_number = @chknumber", connection);
+            update.Parameters.AddWithValue("@acctnumber", GridView1.SelectedRow.Cells[3].Text);
+            update.Parameters.AddWithValue("@chknumber", GridView1.SelectedRow.Cells[1].Text);
+            update.Parameters.AddWithValue("@verify", "YES");
+            update.ExecuteNonQuery();
+            connection.Close();
+        }
+
+        protected void rejectButton_Click(object sender, EventArgs e)
+        {
+            SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+            connection.Open();
+            SqlCommand update = new SqlCommand("update CHEQUE SET verification = @verify WHERE account_number = @acctnumber AND check_number = @chknumber", connection);
+            update.Parameters.AddWithValue("@acctnumber", GridView1.SelectedRow.Cells[3].Text);
+            update.Parameters.AddWithValue("@chknumber", GridView1.SelectedRow.Cells[1].Text);
+            update.Parameters.AddWithValue("@verify", "NO");
+            update.ExecuteNonQuery();
+            connection.Close();
+        }
+
+        
+=======
+        protected void Button2_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                FileStream fs = new FileStream("hello.txt", FileMode.OpenOrCreate);
+                StreamWriter sw = new StreamWriter(fs);
+                
+                sw.WriteLine("Hello!");
+                sw.WriteLine("World!");
+                sw.Close();
+                fs.Close();
+            }
+            catch (Exception b)
+            {
+                Console.WriteLine(b.Message);
+            }
+        }
+
+        public void GetCSV(object sender, EventArgs e)
+        {
+            DataView dv = (DataView)SqlDataSource1.Select(DataSourceSelectArguments.Empty);
+            var dt = dv.ToTable();
+
+            var csv = dt.ToCSV();
+
+            WriteToOutput(csv, "export.csv", "text/csv");
+        }
+
+        private void WriteToOutput(String csv, String fileName, String mimeType)
+        {
+            Response.Clear();
+            Response.ContentType = mimeType;
+            Response.AddHeader("Content-Disposition", String.Format("attachment;filename={0}", fileName));
+            Response.Write(csv);
+            Response.End();
+        }
+>>>>>>> origin/master
 
         /* private void LoadDocument()
          {
