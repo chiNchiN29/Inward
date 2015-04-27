@@ -34,7 +34,7 @@ namespace WebApplication1
                 Session["X"] = x;
                 Session["Y"] = i;
 
-                SqlDataSource1.SelectCommand = "SELECT customer_id, customer_name, CUSTOMER.account_number, balance, funded, verification FROM CUSTOMER, ACCOUNT, CHEQUE WHERE CUSTOMER.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CHEQUE.account_number "; 
+                SqlDataSource1.SelectCommand = "SELECT customer_id, customer_name, CUSTOMER.account_number, balance, funded, verification FROM CUSTOMER, ACCOUNT, CHEQUE WHERE CUSTOMER.account_number = ACCOUNT.account_number"; 
                 GridView1.DataSource = SqlDataSource1;
                 GridView1.DataBind();
             }
@@ -47,6 +47,7 @@ namespace WebApplication1
             ISession session;
             parameters[DotCMIS.SessionParameter.User] = "admin";
             parameters[DotCMIS.SessionParameter.Password] = "092095";
+            //parameters[DotCMIS.SessionParameter.Password] = "admin";
             parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
             parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
             //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
@@ -177,6 +178,11 @@ namespace WebApplication1
             }
         }
 
+        //private void insertSig_Click(Object sender, EventArgs e)
+        //{
+        //    SqlConnection connection;
+        //    string con = "Data Source=.\SQLEXPRESS;Integrated Security=True;User Instance=True";
+        //}
         private void UploadADocument(ISession session, byte[] ImageFile)
         {
             IFolder folder = (IFolder)session.GetObjectByPath("/Uploads/" + DateTime.Now.Year.ToString() + "/" + DateTime.Now.ToString("MM") + "/" + DateTime.Now.ToString("dd"));
@@ -208,13 +214,16 @@ namespace WebApplication1
                 UploadADocument(session, imageToByteArray(System.Drawing.Image.FromStream(FileUpload1.PostedFile.InputStream)));
         }
 
+       
+
         private void LoadDocument()
         {
             Dictionary<string, string> parameters = new Dictionary<string, string>();
             SessionFactory factory = SessionFactory.NewInstance();
             ISession session;
             parameters[DotCMIS.SessionParameter.User] = "admin";
-            parameters[DotCMIS.SessionParameter.Password] = "092095";
+            //parameters[DotCMIS.SessionParameter.Password] = "092095";
+            parameters[DotCMIS.SessionParameter.Password] = "admin";
             parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
             parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
             //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
@@ -317,49 +326,53 @@ namespace WebApplication1
 
         protected void Button1_Click(object sender, EventArgs e)
         {
-            DataTable tblcsv = new DataTable();
-            //creating columns  
-            tblcsv.Columns.Add("Check #");
-            tblcsv.Columns.Add("Account #");
-            tblcsv.Columns.Add("Amount");
-            tblcsv.Columns.Add("Check Date");
-            tblcsv.Columns.Add("Drawee Bank");
-            tblcsv.Columns.Add("Drawee Bank Branch");
-            tblcsv.Columns.Add("Funded?");
-            tblcsv.Columns.Add("Verified?");
-
-            //getting full file path of Uploaded file  
-            string CSVFilePath = Path.GetFullPath(FileUpload2.PostedFile.FileName);
-            //Reading All text  
-            string ReadCSV = File.ReadAllText(CSVFilePath);
-            //spliting row after new line  
-            foreach (string csvRow in ReadCSV.Split('\n'))
+            SqlConnection con = new SqlConnection(@"Data Source=SHAWHP\SQLEXPRESS;Initial Catalog=FOO;Persist Security Info=True;User ID=sa");
+            string filepath = FileUpload2.PostedFile.FileName;
+            StreamReader sr = new StreamReader(filepath);
+            string line = sr.ReadLine();
+            string[] value = line.Split(',');
+            DataTable dt = new DataTable();
+            DataRow row;
+            foreach (string dc in value)
             {
-                if (!string.IsNullOrEmpty(csvRow))
-                {
-                    //Adding each row into datatable  
-                    tblcsv.Rows.Add();
-                    int count = 0;
-                    foreach (string FileRec in csvRow.Split(','))
-                    {
-                        tblcsv.Rows[tblcsv.Rows.Count - 1][count] = FileRec;
-                        count++;
-                    }
-                }
-
-
+                dt.Columns.Add(new DataColumn(dc));
             }
-            //Calling insert Functions  
-            InsertCSVRecords(tblcsv); 
+
+            while (!sr.EndOfStream)
+            {
+                value = sr.ReadLine().Split(',');
+                if (value.Length == dt.Columns.Count)
+                {
+                    row = dt.NewRow();
+                    row.ItemArray = value;
+                    dt.Rows.Add(row);
+                }
+            }
+            SqlBulkCopy bc = new SqlBulkCopy(con.ConnectionString, SqlBulkCopyOptions.TableLock);
+            bc.DestinationTableName = "tblparam_test";
+            bc.BatchSize = dt.Rows.Count;
+            con.Open();
+            bc.WriteToServer(dt);
+            bc.Close();
+            con.Close();
 
             /*try
             {
-                //FileStream fs = new FileStream("hello.txt", FileMode.OpenOrCreate);
+                //FileStream fs = new FileStream("C:/Users/Jules/Downloads/hello.txt", FileMode.OpenOrCreate);
+                // Can't seem to get the right path.
                 FileStream fs = new FileStream(FileUpload2.PostedFile.FileName, FileMode.OpenOrCreate);
                 StreamReader sr = new StreamReader(fs);
+                int x = 0;
+                int y = 0;
                 while (!sr.EndOfStream)
                 {
-                    Console.WriteLine(sr.ReadLine());
+                    string text = sr.ReadLine();
+                    string[] data = text.Split(',');
+                    while (y < 10)
+                    {
+                        GridView2.Rows[y].Cells[x].Text = data[x];
+                        
+                    }
                 }
                 sr.Close();
                 fs.Close();
@@ -367,13 +380,18 @@ namespace WebApplication1
             }
             catch (Exception b)
             {
-                Console.WriteLine(b.Message);
+                Label3.Text = b.Message;
             }*/
         }
 
+        private void Bindgrid(DataTable csvdt)
+        {
+            GridView2.DataSource = csvdt;
+            GridView2.DataBind();
+        }  
 
 
-        private void InsertCSVRecords(DataTable csvdt)
+        /*private void InsertCSVRecords(DataTable csvdt)
         {
             string sqlconn = ConfigurationManager.ConnectionStrings["SqlCom"].ConnectionString;
             SqlConnection con = new SqlConnection(sqlconn);
@@ -390,27 +408,42 @@ namespace WebApplication1
             con.Open();
             objbulk.WriteToServer(csvdt);
             con.Close();
-        }
+        }*/
 
         protected void Button2_Click(object sender, EventArgs e)
         {
             try
             {
-                FileStream fs = new FileStream("hello.txt", FileMode.OpenOrCreate);
+                SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+                connection.Open();
+
+                FileStream fs = new FileStream("C:/Users/Jules/Downloads/hello.txt", FileMode.OpenOrCreate);
                 StreamWriter sw = new StreamWriter(fs);
-                
-                sw.WriteLine("Hello!");
-                sw.WriteLine("World!");
+
+                DataView dv = (DataView)SqlDataSource1.Select(DataSourceSelectArguments.Empty);
+                DataTable dt = new DataTable();
+                dt = dv.ToTable();
+                Response.Write(dt.Rows[1].ToString());
+                foreach (DataRow r in dt.Rows)
+                {
+                    sw.WriteLine(r.ItemArray[0].ToString() + ',' + r.ItemArray[1].ToString() + ',' + r.ItemArray[2].ToString() + ',' + r.ItemArray[3].ToString() + ',' + r.ItemArray[4].ToString() + ',' + r.ItemArray[5].ToString());
+                }
+                /*
+                foreach (GridViewRow r in GridView1.Rows)
+                {
+                    sw.WriteLine(r.Cells[0].ToString() + ',' + r.Cells[1].ToString() + ',' + r.Cells[2].ToString() + ',' + r.Cells[3].ToString() + ',' + r.Cells[4].ToString() + ',' + r.Cells[5].ToString());
+                }
+                */
                 sw.Close();
                 fs.Close();
             }
             catch (Exception b)
             {
-                Console.WriteLine(b.Message);
+                Label3.Text = b.Message;
             }
         }
 
-        public void GetCSV(object sender, EventArgs e)
+        /*public void GetCSV(object sender, EventArgs e)
         {
             DataView dv = (DataView)SqlDataSource1.Select(DataSourceSelectArguments.Empty);
             var dt = dv.ToTable();
@@ -427,7 +460,7 @@ namespace WebApplication1
             Response.AddHeader("Content-Disposition", String.Format("attachment;filename={0}", fileName));
             Response.Write(csv);
             Response.End();
-        }
+        }*/
 
         /* private void LoadDocument()
          {

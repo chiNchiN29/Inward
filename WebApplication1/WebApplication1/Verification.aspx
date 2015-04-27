@@ -20,6 +20,10 @@
     <asp:GridView ID="GridView1" runat="server" ViewStateMode="Enabled" AutoGenerateSelectButton="true" SelectedRowStyle-BackColor="Blue">
 </asp:GridView>
 
+    <asp:GridView ID="GridView2" runat="server" 
+        onselectedindexchanged="GridView2_SelectedIndexChanged">
+    </asp:GridView>
+
     <asp:FileUpload ID="FileUpload2" runat="server" />
     <asp:Button ID="Button1" runat="server" onclick="Button1_Click" 
         Text="Load Check Data" />
@@ -31,6 +35,7 @@
     <br/>
     <asp:Button ID="Button2" runat="server" onclick="Button2_Click" 
         style="height: 26px" Text="Save Data" />
+    <asp:Label ID="Label3" runat="server" Text="Label"></asp:Label>
     <br/>
     <asp:SqlDataSource ID="SqlDataSource1" runat="server" 
     ConnectionString="<%$ ConnectionStrings:ConnectionString %>" >
