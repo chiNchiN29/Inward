@@ -9,6 +9,15 @@
         {}
         .style4
         {}
+        .grid_scroll
+        {
+            overflow: scroll;
+            height: 500px;
+            border: solid 1px orange;
+            height: 480px;
+            width: 800px;
+        }
+
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
@@ -16,9 +25,11 @@
     <asp:Button ID="uploadDoc" runat="server" Text="Upload Document" OnClick="uploadDoc_Click"/>
     <br />
     <br/>
- 
-    <asp:GridView ID="GridView1" runat="server" ViewStateMode="Enabled" AutoGenerateSelectButton="true" SelectedRowStyle-BackColor="Blue">
+    <div class ="grid_scroll">
+        <asp:GridView ID="GridView1" runat="server"  ViewStateMode="Enabled" AutoGenerateSelectButton="true" 
+    SelectedRowStyle-BackColor="Aqua">
 </asp:GridView>
+</div>
 
     <asp:FileUpload ID="FileUpload2" runat="server" />
     <asp:Button ID="Button1" runat="server" onclick="Button1_Click" 
