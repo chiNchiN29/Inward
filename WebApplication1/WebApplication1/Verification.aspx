@@ -13,22 +13,21 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <asp:Button ID="uploadDoc" runat="server" Text="Upload Document" OnClick="uploadDoc_Click"/>
-    <br/>
-    <asp:Label ID="acctName" runat="server" Text="Account Name"></asp:Label>
-    <br /> 
-    <asp:Label ID="acctNo" runat="server" Text="Account Number"></asp:Label>
     <br />
-    <asp:Label ID="chkNo" runat="server" Text="Check Number"></asp:Label>
-    
     <br/>
-    <asp:Label ID="Label3" runat="server" Text="Label"></asp:Label>
-    <br/>
+ 
+    <asp:GridView ID="GridView1" runat="server" ViewStateMode="Enabled" AutoGenerateSelectButton="true" SelectedRowStyle-BackColor="Blue">
+</asp:GridView>
 
     <asp:Button ID="loadDoc" runat="server" CssClass="style1" Text="Load Document" OnClick="loadDoc_Click"
         Width="151px" />
     <asp:Label ID="Label1" runat="server" Text="1_01"></asp:Label>
 <asp:Label ID="Label2" runat="server" Text="1_02"></asp:Label>
-    <br/><br/><br/>
+    <br/><br/>
+    <asp:SqlDataSource ID="SqlDataSource1" runat="server" 
+    ConnectionString="<%$ ConnectionStrings:ConnectionString %>" >
+</asp:SqlDataSource>
+    <br/>
     <asp:Image ID="Image1" runat="server" CssClass="style2" Height="181px" 
         Width="449px" Visible="False" /> &nbsp&nbsp&nbsp
     <asp:Image ID="Image2" runat="server" CssClass="style3" Height="180px" 
@@ -41,7 +40,4 @@
     
     &nbsp&nbsp&nbsp&nbsp
     <asp:Button ID="rejectButton" runat="server" Text="Reject" Height="36px" Width="86px" />
-   
-    
-
 </asp:Content>
