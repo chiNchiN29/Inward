@@ -30,6 +30,10 @@ namespace WebApplication1
             {
                 Session["X"] = x;
                 Session["Y"] = i;
+
+                SqlDataSource1.SelectCommand = "SELECT customer_id, customer_name, CUSTOMER.account_number, balance, funded, verification FROM CUSTOMER, ACCOUNT, CHEQUE WHERE CUSTOMER.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CHEQUE.account_number "; 
+                GridView1.DataSource = SqlDataSource1;
+                GridView1.DataBind();
             }
         }
 
@@ -294,19 +298,19 @@ namespace WebApplication1
         }
 
         public static Control FindControlRecursive(Control Root, string Id)
-{
-    if (Root.ID == Id)
-        return Root;
+        {
+            if (Root.ID == Id)
+            return Root;
  
-    foreach (Control Ctl in Root.Controls)
-    {
-        Control FoundCtl = FindControlRecursive(Ctl, Id);
-        if (FoundCtl != null)
-            return FoundCtl;
-    }
+            foreach (Control Ctl in Root.Controls)
+             {
+                Control FoundCtl = FindControlRecursive(Ctl, Id);
+                 if (FoundCtl != null)
+                 return FoundCtl;
+              }
  
-    return null;
-}
+            return null;
+        }
         /* private void LoadDocument()
          {
               Dictionary<string, string> parameters = new Dictionary<string, string>();
