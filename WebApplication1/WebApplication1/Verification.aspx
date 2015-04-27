@@ -12,6 +12,7 @@
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
+    <asp:FileUpload ID="FileUpload1" runat="server" AllowMultiple="true"/>
     <asp:Button ID="uploadDoc" runat="server" Text="Upload Document" OnClick="uploadDoc_Click"/>
     <br/>
     <asp:Label ID="acctName" runat="server" Text="Account Name"></asp:Label>
