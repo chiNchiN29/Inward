@@ -20,6 +20,10 @@
     <asp:GridView ID="GridView1" runat="server" ViewStateMode="Enabled" AutoGenerateSelectButton="true" SelectedRowStyle-BackColor="Blue">
 </asp:GridView>
 
+    <asp:FileUpload ID="FileUpload2" runat="server" />
+    <asp:Button ID="Button1" runat="server" onclick="Button1_Click" 
+        Text="Load Check Data" />
+
     <asp:Button ID="loadDoc" runat="server" CssClass="style1" Text="Load Document" OnClick="loadDoc_Click"
         Width="151px" />
     <asp:Label ID="Label1" runat="server" Text="1_01"></asp:Label>

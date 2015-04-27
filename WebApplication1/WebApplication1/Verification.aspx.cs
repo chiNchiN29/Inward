@@ -12,6 +12,9 @@ using DotCMIS.Data.Extensions;
 using System.IO;
 using DotCMIS.Data;
 using System.Drawing;
+using System.Data;
+using System.Data.SqlClient;
+using System.Configuration;
 
 
 namespace WebApplication1
@@ -311,6 +314,84 @@ namespace WebApplication1
  
             return null;
         }
+
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+            DataTable tblcsv = new DataTable();
+            //creating columns  
+            tblcsv.Columns.Add("Check #");
+            tblcsv.Columns.Add("Account #");
+            tblcsv.Columns.Add("Amount");
+            tblcsv.Columns.Add("Check Date");
+            tblcsv.Columns.Add("Drawee Bank");
+            tblcsv.Columns.Add("Drawee Bank Branch");
+            tblcsv.Columns.Add("Funded?");
+            tblcsv.Columns.Add("Verified?");
+
+            //getting full file path of Uploaded file  
+            string CSVFilePath = Path.GetFullPath(FileUpload2.PostedFile.FileName);
+            //Reading All text  
+            string ReadCSV = File.ReadAllText(CSVFilePath);
+            //spliting row after new line  
+            foreach (string csvRow in ReadCSV.Split('\n'))
+            {
+                if (!string.IsNullOrEmpty(csvRow))
+                {
+                    //Adding each row into datatable  
+                    tblcsv.Rows.Add();
+                    int count = 0;
+                    foreach (string FileRec in csvRow.Split(','))
+                    {
+                        tblcsv.Rows[tblcsv.Rows.Count - 1][count] = FileRec;
+                        count++;
+                    }
+                }
+
+
+            }
+            //Calling insert Functions  
+            InsertCSVRecords(tblcsv); 
+
+            /*try
+            {
+                //FileStream fs = new FileStream("hello.txt", FileMode.OpenOrCreate);
+                FileStream fs = new FileStream(FileUpload2.PostedFile.FileName, FileMode.OpenOrCreate);
+                StreamReader sr = new StreamReader(fs);
+                while (!sr.EndOfStream)
+                {
+                    Console.WriteLine(sr.ReadLine());
+                }
+                sr.Close();
+                fs.Close();
+                Console.ReadLine();
+            }
+            catch (Exception b)
+            {
+                Console.WriteLine(b.Message);
+            }*/
+        }
+
+
+
+        private void InsertCSVRecords(DataTable csvdt)
+        {
+            string sqlconn = ConfigurationManager.ConnectionStrings["SqlCom"].ConnectionString;
+            SqlConnection con = new SqlConnection(sqlconn);
+            //creating object of SqlBulkCopy    
+            SqlBulkCopy objbulk = new SqlBulkCopy(con);
+            //assigning Destination table name    
+            objbulk.DestinationTableName = "Employee";
+            //Mapping Table column    
+            objbulk.ColumnMappings.Add("Name", "Name");
+            objbulk.ColumnMappings.Add("City", "City");
+            objbulk.ColumnMappings.Add("Address", "Address");
+            objbulk.ColumnMappings.Add("Designation", "Designation");
+            //inserting Datatable Records to DataBase    
+            con.Open();
+            objbulk.WriteToServer(csvdt);
+            con.Close();
+        }  
+
         /* private void LoadDocument()
          {
               Dictionary<string, string> parameters = new Dictionary<string, string>();
