@@ -390,7 +390,44 @@ namespace WebApplication1
             con.Open();
             objbulk.WriteToServer(csvdt);
             con.Close();
-        }  
+        }
+
+        protected void Button2_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                FileStream fs = new FileStream("hello.txt", FileMode.OpenOrCreate);
+                StreamWriter sw = new StreamWriter(fs);
+                
+                sw.WriteLine("Hello!");
+                sw.WriteLine("World!");
+                sw.Close();
+                fs.Close();
+            }
+            catch (Exception b)
+            {
+                Console.WriteLine(b.Message);
+            }
+        }
+
+        public void GetCSV(object sender, EventArgs e)
+        {
+            DataView dv = (DataView)SqlDataSource1.Select(DataSourceSelectArguments.Empty);
+            var dt = dv.ToTable();
+
+            var csv = dt.ToCSV();
+
+            WriteToOutput(csv, "export.csv", "text/csv");
+        }
+
+        private void WriteToOutput(String csv, String fileName, String mimeType)
+        {
+            Response.Clear();
+            Response.ContentType = mimeType;
+            Response.AddHeader("Content-Disposition", String.Format("attachment;filename={0}", fileName));
+            Response.Write(csv);
+            Response.End();
+        }
 
         /* private void LoadDocument()
          {

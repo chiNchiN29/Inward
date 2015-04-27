@@ -28,7 +28,10 @@
         Width="151px" />
     <asp:Label ID="Label1" runat="server" Text="1_01"></asp:Label>
 <asp:Label ID="Label2" runat="server" Text="1_02"></asp:Label>
-    <br/><br/>
+    <br/>
+    <asp:Button ID="Button2" runat="server" onclick="Button2_Click" 
+        style="height: 26px" Text="Save Data" />
+    <br/>
     <asp:SqlDataSource ID="SqlDataSource1" runat="server" 
     ConnectionString="<%$ ConnectionStrings:ConnectionString %>" >
 </asp:SqlDataSource>
