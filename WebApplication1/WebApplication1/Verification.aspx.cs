@@ -273,18 +273,27 @@ namespace WebApplication1
 
         private void ShowChequeImage(ISession session, string fileName)
         {
-            IDocument doc = (IDocument)session.GetObjectByPath("/Uploads/" + DateTime.Now.Year.ToString() + "/" + DateTime.Now.ToString("MM") + "/" + DateTime.Now.ToString("dd") + "/" + fileName);
-            IContentStream contentStream = doc.GetContentStream();
-            byte[] result;
-            using (var streamReader = new MemoryStream())
+            try
             {
-                contentStream.Stream.CopyTo(streamReader);
-                result = streamReader.ToArray();
-            }
-            string base64string = Convert.ToBase64String(result, 0, result.Length);
+                IDocument doc = (IDocument)session.GetObjectByPath("/Uploads/" + DateTime.Now.Year.ToString() + "/" + DateTime.Now.ToString("MM") + "/" + DateTime.Now.ToString("dd") + "/" + fileName);
+                IContentStream contentStream = doc.GetContentStream();
+                byte[] result;
+                using (var streamReader = new MemoryStream())
+                {
+                    contentStream.Stream.CopyTo(streamReader);
+                    result = streamReader.ToArray();
+                }
+                string base64string = Convert.ToBase64String(result, 0, result.Length);
 
-            Image1.ImageUrl = "data:image/jpeg;base64," + base64string;
-            Image1.Visible = true;
+                Image1.ImageUrl = "data:image/jpeg;base64," + base64string;
+                Image1.Visible = true;
+            }
+            catch (Exception f)
+            {
+                string script = "alert(\"" + f + "\");";
+                ScriptManager.RegisterStartupScript(this, GetType(),
+                                      "ServerControlScript", script, true);
+            }
         }
 
         //Signature image in Database
@@ -354,7 +363,39 @@ namespace WebApplication1
 
         protected void Button1_Click(object sender, EventArgs e)
         {
-            DataTable tblcsv = new DataTable();
+                SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+                con.Open();
+                string filepath = FileUpload2.PostedFile.FileName;
+                StreamReader sr = new StreamReader(filepath);
+                DataTable dt = new DataTable();
+                DataRow row;
+                while (!sr.EndOfStream)
+                {
+                    string line = sr.ReadLine();
+                    string[] value = line.Split(',');
+                    SqlCommand insert = new SqlCommand("insert into CHEQUE(check_number, amount, check_date, drawee_bank, drawee_bank_branch, funded, verification, account_number) values (@checknum, @amount, @date, @bank, @branch, @funded, @verified, @acctnum)", con);
+                    insert.Parameters.AddWithValue("@checknum", value[0]);
+                    insert.Parameters.AddWithValue("@amount", value[1]);
+                    insert.Parameters.AddWithValue("@date", value[2]);
+                    insert.Parameters.AddWithValue("@bank", value[3]);
+                    insert.Parameters.AddWithValue("@branch", value[4]);
+                    insert.Parameters.AddWithValue("@funded", value[5]);
+                    insert.Parameters.AddWithValue("@verified", value[6]);
+                    insert.Parameters.AddWithValue("@acctnum", value[7]);
+                    insert.ExecuteNonQuery();
+                }
+                con.Close();
+            }
+
+        /*SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+            connection.Open();
+            SqlCommand insert = new SqlCommand("insert into SIGNATURE(signature_image, account_number) values (@Sig, @ID)", connection);
+            insert.Parameters.AddWithValue("@Sig", imageToByteArray(System.Drawing.Image.FromStream(FileUpload1.PostedFile.InputStream)));
+            insert.Parameters.AddWithValue("@ID", "10");
+            insert.ExecuteNonQuery();
+            connection.Close();*/
+
+            /*DataTable tblcsv = new DataTable();
             //creating columns  
             tblcsv.Columns.Add("Check #");
             tblcsv.Columns.Add("Account #");
@@ -389,7 +430,7 @@ namespace WebApplication1
             //Calling insert Functions  
             InsertCSVRecords(tblcsv); 
 
-            /*try
+            try
             {
                 //FileStream fs = new FileStream("hello.txt", FileMode.OpenOrCreate);
                 FileStream fs = new FileStream(FileUpload2.PostedFile.FileName, FileMode.OpenOrCreate);
@@ -406,9 +447,9 @@ namespace WebApplication1
             {
                 Console.WriteLine(b.Message);
             }*/
-        }
+        
 
-        private void InsertCSVRecords(DataTable csvdt)
+        /*private void InsertCSVRecords(DataTable csvdt)
         {
             string sqlconn = ConfigurationManager.ConnectionStrings["SqlCom"].ConnectionString;
             SqlConnection con = new SqlConnection(sqlconn);
@@ -425,7 +466,7 @@ namespace WebApplication1
             con.Open();
             objbulk.WriteToServer(csvdt);
             con.Close();
-        }
+        }*/
 
 
 
