@@ -33,7 +33,7 @@ namespace WebApplication1
             {
                 Session["X"] = x;
                 Session["Y"] = i;
-
+               
                 SqlDataSource1.SelectCommand = "SELECT customer_id, customer_name, CUSTOMER.account_number, balance, funded, verification FROM CUSTOMER, ACCOUNT, CHEQUE WHERE CUSTOMER.account_number = ACCOUNT.account_number"; 
                 GridView1.DataSource = SqlDataSource1;
                 GridView1.DataBind();
@@ -211,7 +211,20 @@ namespace WebApplication1
             parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
             //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
             session = factory.GetRepositories(parameters)[0].CreateSession();
-                UploadADocument(session, imageToByteArray(System.Drawing.Image.FromStream(FileUpload1.PostedFile.InputStream)));
+
+            HttpFileCollection multipleFiles = Request.Files;
+            for (int fileCount = 0; fileCount < multipleFiles.Count; fileCount++)
+            {
+                HttpPostedFile uploadedFile = multipleFiles[fileCount];
+                string fileName = Path.GetFileName(uploadedFile.FileName);
+                if (uploadedFile.ContentLength > 0)
+                {
+                    uploadedFile.SaveAs(Server.MapPath("~/Downloads/") + fileName);
+                    Label1.Text += fileName + "Saved <BR>";
+                }
+            }
+
+                //UploadADocument(session, imageToByteArray(System.Drawing.Image.FromStream(FileUpload1.PostedFile.InputStream)));
         }
 
        
@@ -326,7 +339,7 @@ namespace WebApplication1
 
         protected void Button1_Click(object sender, EventArgs e)
         {
-            SqlConnection con = new SqlConnection(@"Data Source=SHAWHP\SQLEXPRESS;Initial Catalog=FOO;Persist Security Info=True;User ID=sa");
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
             string filepath = FileUpload2.PostedFile.FileName;
             StreamReader sr = new StreamReader(filepath);
             string line = sr.ReadLine();

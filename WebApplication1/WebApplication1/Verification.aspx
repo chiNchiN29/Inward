@@ -12,16 +12,17 @@
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-    <asp:FileUpload ID="FileUpload1" runat="server" AllowMultiple="true"/>
+    <asp:FileUpload ID="FileUpload1" runat="server" AllowMultiple = "true"/>
     <asp:Button ID="uploadDoc" runat="server" Text="Upload Document" OnClick="uploadDoc_Click"/>
+    <asp:Label ID="Label4" runat="server" Text="Label"></asp:Label>
     <br />
     <br/>
  
-    <asp:GridView ID="GridView1" runat="server" ViewStateMode="Enabled" AutoGenerateSelectButton="true" SelectedRowStyle-BackColor="Blue">
+    <asp:GridView ID="GridView1" runat="server" ViewStateMode="Enabled" 
+        AutoGenerateSelectButton="true" SelectedRowStyle-BackColor="Blue">
 </asp:GridView>
 
-    <asp:GridView ID="GridView2" runat="server" 
-        onselectedindexchanged="GridView2_SelectedIndexChanged">
+    <asp:GridView ID="GridView2" runat="server">
     </asp:GridView>
 
     <asp:FileUpload ID="FileUpload2" runat="server" />
@@ -40,6 +41,7 @@
     <asp:SqlDataSource ID="SqlDataSource1" runat="server" 
     ConnectionString="<%$ ConnectionStrings:ConnectionString %>" >
 </asp:SqlDataSource>
+    <asp:SqlDataSource ID="SqlDataSource2" runat="server"></asp:SqlDataSource>
     <br/>
     <asp:Image ID="Image1" runat="server" CssClass="style2" Height="181px" 
         Width="449px" Visible="False" /> &nbsp&nbsp&nbsp
