@@ -8,6 +8,7 @@
             border: solid 2px black;
             width: 900px;
         }
+    
 </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">

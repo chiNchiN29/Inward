@@ -25,7 +25,9 @@ namespace WebApplication1
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            SqlDataSource1.SelectCommand = "SELECT check_number AS CheckNo, customer_name AS Name, CHEQUE.account_number AS AcctNo, check_date AS Date, amount, balance, drawee_bank AS DraweeBank, drawee_bank_branch AS DraweeBankBranch, verification AS Verified, funded FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number ORDER BY CHEQUE.account_number";
+            
+            SqlDataSource1.SelectCommand = "SELECT check_number AS CheckNo, customer_name AS Name, CHEQUE.account_number AS AcctNo, CONVERT(VARCHAR(10), check_date, 111) AS Date , amount, balance, drawee_bank AS DraweeBank, drawee_bank_branch AS DraweeBankBranch, verification AS Verified, funded FROM CHEQUE, CUSTOMER, ACCOUNT, THRESHOLD WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number AND CHEQUE.amount >= minimum ORDER BY CHEQUE.account_number";
+            
             GridView1.DataSource = SqlDataSource1;
             GridView1.DataBind();
             CreatingSessionUsingAtomPub();
@@ -33,8 +35,7 @@ namespace WebApplication1
             {
                 Session["X"] = x;
                 Session["Y"] = i;
-                
-                
+               
                 GridView1.DataBind();
             }
         }
@@ -45,8 +46,8 @@ namespace WebApplication1
             SessionFactory factory = SessionFactory.NewInstance();
             ISession session;
             parameters[DotCMIS.SessionParameter.User] = "admin";
-            parameters[DotCMIS.SessionParameter.Password] = "092095";
-            //parameters[DotCMIS.SessionParameter.Password] = "admin";
+            //parameters[DotCMIS.SessionParameter.Password] = "092095";
+            parameters[DotCMIS.SessionParameter.Password] = "admin";
             parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
             parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
             //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
@@ -228,48 +229,6 @@ namespace WebApplication1
             ShowSigDTImage();     
         }  
 
-        private void LoadDocument()
-        {
-            Dictionary<string, string> parameters = new Dictionary<string, string>();
-            SessionFactory factory = SessionFactory.NewInstance();
-            ISession session;
-            parameters[DotCMIS.SessionParameter.User] = "admin";
-            parameters[DotCMIS.SessionParameter.Password] = "092095";
-            parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
-            parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
-            //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
-            session = factory.GetRepositories(parameters)[0].CreateSession();
-            
-            ShowChequeImage(session, "conceal.jpg");
-            
-            /*
-            int valueFromSession = Convert.ToInt32(Session["X"]);
-            int sigval = Convert.ToInt32(Session["Y"]);
-
-            var label = (Label)FindControlRecursive(this.Master, "Label" + valueFromSession);
-            //var label = (Label)Page.FindControl("Label" + valueFromSession);
-            //Response.Write(valueFromSession);
-            //Response.Write(sigval.ToString());
-
-            if (valueFromSession < 11)
-            {
-                if (label.Text[0].ToString().Equals(sigval.ToString()))
-                {
-                    ShowChequeImage(session, label.Text);
-                    ShowSigImage(session, sigval.ToString());
-                    valueFromSession++;
-                    Session["X"] = valueFromSession;
-                }
-                else
-                {
-                    sigval++;
-                    Session["Y"] = sigval;
-                    LoadDocument();
-                }
-            }
-            */
-        }
-
         private void ShowChequeImage(ISession session, string fileName)
         {
             try
@@ -327,23 +286,6 @@ namespace WebApplication1
             Image2.Visible = true;
         }
 
-        protected void loadDoc_Click(Object sender, EventArgs e)
-        {
-            LoadDocument();
-            int valueFromSession = Convert.ToInt32(Session["X"]);
-
-            Session["X"] = valueFromSession;
-            //string str = "Kill_me_now";
-            //char[] split = new char[] { '_' };
-            //string first = str.Split(split)[0];
-            //Response.Write(first);
-
-            //Response.Write(valueFromSession);
-            //int sigval = Convert.ToInt32(Session["Y"]);
-            //Response.Write(sigval);
-
-        }
-
         //for controls in not master page
         public static Control FindControlRecursive(Control Root, string Id)
         {
@@ -364,14 +306,16 @@ namespace WebApplication1
         {
                 SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
                 con.Open();
-                string filepath = FileUpload2.PostedFile.FileName;
-                StreamReader sr = new StreamReader(filepath);
+
+
+                StreamReader sr = new StreamReader(FileUpload2.PostedFile.InputStream);
                 DataTable dt = new DataTable();
                 DataRow row;
                 while (!sr.EndOfStream)
                 {
                     string line = sr.ReadLine();
                     string[] value = line.Split(',');
+                    Response.Write(value[0].ToString());
                     SqlCommand insert = new SqlCommand("insert into CHEQUE(check_number, amount, check_date, drawee_bank, drawee_bank_branch, funded, verification, account_number) values (@checknum, @amount, @date, @bank, @branch, @funded, @verified, @acctnum)", con);
                     insert.Parameters.AddWithValue("@checknum", value[0]);
                     insert.Parameters.AddWithValue("@amount", value[1]);
@@ -383,6 +327,7 @@ namespace WebApplication1
                     insert.Parameters.AddWithValue("@acctnum", value[7]);
                     insert.ExecuteNonQuery();
                 }
+                GridView1.DataBind();
                 con.Close();
             }
 
@@ -466,10 +411,6 @@ namespace WebApplication1
             objbulk.WriteToServer(csvdt);
             con.Close();
         }*/
-
-
-
-        
 
         protected void acceptButton_Click(object sender, EventArgs e)
         {
@@ -557,6 +498,65 @@ namespace WebApplication1
         protected void testButton_Click(object sender, EventArgs e)
         {
             Response.Write(GridView1.SelectedRow.RowIndex);
+        }
+
+        private void LoadDocument()
+        {
+            Dictionary<string, string> parameters = new Dictionary<string, string>();
+            SessionFactory factory = SessionFactory.NewInstance();
+            ISession session;
+            parameters[DotCMIS.SessionParameter.User] = "admin";
+            parameters[DotCMIS.SessionParameter.Password] = "092095";
+            parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
+            parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
+            //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
+            session = factory.GetRepositories(parameters)[0].CreateSession();
+
+            ShowChequeImage(session, "conceal.jpg");
+
+            /*
+            int valueFromSession = Convert.ToInt32(Session["X"]);
+            int sigval = Convert.ToInt32(Session["Y"]);
+
+            var label = (Label)FindControlRecursive(this.Master, "Label" + valueFromSession);
+            //var label = (Label)Page.FindControl("Label" + valueFromSession);
+            //Response.Write(valueFromSession);
+            //Response.Write(sigval.ToString());
+
+            if (valueFromSession < 11)
+            {
+                if (label.Text[0].ToString().Equals(sigval.ToString()))
+                {
+                    ShowChequeImage(session, label.Text);
+                    ShowSigImage(session, sigval.ToString());
+                    valueFromSession++;
+                    Session["X"] = valueFromSession;
+                }
+                else
+                {
+                    sigval++;
+                    Session["Y"] = sigval;
+                    LoadDocument();
+                }
+            }
+            */
+        }
+
+        protected void loadDoc_Click(Object sender, EventArgs e)
+        {
+            LoadDocument();
+            int valueFromSession = Convert.ToInt32(Session["X"]);
+
+            Session["X"] = valueFromSession;
+            //string str = "Kill_me_now";
+            //char[] split = new char[] { '_' };
+            //string first = str.Split(split)[0];
+            //Response.Write(first);
+
+            //Response.Write(valueFromSession);
+            //int sigval = Convert.ToInt32(Session["Y"]);
+            //Response.Write(sigval);
+
         }
 
         /* private void LoadDocument()
