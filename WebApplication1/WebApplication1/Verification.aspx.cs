@@ -219,7 +219,7 @@ namespace WebApplication1
                 string fileName = Path.GetFileName(uploadedFile.FileName);
                 if (uploadedFile.ContentLength > 0)
                 {
-                    uploadedFile.SaveAs(Server.MapPath("~/Downloads/") + fileName);
+                    uploadedFile.SaveAs(Server.MapPath("~/Files/") + fileName);
                     Label1.Text += fileName + "Saved <BR>";
                 }
             }
