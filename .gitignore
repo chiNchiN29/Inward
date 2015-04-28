@@ -13,3 +13,6 @@ WebApplication1/WebApplication1/Verification.aspx.cs
 WebApplication1/WebApplication1/Verification.aspx
 WebApplication1/WebApplication1/App_Data/Database1.mdf
 WebApplication1/WebApplication1/App_Data/Database1_log.LDF
+WebApplication1/WebApplication1/bin/WebApplication1.dll
+*.dll
+WebApplication1/WebApplication1/bin/WebApplication1.dll
