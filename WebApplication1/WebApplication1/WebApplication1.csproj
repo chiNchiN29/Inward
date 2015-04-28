@@ -69,6 +69,7 @@
     <Content Include="Scripts\jquery-1.4.1-vsdoc.js" />
     <Content Include="Scripts\jquery-1.4.1.js" />
     <Content Include="Scripts\jquery-1.4.1.min.js" />
+    <Content Include="UpdateThreshold.aspx" />
     <Content Include="Verification.aspx" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -131,6 +132,13 @@
     </Compile>
     <Compile Include="Site.Master.designer.cs">
       <DependentUpon>Site.Master</DependentUpon>
+    </Compile>
+    <Compile Include="UpdateThreshold.aspx.cs">
+      <DependentUpon>UpdateThreshold.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UpdateThreshold.aspx.designer.cs">
+      <DependentUpon>UpdateThreshold.aspx</DependentUpon>
     </Compile>
     <Compile Include="Verification.aspx.cs">
       <DependentUpon>Verification.aspx</DependentUpon>
