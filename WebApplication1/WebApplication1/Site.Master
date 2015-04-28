@@ -11,7 +11,7 @@
 <body>
     <form runat="server">
     <div class="page">
-        <div class="header">
+        <div class="header" style="color: #FF0000">
             <div class="title">
                 <h1>
                     Inward Clearing System
@@ -29,7 +29,9 @@
                 </asp:LoginView>
             </div>
             <div class="clear hideSkiplink">
-                <asp:Menu ID="NavigationMenu" runat="server" CssClass="menu" EnableViewState="false" IncludeStyleBlock="false" Orientation="Horizontal">
+                <asp:Menu ID="NavigationMenu" runat="server" CssClass="menu" 
+                    EnableViewState="false" IncludeStyleBlock="false" Orientation="Horizontal" 
+                    onmenuitemclick="NavigationMenu_MenuItemClick">
                     <Items>
                         <asp:MenuItem NavigateUrl="~/Default.aspx" Text="Main Menu"/>
                         <asp:MenuItem NavigateUrl="~/Verification.aspx" Text="Signature Verification"/>
