@@ -9,21 +9,33 @@
         {}
         .style4
         {}
+        .grid_scroll
+        {
+            overflow: scroll;
+            height: 300px;
+            border: solid 1px orange;
+          
+            width: 900px;
+        }
+
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-    <asp:FileUpload ID="FileUpload1" runat="server" AllowMultiple = "true"/>
+    <asp:FileUpload ID="FileUpload1" runat="server" AllowMultiple="true"/>
     <asp:Button ID="uploadDoc" runat="server" Text="Upload Document" OnClick="uploadDoc_Click"/>
-    <asp:Label ID="Label4" runat="server" Text="Label"></asp:Label>
-    <br />
-    <br/>
+   
  
-    <asp:GridView ID="GridView1" runat="server" ViewStateMode="Enabled" 
-        AutoGenerateSelectButton="true" SelectedRowStyle-BackColor="Blue">
-</asp:GridView>
-
-    <asp:GridView ID="GridView2" runat="server">
-    </asp:GridView>
+   
+    <asp:Button ID="insertSig" runat="server" Text="Insert Signature" OnClick="insertSig_Click" />
+    <asp:Button ID="testButton" runat="server" onclick="testButton_Click" 
+        Text="Test" />
+    <br /><br/>
+    <div class ="grid_scroll">
+        <asp:GridView ID="GridView1" runat="server" AutoGenerateSelectButton="true" 
+            SelectedRowStyle-BackColor="Aqua" 
+            onselectedindexchanged="GridView1_SelectedIndexChanged">
+        </asp:GridView>
+</div>
 
     <asp:FileUpload ID="FileUpload2" runat="server" />
     <asp:Button ID="Button1" runat="server" onclick="Button1_Click" 
@@ -33,26 +45,23 @@
         Width="151px" />
     <asp:Label ID="Label1" runat="server" Text="1_01"></asp:Label>
 <asp:Label ID="Label2" runat="server" Text="1_02"></asp:Label>
-    <br/>
-    <asp:Button ID="Button2" runat="server" onclick="Button2_Click" 
-        style="height: 26px" Text="Save Data" />
-    <asp:Label ID="Label3" runat="server" Text="Label"></asp:Label>
-    <br/>
-    <asp:SqlDataSource ID="SqlDataSource1" runat="server" 
-    ConnectionString="<%$ ConnectionStrings:ConnectionString %>" >
-</asp:SqlDataSource>
-    <asp:SqlDataSource ID="SqlDataSource2" runat="server"></asp:SqlDataSource>
+    <br/><br/>
     <br/>
     <asp:Image ID="Image1" runat="server" CssClass="style2" Height="181px" 
         Width="449px" Visible="False" /> &nbsp&nbsp&nbsp
     <asp:Image ID="Image2" runat="server" CssClass="style3" Height="180px" 
         Width="444px" Visible="False" />
-    <br/><br/><br/>
+    <br/>
+    <asp:SqlDataSource ID="SqlDataSource1" runat="server" 
+        ConnectionString="<%$ ConnectionStrings:ConnectionString %>" >
+    </asp:SqlDataSource>
+    <br/><br/>
 
     <asp:Button ID="acceptButton" runat="server" CssClass="style4" Height="36px" 
-        Text="Accept" Width="86px" />
+        Text="Accept" Width="86px" onclick="acceptButton_Click" />
    
     
     &nbsp&nbsp&nbsp&nbsp
-    <asp:Button ID="rejectButton" runat="server" Text="Reject" Height="36px" Width="86px" />
+    <asp:Button ID="rejectButton" runat="server" Text="Reject" Height="36px" 
+        Width="86px" onclick="rejectButton_Click" />
 </asp:Content>
