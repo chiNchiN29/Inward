@@ -44,7 +44,9 @@
         Width="151px" />
     <asp:Label ID="Label1" runat="server" Text="1_01"></asp:Label>
 <asp:Label ID="Label2" runat="server" Text="1_02"></asp:Label>
-    <br/><br/>
+    <br/>
+    <asp:Label ID="Label3" runat="server" Text="Label"></asp:Label>
+    <br/>
     <br/>
     <asp:Image ID="Image1" runat="server" CssClass="style2" Height="181px" 
         Width="449px" Visible="False" /> &nbsp&nbsp&nbsp
