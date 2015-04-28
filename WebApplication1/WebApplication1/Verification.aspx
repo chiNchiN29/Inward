@@ -27,6 +27,8 @@
  
    
     <asp:Button ID="insertSig" runat="server" Text="Insert Signature" OnClick="insertSig_Click" />
+    <asp:Button ID="testButton" runat="server" onclick="testButton_Click" 
+        Text="Test" />
     <br /><br/>
     <div class ="grid_scroll">
         <asp:GridView ID="GridView1" runat="server" AutoGenerateSelectButton="true" 

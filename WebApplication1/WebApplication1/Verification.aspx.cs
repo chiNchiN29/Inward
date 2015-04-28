@@ -16,7 +16,6 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
 
-
 namespace WebApplication1
 {
     public partial class Verification : System.Web.UI.Page
@@ -34,7 +33,7 @@ namespace WebApplication1
             {
                 Session["X"] = x;
                 Session["Y"] = i;
-
+                
                 SqlDataSource1.SelectCommand = "SELECT check_number AS CheckNo, customer_name AS Name, CHEQUE.account_number AS AcctNo, check_date AS Date, amount, balance, drawee_bank AS DraweeBank, drawee_bank_branch AS DraweeBankBranch, verification, funded  FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number ORDER BY CHEQUE.account_number";
                 GridView1.DataSource = SqlDataSource1;
                 GridView1.DataBind();
@@ -227,8 +226,7 @@ namespace WebApplication1
             string age = GridView1.SelectedRow.Cells[1].Text;
             string image = im + "_" + age + ".jpg";
             ShowChequeImage(session, image);
-            ShowSigDTImage();
-            
+            ShowSigDTImage();     
         }  
 
         private void LoadDocument()
@@ -431,17 +429,7 @@ namespace WebApplication1
 
 
 
-        //insert signatures in database
-        protected void insertSig_Click(object sender, EventArgs e)
-        {
-            SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
-            connection.Open();
-            SqlCommand insert = new SqlCommand("insert into SIGNATURE(signature_image, account_number) values (@Sig, @ID)", connection);
-            insert.Parameters.AddWithValue("@Sig", imageToByteArray(System.Drawing.Image.FromStream(FileUpload1.PostedFile.InputStream)));
-            insert.Parameters.AddWithValue("@ID", "10");
-            insert.ExecuteNonQuery();
-            connection.Close();
-        }
+        
 
         protected void acceptButton_Click(object sender, EventArgs e)
         {
@@ -454,6 +442,10 @@ namespace WebApplication1
             update.ExecuteNonQuery();
             connection.Close();
             GridView1.DataBind();
+            if (GridView1.SelectedRow.RowIndex < GridView1.Rows.Count - 1)
+            {
+                GridView1.SelectRow(GridView1.SelectedRow.RowIndex + 1);
+            }
         }
 
         protected void rejectButton_Click(object sender, EventArgs e)
@@ -467,6 +459,10 @@ namespace WebApplication1
             update.ExecuteNonQuery();
             connection.Close();
             GridView1.DataBind();
+            if(GridView1.SelectedRow.RowIndex < GridView1.Rows.Count - 1)
+            {
+                GridView1.SelectRow(GridView1.SelectedRow.RowIndex + 1);
+            }
         }
 
         protected void Button2_Click(object sender, EventArgs e)
@@ -506,6 +502,22 @@ namespace WebApplication1
             Response.End();
         }
 
+        //insert signatures in database
+        protected void insertSig_Click(object sender, EventArgs e)
+        {
+            SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+            connection.Open();
+            SqlCommand insert = new SqlCommand("insert into SIGNATURE(signature_image, account_number) values (@Sig, @ID)", connection);
+            insert.Parameters.AddWithValue("@Sig", imageToByteArray(System.Drawing.Image.FromStream(FileUpload1.PostedFile.InputStream)));
+            insert.Parameters.AddWithValue("@ID", "10");
+            insert.ExecuteNonQuery();
+            connection.Close();
+        }
+
+        protected void testButton_Click(object sender, EventArgs e)
+        {
+            Response.Write(GridView1.SelectedRow.RowIndex);
+        }
 
         /* private void LoadDocument()
          {
