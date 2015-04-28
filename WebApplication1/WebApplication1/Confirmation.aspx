@@ -20,7 +20,9 @@
         </asp:SqlDataSource>
       
     <br />
-    <asp:Button ID="fundButton" runat="server" Text="Validate" />
+    <asp:Button ID="fundButton" runat="server" Text="Validate" 
+        onclick="fundButton_Click" />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <asp:Button ID="unfundButton" runat="server" Text="Unfund" />
+    <asp:Button ID="unfundButton" runat="server" Text="Unfund" 
+        onclick="unfundButton_Click" />
 </asp:Content>

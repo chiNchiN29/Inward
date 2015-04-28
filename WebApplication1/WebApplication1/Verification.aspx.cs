@@ -25,7 +25,7 @@ namespace WebApplication1
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            SqlDataSource1.SelectCommand = "SELECT check_number AS CheckNo, customer_name AS Name, CHEQUE.account_number AS AcctNo, check_date AS Date, amount, balance, drawee_bank AS DraweeBank, drawee_bank_branch AS DraweeBankBranch, verification, funded FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number ORDER BY CHEQUE.account_number";
+            SqlDataSource1.SelectCommand = "SELECT check_number AS CheckNo, customer_name AS Name, CHEQUE.account_number AS AcctNo, check_date AS Date, amount, balance, drawee_bank AS DraweeBank, drawee_bank_branch AS DraweeBankBranch, verification AS Verified, funded FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number ORDER BY CHEQUE.account_number";
             GridView1.DataSource = SqlDataSource1;
             GridView1.DataBind();
             CreatingSessionUsingAtomPub();
@@ -34,8 +34,7 @@ namespace WebApplication1
                 Session["X"] = x;
                 Session["Y"] = i;
                 
-                SqlDataSource1.SelectCommand = "SELECT check_number AS CheckNo, customer_name AS Name, CHEQUE.account_number AS AcctNo, check_date AS Date, amount, balance, drawee_bank AS DraweeBank, drawee_bank_branch AS DraweeBankBranch, verification, funded  FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number ORDER BY CHEQUE.account_number";
-                GridView1.DataSource = SqlDataSource1;
+                
                 GridView1.DataBind();
             }
         }
