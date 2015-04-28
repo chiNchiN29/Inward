@@ -17,7 +17,7 @@ namespace WebApplication1
         protected void Page_Load(object sender, EventArgs e)
         {
             CreatingSessionUsingAtomPub();   
-            SqlDataSource1.SelectCommand = "SELECT check_number AS CheckNo, customer_name AS Name, customer_address AS Adress, contact_number AS ContactNo, CHEQUE.account_number AS AcctNo, check_date AS Date, amount, drawee_bank AS DraweeBank, drawee_bank_branch AS DraweeBankBranch, funded, verification AS Verified FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number ORDER BY CHEQUE.account_number";
+            SqlDataSource1.SelectCommand = "SELECT check_number AS CheckNo, customer_name AS Name, customer_address AS Address, contact_number AS ContactNo, CHEQUE.account_number AS AcctNo, check_date AS Date, amount, drawee_bank AS DraweeBank, drawee_bank_branch AS Branch, funded AS 'Funded?', verification AS 'Verified?' FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number ORDER BY CHEQUE.account_number";
             GridView1.DataSource = SqlDataSource1;
             GridView1.DataBind();
         }
@@ -28,8 +28,8 @@ namespace WebApplication1
             SessionFactory factory = SessionFactory.NewInstance();
             ISession session;
             parameters[DotCMIS.SessionParameter.User] = "admin";
-            //parameters[DotCMIS.SessionParameter.Password] = "092095";
-            parameters[DotCMIS.SessionParameter.Password] = "admin";
+            parameters[DotCMIS.SessionParameter.Password] = "092095";
+            //parameters[DotCMIS.SessionParameter.Password] = "admin";
             parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
             parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
             //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";

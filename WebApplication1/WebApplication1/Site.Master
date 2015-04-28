@@ -36,7 +36,7 @@
                         <asp:MenuItem NavigateUrl="~/Default.aspx" Text="Main Menu"/>
                         <asp:MenuItem NavigateUrl="~/Verification.aspx" Text="Signature Verification"/>
                         <asp:MenuItem NavigateUrl="~/Confirmation.aspx" Text="Confirmation" />
-                        <asp:MenuItem NavigateUrl="" Text="Update Thresholds"/> 
+                        <asp:MenuItem NavigateUrl="~/UpdateThreshold.aspx" Text="Update Thresholds"/> 
                     </Items>
                 </asp:Menu>
             </div>

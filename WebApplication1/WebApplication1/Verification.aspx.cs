@@ -25,7 +25,7 @@ namespace WebApplication1
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            SqlDataSource1.SelectCommand = "SELECT check_number AS CheckNo, customer_name AS Name, CHEQUE.account_number AS AcctNo, check_date AS Date, amount, balance, drawee_bank AS DraweeBank, drawee_bank_branch AS DraweeBankBranch, verification AS Verified, funded FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number ORDER BY CHEQUE.account_number";
+            SqlDataSource1.SelectCommand = "SELECT check_number AS CheckNo, customer_name AS Name, CHEQUE.account_number AS AcctNo, check_date AS Date, amount, balance, drawee_bank AS DraweeBank, drawee_bank_branch AS DraweeBankBranch, verification AS 'Verified?', funded AS 'Funded?' FROM CHEQUE, CUSTOMER, ACCOUNT, THRESHOLD WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number AND CHEQUE.amount >= THRESHOLD.minimum ORDER BY CHEQUE.account_number";
             GridView1.DataSource = SqlDataSource1;
             GridView1.DataBind();
             CreatingSessionUsingAtomPub();
@@ -177,38 +177,6 @@ namespace WebApplication1
             }
         }
 
-        private void UploadADocument(ISession session, byte[] ImageFile)
-        {
-            IFolder folder = (IFolder)session.GetObjectByPath("/Uploads/" + DateTime.Now.Year.ToString() + "/" + DateTime.Now.ToString("MM") + "/" + DateTime.Now.ToString("dd"));
-            Dictionary<String, object> DocumentProperties = new Dictionary<string, object>();
-            string id = PropertyIds.ObjectTypeId;
-            DocumentProperties[PropertyIds.Name] = FileUpload1.FileName;
-            DocumentProperties[PropertyIds.ObjectTypeId] = "cmis:document";
-            ContentStream contentStream = new ContentStream
-            {
-                MimeType = "image/jpeg",
-                Length = ImageFile.Length,
-                Stream = new MemoryStream(ImageFile)
-            };
-
-            folder.CreateDocument(DocumentProperties, contentStream, null);
-        }
-
-        protected void uploadDoc_Click(Object sender, EventArgs e)
-        {
-            Dictionary<string, string> parameters = new Dictionary<string, string>();
-            SessionFactory factory = SessionFactory.NewInstance();
-            ISession session;
-            parameters[DotCMIS.SessionParameter.User] = "admin";
-            //parameters[DotCMIS.SessionParameter.Password] = "092095";
-            parameters[DotCMIS.SessionParameter.Password] = "admin";
-            parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
-            parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
-            //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
-            session = factory.GetRepositories(parameters)[0].CreateSession();
-            UploadADocument(session, imageToByteArray(System.Drawing.Image.FromStream(FileUpload1.PostedFile.InputStream)));
-        }
-
         protected void GridView1_SelectedIndexChanged(object sender, EventArgs e)
         {
             Dictionary<string, string> parameters = new Dictionary<string, string>();
@@ -239,6 +207,7 @@ namespace WebApplication1
             parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
             //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
             session = factory.GetRepositories(parameters)[0].CreateSession();
+            
             
             ShowChequeImage(session, "conceal.jpg");
             
@@ -359,32 +328,6 @@ namespace WebApplication1
  
             return null;
         }
-
-        protected void Button1_Click(object sender, EventArgs e)
-        {
-                SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
-                con.Open();
-                string filepath = FileUpload2.PostedFile.FileName;
-                StreamReader sr = new StreamReader(filepath);
-                DataTable dt = new DataTable();
-                DataRow row;
-                while (!sr.EndOfStream)
-                {
-                    string line = sr.ReadLine();
-                    string[] value = line.Split(',');
-                    SqlCommand insert = new SqlCommand("insert into CHEQUE(check_number, amount, check_date, drawee_bank, drawee_bank_branch, funded, verification, account_number) values (@checknum, @amount, @date, @bank, @branch, @funded, @verified, @acctnum)", con);
-                    insert.Parameters.AddWithValue("@checknum", value[0]);
-                    insert.Parameters.AddWithValue("@amount", value[1]);
-                    insert.Parameters.AddWithValue("@date", value[2]);
-                    insert.Parameters.AddWithValue("@bank", value[3]);
-                    insert.Parameters.AddWithValue("@branch", value[4]);
-                    insert.Parameters.AddWithValue("@funded", value[5]);
-                    insert.Parameters.AddWithValue("@verified", value[6]);
-                    insert.Parameters.AddWithValue("@acctnum", value[7]);
-                    insert.ExecuteNonQuery();
-                }
-                con.Close();
-            }
 
         /*SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
             connection.Open();
