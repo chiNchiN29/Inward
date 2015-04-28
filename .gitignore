@@ -27,3 +27,4 @@ WebApplication1/WebApplication1/App_Data/Database1.mdf
 WebApplication1/WebApplication1/obj/Debug/WebApplication1.pdb
 *.dll
 *.pdb
+*.suo
