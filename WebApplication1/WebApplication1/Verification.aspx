@@ -13,8 +13,7 @@
         {
             overflow: scroll;
             height: 300px;
-            border: solid 1px orange;
-          
+            border: solid 2px black;
             width: 900px;
         }
 
