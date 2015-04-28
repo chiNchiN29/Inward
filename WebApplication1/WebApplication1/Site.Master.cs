@@ -16,7 +16,7 @@ namespace WebApplication1
 
         protected void NavigationMenu_MenuItemClick(object sender, MenuEventArgs e)
         {
-            
+            Server.Transfer(e.Item.NavigateUrl);
         }
     }
 }
