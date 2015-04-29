@@ -3,14 +3,6 @@
 
 <asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeadContent">
     <style type="text/css">
-        .style1
-        {}
-        .style2
-        {}
-        .style3
-        {}
-        .style4
-        {}
         .grid_scroll
         {
             overflow: scroll;
@@ -30,6 +22,7 @@
     <asp:Label ID="Label1" runat="server" Font-Size="Larger" ForeColor="Black" 
         Text="Load Image"></asp:Label>
     <br />
+    <br />
     <asp:FileUpload ID="FileUpload1" runat="server" AllowMultiple="true"/>
     <br />
     <br />
@@ -45,9 +38,8 @@
         Text="Load Check Data"></asp:Label>
     <br />
     <br />
-    <asp:FileUpload ID="FileUpload2" runat="server" AllowMultiple="true"/>
+    <asp:FileUpload ID="FileUpload2" runat="server"/>
     <br />
-    <asp:Label ID="Label3" runat="server" Text="Label"></asp:Label>
     <br />
    
  

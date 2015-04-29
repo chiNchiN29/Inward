@@ -15,6 +15,7 @@ using System.Drawing;
 using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
+using System.Text;
 
 namespace WebApplication1
 {
@@ -26,7 +27,7 @@ namespace WebApplication1
         protected void Page_Load(object sender, EventArgs e)
         {
             
-            SqlDataSource1.SelectCommand = "SELECT check_number AS CheckNo, customer_name AS Name, CHEQUE.account_number AS AcctNo, CONVERT(VARCHAR(10), check_date, 111) AS Date , amount, balance, drawee_bank AS DraweeBank, drawee_bank_branch AS DraweeBankBranch, verification AS Verified, funded FROM CHEQUE, CUSTOMER, ACCOUNT, THRESHOLD WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number AND CHEQUE.amount >= minimum ORDER BY CHEQUE.account_number";
+            SqlDataSource1.SelectCommand = "SELECT check_number AS CheckNo, customer_name AS Name, CHEQUE.account_number AS AcctNo, CONVERT(VARCHAR(10), check_date, 111) AS Date , amount, balance, drawee_bank AS DraweeBank, drawee_bank_branch AS DraweeBankBranch, verification AS Verified FROM CHEQUE, CUSTOMER, ACCOUNT, THRESHOLD WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number AND CHEQUE.amount >= minimum AND verification <> 'YES' ORDER BY CHEQUE.account_number";
             
             GridView1.DataSource = SqlDataSource1;
             GridView1.DataBind();
@@ -46,8 +47,8 @@ namespace WebApplication1
             SessionFactory factory = SessionFactory.NewInstance();
             ISession session;
             parameters[DotCMIS.SessionParameter.User] = "admin";
-            //parameters[DotCMIS.SessionParameter.Password] = "092095";
-            parameters[DotCMIS.SessionParameter.Password] = "admin";
+            parameters[DotCMIS.SessionParameter.Password] = "092095";
+            ////parameters[DotCMIS.SessionParameter.Password] = "admin";
             parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
             parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
             //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
@@ -201,8 +202,8 @@ namespace WebApplication1
             SessionFactory factory = SessionFactory.NewInstance();
             ISession session;
             parameters[DotCMIS.SessionParameter.User] = "admin";
-            //parameters[DotCMIS.SessionParameter.Password] = "092095";
-            parameters[DotCMIS.SessionParameter.Password] = "admin";
+            parameters[DotCMIS.SessionParameter.Password] = "092095";
+            //parameters[DotCMIS.SessionParameter.Password] = "admin";
             parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
             parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
             //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
@@ -216,8 +217,8 @@ namespace WebApplication1
             SessionFactory factory = SessionFactory.NewInstance();
             ISession session;
             parameters[DotCMIS.SessionParameter.User] = "admin";
-            //parameters[DotCMIS.SessionParameter.Password] = "092095";
-            parameters[DotCMIS.SessionParameter.Password] = "admin";
+            parameters[DotCMIS.SessionParameter.Password] = "092095";
+            //parameters[DotCMIS.SessionParameter.Password] = "admin";
             parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
             parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
             //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
@@ -446,24 +447,6 @@ namespace WebApplication1
             }
         }
 
-        protected void Button2_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                FileStream fs = new FileStream("hello.txt", FileMode.OpenOrCreate);
-                StreamWriter sw = new StreamWriter(fs);
-                
-                sw.WriteLine("Hello!");
-                sw.WriteLine("World!");
-                sw.Close();
-                fs.Close();
-            }
-            catch (Exception b)
-            {
-                Console.WriteLine(b.Message);
-            }
-        }
-
         public void GetCSV(object sender, EventArgs e)
         {
             DataView dv = (DataView)SqlDataSource1.Select(DataSourceSelectArguments.Empty);
@@ -557,6 +540,66 @@ namespace WebApplication1
             //int sigval = Convert.ToInt32(Session["Y"]);
             //Response.Write(sigval);
 
+        }
+
+        protected void Button2_Click1(object sender, EventArgs e)
+        {
+            // Retrieves the schema of the table.
+            DataTable dtSchema = new DataTable();
+            dtSchema.Clear();
+            dtSchema = GetData();
+
+            // set the resulting file attachment name to the name of the report...
+            string fileName = "test";
+
+            //Response.Write(dtSchema.Rows.Count);
+
+            Response.Clear();
+            Response.Buffer = true;
+            Response.AddHeader("content-disposition", "attachment;filename=" + fileName + ".csv");
+            Response.Charset = "";
+            Response.ContentType = "application/text";
+
+            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+
+            foreach (DataRow datar in dtSchema.Rows)
+            {
+                for (int i = 0; i < dtSchema.Columns.Count; i++)
+                {
+                    if (!Convert.IsDBNull(datar[i]))
+                    {
+                        sb.Append(datar[i].ToString());
+                    }
+                    if (i < dtSchema.Columns.Count - 1)
+                    {
+                        sb.Append(",");
+                    }
+                }
+                sb.Append("\r\n");
+            }
+            Response.Output.Write(sb.ToString());
+            Response.Flush();
+            Response.End();
+        }
+
+        private DataTable GetData()
+        {
+            using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("SELECT check_number AS CheckNo, amount AS Amount, CONVERT(VARCHAR(10), check_date, 111) AS Date, drawee_bank AS Bank, drawee_bank_branch AS Branch, funded AS 'Funded?', verification AS 'Verified?', CHEQUE.account_number AS AcctNo, confirmed AS 'Confirmed?' FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number AND verification = 'NO' ORDER BY CHEQUE.account_number"))
+                {
+                    using (SqlDataAdapter sda = new SqlDataAdapter())
+                    {
+                        cmd.Connection = connection;
+                        sda.SelectCommand = cmd;
+                        using (DataTable dt = new DataTable())
+                        {
+                            sda.Fill(dt);
+                            return dt;
+                        }
+                    }
+                }
+            }
         }
 
         /* private void LoadDocument()

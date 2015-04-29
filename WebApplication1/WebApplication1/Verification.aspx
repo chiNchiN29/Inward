@@ -29,7 +29,7 @@
         Text="Test" />
     <br /><br/>
     <div class ="grid_scroll">
-        <asp:GridView ID="GridView1" runat="server" AutoGenerateSelectButton="true" 
+        <asp:GridView ID="GridView1" runat="server" AutoGenerateSelectButton="True" 
             SelectedRowStyle-BackColor="Aqua" 
             onselectedindexchanged="GridView1_SelectedIndexChanged">
         </asp:GridView>
@@ -41,6 +41,8 @@
 
     <asp:Button ID="loadDoc" runat="server" CssClass="style1" Text="Load Document" OnClick="loadDoc_Click"
         Width="151px" />
+    <asp:Button ID="Button2" runat="server" onclick="Button2_Click1" 
+        Text="Generate List" />
     <br/>
     <br/>
     <br/>
