@@ -25,7 +25,7 @@ namespace WebApplication1
             SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
             connection.Open();
             CreatingSessionUsingAtomPub();
-            SqlDataSource1.SelectCommand = "SELECT check_number AS CheckNo, customer_name AS Name, CHEQUE.account_number AS AcctNo, check_date AS Date, amount, balance, drawee_bank AS DraweeBank, drawee_bank_branch AS DraweeBankBranch, verification AS 'Verified?', funded AS 'Funded?', confirmed AS 'Confirmed?' FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number ORDER BY CHEQUE.account_number";
+            SqlDataSource1.SelectCommand = "SELECT check_number AS CheckNo, customer_name AS Name, CHEQUE.account_number AS AcctNo, check_date AS Date, amount, balance, drawee_bank AS DraweeBank, drawee_bank_branch AS DraweeBankBranch, verification AS 'Verified?', funded AS 'Funded?' FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number ORDER BY CHEQUE.account_number";
             GridView1.DataSource = SqlDataSource1;
             GridView1.DataBind();
             connection.Close();
@@ -37,8 +37,8 @@ namespace WebApplication1
             SessionFactory factory = SessionFactory.NewInstance();
             ISession session;
             parameters[DotCMIS.SessionParameter.User] = "admin";
-            parameters[DotCMIS.SessionParameter.Password] = "092095";
-            ////parameters[DotCMIS.SessionParameter.Password] = "admin";
+            //parameters[DotCMIS.SessionParameter.Password] = "092095";
+            parameters[DotCMIS.SessionParameter.Password] = "admin";
             parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
             parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
             //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
@@ -59,7 +59,7 @@ namespace WebApplication1
 
             #region Checking and Creation of Target Folders
             //Checking and Creating of Main Folder from the Root Folder
-            /*if (!isFolderExist(session, "/Uploads/"))
+            if (!isFolderExist(session, "/Uploads/"))
             {
                 CreateAFolder(session, "Uploads");
             }
@@ -80,7 +80,7 @@ namespace WebApplication1
             if (!isFolderExist(session, "/Uploads/" + DateTime.Now.Year.ToString() + "/" + DateTime.Now.ToString("MM") + "/" + DateTime.Now.ToString("dd")))
             {
                 CreateASubFolder(session, DateTime.Now.ToString("dd"), "/Uploads/" + DateTime.Now.Year.ToString() + "/" + DateTime.Now.ToString("MM"));
-            }*/
+            }
             #endregion
 
             //#region Uploading of Image
@@ -129,12 +129,44 @@ namespace WebApplication1
             #endregion
         }
 
-        private void UploadADocument(ISession session, byte[] ImageFile)
+        private static Boolean isFolderExist(ISession session, String FolderPath)
+        {
+            IFolder folder;
+            try
+            {
+                folder = (IFolder)session.GetObjectByPath(FolderPath);
+                return true;
+            }
+            catch (DotCMIS.Exceptions.CmisObjectNotFoundException)
+            {
+                return false;
+            }
+        }
+
+        private static void CreateAFolder(ISession session, String FolderName)
+        {
+            Dictionary<String, object> FolderProperties = new Dictionary<string, object>();
+            FolderProperties[DotCMIS.PropertyIds.Name] = FolderName;
+            FolderProperties[DotCMIS.PropertyIds.ObjectTypeId] = "cmis:folder";
+            session.GetRootFolder().CreateFolder(FolderProperties);
+        }
+
+        private static void CreateASubFolder(ISession session, String FolderName, String ParentFolderPath)
+        {
+            Dictionary<String, object> FolderProperties = new Dictionary<string, object>();
+            FolderProperties[DotCMIS.PropertyIds.Name] = FolderName;
+            FolderProperties[DotCMIS.PropertyIds.ObjectTypeId] = "cmis:folder";
+            IFolder newFolder = (IFolder)session.GetObjectByPath(ParentFolderPath);
+            newFolder.CreateFolder(FolderProperties);
+        }
+
+        private void UploadADocument(ISession session, byte[] ImageFile, string fileName)
         {
             IFolder folder = (IFolder)session.GetObjectByPath("/Uploads/" + DateTime.Now.Year.ToString() + "/" + DateTime.Now.ToString("MM") + "/" + DateTime.Now.ToString("dd"));
             Dictionary<String, object> DocumentProperties = new Dictionary<string, object>();
             string id = PropertyIds.ObjectTypeId;
-            DocumentProperties[PropertyIds.Name] = FileUpload1.FileName;
+            
+            DocumentProperties[PropertyIds.Name] =  fileName;
             DocumentProperties[PropertyIds.ObjectTypeId] = "cmis:document";
             ContentStream contentStream = new ContentStream
             {
@@ -152,13 +184,22 @@ namespace WebApplication1
             SessionFactory factory = SessionFactory.NewInstance();
             ISession session;
             parameters[DotCMIS.SessionParameter.User] = "admin";
-            parameters[DotCMIS.SessionParameter.Password] = "092095";
-            //parameters[DotCMIS.SessionParameter.Password] = "admin";
+            //parameters[DotCMIS.SessionParameter.Password] = "092095";
+            parameters[DotCMIS.SessionParameter.Password] = "admin";
             parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
             parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
             //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
             session = factory.GetRepositories(parameters)[0].CreateSession();
-            UploadADocument(session, imageToByteArray(System.Drawing.Image.FromStream(FileUpload1.PostedFile.InputStream)));
+            //string filepath = System.IO.Path.GetDirectoryName(System.Web.HttpContext.Current.Request.MapPath(FileUpload1.PostedFile.FileName));
+            //FileInfo file = new FileInfo(FileUpload1.PostedFile.FileName);
+      
+            string filepath = TextBox1.Text;  
+            string[] files = Directory.GetFiles(filepath);
+            foreach (string str in files)
+            {
+                UploadADocument(session, imageToByteArray(System.Drawing.Image.FromFile(str)), Path.GetFileName(str));
+            }
+            Response.Write("<script langauge=\"javascript\">alert(\"Images successfully added\");</script>");
         }
 
         private static byte[] imageToByteArray(System.Drawing.Image imageIn)
@@ -180,9 +221,9 @@ namespace WebApplication1
             {
                 string line = sr.ReadLine();
                 string[] heart = line.Split(',');
-                //string wew = heart[0].ToString();
-                //string wew2 = heart[1].ToString();
-                //Response.Write(heart[0].ToString());
+                string wew = heart[0].ToString();
+                string wew2 = heart[1].ToString();
+                Response.Write(heart[2].ToString());
                 
                 //int x = 0;
                 //string y = "";
@@ -193,17 +234,16 @@ namespace WebApplication1
                 //}
                 //Label3.Text = y;
                 
-                SqlCommand insert = new SqlCommand("insert into CHEQUE(check_number, amount, check_date, drawee_bank, drawee_bank_branch, funded, verification, account_number, confirmed) values (@checknum, @amount, @date, @bank, @branch, @funded, @verified, @acctnum, @confirmed)", con);
-                insert.Parameters.AddWithValue("@checknum", heart[0]);
-                insert.Parameters.AddWithValue("@amount", heart[1]);
-                insert.Parameters.AddWithValue("@date", heart[2]);
-                insert.Parameters.AddWithValue("@bank", heart[3]);
-                insert.Parameters.AddWithValue("@branch", heart[4]);
-                insert.Parameters.AddWithValue("@funded", heart[5]);
-                insert.Parameters.AddWithValue("@verified", heart[6]);
-                insert.Parameters.AddWithValue("@acctnum", heart[7]);
-                insert.Parameters.AddWithValue("@confirmed", heart[8]);
-                insert.ExecuteNonQuery();
+                //SqlCommand insert = new SqlCommand("insert into CHEQUE(check_number, amount, check_date, drawee_bank, drawee_bank_branch, funded, verification, account_number) values (@checknum, @amount, @date, @bank, @branch, @funded, @verified, @acctnum)", con);
+                //insert.Parameters.AddWithValue("@checknum", heart[0]);
+                //insert.Parameters.AddWithValue("@amount", heart[1]);
+                //insert.Parameters.AddWithValue("@date", heart[2]);
+                //insert.Parameters.AddWithValue("@bank", heart[3]);
+                //insert.Parameters.AddWithValue("@branch", heart[4]);
+                //insert.Parameters.AddWithValue("@funded", heart[5]);
+                //insert.Parameters.AddWithValue("@verified", heart[6]);
+                //insert.Parameters.AddWithValue("@acctnum", heart[7]);
+                //insert.ExecuteNonQuery();
             }
             con.Close();
         }

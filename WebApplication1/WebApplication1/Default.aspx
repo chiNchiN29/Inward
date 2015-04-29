@@ -10,6 +10,18 @@
             border: solid 2px black;
             width: 900px;
         }
+        .fileUpload
+        {
+            width:255px;    
+            font-size:11px;
+            color:#000000;
+            border:solid;
+            border-width:1px;
+            border-color:#7f9db9;    
+            height:17px;
+           }
+        .style1
+        {}
     </style>
 </asp:Content>
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
@@ -22,15 +34,12 @@
     <asp:Label ID="Label1" runat="server" Font-Size="Larger" ForeColor="Black" 
         Text="Load Image"></asp:Label>
     <br />
-    <br />
-    <asp:FileUpload ID="FileUpload1" runat="server" AllowMultiple="true"/>
+    Please enter the directory of the folder with the images.<br />
+    <asp:TextBox ID="TextBox1" runat="server" CssClass="style1" Width="191px"></asp:TextBox>
     <br />
     <br />
     <asp:Button ID="uploadDoc" runat="server" Text="Upload Image" 
-        OnClick="uploadDoc_Click" Width="155px"/>
-   
- 
-   
+        OnClick="uploadDoc_Click" Width="155px"/>   
     <br />
     <br />
     <br />
@@ -40,12 +49,18 @@
     <br />
     <asp:FileUpload ID="FileUpload2" runat="server"/>
     <br />
+    <asp:Label ID="Label3" runat="server" Text="Label"></asp:Label>
     <br />
    
  
    
     <asp:Button ID="uploadDoc0" runat="server" Text="Load" 
         OnClick="uploadDoc0_Click" Width="156px"/>
+   
+ 
+   
+    <asp:ScriptManager ID="ScriptManager1" runat="server">
+    </asp:ScriptManager>
    
  
    

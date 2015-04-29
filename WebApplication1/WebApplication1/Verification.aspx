@@ -1,14 +1,12 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Verification.aspx.cs" Inherits="WebApplication1.Verification" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
     <style type="text/css">
-        .style1
-        {}
         .style4
         {}
         .grid_scroll
         {
             overflow: scroll;
-            height: 300px;
+            height: 261px;
             border: solid 2px black;
             width: 900px;
         }
@@ -20,29 +18,18 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <asp:FileUpload ID="FileUpload1" runat="server" AllowMultiple="true"/>
-    <asp:Button ID="uploadDoc" runat="server" Text="Upload Document" OnClick="uploadDoc_Click"/>
    
  
    
     <asp:Button ID="insertSig" runat="server" Text="Insert Signature" OnClick="insertSig_Click" />
-    <asp:Button ID="testButton" runat="server" onclick="testButton_Click" 
-        Text="Test" />
     <br /><br/>
     <div class ="grid_scroll">
-        <asp:GridView ID="GridView1" runat="server" AutoGenerateSelectButton="True" 
+        <asp:GridView ID="GridView1" runat="server" AutoGenerateSelectButton="true" 
             SelectedRowStyle-BackColor="Aqua" 
             onselectedindexchanged="GridView1_SelectedIndexChanged">
         </asp:GridView>
 </div>
 
-    <asp:FileUpload ID="FileUpload2" runat="server" />
-    <asp:Button ID="Button1" runat="server" onclick="Button1_Click" 
-        Text="Load Check Data" />
-
-    <asp:Button ID="loadDoc" runat="server" CssClass="style1" Text="Load Document" OnClick="loadDoc_Click"
-        Width="151px" />
-    <asp:Button ID="Button2" runat="server" onclick="Button2_Click1" 
-        Text="Generate List" />
     <br/>
     <br/>
     <br/>

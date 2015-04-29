@@ -15,28 +15,19 @@ using System.Drawing;
 using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
-using System.Text;
 
 namespace WebApplication1
 {
     public partial class Verification : System.Web.UI.Page
     {
-        int x = 1;
-        int i = 1;
-
         protected void Page_Load(object sender, EventArgs e)
         {
-            
-            SqlDataSource1.SelectCommand = "SELECT check_number AS CheckNo, customer_name AS Name, CHEQUE.account_number AS AcctNo, CONVERT(VARCHAR(10), check_date, 111) AS Date , amount, balance, drawee_bank AS DraweeBank, drawee_bank_branch AS DraweeBankBranch, verification AS Verified FROM CHEQUE, CUSTOMER, ACCOUNT, THRESHOLD WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number AND CHEQUE.amount >= minimum AND verification <> 'YES' ORDER BY CHEQUE.account_number";
-            
+            SqlDataSource1.SelectCommand = "SELECT check_number AS CheckNo, customer_name AS Name, CHEQUE.account_number AS AcctNo, CONVERT(VARCHAR(10), check_date, 111) AS Date , amount, balance, drawee_bank AS DraweeBank, drawee_bank_branch AS DraweeBankBranch, verification AS Verified, funded FROM CHEQUE, CUSTOMER, ACCOUNT, THRESHOLD WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number AND CHEQUE.amount >= minimum ORDER BY CHEQUE.account_number";         
             GridView1.DataSource = SqlDataSource1;
             GridView1.DataBind();
             CreatingSessionUsingAtomPub();
             if (!Page.IsPostBack)
             {
-                Session["X"] = x;
-                Session["Y"] = i;
-               
                 GridView1.DataBind();
             }
         }
@@ -47,8 +38,8 @@ namespace WebApplication1
             SessionFactory factory = SessionFactory.NewInstance();
             ISession session;
             parameters[DotCMIS.SessionParameter.User] = "admin";
-            parameters[DotCMIS.SessionParameter.Password] = "092095";
-            ////parameters[DotCMIS.SessionParameter.Password] = "admin";
+            //parameters[DotCMIS.SessionParameter.Password] = "092095";
+            parameters[DotCMIS.SessionParameter.Password] = "admin";
             parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
             parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
             //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
@@ -196,29 +187,14 @@ namespace WebApplication1
             folder.CreateDocument(DocumentProperties, contentStream, null);
         }
 
-        protected void uploadDoc_Click(Object sender, EventArgs e)
-        {
-            Dictionary<string, string> parameters = new Dictionary<string, string>();
-            SessionFactory factory = SessionFactory.NewInstance();
-            ISession session;
-            parameters[DotCMIS.SessionParameter.User] = "admin";
-            parameters[DotCMIS.SessionParameter.Password] = "092095";
-            //parameters[DotCMIS.SessionParameter.Password] = "admin";
-            parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
-            parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
-            //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
-            session = factory.GetRepositories(parameters)[0].CreateSession();
-            UploadADocument(session, imageToByteArray(System.Drawing.Image.FromStream(FileUpload1.PostedFile.InputStream)));
-        }
-
         protected void GridView1_SelectedIndexChanged(object sender, EventArgs e)
         {
             Dictionary<string, string> parameters = new Dictionary<string, string>();
             SessionFactory factory = SessionFactory.NewInstance();
             ISession session;
             parameters[DotCMIS.SessionParameter.User] = "admin";
-            parameters[DotCMIS.SessionParameter.Password] = "092095";
-            //parameters[DotCMIS.SessionParameter.Password] = "admin";
+            //parameters[DotCMIS.SessionParameter.Password] = "092095";
+            parameters[DotCMIS.SessionParameter.Password] = "admin";
             parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
             parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
             //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
@@ -262,7 +238,7 @@ namespace WebApplication1
             connection.Open();
             SqlCommand select = new SqlCommand("select signature_image from SIGNATURE WHERE account_number=@acctnumber", connection);
             select.Parameters.AddWithValue("@acctnumber", GridView1.SelectedRow.Cells[3].Text);
-           
+
             byte[] result = select.ExecuteScalar() as byte[];
             string base64string2 = Convert.ToBase64String(result, 0, result.Length);
             Image2.ImageUrl = "data:image/jpeg;base64," + base64string2;
@@ -303,116 +279,6 @@ namespace WebApplication1
             return null;
         }
 
-        protected void Button1_Click(object sender, EventArgs e)
-        {
-                SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
-                con.Open();
-
-
-                StreamReader sr = new StreamReader(FileUpload2.PostedFile.InputStream);
-                DataTable dt = new DataTable();
-                DataRow row;
-                while (!sr.EndOfStream)
-                {
-                    string line = sr.ReadLine();
-                    string[] value = line.Split(',');
-                    Response.Write(value[0].ToString());
-                    SqlCommand insert = new SqlCommand("insert into CHEQUE(check_number, amount, check_date, drawee_bank, drawee_bank_branch, funded, verification, account_number) values (@checknum, @amount, @date, @bank, @branch, @funded, @verified, @acctnum)", con);
-                    insert.Parameters.AddWithValue("@checknum", value[0]);
-                    insert.Parameters.AddWithValue("@amount", value[1]);
-                    insert.Parameters.AddWithValue("@date", value[2]);
-                    insert.Parameters.AddWithValue("@bank", value[3]);
-                    insert.Parameters.AddWithValue("@branch", value[4]);
-                    insert.Parameters.AddWithValue("@funded", value[5]);
-                    insert.Parameters.AddWithValue("@verified", value[6]);
-                    insert.Parameters.AddWithValue("@acctnum", value[7]);
-                    insert.ExecuteNonQuery();
-                }
-                GridView1.DataBind();
-                con.Close();
-            }
-
-        /*SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
-            connection.Open();
-            SqlCommand insert = new SqlCommand("insert into SIGNATURE(signature_image, account_number) values (@Sig, @ID)", connection);
-            insert.Parameters.AddWithValue("@Sig", imageToByteArray(System.Drawing.Image.FromStream(FileUpload1.PostedFile.InputStream)));
-            insert.Parameters.AddWithValue("@ID", "10");
-            insert.ExecuteNonQuery();
-            connection.Close();*/
-
-            /*DataTable tblcsv = new DataTable();
-            //creating columns  
-            tblcsv.Columns.Add("Check #");
-            tblcsv.Columns.Add("Account #");
-            tblcsv.Columns.Add("Amount");
-            tblcsv.Columns.Add("Check Date");
-            tblcsv.Columns.Add("Drawee Bank");
-            tblcsv.Columns.Add("Drawee Bank Branch");
-            tblcsv.Columns.Add("Funded?");
-            tblcsv.Columns.Add("Verified?");
-
-            //getting full file path of Uploaded file  
-            string CSVFilePath = Path.GetFullPath(FileUpload2.PostedFile.FileName);
-            //Reading All text  
-            string ReadCSV = File.ReadAllText(CSVFilePath);
-            //spliting row after new line  
-            foreach (string csvRow in ReadCSV.Split('\n'))
-            {
-                if (!string.IsNullOrEmpty(csvRow))
-                {
-                    //Adding each row into datatable  
-                    tblcsv.Rows.Add();
-                    int count = 0;
-                    foreach (string FileRec in csvRow.Split(','))
-                    {
-                        tblcsv.Rows[tblcsv.Rows.Count - 1][count] = FileRec;
-                        count++;
-                    }
-                }
-
-
-            }
-            //Calling insert Functions  
-            InsertCSVRecords(tblcsv); 
-
-            try
-            {
-                //FileStream fs = new FileStream("hello.txt", FileMode.OpenOrCreate);
-                FileStream fs = new FileStream(FileUpload2.PostedFile.FileName, FileMode.OpenOrCreate);
-                StreamReader sr = new StreamReader(fs);
-                while (!sr.EndOfStream)
-                {
-                    Console.WriteLine(sr.ReadLine());
-                }
-                sr.Close();
-                fs.Close();
-                Console.ReadLine();
-            }
-            catch (Exception b)
-            {
-                Console.WriteLine(b.Message);
-            }*/
-        
-
-        /*private void InsertCSVRecords(DataTable csvdt)
-        {
-            string sqlconn = ConfigurationManager.ConnectionStrings["SqlCom"].ConnectionString;
-            SqlConnection con = new SqlConnection(sqlconn);
-            //creating object of SqlBulkCopy    
-            SqlBulkCopy objbulk = new SqlBulkCopy(con);
-            //assigning Destination table name    
-            objbulk.DestinationTableName = "Employee";
-            //Mapping Table column    
-            objbulk.ColumnMappings.Add("Name", "Name");
-            objbulk.ColumnMappings.Add("City", "City");
-            objbulk.ColumnMappings.Add("Address", "Address");
-            objbulk.ColumnMappings.Add("Designation", "Designation");
-            //inserting Datatable Records to DataBase    
-            con.Open();
-            objbulk.WriteToServer(csvdt);
-            con.Close();
-        }*/
-
         protected void acceptButton_Click(object sender, EventArgs e)
         {
             SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
@@ -447,25 +313,6 @@ namespace WebApplication1
             }
         }
 
-        public void GetCSV(object sender, EventArgs e)
-        {
-            DataView dv = (DataView)SqlDataSource1.Select(DataSourceSelectArguments.Empty);
-            var dt = dv.ToTable();
-
-            //var csv = dt.ToCSV();
-
-            //WriteToOutput(csv, "export.csv", "text/csv");
-        }
-
-        private void WriteToOutput(String csv, String fileName, String mimeType)
-        {
-            Response.Clear();
-            Response.ContentType = mimeType;
-            Response.AddHeader("Content-Disposition", String.Format("attachment;filename={0}", fileName));
-            Response.Write(csv);
-            Response.End();
-        }
-
         //insert signatures in database
         protected void insertSig_Click(object sender, EventArgs e)
         {
@@ -477,210 +324,5 @@ namespace WebApplication1
             insert.ExecuteNonQuery();
             connection.Close();
         }
-
-        protected void testButton_Click(object sender, EventArgs e)
-        {
-            Response.Write(GridView1.SelectedRow.RowIndex);
-        }
-
-        private void LoadDocument()
-        {
-            Dictionary<string, string> parameters = new Dictionary<string, string>();
-            SessionFactory factory = SessionFactory.NewInstance();
-            ISession session;
-            parameters[DotCMIS.SessionParameter.User] = "admin";
-            parameters[DotCMIS.SessionParameter.Password] = "092095";
-            parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
-            parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
-            //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
-            session = factory.GetRepositories(parameters)[0].CreateSession();
-
-            ShowChequeImage(session, "conceal.jpg");
-
-            /*
-            int valueFromSession = Convert.ToInt32(Session["X"]);
-            int sigval = Convert.ToInt32(Session["Y"]);
-
-            var label = (Label)FindControlRecursive(this.Master, "Label" + valueFromSession);
-            //var label = (Label)Page.FindControl("Label" + valueFromSession);
-            //Response.Write(valueFromSession);
-            //Response.Write(sigval.ToString());
-
-            if (valueFromSession < 11)
-            {
-                if (label.Text[0].ToString().Equals(sigval.ToString()))
-                {
-                    ShowChequeImage(session, label.Text);
-                    ShowSigImage(session, sigval.ToString());
-                    valueFromSession++;
-                    Session["X"] = valueFromSession;
-                }
-                else
-                {
-                    sigval++;
-                    Session["Y"] = sigval;
-                    LoadDocument();
-                }
-            }
-            */
-        }
-
-        protected void loadDoc_Click(Object sender, EventArgs e)
-        {
-            LoadDocument();
-            int valueFromSession = Convert.ToInt32(Session["X"]);
-
-            Session["X"] = valueFromSession;
-            //string str = "Kill_me_now";
-            //char[] split = new char[] { '_' };
-            //string first = str.Split(split)[0];
-            //Response.Write(first);
-
-            //Response.Write(valueFromSession);
-            //int sigval = Convert.ToInt32(Session["Y"]);
-            //Response.Write(sigval);
-
-        }
-
-        protected void Button2_Click1(object sender, EventArgs e)
-        {
-            // Retrieves the schema of the table.
-            DataTable dtSchema = new DataTable();
-            dtSchema.Clear();
-            dtSchema = GetData();
-
-            // set the resulting file attachment name to the name of the report...
-            string fileName = "test";
-
-            //Response.Write(dtSchema.Rows.Count);
-
-            Response.Clear();
-            Response.Buffer = true;
-            Response.AddHeader("content-disposition", "attachment;filename=" + fileName + ".csv");
-            Response.Charset = "";
-            Response.ContentType = "application/text";
-
-            System.Text.StringBuilder sb = new System.Text.StringBuilder();
-
-            foreach (DataRow datar in dtSchema.Rows)
-            {
-                for (int i = 0; i < dtSchema.Columns.Count; i++)
-                {
-                    if (!Convert.IsDBNull(datar[i]))
-                    {
-                        sb.Append(datar[i].ToString());
-                    }
-                    if (i < dtSchema.Columns.Count - 1)
-                    {
-                        sb.Append(",");
-                    }
-                }
-                sb.Append("\r\n");
-            }
-            Response.Output.Write(sb.ToString());
-            Response.Flush();
-            Response.End();
-        }
-
-        private DataTable GetData()
-        {
-            using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString))
-            {
-                using (SqlCommand cmd = new SqlCommand("SELECT check_number AS CheckNo, amount AS Amount, CONVERT(VARCHAR(10), check_date, 111) AS Date, drawee_bank AS Bank, drawee_bank_branch AS Branch, funded AS 'Funded?', verification AS 'Verified?', CHEQUE.account_number AS AcctNo, confirmed AS 'Confirmed?' FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number AND verification = 'NO' ORDER BY CHEQUE.account_number"))
-                {
-                    using (SqlDataAdapter sda = new SqlDataAdapter())
-                    {
-                        cmd.Connection = connection;
-                        sda.SelectCommand = cmd;
-                        using (DataTable dt = new DataTable())
-                        {
-                            sda.Fill(dt);
-                            return dt;
-                        }
-                    }
-                }
-            }
-        }
-
-        /* private void LoadDocument()
-         {
-              Dictionary<string, string> parameters = new Dictionary<string, string>();
-              parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
-              parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/cmis/versions/1.0/atom";
-              parameters[DotCMIS.SessionParameter.User] = "admin";
-              parameters[DotCMIS.SessionParameter.Password] = "092095";
-             SessionFactory factory = SessionFactory.NewInstance();
-             ISession session = factory.GetRepositories(parameters)[0].CreateSession();
-             IObjectId id = session.CreateObjectId("12345678");
-             IDocument doc = session.GetObject(id) as IDocument;
-             Console.WriteLine(doc.Name);
-             Console.WriteLine(doc.GetPropertyValue("my:property"));
-             IProperty myProperty = doc["my:property"];
-             Console.WriteLine("Id:    " + myProperty.Id);
-             Console.WriteLine("Value: " + myProperty.Value);
-             Console.WriteLine("Type:  " + myProperty.PropertyType);
-
-             // content
-             IContentStream contentStream = doc.GetContentStream();
-             Console.WriteLine("Filename:   " + contentStream.FileName);
-             Console.WriteLine("MIME type:  " + contentStream.MimeType);
-             Console.WriteLine("Has stream: " + (contentStream.Stream != null));
-         }
-
-         protected void loadDocument_Click(Object sender, EventArgs e)
-         {
-             LoadDocument3();
-         }
-       
-         private void LoadImage2()
-         {
-             Dictionary<string, string> parameters = new Dictionary<string, string>();
-             parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
-             parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/cmis/versions/1.0/atom";
-             parameters[DotCMIS.SessionParameter.User] = "admin";
-             parameters[DotCMIS.SessionParameter.Password] = "092095";
-             SessionFactory factory = SessionFactory.NewInstance();
-             ISession session = factory.GetRepositories(parameters)[0].CreateSession();
-             //IDocument doc = session.GetObjectByPath
-             //string i = doc.Name;
-             //Response.Write(i);
-         }
-
-         private void LoadDocument3()
-         {
-             Dictionary<string, string> parameters = new Dictionary<string, string>();
-             parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
-             parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/cmis/versions/1.0/atom";
-             parameters[DotCMIS.SessionParameter.User] = "admin";
-             parameters[DotCMIS.SessionParameter.Password] = "092095";
-             SessionFactory factory = SessionFactory.NewInstance();
-             ISession session = factory.GetRepositories(parameters)[0].CreateSession();
-             IObjectId id = session.CreateObjectId("4bd21f6d-909b-487b-bdfa-a71abd493978");
-             //IObjectId id = session.CreateObjectId("9b638969-2a36-4c55-ab36-ebfe48e7d680");
-             IDocument doc = session.GetObject(id) as IDocument;
-             FileUpload wew = doc as FileUpload;
-             //IContentStream stream = doc.GetContentStream();
-             //IContentStream content = doc.GetContentStream();
-             //IDocument checkout = doc.CheckOut() as IDocument;
-             //checkout.geGetContentStream()
-             //Stream stream = checkout.GetContentStream().Stream;
-             //MemoryStream ms = new MemoryStream(FileUpload1.FileBytes);
-             //Response.Write(doc.GetContentStream().Stream);
-             //System.Drawing.Image mage = System.Drawing.Image.FromStream(doc.GetContentStream());  
-             //int uu = (int) doc.GetContentStream().Length;
-
-             MemoryStream ms = new MemoryStream();
-             ms.ReadByte();
-             string base64string = Convert.ToBase64String(ms.ToArray(), 0, ms.ToArray().Length);
-             Image1.ImageUrl = "data:image/jpeg;base64," + base64string;
-
-             //string base64string = Convert.ToBase64String(ms.ToArray(), 0, ms.ToArray().Length);
-             Image1.ImageUrl = "data:image/jpeg;base64," + base64string;
-
-             get image from local folder
-             MemoryStream ms = new MemoryStream(FileUpload1.FileBytes);
-             string base64string = Convert.ToBase64String(ms.ToArray(), 0, ms.ToArray().Length);
-             Image1.ImageUrl = "data:image/jpeg;base64," + base64string;
-         }*/
     }
 }
