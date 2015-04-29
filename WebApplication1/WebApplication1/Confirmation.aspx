@@ -26,4 +26,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <asp:Button ID="unfundButton" runat="server" Text="Unfund" 
         onclick="unfundButton_Click" />
+    <br />
+    <br />
+    <asp:Button ID="Button1" runat="server" onclick="Button1_Click" 
+        Text="Generate List" />
 </asp:Content>
