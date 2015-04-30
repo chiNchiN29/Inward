@@ -22,7 +22,7 @@ namespace WebApplication1
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            SqlDataSource1.SelectCommand = "SELECT check_number AS CheckNo, customer_name AS Name, CHEQUE.account_number AS AcctNo, CONVERT(VARCHAR(10), check_date, 111) AS Date , amount, balance, drawee_bank AS DraweeBank, drawee_bank_branch AS DraweeBankBranch, verification AS Verified, funded FROM CHEQUE, CUSTOMER, ACCOUNT, THRESHOLD WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number AND CHEQUE.amount >= minimum ORDER BY CHEQUE.account_number";         
+            SqlDataSource1.SelectCommand = "SELECT check_number AS CheckNo, customer_name AS Name, CHEQUE.account_number AS AcctNo, CONVERT(VARCHAR(10), check_date, 111) AS Date , amount, balance, drawee_bank AS DraweeBank, drawee_bank_branch AS DraweeBankBranch, verification AS Verified FROM CHEQUE, CUSTOMER, ACCOUNT, THRESHOLD WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number AND CHEQUE.amount >= minimum AND verification <> 'BTA' ORDER BY CHEQUE.account_number";        
             GridView1.DataSource = SqlDataSource1;
             GridView1.DataBind();
             CreatingSessionUsingAtomPub();
@@ -201,7 +201,7 @@ namespace WebApplication1
             session = factory.GetRepositories(parameters)[0].CreateSession();
             string im = GridView1.SelectedRow.Cells[3].Text;
             string age = GridView1.SelectedRow.Cells[1].Text;
-            string image = im + "_" + age + ".jpg";
+            string image = im + "_" + age;
             ShowChequeImage(session, image);
             ShowSigDTImage();     
         }  
@@ -211,6 +211,9 @@ namespace WebApplication1
             try
             {
                 IDocument doc = (IDocument)session.GetObjectByPath("/Uploads/" + DateTime.Now.Year.ToString() + "/" + DateTime.Now.ToString("MM") + "/" + DateTime.Now.ToString("dd") + "/" + fileName);
+
+                
+
                 IContentStream contentStream = doc.GetContentStream();
                 byte[] result;
                 using (var streamReader = new MemoryStream())
@@ -223,11 +226,9 @@ namespace WebApplication1
                 Image1.ImageUrl = "data:image/jpeg;base64," + base64string;
                 Image1.Visible = true;
             }
-            catch (Exception f)
+            catch (Exception e)
             {
-                string script = "alert(\"" + f + "\");";
-                ScriptManager.RegisterStartupScript(this, GetType(),
-                                      "ServerControlScript", script, true);
+                Response.Write("<script langauge=\"javascript\">alert(\"No existing check image or signature image\");</script>");
             }
         }
 
@@ -323,6 +324,68 @@ namespace WebApplication1
             insert.Parameters.AddWithValue("@ID", "10");
             insert.ExecuteNonQuery();
             connection.Close();
+        }
+
+        //Generate List
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+            // Retrieves the schema of the table.
+            DataTable dtSchema = new DataTable();
+            dtSchema.Clear();
+            dtSchema = GetData();
+
+            // set the resulting file attachment name to the name of the report...
+            string fileName = "test";
+
+            //Response.Write(dtSchema.Rows.Count);
+
+            Response.Clear();
+            Response.Buffer = true;
+            Response.AddHeader("content-disposition", "attachment;filename=" + fileName + ".csv");
+            Response.Charset = "";
+            Response.ContentType = "application/text";
+
+            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+            
+            foreach (DataRow datar in dtSchema.Rows)
+            {
+                for (int i = 0; i < dtSchema.Columns.Count; i++)
+                {
+                    if (!Convert.IsDBNull(datar[i]))
+                    {
+                        sb.Append(datar[i].ToString());
+                    }
+                    if (i < dtSchema.Columns.Count - 1)
+                    {
+                        sb.Append(",");
+                    }
+                }
+                sb.Append("\r\n");
+            }
+            
+            Response.Output.Write(sb.ToString());
+            Response.Flush();
+            Response.End();
+        }
+
+        private DataTable GetData()
+        {
+            using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("SELECT check_number AS CheckNo, amount AS Amount, CONVERT(VARCHAR(10), check_date, 111) AS Date, drawee_bank AS Bank, drawee_bank_branch AS Branch, funded AS 'Funded?', verification AS 'Verified?', confirmed AS 'Confirmed?', CHEQUE.account_number AS AcctNo FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number AND verification = 'NO' ORDER BY CHEQUE.account_number"))
+                {
+                    using (SqlDataAdapter sda = new SqlDataAdapter())
+                    {
+                        cmd.Connection = connection;
+                        sda.SelectCommand = cmd;
+                        using (DataTable dt = new DataTable())
+                        {
+                            sda.Fill(dt);
+                            return dt;
+                        }
+                    }
+                }
+            }
         }
     }
 }

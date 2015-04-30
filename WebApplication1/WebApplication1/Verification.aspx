@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Verification.aspx.cs" Inherits="WebApplication1.Verification" %>
+﻿<%@ Page Title="Signature Verification" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Verification.aspx.cs" Inherits="WebApplication1.Verification" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
     <style type="text/css">
         .style4
@@ -50,4 +50,8 @@
     &nbsp&nbsp&nbsp&nbsp
     <asp:Button ID="rejectButton" runat="server" Text="Reject" Height="36px" 
         Width="86px" onclick="rejectButton_Click" />
+    <br />
+    <br />
+    <asp:Button ID="Button1" runat="server" onclick="Button1_Click" 
+        Text="Generate List" />
 </asp:Content>

@@ -13,14 +13,13 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
 
-
 namespace WebApplication1
 {
     public partial class Confirmation : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            SqlDataSource1.SelectCommand = "SELECT check_number AS CheckNo, customer_name AS Name, customer_address AS Address, contact_number AS ContactNo, CHEQUE.account_number AS AcctNo, CONVERT(VARCHAR(10), check_date, 111) AS Date, amount, drawee_bank AS DraweeBank, drawee_bank_branch AS DraweeBankBranch, funded AS 'Funded?', verification AS 'Verified?', confirmed AS 'Confirmed?' FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number ORDER BY CHEQUE.account_number";
+            SqlDataSource1.SelectCommand = "SELECT check_number AS CheckNo, customer_name AS Name, customer_address AS Address, contact_number AS ContactNo, CHEQUE.account_number AS AcctNo, CONVERT(VARCHAR(10), check_date, 111) AS Date, amount, drawee_bank AS DraweeBank, drawee_bank_branch AS DraweeBankBranch, funded AS 'Funded?', verification AS 'Verified?', confirmed AS 'Confirmed?' FROM CHEQUE, CUSTOMER, ACCOUNT, THRESHOLD WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number AND ((verification = 'YES' AND amount > maximum) OR verification = 'NO')  ORDER BY CHEQUE.account_number";
             GridView1.DataSource = SqlDataSource1;
             GridView1.DataBind();
         }
@@ -95,25 +94,6 @@ namespace WebApplication1
                 sb.Append("\r\n");
             }
 
-
-            /*//append new line
-            for (int i = 0; i < dtSchema.Rows.Count; i++)
-            {
-                for (int k = 0; k < dtSchema.Columns.Count; k++)
-                {
-                    //add separator and strip "," values from returned content...
-                    if (k != dtSchema.Columns.Count - 1)
-                    {
-                        sb.Append(dtSchema.Rows[i].ItemArray[k].ToString() + ",");
-                    }
-                    else
-                    {
-                        sb.Append(dtSchema.Rows[i].ItemArray[k].ToString() + ",");
-                    }
-                }
-                //append new line
-                sb.Append("\r\n");
-            }*/
             Response.Output.Write(sb.ToString());
             Response.Flush();
             Response.End();
@@ -123,7 +103,7 @@ namespace WebApplication1
         {
             using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("SELECT check_number AS CheckNo, amount AS Amount, CONVERT(VARCHAR(10), check_date, 111) AS Date, drawee_bank AS Bank, drawee_bank_branch AS Branch, funded AS 'Funded?', verification AS 'Verified?', CHEQUE.account_number AS AcctNo, confirmed AS 'Confirmed?' FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number AND verification = 'NO' ORDER BY CHEQUE.account_number"))
+                using (SqlCommand cmd = new SqlCommand("SELECT check_number AS CheckNo, amount AS Amount, CONVERT(VARCHAR(10), check_date, 111) AS Date, drawee_bank AS Bank, drawee_bank_branch AS Branch, funded AS 'Funded?', verification AS 'Verified?', CHEQUE.account_number AS AcctNo, confirmed AS 'Confirmed?' FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number AND confirmed = 'NO' ORDER BY CHEQUE.account_number"))
                 {
                     using (SqlDataAdapter sda = new SqlDataAdapter())
                     {

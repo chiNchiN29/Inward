@@ -25,7 +25,7 @@ namespace WebApplication1
             SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
             connection.Open();
             CreatingSessionUsingAtomPub();
-            SqlDataSource1.SelectCommand = "SELECT check_number AS CheckNo, customer_name AS Name, CHEQUE.account_number AS AcctNo, check_date AS Date, amount, balance, drawee_bank AS DraweeBank, drawee_bank_branch AS DraweeBankBranch, verification AS 'Verified?', funded AS 'Funded?' FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number ORDER BY CHEQUE.account_number";
+            SqlDataSource1.SelectCommand = "SELECT check_number AS CheckNo, customer_name AS Name, CHEQUE.account_number AS AcctNo, CONVERT(VARCHAR(10), check_date, 111) AS Date, amount, balance, drawee_bank AS DraweeBank, drawee_bank_branch AS DraweeBankBranch, verification AS 'Verified?', funded AS 'Funded?' FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number ORDER BY CHEQUE.account_number";
             GridView1.DataSource = SqlDataSource1;
             GridView1.DataBind();
             connection.Close();
@@ -190,14 +190,12 @@ namespace WebApplication1
             parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
             //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
             session = factory.GetRepositories(parameters)[0].CreateSession();
-            //string filepath = System.IO.Path.GetDirectoryName(System.Web.HttpContext.Current.Request.MapPath(FileUpload1.PostedFile.FileName));
-            //FileInfo file = new FileInfo(FileUpload1.PostedFile.FileName);
-      
+            
             string filepath = TextBox1.Text;  
             string[] files = Directory.GetFiles(filepath);
             foreach (string str in files)
             {
-                UploadADocument(session, imageToByteArray(System.Drawing.Image.FromFile(str)), Path.GetFileName(str));
+                UploadADocument(session, imageToByteArray(System.Drawing.Image.FromFile(str)), Path.GetFileNameWithoutExtension(str));
             }
             Response.Write("<script langauge=\"javascript\">alert(\"Images successfully added\");</script>");
         }
@@ -221,30 +219,28 @@ namespace WebApplication1
             {
                 string line = sr.ReadLine();
                 string[] heart = line.Split(',');
-                string wew = heart[0].ToString();
-                string wew2 = heart[1].ToString();
-                Response.Write(heart[2].ToString());
-                
-                //int x = 0;
-                //string y = "";
-                //while (x < heart.Length)
-                //{
-                //    y = y + heart[x];
-                //    x++;
-                //}
-                //Label3.Text = y;
-                
-                //SqlCommand insert = new SqlCommand("insert into CHEQUE(check_number, amount, check_date, drawee_bank, drawee_bank_branch, funded, verification, account_number) values (@checknum, @amount, @date, @bank, @branch, @funded, @verified, @acctnum)", con);
-                //insert.Parameters.AddWithValue("@checknum", heart[0]);
-                //insert.Parameters.AddWithValue("@amount", heart[1]);
-                //insert.Parameters.AddWithValue("@date", heart[2]);
-                //insert.Parameters.AddWithValue("@bank", heart[3]);
-                //insert.Parameters.AddWithValue("@branch", heart[4]);
-                //insert.Parameters.AddWithValue("@funded", heart[5]);
-                //insert.Parameters.AddWithValue("@verified", heart[6]);
-                //insert.Parameters.AddWithValue("@acctnum", heart[7]);
-                //insert.ExecuteNonQuery();
+
+                SqlCommand insert = new SqlCommand("insert into CHEQUE(check_number, amount, check_date, drawee_bank, drawee_bank_branch, funded, verification, confirmed, account_number) values (@checknum, @amount, @date, @bank, @branch, @funded, @verified, @confirmed, @acctnum)", con);
+                SqlCommand checker = new SqlCommand("select minimum from THRESHOLD", con);
+                insert.Parameters.AddWithValue("@checknum", heart[0]);
+                insert.Parameters.AddWithValue("@amount", heart[1]);
+                insert.Parameters.AddWithValue("@date", heart[2]);
+                insert.Parameters.AddWithValue("@bank", heart[3]);
+                insert.Parameters.AddWithValue("@branch", heart[4]);
+                insert.Parameters.AddWithValue("@funded", heart[5]);
+                if (decimal.Parse(heart[1]) < decimal.Parse(checker.ExecuteScalar().ToString()))
+                {
+                    insert.Parameters.AddWithValue("@verified", "BTA");
+                }
+                else
+                {
+                    insert.Parameters.AddWithValue("@verified", heart[6]);
+                }
+                insert.Parameters.AddWithValue("@confirmed", heart[7]);
+                insert.Parameters.AddWithValue("@acctnum", heart[8]);
+                insert.ExecuteNonQuery();
             }
+            GridView1.DataBind();
             con.Close();
         }
     }

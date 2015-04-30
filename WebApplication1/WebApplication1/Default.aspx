@@ -26,8 +26,7 @@
 </asp:Content>
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
 <div class="grid_scroll">
-    <asp:GridView ID="GridView1" runat="server" AutoGenerateSelectButton="true" 
-            SelectedRowStyle-BackColor="Aqua">
+    <asp:GridView ID="GridView1" runat="server">
     </asp:GridView>
     </div>
     <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:ConnectionString %>"></asp:SqlDataSource>
@@ -48,8 +47,12 @@
     <br />
     <br />
     <asp:FileUpload ID="FileUpload2" runat="server"/>
+    <asp:RegularExpressionValidator ID="regexValidator" runat="server" 
+     ControlToValidate="FileUpload2" 
+     ErrorMessage="Only csv files are allowed"  
+     ValidationExpression="(.*\.([cC][sS][vV])$)"> 
+</asp:RegularExpressionValidator> 
     <br />
-    <asp:Label ID="Label3" runat="server" Text="Label"></asp:Label>
     <br />
    
  
@@ -59,9 +62,8 @@
    
  
    
-    <asp:ScriptManager ID="ScriptManager1" runat="server">
-    </asp:ScriptManager>
-   
+    <br />
+       
  
    
     </asp:Content>
