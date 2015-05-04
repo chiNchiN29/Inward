@@ -37,7 +37,7 @@
       <HintPath>..\..\..\..\..\Downloads\DotCMIS.dll</HintPath>
     </Reference>
     <Reference Include="FlashUpload">
-      <HintPath>..\..\..\MultipleUpload\WebSite1\Bin\FlashUpload.dll</HintPath>
+      <HintPath>E:\FlashUpload.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />

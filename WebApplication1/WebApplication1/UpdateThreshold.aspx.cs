@@ -22,11 +22,6 @@ namespace WebApplication1
             connection.Close();
         }
 
-        protected void TextBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
         protected void Button1_Click(object sender, EventArgs e)
         {
             SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
@@ -46,7 +41,7 @@ namespace WebApplication1
             update.Parameters.AddWithValue("@thresh", TextBox2.Text);
             update.ExecuteNonQuery();
             connection.Close();
-            Response.Redirect("Verification.aspx");
+            Response.Redirect("Confirmation.aspx");
         }
     }
 }

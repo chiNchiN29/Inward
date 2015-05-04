@@ -9,7 +9,7 @@
 </p>
 <asp:Label ID="Label3" runat="server" Text="New Minimum Threshold Amount:"></asp:Label>
 <br />
-<asp:TextBox ID="TextBox1" runat="server" ontextchanged="TextBox1_TextChanged"></asp:TextBox>
+<asp:TextBox ID="TextBox1" runat="server"></asp:TextBox>
 <br />
 <br />
 <asp:Button ID="Button1" runat="server" onclick="Button1_Click" Text="Set" 
@@ -25,7 +25,7 @@
 <br />
 <asp:Label ID="Label6" runat="server" Text="New Maximum Threshold Amount:"></asp:Label>
 <br />
-<asp:TextBox ID="TextBox2" runat="server" ontextchanged="TextBox1_TextChanged"></asp:TextBox>
+<asp:TextBox ID="TextBox2" runat="server"></asp:TextBox>
 <br />
 <br />
 <asp:Button ID="Button2" runat="server" onclick="Button2_Click" Text="Set" 

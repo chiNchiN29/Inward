@@ -19,7 +19,7 @@ namespace WebApplication1
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            SqlDataSource1.SelectCommand = "SELECT check_number AS CheckNo, customer_name AS Name, customer_address AS Address, contact_number AS ContactNo, CHEQUE.account_number AS AcctNo, CONVERT(VARCHAR(10), check_date, 111) AS Date, amount, drawee_bank AS DraweeBank, drawee_bank_branch AS DraweeBankBranch, funded AS 'Funded?', verification AS 'Verified?', confirmed AS 'Confirmed?' FROM CHEQUE, CUSTOMER, ACCOUNT, THRESHOLD WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number AND ((verification = 'YES' AND amount > maximum) OR verification = 'NO')  ORDER BY CHEQUE.account_number";
+            SqlDataSource1.SelectCommand = "SELECT check_number AS 'Check Number', customer_name AS Name, customer_address AS Address, contact_number AS 'Contact Number', CHEQUE.account_number AS 'Account Number', CONVERT(VARCHAR(10), check_date, 101) AS Date, amount AS Amount, drawee_bank AS 'Drawee Bank', drawee_bank_branch AS 'Drawee Bank Branch', funded AS 'Funded?', verification AS 'Verified?', confirmed AS 'Confirmed?' FROM CHEQUE, CUSTOMER, ACCOUNT, THRESHOLD WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number AND ((verification = 'YES' AND amount > maximum) OR verification = 'NO')  ORDER BY CHEQUE.account_number";
             GridView1.DataSource = SqlDataSource1;
             GridView1.DataBind();
         }

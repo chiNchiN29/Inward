@@ -25,7 +25,7 @@ namespace WebApplication1
             SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
             connection.Open();
             CreatingSessionUsingAtomPub();
-            SqlDataSource1.SelectCommand = "SELECT check_number AS CheckNo, customer_name AS Name, CHEQUE.account_number AS AcctNo, CONVERT(VARCHAR(10), check_date, 111) AS Date, amount, balance, drawee_bank AS DraweeBank, drawee_bank_branch AS DraweeBankBranch, verification AS 'Verified?', funded AS 'Funded?' FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number ORDER BY CHEQUE.account_number";
+            SqlDataSource1.SelectCommand = "SELECT check_number AS 'Check Number', customer_name AS Name, CHEQUE.account_number AS 'Account Number', CONVERT(VARCHAR(10), check_date, 101) AS Date, amount AS Amount, balance AS Balance, drawee_bank AS 'Drawee Bank', drawee_bank_branch AS 'Drawee Bank Branch', verification AS 'Verified?', funded AS 'Funded?' FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number ORDER BY CHEQUE.account_number";
             GridView1.DataSource = SqlDataSource1;
             GridView1.DataBind();
             connection.Close();
@@ -41,11 +41,12 @@ namespace WebApplication1
             SessionFactory factory = SessionFactory.NewInstance();
             ISession session;
             parameters[DotCMIS.SessionParameter.User] = "admin";
-            parameters[DotCMIS.SessionParameter.Password] = "092095";
+            //parameters[DotCMIS.SessionParameter.Password] = "092095";
             //parameters[DotCMIS.SessionParameter.Password] = "admin";
+            parameters[DotCMIS.SessionParameter.Password] = "H2scs2015";
             parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
-            parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
-            //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
+            //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
+            parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
             session = factory.GetRepositories(parameters)[0].CreateSession();
 
             #region Getting the Root Folder and it Children Folders
@@ -188,11 +189,12 @@ namespace WebApplication1
             SessionFactory factory = SessionFactory.NewInstance();
             ISession session;
             parameters[DotCMIS.SessionParameter.User] = "admin";
-            parameters[DotCMIS.SessionParameter.Password] = "092095";
+            //parameters[DotCMIS.SessionParameter.Password] = "092095";
             //parameters[DotCMIS.SessionParameter.Password] = "admin";
+            parameters[DotCMIS.SessionParameter.Password] = "H2scs2015";
             parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
-            parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
-            //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
+            //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
+            parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
             session = factory.GetRepositories(parameters)[0].CreateSession();
             
             string filepath = TextBox1.Text;  
@@ -246,6 +248,15 @@ namespace WebApplication1
             }
             GridView1.DataBind();
             con.Close();
+        }
+
+        protected void clearCheck_Click1(object sender, EventArgs e)
+        {
+            SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+            connection.Open();
+            SqlCommand delete = new SqlCommand("DELETE FROM CHEQUE", connection);
+            delete.ExecuteNonQuery();
+            GridView1.DataBind();
         }
     }
 }
