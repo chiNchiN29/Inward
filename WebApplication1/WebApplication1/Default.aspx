@@ -1,4 +1,7 @@
-﻿<%@ Page Title="Home Page" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true"
+﻿ <%@ Register Assembly="FlashUpload" Namespace="FlashUpload" 
+	TagPrefix="FlashUpload" %>
+
+<%@ Page Title="Home Page" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true"
     CodeBehind="Default.aspx.cs" Inherits="WebApplication1._Default" %>
 
 <asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeadContent">
@@ -36,6 +39,14 @@
     Please enter the directory of the folder with the images.<br />
     <asp:TextBox ID="TextBox1" runat="server" CssClass="style1" Width="191px"></asp:TextBox>
     <br />
+
+    <FlashUpload:FlashUpload ID="flashUpload" runat="server" UploadPage="Upload2.axd"
+	OnUploadComplete="UploadComplete()" FileTypeDescription="All Files" 
+	FileTypes="*.gif;*.doc; 
+
+*.png; *.jpg; *.jpeg; *.tif"
+	UploadFileSizeLimit="1800000" TotalUploadSizeLimit="209715200"/>
+ 	<asp:LinkButton ID="LinkButton1" runat="server">LinkButton</asp:LinkButton>
     <br />
     <asp:Button ID="uploadDoc" runat="server" Text="Upload Image" 
         OnClick="uploadDoc_Click" Width="155px"/>   

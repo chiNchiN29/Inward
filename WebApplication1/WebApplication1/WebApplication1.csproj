@@ -36,6 +36,9 @@
     <Reference Include="DotCMIS">
       <HintPath>..\..\..\..\..\Downloads\DotCMIS.dll</HintPath>
     </Reference>
+    <Reference Include="FlashUpload">
+      <HintPath>..\..\..\MultipleUpload\WebSite1\Bin\FlashUpload.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -63,6 +66,7 @@
       <DependentUpon>Database1.mdf</DependentUpon>
     </Content>
     <Content Include="Confirmation.aspx" />
+    <Content Include="Styles\abstract red white left_wallpaperswa.com_96.jpg" />
     <Content Include="Styles\Site.css" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
@@ -71,7 +75,9 @@
     <Content Include="Scripts\jquery-1.4.1.min.js" />
     <Content Include="UpdateThreshold.aspx" />
     <Content Include="Verification.aspx" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -140,6 +146,8 @@
     <Compile Include="UpdateThreshold.aspx.designer.cs">
       <DependentUpon>UpdateThreshold.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Upload.cs" />
+    <Compile Include="Upload2.cs" />
     <Compile Include="Verification.aspx.cs">
       <DependentUpon>Verification.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -148,7 +156,9 @@
       <DependentUpon>Verification.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="Account\Web.config" />
     <Content Include="Site.Master" />
