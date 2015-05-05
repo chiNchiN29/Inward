@@ -23,12 +23,10 @@
             border-color:#7f9db9;    
             height:17px;
            }
-        .style1
-        {}
-    </style>
+        </style>
 </asp:Content>
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
-<div class="grid_scroll">
+    <div class="grid_scroll">
     <asp:GridView ID="GridView1" runat="server">
     </asp:GridView>
     </div>
@@ -36,21 +34,12 @@
     <asp:Label ID="Label1" runat="server" Font-Size="Larger" ForeColor="Black" 
         Text="Load Image"></asp:Label>
     <br />
-    Please enter the directory of the folder with the images.<br />
-    <asp:TextBox ID="TextBox1" runat="server" CssClass="style1" Width="191px"></asp:TextBox>
+    <asp:FileUpload ID="FileUpload3" runat="server" AllowMultiple="true"/>
+
     <br />
 
-    <FlashUpload:FlashUpload ID="flashUpload" runat="server" UploadPage="Upload2.axd"
-	OnUploadComplete="UploadComplete()" FileTypeDescription="All Files" 
-	FileTypes="*.gif;*.doc; 
-
-*.png; *.jpg; *.jpeg; *.tif"
-	UploadFileSizeLimit="1800000" TotalUploadSizeLimit="209715200"/>
- 	<asp:LinkButton ID="LinkButton1" runat="server">LinkButton</asp:LinkButton>
-    <br />
     <asp:Button ID="uploadDoc" runat="server" Text="Upload Image" 
         OnClick="uploadDoc_Click" Width="155px"/>   
-    <br />
     <br />
     <br />
     <asp:Label ID="Label2" runat="server" Font-Size="Larger" ForeColor="Black" 

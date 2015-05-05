@@ -11,7 +11,11 @@ namespace WebApplication1
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            bool val1 = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+            if (val1 == false)
+            {
+                NavigationMenu.Visible = false;
+            }
         }
 
         protected void NavigationMenu_MenuItemClick(object sender, MenuEventArgs e)

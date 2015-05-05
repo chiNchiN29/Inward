@@ -29,10 +29,6 @@ namespace WebApplication1
             GridView1.DataSource = SqlDataSource1;
             GridView1.DataBind();
             connection.Close();
-
-            string jscript = "function UploadComplete(){" + ClientScript.GetPostBackEventReference(LinkButton1, "") + "};";       
-        Page.ClientScript.RegisterClientScriptBlock(this.GetType(), 
-			"FileCompleteUpload", jscript, true); 
         }
 
         private void CreatingSessionUsingAtomPub()
@@ -42,11 +38,11 @@ namespace WebApplication1
             ISession session;
             parameters[DotCMIS.SessionParameter.User] = "admin";
             //parameters[DotCMIS.SessionParameter.Password] = "092095";
-            //parameters[DotCMIS.SessionParameter.Password] = "admin";
-            parameters[DotCMIS.SessionParameter.Password] = "H2scs2015";
+            parameters[DotCMIS.SessionParameter.Password] = "admin";
+            //parameters[DotCMIS.SessionParameter.Password] = "H2scs2015";
             parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
-            //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
-            parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
+            parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
+            //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
             session = factory.GetRepositories(parameters)[0].CreateSession();
 
             #region Getting the Root Folder and it Children Folders
@@ -190,19 +186,22 @@ namespace WebApplication1
             ISession session;
             parameters[DotCMIS.SessionParameter.User] = "admin";
             //parameters[DotCMIS.SessionParameter.Password] = "092095";
-            //parameters[DotCMIS.SessionParameter.Password] = "admin";
-            parameters[DotCMIS.SessionParameter.Password] = "H2scs2015";
+            parameters[DotCMIS.SessionParameter.Password] = "admin";
+            //parameters[DotCMIS.SessionParameter.Password] = "H2scs2015";
             parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
-            //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
-            parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
+           parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
+            //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
             session = factory.GetRepositories(parameters)[0].CreateSession();
-            
-            string filepath = TextBox1.Text;  
-            string[] files = Directory.GetFiles(filepath);
-            foreach (string str in files)
+
+            HttpFileCollection hfc = Request.Files;
+            for (int i = 0; i < hfc.Count; i++)
             {
-                UploadADocument(session, imageToByteArray(System.Drawing.Image.FromFile(str)), Path.GetFileNameWithoutExtension(str));
-            }
+                HttpPostedFile hpf = hfc[i];
+                if (hpf.ContentLength > 0)
+                {
+                    UploadADocument(session, imageToByteArray(System.Drawing.Image.FromStream(hpf.InputStream)), Path.GetFileNameWithoutExtension(hpf.FileName));
+                }
+            }   
             Response.Write("<script langauge=\"javascript\">alert(\"Images successfully added\");</script>");
         }
 

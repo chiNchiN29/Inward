@@ -40,11 +40,11 @@ namespace WebApplication1
             ISession session;
             parameters[DotCMIS.SessionParameter.User] = "admin";
             //parameters[DotCMIS.SessionParameter.Password] = "092095";
-            //parameters[DotCMIS.SessionParameter.Password] = "admin";
-            parameters[DotCMIS.SessionParameter.Password] = "H2scs2015";
+            parameters[DotCMIS.SessionParameter.Password] = "admin";
+            //parameters[DotCMIS.SessionParameter.Password] = "H2scs2015";
             parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
-            //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
-            parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
+            parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
+            //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
             session = factory.GetRepositories(parameters)[0].CreateSession();
         }
 
@@ -64,11 +64,11 @@ namespace WebApplication1
             ISession session;
             parameters[DotCMIS.SessionParameter.User] = "admin";
             //parameters[DotCMIS.SessionParameter.Password] = "092095";
-            //parameters[DotCMIS.SessionParameter.Password] = "admin";
-            parameters[DotCMIS.SessionParameter.Password] = "H2scs2015";
+            parameters[DotCMIS.SessionParameter.Password] = "admin";
+            //parameters[DotCMIS.SessionParameter.Password] = "H2scs2015";
             parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
-            //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
-            parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
+            parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
+            //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
             session = factory.GetRepositories(parameters)[0].CreateSession();
             string im = GridView1.SelectedRow.Cells[3].Text;
             string age = GridView1.SelectedRow.Cells[1].Text;
@@ -99,22 +99,33 @@ namespace WebApplication1
             catch (Exception e)
             {
                 Response.Write("<script langauge=\"javascript\">alert(\"No existing check image or signature image\");</script>");
+                Image1.Visible = false;
             }
+
         }
 
         //Signature image in Database
         private void ShowSigDTImage()
         {
-            SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
-            connection.Open();
-            SqlCommand select = new SqlCommand("select signature_image from SIGNATURE WHERE account_number=@acctnumber", connection);
-            select.Parameters.AddWithValue("@acctnumber", GridView1.SelectedRow.Cells[3].Text);
+            try
+            {
+                SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+                connection.Open();
+                SqlCommand select = new SqlCommand("select signature_image from SIGNATURE WHERE account_number=@acctnumber", connection);
+                select.Parameters.AddWithValue("@acctnumber", GridView1.SelectedRow.Cells[3].Text);
 
-            byte[] result = select.ExecuteScalar() as byte[];
-            string base64string2 = Convert.ToBase64String(result, 0, result.Length);
-            Image2.ImageUrl = "data:image/jpeg;base64," + base64string2;
-            Image2.Visible = true;
-            connection.Close();
+                byte[] result = select.ExecuteScalar() as byte[];
+                string base64string2 = Convert.ToBase64String(result, 0, result.Length);
+                Image2.ImageUrl = "data:image/jpeg;base64," + base64string2;
+                Image2.Visible = true;
+                connection.Close();
+            }
+            catch
+            {
+                Response.Write("<script langauge=\"javascript\">alert(\"No existing check image or signature image\");</script>");
+                Image2.Visible = false;
+            }
+
         }
 
         //Signature image in Alfresco
