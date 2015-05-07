@@ -20,9 +20,10 @@ namespace WebApplication1
 {
     public partial class _Default : System.Web.UI.Page
     {
+        SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+
         protected void Page_Load(object sender, EventArgs e)
         {
-            SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
             connection.Open();
             CreatingSessionUsingAtomPub();
             SqlDataSource1.SelectCommand = "SELECT check_number AS 'Check Number', customer_name AS Name, CHEQUE.account_number AS 'Account Number', CONVERT(VARCHAR(10), check_date, 101) AS Date, amount AS Amount, balance AS Balance, branch_name AS 'Branch Name', drawee_bank AS 'Drawee Bank', drawee_bank_branch AS 'Drawee Bank Branch', verification AS 'Verified?', funded AS 'Funded?' FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id ORDER BY CHEQUE.check_number";
@@ -215,8 +216,7 @@ namespace WebApplication1
 
         protected void uploadDoc0_Click(object sender, EventArgs e)
         {
-            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
-            con.Open();
+            connection.Open();
             //string filepath = FileUpload2.PostedFile.FileName;
             StreamReader sr = new StreamReader(FileUpload2.PostedFile.InputStream);
             while (!sr.EndOfStream)
@@ -224,8 +224,8 @@ namespace WebApplication1
                 string line = sr.ReadLine();
                 string[] heart = line.Split(',');
 
-                SqlCommand insert = new SqlCommand("insert into CHEQUE(check_number, amount, check_date, branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed, account_number) values (@checknum, @amount, @date, @branch, @draweebank, @draweebranch, @funded, @verified, @confirmed, @acctnum)", con);
-                SqlCommand checker = new SqlCommand("select minimum from THRESHOLD", con);
+                SqlCommand insert = new SqlCommand("insert into CHEQUE(check_number, amount, check_date, branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed, account_number) values (@checknum, @amount, @date, @branch, @draweebank, @draweebranch, @funded, @verified, @confirmed, @acctnum)", connection);
+                SqlCommand checker = new SqlCommand("select minimum from THRESHOLD", connection);
                 insert.Parameters.AddWithValue("@checknum", heart[0]);
                 insert.Parameters.AddWithValue("@amount", heart[1]);
                 insert.Parameters.AddWithValue("@date", heart[2]);
@@ -246,16 +246,16 @@ namespace WebApplication1
                 insert.ExecuteNonQuery();
             }
             GridView1.DataBind();
-            con.Close();
+            connection.Close();
         }
 
         protected void clearCheck_Click1(object sender, EventArgs e)
         {
-            SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
             connection.Open();
             SqlCommand delete = new SqlCommand("DELETE FROM CHEQUE", connection);
             delete.ExecuteNonQuery();
             GridView1.DataBind();
+            connection.Close();
         }
     }
 }
