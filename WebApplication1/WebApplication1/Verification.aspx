@@ -19,9 +19,8 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <asp:FileUpload ID="FileUpload1" runat="server" AllowMultiple="true"/>
    
- 
-   
     <asp:Button ID="insertSig" runat="server" Text="Insert Signature" OnClick="insertSig_Click" />
+    <asp:TextBox ID="TextBox1" runat="server"></asp:TextBox>
     <br /><br/>
     <div class ="grid_scroll">
         <asp:GridView ID="GridView1" runat="server" AutoGenerateSelectButton="true" 
@@ -29,7 +28,6 @@
             onselectedindexchanged="GridView1_SelectedIndexChanged">
         </asp:GridView>
 </div>
-
     <br/>
     <br/>
     <br/>

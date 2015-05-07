@@ -25,7 +25,7 @@ namespace WebApplication1
             SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
             connection.Open();
             CreatingSessionUsingAtomPub();
-            SqlDataSource1.SelectCommand = "SELECT check_number AS 'Check Number', customer_name AS Name, CHEQUE.account_number AS 'Account Number', CONVERT(VARCHAR(10), check_date, 101) AS Date, amount AS Amount, balance AS Balance, drawee_bank AS 'Drawee Bank', drawee_bank_branch AS 'Drawee Bank Branch', verification AS 'Verified?', funded AS 'Funded?' FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number ORDER BY CHEQUE.account_number";
+            SqlDataSource1.SelectCommand = "SELECT check_number AS 'Check Number', customer_name AS Name, CHEQUE.account_number AS 'Account Number', CONVERT(VARCHAR(10), check_date, 101) AS Date, amount AS Amount, balance AS Balance, branch_name AS 'Branch Name', drawee_bank AS 'Drawee Bank', drawee_bank_branch AS 'Drawee Bank Branch', verification AS 'Verified?', funded AS 'Funded?' FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id ORDER BY CHEQUE.check_number";
             GridView1.DataSource = SqlDataSource1;
             GridView1.DataBind();
             connection.Close();
@@ -225,24 +225,25 @@ namespace WebApplication1
                 string line = sr.ReadLine();
                 string[] heart = line.Split(',');
 
-                SqlCommand insert = new SqlCommand("insert into CHEQUE(check_number, amount, check_date, drawee_bank, drawee_bank_branch, funded, verification, confirmed, account_number) values (@checknum, @amount, @date, @bank, @branch, @funded, @verified, @confirmed, @acctnum)", con);
+                SqlCommand insert = new SqlCommand("insert into CHEQUE(check_number, amount, check_date, branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed, account_number) values (@checknum, @amount, @date, @branch, @draweebank, @draweebranch, @funded, @verified, @confirmed, @acctnum)", con);
                 SqlCommand checker = new SqlCommand("select minimum from THRESHOLD", con);
                 insert.Parameters.AddWithValue("@checknum", heart[0]);
                 insert.Parameters.AddWithValue("@amount", heart[1]);
                 insert.Parameters.AddWithValue("@date", heart[2]);
-                insert.Parameters.AddWithValue("@bank", heart[3]);
-                insert.Parameters.AddWithValue("@branch", heart[4]);
-                insert.Parameters.AddWithValue("@funded", heart[5]);
+                insert.Parameters.AddWithValue("@branch", heart[3]);
+                insert.Parameters.AddWithValue("@draweebank", heart[4]);
+                insert.Parameters.AddWithValue("@draweebranch", heart[5]);
+                insert.Parameters.AddWithValue("@funded", heart[6]);
                 if (decimal.Parse(heart[1]) < decimal.Parse(checker.ExecuteScalar().ToString()))
                 {
                     insert.Parameters.AddWithValue("@verified", "BTA");
                 }
                 else
                 {
-                    insert.Parameters.AddWithValue("@verified", heart[6]);
+                    insert.Parameters.AddWithValue("@verified", heart[7]);
                 }
-                insert.Parameters.AddWithValue("@confirmed", heart[7]);
-                insert.Parameters.AddWithValue("@acctnum", heart[8]);
+                insert.Parameters.AddWithValue("@confirmed", heart[8]);
+                insert.Parameters.AddWithValue("@acctnum", heart[9]);
                 insert.ExecuteNonQuery();
             }
             GridView1.DataBind();

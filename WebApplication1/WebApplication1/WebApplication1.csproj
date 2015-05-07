@@ -66,6 +66,7 @@
       <DependentUpon>Database1.mdf</DependentUpon>
     </Content>
     <Content Include="Confirmation.aspx" />
+    <Content Include="Distribute.aspx" />
     <Content Include="Styles\abstract red white left_wallpaperswa.com_96.jpg" />
     <Content Include="Styles\Site.css" />
     <Content Include="Default.aspx" />
@@ -128,6 +129,13 @@
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Distribute.aspx.cs">
+      <DependentUpon>Distribute.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Distribute.aspx.designer.cs">
+      <DependentUpon>Distribute.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -146,8 +154,6 @@
     <Compile Include="UpdateThreshold.aspx.designer.cs">
       <DependentUpon>UpdateThreshold.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Upload.cs" />
-    <Compile Include="Upload2.cs" />
     <Compile Include="Verification.aspx.cs">
       <DependentUpon>Verification.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
