@@ -36,9 +36,6 @@
     <Reference Include="DotCMIS">
       <HintPath>..\..\..\..\..\Downloads\DotCMIS.dll</HintPath>
     </Reference>
-    <Reference Include="FlashUpload">
-      <HintPath>E:\FlashUpload.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -66,7 +63,6 @@
       <DependentUpon>Database1.mdf</DependentUpon>
     </Content>
     <Content Include="Confirmation.aspx" />
-    <Content Include="Roles\CreateRole.aspx" />
     <Content Include="Styles\abstract red white left_wallpaperswa.com_96.jpg" />
     <Content Include="Styles\Site.css" />
     <Content Include="Default.aspx" />
@@ -133,13 +129,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Roles\CreateRole.aspx.cs">
-      <DependentUpon>CreateRole.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Roles\CreateRole.aspx.designer.cs">
-      <DependentUpon>CreateRole.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Site.Master.cs">
       <DependentUpon>Site.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
