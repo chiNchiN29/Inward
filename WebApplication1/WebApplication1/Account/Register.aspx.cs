@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Security;
@@ -18,14 +20,15 @@ namespace WebApplication1.Account
 
         protected void RegisterUser_CreatedUser(object sender, EventArgs e)
         {
-            FormsAuthentication.SetAuthCookie(RegisterUser.UserName, false /* createPersistentCookie */);
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+            con.Open();
 
-            string continueUrl = RegisterUser.ContinueDestinationPageUrl;
-            if (String.IsNullOrEmpty(continueUrl))
-            {
-                continueUrl = "~/";
-            }
-            Response.Redirect(continueUrl);
+            SqlCommand addnew = new SqlCommand("INSERT INTO END_USER(username, password, email) VALUES (@user, @pass, @mail)", con);
+            addnew.Parameters.AddWithValue("@user", RegisterUser.UserName);
+            addnew.Parameters.AddWithValue("@pass", RegisterUser.Password);
+            addnew.Parameters.AddWithValue("@mail", RegisterUser.Email);
+            addnew.ExecuteNonQuery();
+            Response.Redirect("/");
         }
 
     }
