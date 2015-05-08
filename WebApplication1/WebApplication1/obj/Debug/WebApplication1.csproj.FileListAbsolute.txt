@@ -24,4 +24,3 @@ C:\Users\Kathrine Chua\Google Drive\H2\Inward Clearing System\Inward\WebApplicat
 C:\Users\Kathrine Chua\Google Drive\H2\Inward Clearing System\Inward\WebApplication1\WebApplication1\obj\Debug\WebApplication1.dll
 C:\Users\Kathrine Chua\Google Drive\H2\Inward Clearing System\Inward\WebApplication1\WebApplication1\obj\Debug\WebApplication1.pdb
 C:\Users\Jules\Downloads\Inward\WebApplication1\WebApplication1\obj\Debug\WebApplication1.csprojResolveAssemblyReference.cache
-C:\Users\Jules\Downloads\Inward\WebApplication1\WebApplication1\bin\FlashUpload.dll
