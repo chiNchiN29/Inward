@@ -20,11 +20,12 @@
             <div class="loginDisplay">
                 <asp:LoginView ID="HeadLoginView" runat="server" EnableViewState="false">
                     <AnonymousTemplate>
-                        [ <a href="~/Account/Login.aspx" ID="HeadLoginStatus" runat="server">Log In</a> ]
+                        [ <a href="~/Account/Login.aspx" ID="HeadLoginStatus0" runat="server">Log In</a> ]
                     </AnonymousTemplate>
                     <LoggedInTemplate>
                         Welcome <span class="bold"><asp:LoginName ID="HeadLoginName" runat="server" /></span>!
-                        [ <asp:LoginStatus ID="HeadLoginStatus" runat="server" LogoutAction="Redirect" LogoutText="Log Out" LogoutPageUrl="~/"/> ]
+                        [ <asp:HyperLink ID="linkChangePassword" runat="server" NavigateUrl="~/Account/ChangePassword.aspx" Text="Change Password" /> ]
+                        [ <asp:LoginStatus ID="HeadLoginStatus" runat="server" LogoutAction="Redirect" LogoutText="Log Out" LogoutPageUrl="~/Account/Login.aspx"/> ]
                     </LoggedInTemplate>
                 </asp:LoginView>
             </div>
@@ -33,7 +34,7 @@
                     EnableViewState="false" IncludeStyleBlock="false" Orientation="Horizontal" 
                     onmenuitemclick="NavigationMenu_MenuItemClick">
                     <Items>
-                        <asp:MenuItem NavigateUrl="~/Default.aspx" Text="Main Menu"/>
+                        <asp:MenuItem NavigateUrl="~/" Text="Main Menu"/>
                         <asp:MenuItem NavigateUrl="~/Verification.aspx" Text="Signature Verification"/>
                         <asp:MenuItem NavigateUrl="~/Confirmation.aspx" Text="Confirmation" />
                         <asp:MenuItem NavigateUrl="~/UpdateThreshold.aspx" Text="Update Thresholds"/> 
