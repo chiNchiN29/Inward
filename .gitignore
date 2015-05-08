@@ -58,3 +58,12 @@ WebApplication1/WebApplication1/obj/Debug/DesignTimeResolveAssemblyReferencesInp
 *.txt
 *.dll
 *.csproj
+*.MDF
+WebApplication1/WebApplication1/App_Data/aspnetdb_log.ldf
+*.ldf
+WebApplication1/WebApplication1/App_Data/Database1_log.LDF
+*.LDF
+WebApplication1/WebApplication1/App_Data/Database1_log.LDF
+*.dll
+*.pdb
+*.pdb

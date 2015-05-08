@@ -13,6 +13,10 @@ namespace WebApplication1
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            bool login = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+            if (login == false)
+                Response.Redirect("~/Account/LogIn.aspx");
+
             SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
             connection.Open();
             SqlCommand select = new SqlCommand("select minimum from THRESHOLD", connection);

@@ -22,6 +22,10 @@ namespace WebApplication1
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            bool login = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+            if (login == false)
+                Response.Redirect("~/Account/LogIn.aspx");
+
             Page.MaintainScrollPositionOnPostBack = true;
             SqlDataSource1.SelectCommand = "SELECT check_number AS 'Check Number', customer_name AS Name, CHEQUE.account_number AS 'Account Number', CONVERT(VARCHAR(10), check_date, 101) AS Date , amount AS Amount, balance as Balance, branch_name AS 'Branch Name', drawee_bank AS 'Drawee Bank', drawee_bank_branch AS 'Drawee Bank Branch', verification AS 'Verified?' FROM CHEQUE, CUSTOMER, ACCOUNT, THRESHOLD WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id AND CHEQUE.amount >= minimum AND verification <> 'BTA' ORDER BY CHEQUE.account_number";        
             GridView1.DataSource = SqlDataSource1;
@@ -39,8 +43,8 @@ namespace WebApplication1
             SessionFactory factory = SessionFactory.NewInstance();
             ISession session;
             parameters[DotCMIS.SessionParameter.User] = "admin";
-            parameters[DotCMIS.SessionParameter.Password] = "092095";
-            //parameters[DotCMIS.SessionParameter.Password] = "admin";
+            //parameters[DotCMIS.SessionParameter.Password] = "092095";
+            parameters[DotCMIS.SessionParameter.Password] = "admin";
             //parameters[DotCMIS.SessionParameter.Password] = "H2scs2015";
             parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
             parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
@@ -63,8 +67,8 @@ namespace WebApplication1
             SessionFactory factory = SessionFactory.NewInstance();
             ISession session;
             parameters[DotCMIS.SessionParameter.User] = "admin";
-            parameters[DotCMIS.SessionParameter.Password] = "092095";
-            //parameters[DotCMIS.SessionParameter.Password] = "admin";
+            //parameters[DotCMIS.SessionParameter.Password] = "092095";
+            parameters[DotCMIS.SessionParameter.Password] = "admin";
             //parameters[DotCMIS.SessionParameter.Password] = "H2scs2015";
             parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
             parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
