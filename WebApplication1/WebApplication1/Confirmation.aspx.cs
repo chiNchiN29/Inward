@@ -17,11 +17,17 @@ namespace WebApplication1
 {
     public partial class Confirmation : System.Web.UI.Page
     {
+    
+            
         SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
         SqlCommand cmd;
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            bool login = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+                if (login == false)
+                    Response.Redirect("~/Account/LogIn.aspx");
+
             SqlDataSource1.SelectCommand = "SELECT check_number AS 'Check Number', customer_name AS Name, customer_address AS Address, contact_number AS 'Contact Number', CHEQUE.account_number AS 'Account Number', CONVERT(VARCHAR(10), check_date, 101) AS Date, amount AS Amount, branch_name AS 'Branch Name', drawee_bank AS 'Drawee Bank', drawee_bank_branch AS 'Drawee Bank Branch', funded AS 'Funded?', verification AS 'Verified?', confirmed AS 'Confirmed?' FROM CHEQUE, CUSTOMER, ACCOUNT, THRESHOLD WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id AND ((verification = 'YES' AND amount > maximum) OR verification = 'NO')  ORDER BY CHEQUE.account_number";
             GridView1.DataSource = SqlDataSource1;
             GridView1.DataBind();

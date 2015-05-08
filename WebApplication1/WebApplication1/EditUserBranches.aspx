@@ -7,7 +7,7 @@
         <asp:Label ID="Label1" runat="server" Text="Label"></asp:Label>
     </p>
     Branches:<br />
-    <asp:CheckBoxList ID="CheckBoxList1" runat="server">
+    <asp:CheckBoxList ID="branchList" runat="server">
     </asp:CheckBoxList>
     <asp:Button ID="saveBtn" runat="server" Text="Save" />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
