@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using DotCMIS;
@@ -16,58 +15,28 @@ using System.Drawing;
 using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
+using System.Web.Security;
+using System.Text;
 
 namespace WebApplication1
 {
     public partial class Verification : System.Web.UI.Page
     {
         SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+        int previous;
         protected void Page_Load(object sender, EventArgs e)
         {
-            bool login = System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+            bool login = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
             if (login == false)
+                Response.Redirect("~/Account/LogIn.aspx");
+
+            Page.MaintainScrollPositionOnPostBack = true;    
+            CreatingSessionUsingAtomPub();
+            //ViewState["myDataTable"] = FillDataTable();
+
+            if (!Page.IsPostBack)
             {
-                Response.Redirect("~/Account/Login.aspx");
-            }
-            else
-            {
-                connection.Open();
-                SqlCommand checker = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = '" + Membership.GetUser().UserName + "' AND END_USER.role_id = ROLE.role_id", connection);
-                if (checker.ExecuteScalar().ToString() != "CLEARING DEPT")
-                {
-                    string script = "alert(\"You are not authorized to view this page!\");location ='/Default.aspx';";
-                    ScriptManager.RegisterStartupScript(this, GetType(),
-                                          "alertMessage", script, true);
-                }
-                else
-                {
-                    Page.MaintainScrollPositionOnPostBack = true;
-                    SqlDataSource1.SelectCommand = "SELECT check_number AS 'Check Number', customer_name AS Name, CHEQUE.account_number AS 'Account Number', CONVERT(VARCHAR(10), check_date, 101) AS Date , amount AS Amount, balance as Balance, branch_name AS 'Branch Name', drawee_bank AS 'Drawee Bank', drawee_bank_branch AS 'Drawee Bank Branch', verification AS 'Verified?' FROM CHEQUE, CUSTOMER, ACCOUNT, THRESHOLD WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id AND CHEQUE.amount >= minimum AND verification <> 'BTA' ORDER BY CHEQUE.account_number";
-                    GridView1.DataSource = SqlDataSource1;
-                    GridView1.DataBind();
-                    CreatingSessionUsingAtomPub();
-                    if (!Page.IsPostBack)
-                    {
-                        GridView1.DataBind();
-                    }
-                    int counter = 0;
-                    if (!ReturnValue())
-                    {
-                        foreach (GridViewRow a in GridView1.Rows)
-                        {
-                            string karyuu = a.Cells[10].Text;
-                            if (a.Cells[10].Text != "&nbsp;" && a.Cells[10].Text != null)
-                            {
-                                counter += 1;
-                            }
-                        }
-                        //if (counter < GridView1.Rows.Count)
-                        //{
-                            ClientScriptManager CSM = Page.ClientScript;
-                            CSM.RegisterClientScriptBlock(this.GetType(), "Confirm", "<script language=\"JavaScript\">window.onbeforeunload = confirmExit;function confirmExit(){return \"A total of " + counter + "/" + GridView1.Rows.Count + " has been verified.  Are you sure you want to exit this page?\";}</script>", false);
-                        //}
-                    }
-                }
+                ViewState["myDataTable"] = FillDataTable();
             }
         }
 
@@ -77,8 +46,8 @@ namespace WebApplication1
             SessionFactory factory = SessionFactory.NewInstance();
             ISession session;
             parameters[DotCMIS.SessionParameter.User] = "admin";
-            parameters[DotCMIS.SessionParameter.Password] = "092095";
-            //parameters[DotCMIS.SessionParameter.Password] = "admin";
+            //parameters[DotCMIS.SessionParameter.Password] = "092095";
+            parameters[DotCMIS.SessionParameter.Password] = "admin";
             //parameters[DotCMIS.SessionParameter.Password] = "H2scs2015";
             parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
             parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
@@ -94,26 +63,6 @@ namespace WebApplication1
                 return ms.ToArray();
             }
         }
-
-        protected void GridView1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            Dictionary<string, string> parameters = new Dictionary<string, string>();
-            SessionFactory factory = SessionFactory.NewInstance();
-            ISession session;
-            parameters[DotCMIS.SessionParameter.User] = "admin";
-            parameters[DotCMIS.SessionParameter.Password] = "092095";
-            //parameters[DotCMIS.SessionParameter.Password] = "admin";
-            //parameters[DotCMIS.SessionParameter.Password] = "H2scs2015";
-            parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
-            parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
-            //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
-            session = factory.GetRepositories(parameters)[0].CreateSession();
-            string im = GridView1.SelectedRow.Cells[3].Text;
-            string age = GridView1.SelectedRow.Cells[1].Text;
-            string image = im + "_" + age;
-            ShowChequeImage(session, image);
-            ShowSigDTImage();     
-        }  
 
         private void ShowChequeImage(ISession session, string fileName)
         {
@@ -136,21 +85,91 @@ namespace WebApplication1
             }
             catch (Exception e)
             {
-                Image1.ImageUrl = "~/Resources/H2DefaultImage.jpg";
-                Image1.Visible = true;
+                StringBuilder sb = new StringBuilder();
+                sb.Append("<script language='javascript'>");
+                sb.Append("alert('No existing image or check');");
+                sb.Append("<");
+                sb.Append("/script>");
+
+                if (!ClientScript.IsClientScriptBlockRegistered("ErrorPopup"))
+                    ClientScript.RegisterClientScriptBlock(this.GetType(), "ErrorPopup", sb.ToString()); 
+                Image1.Visible = false;
             }
 
         }
 
-        //Signature image in Database
-        private void ShowSigDTImage()
+        //get selected row index
+        protected int GetRowIndex()
         {
+            int x = -1;
+            for (int i = 0; i <= GridView1.Rows.Count - 1; i++)
+            {
+                GridViewRow row = GridView1.Rows[i];
+                RadioButton rb = (RadioButton)row.FindControl("RowSelect");
+                if (rb != null)
+                {
+                    if (rb.Checked == true)
+                    {
+                        return row.RowIndex;
+
+                    }
+                }
+                
+            }
+            return x;
+        }
+
+        protected void RowSelect_CheckedChanged(Object sender, EventArgs e)
+        {
+            int i = GetRowIndex();
+            if (i != -1)
+            {
+                GridViewRow row = GridView1.Rows[i];
+                string wew = row.Cells[1].Text;
+                Response.Write(i);
+                row.BackColor = System.Drawing.Color.Aqua;
+                row.Style.Add("class", "SelectedRowStyle");
+                Dictionary<string, string> parameters = new Dictionary<string, string>();
+                SessionFactory factory = SessionFactory.NewInstance();
+                ISession session;
+                parameters[DotCMIS.SessionParameter.User] = "admin";
+                //parameters[DotCMIS.SessionParameter.Password] = "092095";
+                parameters[DotCMIS.SessionParameter.Password] = "admin";
+                //parameters[DotCMIS.SessionParameter.Password] = "H2scs2015";
+                parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
+                parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
+                //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
+                session = factory.GetRepositories(parameters)[0].CreateSession();
+                previous = row.RowIndex;
+                string im = row.Cells[3].Text;
+                string age = row.Cells[1].Text;
+                string image = im + "_" + age;
+                ShowChequeImage(session, image);
+                ShowSigDTImage(row.RowIndex);
+            }
+            else
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append("<script language='javascript'>");
+                sb.Append("alert('Please select a chec');");
+                sb.Append("<");
+                sb.Append("/script>");
+
+                if (!ClientScript.IsClientScriptBlockRegistered("ErrorPopup"))
+                    ClientScript.RegisterClientScriptBlock(this.GetType(), "ErrorPopup", sb.ToString()); 
+            }
+        }
+
+        //Signature image in Database
+        private void ShowSigDTImage(int rowIndex)
+        {
+  
             try
             {
-                SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+                
                 connection.Open();
-                SqlCommand select = new SqlCommand("select signature_image from SIGNATURE WHERE account_number=@acctnumber", connection);
-                select.Parameters.AddWithValue("@acctnumber", GridView1.SelectedRow.Cells[3].Text);
+                SqlCommand select = new SqlCommand("select signature_image from SIGNATURE WHERE account_number= @acctnumber", connection);
+                select.Parameters.AddWithValue("@acctnumber", GridView1.Rows[rowIndex].Cells[3].Text);
 
                 byte[] result = select.ExecuteScalar() as byte[];
                 string base64string2 = Convert.ToBase64String(result, 0, result.Length);
@@ -160,8 +179,16 @@ namespace WebApplication1
             }
             catch
             {
-                Image2.ImageUrl = "~/Resources/H2DefaultImage.jpg";
-                Image2.Visible = true;
+                StringBuilder sb = new StringBuilder();
+                sb.Append("<script language='javascript'>");
+                sb.Append("alert('No existing image or check');");
+                sb.Append("<");
+                sb.Append("/script>");
+
+                if (!ClientScript.IsClientScriptBlockRegistered("ErrorPopup"))
+                    ClientScript.RegisterClientScriptBlock(this.GetType(), "ErrorPopup", sb.ToString()); 
+
+                Image2.Visible = false;
             }
 
         }
@@ -201,36 +228,50 @@ namespace WebApplication1
 
         protected void acceptButton_Click(object sender, EventArgs e)
         {
-            SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
-            connection.Open();
-            SqlCommand update = new SqlCommand("update CHEQUE SET verification = @verify WHERE account_number = @acctnumber AND check_number = @chknumber", connection);
-            update.Parameters.AddWithValue("@acctnumber", GridView1.SelectedRow.Cells[3].Text);
-            update.Parameters.AddWithValue("@chknumber", GridView1.SelectedRow.Cells[1].Text);
-            update.Parameters.AddWithValue("@verify", "YES");
-            update.ExecuteNonQuery();
-            connection.Close();
-            GridView1.DataBind();
-            if (GridView1.SelectedRow.RowIndex < GridView1.Rows.Count - 1)
-            {
-                GridView1.SelectRow(GridView1.SelectedRow.RowIndex + 1);
-            }
+           
+           int i = GetRowIndex();
+           if (i != -1)
+           {
+               connection.Open();
+               SqlCommand update = new SqlCommand("update CHEQUE SET verification = @verify WHERE account_number = @acctnumber AND check_number = @chknumber", connection);
+               update.Parameters.AddWithValue("@acctnumber", GridView1.Rows[i].Cells[3].Text);
+               update.Parameters.AddWithValue("@chknumber", GridView1.Rows[i].Cells[1].Text);
+               update.Parameters.AddWithValue("@verify", "YES");
+               update.ExecuteNonQuery();
+               connection.Close();
+
+               DataTable dt = FillDataTable();
+               GridView1.DataSource = dt;
+               GridView1.DataBind();
+           }
+           else
+           {
+               StringBuilder sb = new StringBuilder();
+               sb.Append("<script language='javascript'>");
+               sb.Append("alert('No existing image or check');");
+               sb.Append("<");
+               sb.Append("/script>");
+
+               if (!ClientScript.IsClientScriptBlockRegistered("ErrorPopup"))
+                   ClientScript.RegisterClientScriptBlock(this.GetType(), "ErrorPopup", sb.ToString()); 
+           }
         }
 
         protected void rejectButton_Click(object sender, EventArgs e)
         {
-            SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+            int i = GetRowIndex();
+
             connection.Open();
             SqlCommand update = new SqlCommand("update CHEQUE SET verification = @verify WHERE account_number = @acctnumber AND check_number = @chknumber", connection);
-            update.Parameters.AddWithValue("@acctnumber", GridView1.SelectedRow.Cells[3].Text);
-            update.Parameters.AddWithValue("@chknumber", GridView1.SelectedRow.Cells[1].Text);
+            update.Parameters.AddWithValue("@acctnumber", GridView1.Rows[i].Cells[3].Text);
+            update.Parameters.AddWithValue("@chknumber", GridView1.Rows[i].Cells[1].Text);
             update.Parameters.AddWithValue("@verify", "NO");
             update.ExecuteNonQuery();
             connection.Close();
+
+            DataTable dt = FillDataTable();
+            GridView1.DataSource = dt;
             GridView1.DataBind();
-            if(GridView1.SelectedRow.RowIndex < GridView1.Rows.Count - 1)
-            {
-                GridView1.SelectRow(GridView1.SelectedRow.RowIndex + 1);
-            }
         }
 
         //insert signatures in database
@@ -244,12 +285,6 @@ namespace WebApplication1
             insert.ExecuteNonQuery();
             connection.Close();
         }
-
-            // your code
-        bool ReturnValue()
-        {
-            return false;
-        }  
 
         //Generate List
         protected void Button1_Click(object sender, EventArgs e)
@@ -268,6 +303,7 @@ namespace WebApplication1
             Response.Buffer = true;
             Response.AddHeader("content-disposition", "attachment;filename=" + fileName + ".csv");
             Response.Charset = "";
+    
             Response.ContentType = "application/text";
 
             System.Text.StringBuilder sb = new System.Text.StringBuilder();
@@ -287,7 +323,6 @@ namespace WebApplication1
                 }
                 sb.Append("\r\n");
             }
-            
             Response.Output.Write(sb.ToString());
             Response.Flush();
             Response.End();
@@ -297,7 +332,7 @@ namespace WebApplication1
         {
             using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("SELECT check_number AS CheckNo, amount AS Amount, CONVERT(VARCHAR(10), check_date, 111) AS Date, branch_name AS 'Branch Name', drawee_bank AS 'Drawee Bank', drawee_bank_branch AS 'Drawee Bank Branch' , funded AS 'Funded?', verification AS 'Verified?', confirmed AS 'Confirmed?', CHEQUE.account_number AS AcctNo FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number AND verification = 'NO' ORDER BY CHEQUE.account_number"))
+                using (SqlCommand cmd = new SqlCommand("SELECT check_number AS 'CheckNo', amount AS 'Amount', CONVERT(VARCHAR(10), check_date, 101) AS 'Date', branch_name AS 'Branch Name', drawee_bank AS 'Drawee Bank', drawee_bank_branch AS 'Drawee Bank Branch' , funded AS 'Funded?', verification AS 'Verified?', confirmed AS 'Confirmed?', CHEQUE.account_number AS 'AcctNo' FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id AND verification = 'NO' ORDER BY CHEQUE.account_number"))
                 {
                     using (SqlDataAdapter sda = new SqlDataAdapter())
                     {
@@ -309,6 +344,67 @@ namespace WebApplication1
                             return dt;
                         }
                     }
+                }
+            }
+        }
+
+        protected void GridView1_Sorting(Object sender, GridViewSortEventArgs e)
+        {
+            DataTable dt = ViewState["myDataTable"] as DataTable;
+            dt.DefaultView.Sort = e.SortExpression + " " + GetSortDirection(e.SortExpression);
+            GridView1.DataSource = dt;
+            GridView1.DataBind();
+        }
+
+        public DataTable FillDataTable()
+        {
+            connection.Open();
+            string wew = Membership.GetUser(User.Identity.Name).ToString();
+            SqlCommand cmd = new SqlCommand("SELECT check_number, customer_name, CHEQUE.account_number AS 'Account Number', CONVERT(VARCHAR(10), check_date, 101) AS Date , amount, balance as Balance, BRANCH.branch_name AS 'Branch Name', drawee_bank, drawee_bank_branch, verification FROM CHEQUE, CUSTOMER, ACCOUNT, THRESHOLD, BRANCH, END_USER WHERE END_USER.username = @username AND END_USER.user_id = BRANCH.user_id AND BRANCH.branch_name = CHEQUE.branch_name AND CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id AND CHEQUE.amount >= minimum AND verification <> 'BTA' ORDER BY CHEQUE.account_number", connection);
+            cmd.Parameters.AddWithValue("@username", wew); 
+            DataTable dt = new DataTable();
+            SqlDataAdapter da = new SqlDataAdapter(cmd);
+            da.Fill(dt);
+            GridView1.DataSource = dt;
+            GridView1.DataBind();
+            connection.Close();
+            return dt;
+        }
+
+        private string GetSortDirection(string column)
+        {
+            string sortDirection = "DESC";
+            string sortExpression = ViewState["SortExpression"] as string;
+
+            if (sortExpression != null)
+            {
+                if (sortExpression == column)
+                {
+                    string lastDirection = ViewState["SortDirection"] as string;
+                    if ((lastDirection != null) && (lastDirection == "DESC"))
+                    {
+                        sortDirection = "ASC";
+                    }
+                }
+            }
+            ViewState["SortDirection"] = sortDirection;
+            ViewState["SortExpression"] = column;
+
+            return sortDirection;
+        }
+
+        protected void GridView1_RowDataBound(Object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                string verified = e.Row.Cells[10].Text;
+                if (verified.Equals("YES"))
+                {
+                    e.Row.ForeColor = System.Drawing.Color.Green;                 
+                }
+                if (verified.Equals("NO"))
+                {
+                    e.Row.ForeColor = System.Drawing.Color.Red;
                 }
             }
         }
