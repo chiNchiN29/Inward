@@ -1,18 +1,12 @@
-﻿<%@ Page Title="Log In" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true"
-    CodeBehind="Login.aspx.cs" Inherits="WebApplication3.Account.Login" %>
-
-<asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeadContent">
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="SignIn.aspx.cs" Inherits="WebApplication1.SignIn" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 </asp:Content>
-<asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
-    <h2>
-        Log In
-    </h2>
-    <p>
-        Please enter your username and password.
-        <asp:HyperLink ID="RegisterHyperLink" runat="server" EnableViewState="False" 
-            NavigateUrl="~/Account/SignUp.aspx">Register</asp:HyperLink> &nbsp;if you don't have an account.
-    </p>
-    <table>
+<asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
+        <asp:Label ID="Label1" runat="server" Font-Size="X-Large" 
+            Text="Sign In User"></asp:Label>
+        <br />
+        <br />
+        <table>
             <tr>
                 <td>User Name:</td>
                 <td>&nbsp;</td>
@@ -40,4 +34,6 @@
                         ForeColor="Red" Visible="False"></asp:Label></td>
             </tr>
         </table>
+    <br />
+    <br />
 </asp:Content>

@@ -67,3 +67,11 @@ WebApplication1/WebApplication1/App_Data/Database1_log.LDF
 *.dll
 *.pdb
 *.pdb
+*.MDF
+*.ldf
+*.LDF
+*.dll
+WebApplication1/WebApplication1/bin/WebApplication1.pdb
+*.cache
+*.dll
+*.cs
