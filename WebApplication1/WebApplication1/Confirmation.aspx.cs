@@ -12,6 +12,7 @@ using System.Text;
 using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
+using System.Web.Security;
 
 namespace WebApplication1
 {
@@ -24,15 +25,29 @@ namespace WebApplication1
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            bool login = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
-                if (login == false)
-                    Response.Redirect("~/Account/LogIn.aspx");
-
-            if (!IsPostBack)
+            bool login = System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+            if (login == false)
             {
-                ViewState["myDataTable"] = FillDataTable();
+                Response.Redirect("~/Account/Login.aspx");
             }
-               
+            else
+            {
+                connection.Open();
+                SqlCommand checker = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = '" + Membership.GetUser().UserName + "' AND END_USER.role_id = ROLE.role_id", connection);
+                if (checker.ExecuteScalar().ToString() != "BANK BRANCH")
+                {
+                    string script = "alert(\"You are not authorized to view this page!\");location ='/Default.aspx';";
+                    ScriptManager.RegisterStartupScript(this, GetType(),
+                                          "alertMessage", script, true);
+                }
+                else
+                {
+                    if (!IsPostBack)
+                    {
+                        ViewState["myDataTable"] = FillDataTable();
+                    }
+                }
+            }
         }
 
         protected void fundButton_Click(object sender, EventArgs e)

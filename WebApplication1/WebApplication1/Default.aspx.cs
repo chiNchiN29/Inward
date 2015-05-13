@@ -24,18 +24,12 @@ namespace WebApplication1
     
         protected void Page_Load(object sender, EventArgs e)
         {
-            bool login = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+            bool login = System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
             if (login == false)
-                Response.Redirect("~/Account/LogIn.aspx");
+                Response.Redirect("~/Account/Login.aspx");
            
             CreatingSessionUsingAtomPub();
-           
-            //string query = "SELECT check_number AS 'Check Number', customer_name AS Name, CHEQUE.account_number AS 'Account Number', CONVERT(VARCHAR(10), check_date, 101) AS Date, amount AS Amount, balance AS Balance, branch_name AS 'Branch Name', drawee_bank AS 'Drawee Bank', drawee_bank_branch AS 'Drawee Bank Branch', verification AS 'Verified?', funded AS 'Funded?' FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id ORDER BY CHEQUE.check_number";
-            //SqlDataSource1.SelectCommand = query;
-     
-            //GridView1.DataSource = SqlDataSource1;
-            //GridView1.DataBind();
-
+         
             if (!IsPostBack)
             {
                 ViewState["myDataTable"] = FillDataTable();
@@ -227,38 +221,53 @@ namespace WebApplication1
 
         protected void uploadDoc0_Click(object sender, EventArgs e)
         {
-            connection.Open();
-            //string filepath = FileUpload2.PostedFile.FileName;
-            StreamReader sr = new StreamReader(FileUpload2.PostedFile.InputStream);
-            while (!sr.EndOfStream)
+            try
             {
-                string line = sr.ReadLine();
-                string[] heart = line.Split(',');
-
-                SqlCommand insert = new SqlCommand("insert into CHEQUE(check_number, amount, check_date, branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed, account_number) values (@checknum, @amount, @date, @branch, @draweebank, @draweebranch, @funded, @verified, @confirmed, @acctnum)", connection);
-                SqlCommand checker = new SqlCommand("select minimum from THRESHOLD", connection);
-                insert.Parameters.AddWithValue("@checknum", heart[0]);
-                insert.Parameters.AddWithValue("@amount", heart[1]);
-                insert.Parameters.AddWithValue("@date", heart[2]);
-                insert.Parameters.AddWithValue("@branch", heart[3]);
-                insert.Parameters.AddWithValue("@draweebank", heart[4]);
-                insert.Parameters.AddWithValue("@draweebranch", heart[5]);
-                insert.Parameters.AddWithValue("@funded", heart[6]);
-                if (decimal.Parse(heart[1]) < decimal.Parse(checker.ExecuteScalar().ToString()))
+                connection.Open();
+                //string filepath = FileUpload2.PostedFile.FileName;
+                StreamReader sr = new StreamReader(FileUpload2.PostedFile.InputStream);
+                while (!sr.EndOfStream)
                 {
-                    insert.Parameters.AddWithValue("@verified", "BTA");
+                    string line = sr.ReadLine();
+                    string[] heart = line.Split(',');
+                    SqlCommand validator = new SqlCommand("select check_number from END_USER where check_number = '" + heart[0] + "'");
+                    if (validator.ExecuteScalar() == null)
+                    {
+                        SqlCommand insert = new SqlCommand("insert into CHEQUE(check_number, amount, check_date, branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed, account_number) values (@checknum, @amount, @date, @branch, @draweebank, @draweebranch, @funded, @verified, @confirmed, @acctnum)", connection);
+                        SqlCommand checker = new SqlCommand("select minimum from THRESHOLD", connection);
+                        insert.Parameters.AddWithValue("@checknum", heart[0]);
+                        insert.Parameters.AddWithValue("@amount", heart[1]);
+                        insert.Parameters.AddWithValue("@date", heart[2]);
+                        insert.Parameters.AddWithValue("@branch", heart[3]);
+                        insert.Parameters.AddWithValue("@draweebank", heart[4]);
+                        insert.Parameters.AddWithValue("@draweebranch", heart[5]);
+                        insert.Parameters.AddWithValue("@funded", heart[6]);
+                        if (decimal.Parse(heart[1]) < decimal.Parse(checker.ExecuteScalar().ToString()))
+                        {
+                            insert.Parameters.AddWithValue("@verified", "BTA");
+                        }
+                        else
+                        {
+                            insert.Parameters.AddWithValue("@verified", heart[7]);
+                        }
+                        insert.Parameters.AddWithValue("@confirmed", heart[8]);
+                        insert.Parameters.AddWithValue("@acctnum", heart[9]);
+                        insert.ExecuteNonQuery();
+                    }
+                    else
+                    {
+                        sr.Close();
+                        Response.Write("Check Data Upload interrupted. A duplicate check number has been discovered.");
+                    }
                 }
-                else
-                {
-                    insert.Parameters.AddWithValue("@verified", heart[7]);
-                }
-                insert.Parameters.AddWithValue("@confirmed", heart[8]);
-                insert.Parameters.AddWithValue("@acctnum", heart[9]);
-                insert.ExecuteNonQuery();
+                DataTable dt = FillDataTable();
+                GridView1.DataSource = dt;
+                GridView1.DataBind();
             }
-            DataTable dt = FillDataTable();
-            GridView1.DataSource = dt;
-            GridView1.DataBind();
+            catch (Exception b)
+            {
+                Response.Write("Please re-check the format of the data for any missing fields.");
+            }
 
             //insert into branches
             SqlCommand insertBranches = new SqlCommand("insert into BRANCH (branch_name, number_checks) SELECT branch_name, COUNT(*) FROM CHEQUE GROUP BY branch_name", connection);

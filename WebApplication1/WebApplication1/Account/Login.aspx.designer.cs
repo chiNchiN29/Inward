@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WebApplication3.Account {
+namespace WebApplication1.Account {
     
     
     public partial class Login {

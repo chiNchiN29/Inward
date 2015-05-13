@@ -24,18 +24,18 @@ namespace WebApplication1
             {
                 connection.Open();
                 SqlCommand checker = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = '" + Membership.GetUser().UserName + "' AND END_USER.role_id = ROLE.role_id", connection);
-                    if (checker.ExecuteScalar().ToString() == "ADMIN")
+                    if (checker.ExecuteScalar() == "ADMIN")
                     {
                         NavigationMenu.FindItem("Signature Verification").Enabled = false;
                         NavigationMenu.FindItem("Confirmation").Enabled = false;
                     }
-                    else if (checker.ExecuteScalar().ToString() == "CLEARING DEPT")
+                    else if (checker.ExecuteScalar() == "CLEARING DEPT")
                     {
                         NavigationMenu.FindItem("User Maintenance").Enabled = false;
                         NavigationMenu.FindItem("Confirmation").Enabled = false;
                         NavigationMenu.FindItem("Update Thresholds").Enabled = false;
                     }
-                    else if (checker.ExecuteScalar().ToString() == "BANK BRANCH")
+                    else if (checker.ExecuteScalar() == "BANK BRANCH")
                     {
                         NavigationMenu.FindItem("User Maintenance").Enabled = false;
                         NavigationMenu.FindItem("Signature Verification").Enabled = false;
@@ -50,10 +50,10 @@ namespace WebApplication1
                     }
                 }
             }
-
         protected void NavigationMenu_MenuItemClick(object sender, MenuEventArgs e)
         {
             Server.Transfer(e.Item.NavigateUrl);
         }
+
     }
 }

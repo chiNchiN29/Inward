@@ -20,7 +20,25 @@
             border-color:#7f9db9;    
             height:17px;
         }
-        
+        #imageLoad
+         {
+            width: 400px;
+            float: left;
+         }
+         #dataLoad
+         {
+             width: 400px;
+             float: right;
+         }
+         #loader
+         {
+             width: 850px;
+             margin: auto;
+         }
+         #buttonHolder
+         {
+             text-align:right;
+         }
         </style>
 </asp:Content>
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
@@ -44,34 +62,42 @@
     </div>
     <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:ConnectionString %>">
     </asp:SqlDataSource>
-    <asp:Label ID="Label1" runat="server" Font-Size="Larger" ForeColor="Black" 
-        Text="Load Image"></asp:Label>
+<div id="loader">
+        <div id="imageLoad">
+            <asp:Label ID="Label1" runat="server" Font-Size="Larger" ForeColor="Black" 
+            Text="1. Load Image"></asp:Label>
+            <br />
+            <asp:FileUpload ID="FileUpload3" runat="server" AllowMultiple="true"/>
+            <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" 
+            ControlToValidate="FileUpload3" 
+            ErrorMessage="Only image files are allowed"
+            
+                ValidationExpression="(.*\.([Jj][Pp][Gg])|.*\.([Jj][Pp][Ee][Gg])|.*\.([Pp][Nn][Gg])|.*\.([Tt][Ii][Ff])$)" 
+                ForeColor="Red"></asp:RegularExpressionValidator>
+            <br />
+            <asp:Button ID="uploadDoc" runat="server" Text="Upload Image" 
+            OnClick="uploadDoc_Click" Width="155px"/>   
+        </div>
+        <div id="dataLoad">
+            <asp:Label ID="Label2" runat="server" Font-Size="Larger" ForeColor="Black" 
+            Text="2. Load Check Data"></asp:Label>
+            <br />
+            <asp:FileUpload ID="FileUpload2" runat="server"/>
+            <asp:RegularExpressionValidator ID="regexValidator" runat="server" 
+            ControlToValidate="FileUpload2" 
+            ErrorMessage="Only csv files are allowed"  
+            ValidationExpression="(.*\.([cC][sS][vV])$)" ForeColor="Red"></asp:RegularExpressionValidator> 
+            <br />   
+            <asp:Button ID="uploadDoc0" runat="server" Text="Load" 
+            OnClick="uploadDoc0_Click" Width="156px"/>
+        </div>
+        <div id="buttonHolder">
+            <asp:Button ID="clearCheck" runat="server" onclientclick="return DeleteItem()" 
+            Text="Clear Check Data" onclick="clearCheck_Click1" />  
+        </div>
+    </div> 
     <br />
-    <asp:FileUpload ID="FileUpload3" runat="server" AllowMultiple="true"/>
-
     <br />
-
-    <asp:Button ID="uploadDoc" runat="server" Text="Upload Image" 
-        OnClick="uploadDoc_Click" Width="155px"/>   
-    <br />
-    <br />
-    <asp:Label ID="Label2" runat="server" Font-Size="Larger" ForeColor="Black" 
-        Text="Load Check Data"></asp:Label>
-    <br />
-    <br />
-    <asp:FileUpload ID="FileUpload2" runat="server"/>
-    <asp:RegularExpressionValidator ID="regexValidator" runat="server" 
-     ControlToValidate="FileUpload2" 
-     ErrorMessage="Only csv files are allowed"  
-     ValidationExpression="(.*\.([cC][sS][vV])$)"> 
-</asp:RegularExpressionValidator> 
-    <br />
-    <br />
-   
- 
-   
-    <asp:Button ID="uploadDoc0" runat="server" Text="Load" 
-        OnClick="uploadDoc0_Click" Width="156px"/>
    
    <script type="text/javascript">
        function DeleteItem() {
@@ -82,13 +108,7 @@
        }
  </script>
 
-   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-   <asp:Button ID="clearCheck" runat="server" onclientclick="return DeleteItem()" 
-        Text="Clear Check Data" onclick="clearCheck_Click1" />
  
-   
-    <br />
        
  
    

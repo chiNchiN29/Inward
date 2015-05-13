@@ -23,22 +23,58 @@ namespace WebApplication1
     public partial class Verification : System.Web.UI.Page
     {
         SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
-        int previous;
+       
+
         protected void Page_Load(object sender, EventArgs e)
         {
-            bool login = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+            bool login = System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
             if (login == false)
-                Response.Redirect("~/Account/LogIn.aspx");
-
-            Page.MaintainScrollPositionOnPostBack = true;    
-            CreatingSessionUsingAtomPub();
-            //ViewState["myDataTable"] = FillDataTable();
-
-            if (!Page.IsPostBack)
             {
-                ViewState["myDataTable"] = FillDataTable();
+                Response.Redirect("~/Account/Login.aspx");
+            }
+            else
+            {
+                connection.Open();
+                SqlCommand checker = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = '" + Membership.GetUser().UserName + "' AND END_USER.role_id = ROLE.role_id", connection);
+                if (checker.ExecuteScalar().ToString() != "CLEARING DEPT")
+                {
+                    string script = "alert(\"You are not authorized to view this page!\");location ='/Default.aspx';";
+                    ScriptManager.RegisterStartupScript(this, GetType(),
+                                          "alertMessage", script, true);
+                }
+                else
+                {
+                    Page.MaintainScrollPositionOnPostBack = true;
+                    CreatingSessionUsingAtomPub();
+
+                    if (!Page.IsPostBack)
+                    {
+                        ViewState["myDataTable"] = FillDataTable();
+                    }
+                    int counter = 0;
+                    if (!ReturnValue())
+                    {
+                        foreach (GridViewRow a in GridView1.Rows)
+                        {
+                            string karyuu = a.Cells[10].Text;
+                            if (a.Cells[10].Text != "&nbsp;" && a.Cells[10].Text != null)
+                            {
+                                counter += 1;
+                            }
+                        }
+                        //if (counter < GridView1.Rows.Count)
+                        //{
+                        ClientScriptManager CSM = Page.ClientScript;
+                        CSM.RegisterClientScriptBlock(this.GetType(), "Confirm", "<script language=\"JavaScript\">window.onbeforeunload = confirmExit;function confirmExit(){return \"A total of " + counter + "/" + GridView1.Rows.Count + " has been verified.  Are you sure you want to exit this page?\";}</script>", false);
+                    }//}
+                }
             }
         }
+
+        bool ReturnValue()
+        {
+            return false;
+        }  
 
         private void CreatingSessionUsingAtomPub()
         {
@@ -85,15 +121,8 @@ namespace WebApplication1
             }
             catch (Exception e)
             {
-                StringBuilder sb = new StringBuilder();
-                sb.Append("<script language='javascript'>");
-                sb.Append("alert('No existing image or check');");
-                sb.Append("<");
-                sb.Append("/script>");
-
-                if (!ClientScript.IsClientScriptBlockRegistered("ErrorPopup"))
-                    ClientScript.RegisterClientScriptBlock(this.GetType(), "ErrorPopup", sb.ToString()); 
-                Image1.Visible = false;
+                Image1.ImageUrl = "~/Resources/H2DefaultImage.jpg";
+                Image1.Visible = true;
             }
 
         }
@@ -140,7 +169,6 @@ namespace WebApplication1
                 parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
                 //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
                 session = factory.GetRepositories(parameters)[0].CreateSession();
-                previous = row.RowIndex;
                 string im = row.Cells[3].Text;
                 string age = row.Cells[1].Text;
                 string image = im + "_" + age;
@@ -179,16 +207,8 @@ namespace WebApplication1
             }
             catch
             {
-                StringBuilder sb = new StringBuilder();
-                sb.Append("<script language='javascript'>");
-                sb.Append("alert('No existing image or check');");
-                sb.Append("<");
-                sb.Append("/script>");
-
-                if (!ClientScript.IsClientScriptBlockRegistered("ErrorPopup"))
-                    ClientScript.RegisterClientScriptBlock(this.GetType(), "ErrorPopup", sb.ToString()); 
-
-                Image2.Visible = false;
+                Image2.ImageUrl = "~/Resources/H2DefaultImage.jpg";
+                Image2.Visible = true;
             }
 
         }

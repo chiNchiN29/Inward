@@ -107,19 +107,22 @@ first child of the left and right table columns */
 
 .header h1
 {
+    border-style: none;
+    border-color: inherit;
+    border-width: medium;
     font-weight: 700;
     margin: 0px;
     padding: 0px 0px 0px 0px;
     color: #f9f9f9;
-    border: none;
     line-height: 2em;
     font-size: 2em;
+    width: 395px;
 }
 
 .main
 {
     padding: 0px 12px;
-    margin: 12px 8px 8px 48px;
+    margin: 12px 8px 8px 8px;
     min-height: 420px;
 }
 
@@ -311,7 +314,7 @@ div.accountInfo
     display: block;
     float: left;
     text-align: left;
-    width: auto;
+    width: 358px;
 }
 
 .loginDisplay
