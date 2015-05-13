@@ -1,10 +1,11 @@
 ﻿<%@ Page Title="Register" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true"
-    CodeBehind="Register.aspx.cs" Inherits="WebApplication1.Account.Register" %>
+    CodeBehind="Register.aspx.cs" Inherits="WebApplication3.Account.Register" %>
 
 <asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeadContent">
 </asp:Content>
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
-    <asp:CreateUserWizard ID="RegisterUser" runat="server" EnableViewState="false" OnCreatedUser="RegisterUser_CreatedUser">
+    <asp:CreateUserWizard ID="RegisterUser" runat="server" 
+    EnableViewState="False" OnCreatedUser="RegisterUser_CreatedUser">
         <LayoutTemplate>
             <asp:PlaceHolder ID="wizardStepPlaceholder" runat="server"></asp:PlaceHolder>
             <asp:PlaceHolder ID="navigationPlaceholder" runat="server"></asp:PlaceHolder>
@@ -70,6 +71,17 @@
                 <CustomNavigationTemplate>
                 </CustomNavigationTemplate>
             </asp:CreateUserWizardStep>
+<asp:CompleteWizardStep runat="server"></asp:CompleteWizardStep>
         </WizardSteps>
+        <StartNavigationTemplate>
+            <asp:Button ID="StartNextButton" runat="server" CommandName="MoveNext" 
+                Text="Next" />
+        </StartNavigationTemplate>
+        <StepNavigationTemplate>
+            <asp:Button ID="StepPreviousButton" runat="server" CausesValidation="False" 
+                CommandName="MovePrevious" Text="Previous" />
+            <asp:Button ID="StepNextButton" runat="server" CommandName="MoveNext" 
+                Text="Next" />
+        </StepNavigationTemplate>
     </asp:CreateUserWizard>
 </asp:Content>

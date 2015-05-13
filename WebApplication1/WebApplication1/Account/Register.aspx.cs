@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace WebApplication1.Account
+namespace WebApplication3.Account
 {
     public partial class Register : System.Web.UI.Page
     {
@@ -20,15 +18,14 @@ namespace WebApplication1.Account
 
         protected void RegisterUser_CreatedUser(object sender, EventArgs e)
         {
-            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
-            con.Open();
+            FormsAuthentication.SetAuthCookie(RegisterUser.UserName, false /* createPersistentCookie */);
 
-            SqlCommand addnew = new SqlCommand("INSERT INTO END_USER(username, password, email) VALUES (@user, @pass, @mail)", con);
-            addnew.Parameters.AddWithValue("@user", RegisterUser.UserName);
-            addnew.Parameters.AddWithValue("@pass", RegisterUser.Password);
-            addnew.Parameters.AddWithValue("@mail", RegisterUser.Email);
-            addnew.ExecuteNonQuery();
-            Response.Redirect("/");
+            string continueUrl = RegisterUser.ContinueDestinationPageUrl;
+            if (String.IsNullOrEmpty(continueUrl))
+            {
+                continueUrl = "~/";
+            }
+            Response.Redirect(continueUrl);
         }
 
     }

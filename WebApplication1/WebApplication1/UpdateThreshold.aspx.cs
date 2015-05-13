@@ -13,39 +13,74 @@ namespace WebApplication1
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            bool login = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+            bool login = System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
             if (login == false)
-                Response.Redirect("~/Account/LogIn.aspx");
+                Response.Redirect("~/Account/Login.aspx");
 
             SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
             connection.Open();
             SqlCommand select = new SqlCommand("select minimum from THRESHOLD", connection);
-            Label2.Text = select.ExecuteScalar().ToString();
+            Label2.Text = String.Format("{0:C}", select.ExecuteScalar());
             SqlCommand select2 = new SqlCommand("select maximum from THRESHOLD", connection);
-            Label5.Text = select2.ExecuteScalar().ToString();
+            Label5.Text = String.Format("{0:C}", select2.ExecuteScalar());
             connection.Close();
         }
 
         protected void Button1_Click(object sender, EventArgs e)
         {
-            SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
-            connection.Open();
-            SqlCommand update = new SqlCommand("update THRESHOLD SET minimum = @thresh", connection);
-            update.Parameters.AddWithValue("@thresh", TextBox1.Text);
-            update.ExecuteNonQuery();
-            connection.Close();
-            Response.Redirect("Verification.aspx");
+            ClientScriptManager CSM = Page.ClientScript;
+            if (TextBox1.Text != "" || TextBox2.Text != "")
+            {
+                if (!ReturnValue())
+                {
+                    string strconfirm = "<script>if(!window.confirm('Do you wish to proceed with the change?')){window.location.href='Default.aspx'}</script>";
+                    CSM.RegisterClientScriptBlock(this.GetType(), "Confirm", strconfirm, false);
+                    SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+                    connection.Open();
+                    int num1;
+                    if (TextBox1.Text != "")
+                    {
+                        bool boop = int.TryParse(TextBox1.Text, out num1);
+                        if (boop == true)
+                        {
+                            SqlCommand updateMin = new SqlCommand("update THRESHOLD SET minimum = @thresh", connection);
+                            updateMin.Parameters.AddWithValue("@thresh", TextBox1.Text);
+                            updateMin.ExecuteNonQuery();
+                        }
+                        else
+                        {
+                            Label7.Visible = true;
+                            Label7.Text = "Input is invalid.";
+                        }
+                    }
+
+                    if (TextBox2.Text != "")
+                    {
+                        bool poob = int.TryParse(TextBox2.Text, out num1);
+                        if (poob == true)
+                        {
+                            SqlCommand updateMax = new SqlCommand("update THRESHOLD SET maximum = @thresh", connection);
+                            updateMax.Parameters.AddWithValue("@thresh", TextBox2.Text);
+                            updateMax.ExecuteNonQuery();
+                        }
+                        else
+                        {
+                            Label8.Visible = true;
+                            Label8.Text = "Input is invalid.";
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            else
+            {
+                Response.Redirect("Default.aspx");
+            }
         }
 
-        protected void Button2_Click(object sender, EventArgs e)
+        bool ReturnValue()
         {
-            SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
-            connection.Open();
-            SqlCommand update = new SqlCommand("update THRESHOLD SET maximum = @thresh", connection);
-            update.Parameters.AddWithValue("@thresh", TextBox2.Text);
-            update.ExecuteNonQuery();
-            connection.Close();
-            Response.Redirect("Confirmation.aspx");
-        }
+            return false;
+        }       
     }
 }

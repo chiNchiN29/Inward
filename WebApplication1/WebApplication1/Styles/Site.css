@@ -109,7 +109,7 @@ first child of the left and right table columns */
 {
     font-weight: 700;
     margin: 0px;
-    padding: 0px 0px 0px 20px;
+    padding: 0px 0px 0px 0px;
     color: #f9f9f9;
     border: none;
     line-height: 2em;
@@ -119,7 +119,7 @@ first child of the left and right table columns */
 .main
 {
     padding: 0px 12px;
-    margin: 12px 8px 8px 8px;
+    margin: 12px 8px 8px 48px;
     min-height: 420px;
 }
 

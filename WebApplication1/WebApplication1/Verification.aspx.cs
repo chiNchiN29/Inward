@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using DotCMIS;
@@ -20,20 +21,53 @@ namespace WebApplication1
 {
     public partial class Verification : System.Web.UI.Page
     {
+        SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
         protected void Page_Load(object sender, EventArgs e)
         {
-            bool login = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+            bool login = System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
             if (login == false)
-                Response.Redirect("~/Account/LogIn.aspx");
-
-            Page.MaintainScrollPositionOnPostBack = true;
-            SqlDataSource1.SelectCommand = "SELECT check_number AS 'Check Number', customer_name AS Name, CHEQUE.account_number AS 'Account Number', CONVERT(VARCHAR(10), check_date, 101) AS Date , amount AS Amount, balance as Balance, branch_name AS 'Branch Name', drawee_bank AS 'Drawee Bank', drawee_bank_branch AS 'Drawee Bank Branch', verification AS 'Verified?' FROM CHEQUE, CUSTOMER, ACCOUNT, THRESHOLD WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id AND CHEQUE.amount >= minimum AND verification <> 'BTA' ORDER BY CHEQUE.account_number";        
-            GridView1.DataSource = SqlDataSource1;
-            GridView1.DataBind();
-            CreatingSessionUsingAtomPub();
-            if (!Page.IsPostBack)
             {
-                GridView1.DataBind();
+                Response.Redirect("~/Account/Login.aspx");
+            }
+            else
+            {
+                connection.Open();
+                SqlCommand checker = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = '" + Membership.GetUser().UserName + "' AND END_USER.role_id = ROLE.role_id", connection);
+                if (checker.ExecuteScalar().ToString() != "CLEARING DEPT")
+                {
+                    string script = "alert(\"You are not authorized to view this page!\");location ='/Default.aspx';";
+                    ScriptManager.RegisterStartupScript(this, GetType(),
+                                          "alertMessage", script, true);
+                }
+                else
+                {
+                    Page.MaintainScrollPositionOnPostBack = true;
+                    SqlDataSource1.SelectCommand = "SELECT check_number AS 'Check Number', customer_name AS Name, CHEQUE.account_number AS 'Account Number', CONVERT(VARCHAR(10), check_date, 101) AS Date , amount AS Amount, balance as Balance, branch_name AS 'Branch Name', drawee_bank AS 'Drawee Bank', drawee_bank_branch AS 'Drawee Bank Branch', verification AS 'Verified?' FROM CHEQUE, CUSTOMER, ACCOUNT, THRESHOLD WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id AND CHEQUE.amount >= minimum AND verification <> 'BTA' ORDER BY CHEQUE.account_number";
+                    GridView1.DataSource = SqlDataSource1;
+                    GridView1.DataBind();
+                    CreatingSessionUsingAtomPub();
+                    if (!Page.IsPostBack)
+                    {
+                        GridView1.DataBind();
+                    }
+                    int counter = 0;
+                    if (!ReturnValue())
+                    {
+                        foreach (GridViewRow a in GridView1.Rows)
+                        {
+                            string karyuu = a.Cells[10].Text;
+                            if (a.Cells[10].Text != "&nbsp;" && a.Cells[10].Text != null)
+                            {
+                                counter += 1;
+                            }
+                        }
+                        //if (counter < GridView1.Rows.Count)
+                        //{
+                            ClientScriptManager CSM = Page.ClientScript;
+                            CSM.RegisterClientScriptBlock(this.GetType(), "Confirm", "<script language=\"JavaScript\">window.onbeforeunload = confirmExit;function confirmExit(){return \"A total of " + counter + "/" + GridView1.Rows.Count + " has been verified.  Are you sure you want to exit this page?\";}</script>", false);
+                        //}
+                    }
+                }
             }
         }
 
@@ -43,8 +77,8 @@ namespace WebApplication1
             SessionFactory factory = SessionFactory.NewInstance();
             ISession session;
             parameters[DotCMIS.SessionParameter.User] = "admin";
-            //parameters[DotCMIS.SessionParameter.Password] = "092095";
-            parameters[DotCMIS.SessionParameter.Password] = "admin";
+            parameters[DotCMIS.SessionParameter.Password] = "092095";
+            //parameters[DotCMIS.SessionParameter.Password] = "admin";
             //parameters[DotCMIS.SessionParameter.Password] = "H2scs2015";
             parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
             parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
@@ -67,8 +101,8 @@ namespace WebApplication1
             SessionFactory factory = SessionFactory.NewInstance();
             ISession session;
             parameters[DotCMIS.SessionParameter.User] = "admin";
-            //parameters[DotCMIS.SessionParameter.Password] = "092095";
-            parameters[DotCMIS.SessionParameter.Password] = "admin";
+            parameters[DotCMIS.SessionParameter.Password] = "092095";
+            //parameters[DotCMIS.SessionParameter.Password] = "admin";
             //parameters[DotCMIS.SessionParameter.Password] = "H2scs2015";
             parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
             parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
@@ -102,8 +136,8 @@ namespace WebApplication1
             }
             catch (Exception e)
             {
-                Response.Write("<script langauge=\"javascript\">alert(\"No existing check image or signature image\");</script>");
-                Image1.Visible = false;
+                Image1.ImageUrl = "~/Resources/H2DefaultImage.jpg";
+                Image1.Visible = true;
             }
 
         }
@@ -126,8 +160,8 @@ namespace WebApplication1
             }
             catch
             {
-                Response.Write("<script langauge=\"javascript\">alert(\"No existing check image or signature image\");</script>");
-                Image2.Visible = false;
+                Image2.ImageUrl = "~/Resources/H2DefaultImage.jpg";
+                Image2.Visible = true;
             }
 
         }
@@ -210,6 +244,12 @@ namespace WebApplication1
             insert.ExecuteNonQuery();
             connection.Close();
         }
+
+            // your code
+        bool ReturnValue()
+        {
+            return false;
+        }  
 
         //Generate List
         protected void Button1_Click(object sender, EventArgs e)

@@ -23,7 +23,7 @@
                         [ <a href="~/Account/Login.aspx" ID="HeadLoginStatus0" runat="server">Log In</a> ]
                     </AnonymousTemplate>
                     <LoggedInTemplate>
-                        Welcome <span class="bold"><asp:LoginName ID="HeadLoginName" runat="server" /></span>!
+                        Welcome, <span class="bold"><asp:LoginName ID="HeadLoginName" runat="server" /></span>!
                         [ <asp:HyperLink ID="linkChangePassword" runat="server" NavigateUrl="~/Account/ChangePassword.aspx" Text="Change Password" /> ]
                         [ <asp:LoginStatus ID="HeadLoginStatus" runat="server" LogoutAction="Redirect" LogoutText="Log Out" LogoutPageUrl="~/Account/Login.aspx"/> ]
                     </LoggedInTemplate>
