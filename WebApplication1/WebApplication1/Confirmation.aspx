@@ -13,10 +13,15 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <div class="grid_scroll">
-    <asp:GridView ID="GridView1" runat="server" AutoGenerateSelectButton="true" AutoGenerateColumns="false" 
-    SelectedRowStyle-BackColor="Aqua" CssClass="gridView" AllowSorting="true" OnSorting="GridView1_Sorting" 
-    HeaderStyle-CssClass="GridHeader" RowStyle-BackColor="LightGray">
+    <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="false" 
+    CssClass="gridView" AllowSorting="true" OnSorting="GridView1_Sorting" 
+    HeaderStyle-CssClass="GridHeader">
     <Columns>
+        <asp:TemplateField>
+            <ItemTemplate>
+                <asp:RadioButton ID="RowSelect" runat="server" OnClick="javascript:CheckOtherIsCheckedByGVID(this);" AutoPostBack="true" OnCheckedChanged="RowSelect_CheckedChanged" />
+            </ItemTemplate>
+        </asp:TemplateField>
         <asp:BoundField DataField="check_number" SortExpression="check_number" HeaderText="Check Number" />
         <asp:BoundField DataField="customer_name" SortExpression="customer_name" HeaderText="Name" />
         <asp:BoundField DataField="customer_address" SortExpression="customer_address" HeaderText="Address" />
@@ -47,4 +52,25 @@
     <br />
     <asp:Button ID="Button1" runat="server" onclick="Button1_Click" 
         Text="Generate List" />
+
+    <script type="text/javascript">
+        function CheckOtherIsCheckedByGVID(spanChk) {
+            var IsChecked = spanChk.checked;
+            if (IsChecked) {
+
+            }
+            var CurrentRdbID = spanChk.id;
+            var Chk = spanChk;
+            Parent = document.getElementById("<%=GridView1.ClientID%>");
+            var items = Parent.getElementsByTagName('input');
+            for (i = 0; i < items.length; i++) {
+                if (items[i].id != CurrentRdbID && items[i].type == "radio") {
+                    if (items[i].checked) {
+
+                        items[i].checked = false;
+                    }
+                }
+            }
+        }
+</script>
 </asp:Content>

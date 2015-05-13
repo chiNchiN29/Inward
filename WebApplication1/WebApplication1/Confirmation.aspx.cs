@@ -27,34 +27,72 @@ namespace WebApplication1
             bool login = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
                 if (login == false)
                     Response.Redirect("~/Account/LogIn.aspx");
+
             if (!IsPostBack)
             {
-                Session["myDataSet"] = FillDataSet();
-
+                ViewState["myDataTable"] = FillDataTable();
             }
                
         }
 
         protected void fundButton_Click(object sender, EventArgs e)
         {
-            connection.Open();
-            SqlCommand update = new SqlCommand("update CHEQUE SET confirmed = @fund WHERE account_number = @acctnumber AND check_number = @chknumber", connection);
-            update.Parameters.AddWithValue("@acctnumber", GridView1.SelectedRow.Cells[5].Text);
-            update.Parameters.AddWithValue("@chknumber", GridView1.SelectedRow.Cells[1].Text);
-            update.Parameters.AddWithValue("@fund", "YES");
-            update.ExecuteNonQuery();
-            connection.Close();
+            int i = GetRowIndex();
+            if (i != -1)
+            {
+                connection.Open();
+                SqlCommand update = new SqlCommand("update CHEQUE SET confirmed = @fund WHERE account_number = @acctnumber AND check_number = @chknumber", connection);
+                update.Parameters.AddWithValue("@acctnumber", GridView1.Rows[i].Cells[5].Text);
+                update.Parameters.AddWithValue("@chknumber", GridView1.Rows[i].Cells[1].Text);
+                update.Parameters.AddWithValue("@fund", "YES");
+                update.ExecuteNonQuery();
+                connection.Close();
+
+                DataTable dt = FillDataTable();
+                GridView1.DataSource = dt;
+                GridView1.DataBind();
+            }
+            else
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append("<script language='javascript'>");
+                sb.Append("alert('Please select a customer first');");
+                sb.Append("<");
+                sb.Append("/script>");
+
+                if (!ClientScript.IsClientScriptBlockRegistered("ErrorPopup"))
+                    ClientScript.RegisterClientScriptBlock(this.GetType(), "ErrorPopup", sb.ToString());
+            }
         }
 
         protected void unfundButton_Click(object sender, EventArgs e)
         {
-            connection.Open();
-            cmd = new SqlCommand("update CHEQUE SET confirmed = @fund WHERE account_number = @acctnumber AND check_number = @chknumber", connection);
-            cmd.Parameters.AddWithValue("@acctnumber", GridView1.SelectedRow.Cells[5].Text);
-            cmd.Parameters.AddWithValue("@chknumber", GridView1.SelectedRow.Cells[1].Text);
-            cmd.Parameters.AddWithValue("@fund", "NO");
-            cmd.ExecuteNonQuery();
-            connection.Close();
+            int i = GetRowIndex();
+            if (i != -1)
+            {
+                connection.Open();
+                cmd = new SqlCommand("update CHEQUE SET confirmed = @fund WHERE account_number = @acctnumber AND check_number = @chknumber", connection);
+                cmd.Parameters.AddWithValue("@acctnumber", GridView1.Rows[i].Cells[5].Text);
+                cmd.Parameters.AddWithValue("@chknumber", GridView1.Rows[i].Cells[1].Text);
+                cmd.Parameters.AddWithValue("@fund", "NO");
+                cmd.ExecuteNonQuery();
+                connection.Close();
+
+                DataTable dt = FillDataTable();
+                GridView1.DataSource = dt;
+                GridView1.DataBind();
+            }
+            else
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append("<script language='javascript'>");
+                sb.Append("alert('Please select a customer first');");
+                sb.Append("<");
+                sb.Append("/script>");
+
+                if (!ClientScript.IsClientScriptBlockRegistered("ErrorPopup"))
+                    ClientScript.RegisterClientScriptBlock(this.GetType(), "ErrorPopup", sb.ToString());
+            }
             
         }
 
@@ -103,7 +141,7 @@ namespace WebApplication1
         {
             using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString))
             {
-                using (cmd = new SqlCommand("SELECT check_number AS CheckNo, amount AS Amount, CONVERT(VARCHAR(10), check_date, 111) AS Date, branch_name AS 'Branch Name' drawee_bank AS 'Drawee Bank', drawee_bank_branch AS 'Drawee Bank Branch', funded AS 'Funded?', verification AS 'Verified?', CHEQUE.account_number AS AcctNo, confirmed AS 'Confirmed?' FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number AND confirmed = 'NO' ORDER BY CHEQUE.account_number"))
+                using (cmd = new SqlCommand("SELECT check_number AS CheckNo, amount AS Amount, CONVERT(VARCHAR(10), check_date, 101) AS Date, branch_name AS 'Branch Name', drawee_bank AS 'Drawee Bank', drawee_bank_branch AS 'Drawee Bank Branch', funded AS 'Funded?', verification AS 'Verified?', confirmed AS 'Confirmed?', CHEQUE.account_number FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id AND confirmed = 'NO' ORDER BY CHEQUE.account_number"))
                 {
                     using (SqlDataAdapter sda = new SqlDataAdapter())
                     {
@@ -121,24 +159,24 @@ namespace WebApplication1
 
         protected void GridView1_Sorting(Object sender, GridViewSortEventArgs e)
         {
-            DataTable dt = ((DataSet)Session["myDataSet"]).Tables[0];
+            DataTable dt = ViewState["myDataTable"] as DataTable;
             dt.DefaultView.Sort = e.SortExpression + " " + GetSortDirection(e.SortExpression);
             GridView1.DataSource = dt;
             GridView1.DataBind();
         }
 
-        public DataSet FillDataSet()
+        public DataTable FillDataTable()
         {
             string query = "SELECT check_number, customer_name, customer_address, contact_number, CHEQUE.account_number AS 'Account Number', CONVERT(VARCHAR(10), check_date, 101) AS Date, amount, branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed FROM CHEQUE, CUSTOMER, ACCOUNT, THRESHOLD WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id AND ((verification = 'YES' AND amount > maximum) OR verification = 'NO')  ORDER BY CHEQUE.account_number";
             connection.Open();
-            DataSet ds = new DataSet();
+            DataTable dt = new DataTable();
             SqlDataAdapter da = new SqlDataAdapter(query, connection);
-            da.Fill(ds);
-            GridView1.DataSource = ds;
+            da.Fill(dt);
+            GridView1.DataSource = dt;
             GridView1.DataBind();
             connection.Close();
 
-            return ds;
+            return dt;
         }
 
         private string GetSortDirection(string column)
@@ -162,8 +200,49 @@ namespace WebApplication1
             ViewState["SortExpression"] = column;
 
             return sortDirection;
-        } 
+        }
+
+        //get selected row index
+        protected int GetRowIndex()
+        {
+            int x = -1;
+            for (int i = 0; i <= GridView1.Rows.Count - 1; i++)
+            {
+                GridViewRow row = GridView1.Rows[i];
+                RadioButton rb = (RadioButton)row.FindControl("RowSelect");
+                if (rb != null)
+                {
+                    if (rb.Checked == true)
+                    {
+                        return row.RowIndex;
+                    }
+                }
+            }
+            return x;
+        }
+
+        protected void RowSelect_CheckedChanged(Object sender, EventArgs e)
+        {
+            int i = GetRowIndex();
+            if (i != -1)
+            {
+                GridViewRow row = GridView1.Rows[i];
+                string wew = row.Cells[1].Text;
+                Response.Write(i);
+                row.BackColor = System.Drawing.Color.Aqua;
+                row.Style.Add("class", "SelectedRowStyle");
+            }
+            else
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append("<script language='javascript'>");
+                sb.Append("alert('Please select a chec');");
+                sb.Append("<");
+                sb.Append("/script>");
+
+                if (!ClientScript.IsClientScriptBlockRegistered("ErrorPopup"))
+                    ClientScript.RegisterClientScriptBlock(this.GetType(), "ErrorPopup", sb.ToString());
+            }
+        }
     }
-
-
 }

@@ -37,9 +37,6 @@ namespace WebApplication1
             if (!Page.IsPostBack)
             {
                 ViewState["myDataTable"] = FillDataTable();
-                //DataTable dt = FillDataTable();
-                //GridView1.DataSource = dt;
-                //GridView1.DataBind();
             }
         }
 
@@ -120,21 +117,6 @@ namespace WebApplication1
                 
             }
             return x;
-            //int i = -1;
-            //foreach (GridViewRow row in GridView1.Rows)
-            //{
-            //    int wew = row.RowIndex;
-            //    RadioButton rb = row.FindControl("RowSelect") as RadioButton;
-            //    if (rb.Checked)
-            //    {
-            //        return row.RowIndex;
-            //    }
-            //    else
-            //    {
-            //        return i;
-            //    }
-            //}
-            //return i;
         }
 
         protected void RowSelect_CheckedChanged(Object sender, EventArgs e)
@@ -321,6 +303,7 @@ namespace WebApplication1
             Response.Buffer = true;
             Response.AddHeader("content-disposition", "attachment;filename=" + fileName + ".csv");
             Response.Charset = "";
+    
             Response.ContentType = "application/text";
 
             System.Text.StringBuilder sb = new System.Text.StringBuilder();
@@ -340,7 +323,6 @@ namespace WebApplication1
                 }
                 sb.Append("\r\n");
             }
-            
             Response.Output.Write(sb.ToString());
             Response.Flush();
             Response.End();
@@ -350,7 +332,7 @@ namespace WebApplication1
         {
             using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("SELECT check_number AS CheckNo, amount AS Amount, CONVERT(VARCHAR(10), check_date, 111) AS Date, branch_name AS 'Branch Name', drawee_bank AS 'Drawee Bank', drawee_bank_branch AS 'Drawee Bank Branch' , funded AS 'Funded?', verification AS 'Verified?', confirmed AS 'Confirmed?', CHEQUE.account_number AS AcctNo FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.account_number = CUSTOMER.account_number AND verification = 'NO' ORDER BY CHEQUE.account_number"))
+                using (SqlCommand cmd = new SqlCommand("SELECT check_number AS 'CheckNo', amount AS 'Amount', CONVERT(VARCHAR(10), check_date, 101) AS 'Date', branch_name AS 'Branch Name', drawee_bank AS 'Drawee Bank', drawee_bank_branch AS 'Drawee Bank Branch' , funded AS 'Funded?', verification AS 'Verified?', confirmed AS 'Confirmed?', CHEQUE.account_number AS 'AcctNo' FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id AND verification = 'NO' ORDER BY CHEQUE.account_number"))
                 {
                     using (SqlDataAdapter sda = new SqlDataAdapter())
                     {
@@ -366,12 +348,6 @@ namespace WebApplication1
             }
         }
 
-        public void BindGridView()
-        {
-            DataTable dt = ViewState["myDataTable"] as DataTable;
-            GridView1.DataSource = dt;
-            GridView1.DataBind();
-        }
         protected void GridView1_Sorting(Object sender, GridViewSortEventArgs e)
         {
             DataTable dt = ViewState["myDataTable"] as DataTable;

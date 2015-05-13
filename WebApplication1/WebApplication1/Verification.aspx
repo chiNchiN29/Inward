@@ -93,7 +93,7 @@
 
                 var IsChecked = spanChk.checked;
                 if (IsChecked) {
-                   
+
                 }
                 var CurrentRdbID = spanChk.id;
                 var Chk = spanChk;
@@ -109,21 +109,12 @@
                 }
             }
 
-            function RadioCheck(rb) {
-                var gv = document.getElementById("<%=GridView1.ClientID%>");
-                var rbs = gv.getElementsByTagName("input");
-
-                var row = rb.parentNode.parentNode;
-                for (var i = 0; i < rbs.length; i++) {
-                    if (rbs[i].type == "radio") {
-                        if (rbs[i].checked && rbs[i] != rb) {
-                            rbs[i].checked = false;
-                            break;
-                        }
-                    }
+            function GenerateList() {
+                if (confirm("Are you sure you want to generate list?")) {
+                    return true;
                 }
-            }    
-
+                return false;
+            }
 </script>
 
 </asp:Content>
