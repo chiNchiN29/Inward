@@ -21,18 +21,26 @@ namespace WebApplication1
     public partial class _Default : System.Web.UI.Page
     {
         SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
-
+    
         protected void Page_Load(object sender, EventArgs e)
         {
             bool login = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
             if (login == false)
                 Response.Redirect("~/Account/LogIn.aspx");
-            connection.Open();
+           
             CreatingSessionUsingAtomPub();
-            SqlDataSource1.SelectCommand = "SELECT check_number AS 'Check Number', customer_name AS Name, CHEQUE.account_number AS 'Account Number', CONVERT(VARCHAR(10), check_date, 101) AS Date, amount AS Amount, balance AS Balance, branch_name AS 'Branch Name', drawee_bank AS 'Drawee Bank', drawee_bank_branch AS 'Drawee Bank Branch', verification AS 'Verified?', funded AS 'Funded?' FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id ORDER BY CHEQUE.check_number";
-            GridView1.DataSource = SqlDataSource1;
-            GridView1.DataBind();
-            connection.Close();
+           
+            //string query = "SELECT check_number AS 'Check Number', customer_name AS Name, CHEQUE.account_number AS 'Account Number', CONVERT(VARCHAR(10), check_date, 101) AS Date, amount AS Amount, balance AS Balance, branch_name AS 'Branch Name', drawee_bank AS 'Drawee Bank', drawee_bank_branch AS 'Drawee Bank Branch', verification AS 'Verified?', funded AS 'Funded?' FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id ORDER BY CHEQUE.check_number";
+            //SqlDataSource1.SelectCommand = query;
+     
+            //GridView1.DataSource = SqlDataSource1;
+            //GridView1.DataBind();
+
+            if (!IsPostBack)
+            {
+                ViewState["myDataTable"] = FillDataTable();
+            }
+   
         }
 
         private void CreatingSessionUsingAtomPub()
@@ -41,7 +49,7 @@ namespace WebApplication1
             SessionFactory factory = SessionFactory.NewInstance();
             ISession session;
             parameters[DotCMIS.SessionParameter.User] = "admin";
-            parameters[DotCMIS.SessionParameter.Password] = "092095";
+            //parameters[DotCMIS.SessionParameter.Password] = "092095";
             parameters[DotCMIS.SessionParameter.Password] = "admin";
             //parameters[DotCMIS.SessionParameter.Password] = "H2scs2015";
             parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
@@ -248,7 +256,14 @@ namespace WebApplication1
                 insert.Parameters.AddWithValue("@acctnum", heart[9]);
                 insert.ExecuteNonQuery();
             }
+            DataTable dt = FillDataTable();
+            GridView1.DataSource = dt;
             GridView1.DataBind();
+
+            //insert into branches
+            SqlCommand insertBranches = new SqlCommand("insert into BRANCH (branch_name, number_checks) SELECT branch_name, COUNT(*) FROM CHEQUE GROUP BY branch_name", connection);
+            insertBranches.ExecuteNonQuery();
+
             connection.Close();
         }
 
@@ -256,9 +271,58 @@ namespace WebApplication1
         {
             connection.Open();
             SqlCommand delete = new SqlCommand("DELETE FROM CHEQUE", connection);
+            SqlCommand deleteBranches = new SqlCommand("DELETE FROM BRANCH DBCC CHECKIDENT('BRANCH', RESEED, 0)", connection);
             delete.ExecuteNonQuery();
+            deleteBranches.ExecuteNonQuery();
+            
             GridView1.DataBind();
             connection.Close();
+            
         }
+
+        protected void GridView1_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            DataTable dt = ViewState["myDataTable"] as DataTable;
+            dt.DefaultView.Sort = e.SortExpression + " " + GetSortDirection(e.SortExpression);
+            GridView1.DataSource = dt;
+            GridView1.DataBind();
+        }
+
+        public DataTable FillDataTable()
+        {
+            string query = "SELECT check_number, customer_name, CHEQUE.account_number AS 'Account Number', CONVERT(VARCHAR(10), check_date, 101) AS Date, amount, balance, branch_name, drawee_bank, drawee_bank_branch, verification, funded FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id ORDER BY CHEQUE.check_number";
+          
+            DataTable dt = new DataTable();
+            SqlDataAdapter da = new SqlDataAdapter(query, connection);
+            da.Fill(dt);
+            GridView1.DataSource = dt;
+            GridView1.DataBind();
+     
+           
+            return dt;
+        }
+
+        private string GetSortDirection(string column)
+        {
+            string sortDirection = "DESC";
+            string sortExpression = ViewState["SortExpression"] as string;
+
+            if (sortExpression != null)
+            {
+                if (sortExpression == column)
+                {
+                    string lastDirection = ViewState["SortDirection"] as string;
+                    if ((lastDirection != null) && (lastDirection == "DESC"))
+                    {
+                        sortDirection = "ASC";
+                    }
+                }
+            }
+
+            ViewState["SortDirection"] = sortDirection;
+            ViewState["SortExpression"] = column;
+
+            return sortDirection;
+        } 
     }
 }

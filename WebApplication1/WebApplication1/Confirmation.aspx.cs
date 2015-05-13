@@ -27,10 +27,12 @@ namespace WebApplication1
             bool login = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
                 if (login == false)
                     Response.Redirect("~/Account/LogIn.aspx");
+            if (!IsPostBack)
+            {
+                Session["myDataSet"] = FillDataSet();
 
-            SqlDataSource1.SelectCommand = "SELECT check_number AS 'Check Number', customer_name AS Name, customer_address AS Address, contact_number AS 'Contact Number', CHEQUE.account_number AS 'Account Number', CONVERT(VARCHAR(10), check_date, 101) AS Date, amount AS Amount, branch_name AS 'Branch Name', drawee_bank AS 'Drawee Bank', drawee_bank_branch AS 'Drawee Bank Branch', funded AS 'Funded?', verification AS 'Verified?', confirmed AS 'Confirmed?' FROM CHEQUE, CUSTOMER, ACCOUNT, THRESHOLD WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id AND ((verification = 'YES' AND amount > maximum) OR verification = 'NO')  ORDER BY CHEQUE.account_number";
-            GridView1.DataSource = SqlDataSource1;
-            GridView1.DataBind();
+            }
+               
         }
 
         protected void fundButton_Click(object sender, EventArgs e)
@@ -42,11 +44,6 @@ namespace WebApplication1
             update.Parameters.AddWithValue("@fund", "YES");
             update.ExecuteNonQuery();
             connection.Close();
-            GridView1.DataBind();
-            if (GridView1.SelectedRow.RowIndex < GridView1.Rows.Count - 1)
-            {
-                GridView1.SelectRow(GridView1.SelectedRow.RowIndex + 1);
-            }
         }
 
         protected void unfundButton_Click(object sender, EventArgs e)
@@ -58,11 +55,7 @@ namespace WebApplication1
             cmd.Parameters.AddWithValue("@fund", "NO");
             cmd.ExecuteNonQuery();
             connection.Close();
-            GridView1.DataBind();
-            if (GridView1.SelectedRow.RowIndex < GridView1.Rows.Count - 1)
-            {
-                GridView1.SelectRow(GridView1.SelectedRow.RowIndex + 1);
-            }
+            
         }
 
         protected void Button1_Click(object sender, EventArgs e)
@@ -125,6 +118,51 @@ namespace WebApplication1
                 }
             }
         }
+
+        protected void GridView1_Sorting(Object sender, GridViewSortEventArgs e)
+        {
+            DataTable dt = ((DataSet)Session["myDataSet"]).Tables[0];
+            dt.DefaultView.Sort = e.SortExpression + " " + GetSortDirection(e.SortExpression);
+            GridView1.DataSource = dt;
+            GridView1.DataBind();
+        }
+
+        public DataSet FillDataSet()
+        {
+            string query = "SELECT check_number, customer_name, customer_address, contact_number, CHEQUE.account_number AS 'Account Number', CONVERT(VARCHAR(10), check_date, 101) AS Date, amount, branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed FROM CHEQUE, CUSTOMER, ACCOUNT, THRESHOLD WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id AND ((verification = 'YES' AND amount > maximum) OR verification = 'NO')  ORDER BY CHEQUE.account_number";
+            connection.Open();
+            DataSet ds = new DataSet();
+            SqlDataAdapter da = new SqlDataAdapter(query, connection);
+            da.Fill(ds);
+            GridView1.DataSource = ds;
+            GridView1.DataBind();
+            connection.Close();
+
+            return ds;
+        }
+
+        private string GetSortDirection(string column)
+        {
+            string sortDirection = "DESC";
+            string sortExpression = ViewState["SortExpression"] as string;
+
+            if (sortExpression != null)
+            {
+                if (sortExpression == column)
+                {
+                    string lastDirection = ViewState["SortDirection"] as string;
+                    if ((lastDirection != null) && (lastDirection == "DESC"))
+                    {
+                        sortDirection = "ASC";
+                    }
+                }
+            }
+
+            ViewState["SortDirection"] = sortDirection;
+            ViewState["SortExpression"] = column;
+
+            return sortDirection;
+        } 
     }
 
 

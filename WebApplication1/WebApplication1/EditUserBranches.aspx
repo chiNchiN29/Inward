@@ -7,10 +7,25 @@
         <asp:Label ID="Label1" runat="server" Text="Label"></asp:Label>
     </p>
     Branches:<br />
-    <asp:CheckBoxList ID="branchList" runat="server">
-    </asp:CheckBoxList>
-    <asp:Button ID="saveBtn" runat="server" Text="Save" />
+    <br />
+    <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="false">
+    <Columns>
+        <asp:TemplateField>
+                <ItemTemplate>
+                    <asp:CheckBox ID="chkBox" runat="server" />
+                </ItemTemplate>
+            </asp:TemplateField>
+    <asp:BoundField DataField="branch_name" HeaderText="Branch Name" />
+    <asp:BoundField DataField="number_checks" HeaderText="Number of Checks" />
+    <asp:BoundField DataField="username" HeaderText="Handler" />
+    </Columns>
+    </asp:GridView>
+    <br />
+    <asp:Button ID="saveBtn" runat="server" Text="Save" onclick="saveBtn_Click" />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <asp:Button ID="cancelBtn" runat="server" onclick="cancelBtn_Click" 
         Text="Cancel" />
+    <asp:SqlDataSource ID="SqlDataSource1" runat="server"
+    ConnectionString="<%$ ConnectionStrings:ConnectionString %>" >
+    </asp:SqlDataSource>
 </asp:Content>

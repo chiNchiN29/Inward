@@ -19,15 +19,31 @@
             border-width:1px;
             border-color:#7f9db9;    
             height:17px;
-           }
+        }
+        
         </style>
 </asp:Content>
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
     <div class="grid_scroll">
-    <asp:GridView ID="GridView1" runat="server">
+    <asp:GridView ID="GridView1" runat="server" CssClass="gridView" AutoGenerateColumns="false"
+    AllowSorting="true" OnSorting="GridView1_Sorting" HeaderStyle-CssClass="GridHeader">
+        <Columns>
+            <asp:BoundField DataField="check_number" SortExpression="check_number" HeaderText="Check Number" />
+            <asp:BoundField DataField="customer_name" SortExpression="customer_name" HeaderText="Name" />
+            <asp:BoundField DataField="Account Number" SortExpression="Account Number" HeaderText="Account Number" />
+            <asp:BoundField DataField="Date" SortExpression="Date" HeaderText="Date" />
+            <asp:BoundField DataField="amount" SortExpression="amount" HeaderText="Amount" />
+            <asp:BoundField DataField="balance" SortExpression="balance" HeaderText="Balance" />
+            <asp:BoundField DataField="branch_name" SortExpression="branch_name" HeaderText="Branch Name" />
+            <asp:BoundField DataField="drawee_bank" SortExpression="drawee_bank" HeaderText="Drawee Bank" />
+            <asp:BoundField DataField="drawee_bank_branch" SortExpression="drawee_bank_branch" HeaderText="Drawee Bank Branch" />
+            <asp:BoundField DataField="verification" SortExpression="verification" HeaderText="Verified?" />
+            <asp:BoundField DataField="funded" SortExpression="funded" HeaderText="Funded?" />
+        </Columns>
     </asp:GridView>
     </div>
-    <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:ConnectionString %>"></asp:SqlDataSource>
+    <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:ConnectionString %>">
+    </asp:SqlDataSource>
     <asp:Label ID="Label1" runat="server" Font-Size="Larger" ForeColor="Black" 
         Text="Load Image"></asp:Label>
     <br />

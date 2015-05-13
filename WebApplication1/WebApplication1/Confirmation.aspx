@@ -13,7 +13,24 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <div class="grid_scroll">
-    <asp:GridView ID="GridView1" runat="server" AutoGenerateSelectButton="true" SelectedRowStyle-BackColor="Aqua">
+    <asp:GridView ID="GridView1" runat="server" AutoGenerateSelectButton="true" AutoGenerateColumns="false" 
+    SelectedRowStyle-BackColor="Aqua" CssClass="gridView" AllowSorting="true" OnSorting="GridView1_Sorting" 
+    HeaderStyle-CssClass="GridHeader" RowStyle-BackColor="LightGray">
+    <Columns>
+        <asp:BoundField DataField="check_number" SortExpression="check_number" HeaderText="Check Number" />
+        <asp:BoundField DataField="customer_name" SortExpression="customer_name" HeaderText="Name" />
+        <asp:BoundField DataField="customer_address" SortExpression="customer_address" HeaderText="Address" />
+        <asp:BoundField DataField="contact_number" SortExpression="contact_number" HeaderText="Contact Number" />
+        <asp:BoundField DataField="Account Number" SortExpression="Account Number" HeaderText="Account Number" />
+        <asp:BoundField DataField="Date" SortExpression="Date" HeaderText="Date" />
+        <asp:BoundField DataField="amount" SortExpression="amount" HeaderText="Amount" />
+        <asp:BoundField DataField="branch_name" SortExpression="branch_name" HeaderText="Branch Name" />
+        <asp:BoundField DataField="drawee_bank" SortExpression="drawee_bank" HeaderText="Drawee Bank" />
+        <asp:BoundField DataField="drawee_bank_branch" SortExpression="drawee_bank_branch" HeaderText="Drawee Bank Branch" />
+        <asp:BoundField DataField="funded" SortExpression="funded" HeaderText="Funded?" />
+        <asp:BoundField DataField="verification" SortExpression="verification" HeaderText="Verified?" />
+        <asp:BoundField DataField="confirmed" SortExpression="confirmed" HeaderText="Confirmed?" />
+    </Columns>
     </asp:GridView>
       </div>
     <asp:SqlDataSource ID="SqlDataSource1" runat="server" 

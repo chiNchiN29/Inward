@@ -238,6 +238,66 @@ div.accountInfo
     width: 42%;
 }
 
+/* GRID VIEW
+----------------------------------------------------------*/
+
+.gridView
+{             
+    width: 100%;   
+    background-color: #fff;
+    margin: 5px 0 10px 0;  
+    border: solid 1px #000000;
+}
+     
+.gridView td 
+{   
+    padding: 2px;   
+    border: solid 1px #000000;   
+    color: #000000;  
+}  
+ 
+.gridView th
+{  
+    padding: 4px 2px;   
+    color: #fff;   
+    background: #424242 url(grd_head.png) repeat-x top;  
+    border-left: solid 1px #000000;   
+    font-size: 0.9em;   
+}  
+
+.GridHeader
+{
+    padding: 4px 2px; 
+    background: #424242 url(grd_head.png) repeat-x top; 
+    font-weight: bold;
+    border-left: solid 1px #000000; 
+    font-size:13px;
+}
+
+.GridHeader Inner
+{
+    text-decoration: none;
+    color: #fff;
+    padding: 4px 2px; 
+    font-size:13px;
+   
+}
+
+.GridHeader a
+{
+    text-decoration: none;
+    color: #fff;
+    padding: 4px 2px;
+    font-size:13px;
+}
+
+.GridHeader a:hover
+{
+    text-decoration: underline;
+    font-size:13px;
+    color: red;
+}
+
 /* MISC  
 ----------------------------------------------------------*/
 
@@ -294,3 +354,4 @@ div.accountInfo
     text-align: right;
     padding-right: 10px;
 }
+
