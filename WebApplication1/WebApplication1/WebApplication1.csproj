@@ -33,21 +33,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AjaxControlToolkit, Version=15.1.1.100, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\backup\Inward\WebApplication1\WebApplication1\bin\AjaxControlToolkit.dll</HintPath>
-    </Reference>
     <Reference Include="DotCMIS">
       <HintPath>..\..\..\..\..\Downloads\DotCMIS.dll</HintPath>
     </Reference>
     <Reference Include="FlashUpload">
       <HintPath>E:\FlashUpload.dll</HintPath>
-    </Reference>
-    <Reference Include="GooglePasswordStrength">
-      <HintPath>..\..\..\GooglePasswordStrength_src\GooglePasswordStrength.dll</HintPath>
-    </Reference>
-    <Reference Include="GooglePasswordStrength.Web">
-      <HintPath>..\..\..\GooglePasswordStrength_demo2\ScratchPad\GooglePasswordStrength.Web\bin\GooglePasswordStrength.Web.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
