@@ -4,6 +4,33 @@
 <%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="cc1" %>
 
 <asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeadContent">
+
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/themes/base/jquery-ui.css"
+        type="text/css" media="all" />
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="http://github.com/malsup/blockui/raw/master/jquery.blockUI.js?v2.34"></script>
+    <script type="text/javascript">
+
+        $(function () {
+            $('#<%= uploadDoc.ClientID %>').click(function () {
+                $.blockUI({ message: '<h1>Uploading Images</h1>', css: {
+                    border: 'none',
+                    padding: '15px',
+                    backgroundColor: '#000',
+                    '-webkit-border-radius': '10px',
+                    '-moz-border-radius': '10px',
+                    opacity: 4,
+                    color: '#fff'
+                }
+                });
+            });
+        });
+
+
+    </script>
+
+
     <style type="text/css">
         .grid_scroll
         {
@@ -41,6 +68,10 @@
          {
              text-align:right;
          }
+         .amount
+         {
+             text-align: right;
+         }
         </style>
 </asp:Content>
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
@@ -52,8 +83,8 @@
             <asp:BoundField DataField="customer_name" SortExpression="customer_name" HeaderText="Name" />
             <asp:BoundField DataField="Account Number" SortExpression="Account Number" HeaderText="Account Number" />
             <asp:BoundField DataField="Date" SortExpression="Date" HeaderText="Date" />
-            <asp:BoundField DataField="amount" SortExpression="amount" HeaderText="Amount" />
-            <asp:BoundField DataField="balance" SortExpression="balance" HeaderText="Balance" />
+            <asp:BoundField DataField="amount" SortExpression="amount" HeaderText="Amount" ItemStyle-CssClass="amount" />
+            <asp:BoundField DataField="balance" SortExpression="balance" HeaderText="Balance" ItemStyle-CssClass="amount" />
             <asp:BoundField DataField="branch_name" SortExpression="branch_name" HeaderText="Branch Name" />
             <asp:BoundField DataField="drawee_bank" SortExpression="drawee_bank" HeaderText="Drawee Bank" />
             <asp:BoundField DataField="drawee_bank_branch" SortExpression="drawee_bank_branch" HeaderText="Drawee Bank Branch" />
@@ -62,8 +93,6 @@
         </Columns>
     </asp:GridView>
     </div>
-    <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:ConnectionString %>">
-    </asp:SqlDataSource>
 <div id="loader">
         <div id="imageLoad">
             <asp:Label ID="Label1" runat="server" Font-Size="Larger" ForeColor="Black" 

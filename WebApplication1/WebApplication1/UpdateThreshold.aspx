@@ -42,10 +42,8 @@
         <br />
         <asp:Label ID="Label3" runat="server" Text="New Minimum Threshold Amount:"></asp:Label>
         <br />
-        <asp:TextBox ID="TextBox1" runat="server"></asp:TextBox>
+        <asp:TextBox ID="TextBox1" runat="server" TextMode=Number></asp:TextBox>
         <br />
-        <asp:Label ID="Label7" runat="server" ForeColor="Red" Text="Label" 
-            Visible="False"></asp:Label>
     </div>
     
 
@@ -57,17 +55,26 @@
         <br />
         <asp:Label ID="Label6" runat="server" Text="New Maximum Threshold Amount:"></asp:Label>
         <br />
-        <asp:TextBox ID="TextBox2" runat="server"></asp:TextBox>
+        <asp:TextBox ID="TextBox2" runat="server" TextMode=Number></asp:TextBox>
         <br />
-        <asp:Label ID="Label8" runat="server" ForeColor="Red" Text="Label" 
-            Visible="False"></asp:Label>
     </div>
 
     <div id="clear">
-    <asp:Button ID="Button1" runat="server" onclick="Button1_Click" Text="Set" 
+    <asp:Button ID="Button1" runat="server" onclick="Button1_Click" Text="Set" OnClientClick="return ConfirmSettings();"
     Width="91px" />
     </div>
     
 </div>
     <br />
+
+    <script type="text/javascript">
+
+        function ConfirmSettings() {
+            if (confirm("Are you sure you want to change the settings?")) {
+                return true;
+            }
+            return false;
+        }
+
+</script>
 </asp:Content>

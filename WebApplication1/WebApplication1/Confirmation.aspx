@@ -8,18 +8,21 @@
             border: solid 2px black;
             width: 900px;
         }
-    
+    .amount
+    {
+        text-align: right;
+    }
 </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <div class="grid_scroll">
     <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="false" 
     CssClass="gridView" AllowSorting="true" OnSorting="GridView1_Sorting" 
-    HeaderStyle-CssClass="GridHeader">
+    HeaderStyle-CssClass="GridHeader" ShowFooter="True" FooterStyle-CssClass="gridViewFooterStyle" OnRowDataBound="GridView1_RowDataBound">
     <Columns>
         <asp:TemplateField>
             <ItemTemplate>
-                <asp:RadioButton ID="RowSelect" runat="server" OnClick="javascript:CheckOtherIsCheckedByGVID(this);" AutoPostBack="true" OnCheckedChanged="RowSelect_CheckedChanged" />
+                <asp:RadioButton ID="RowSelect" runat="server" OnClick="javascript:CheckOtherIsCheckedByGVID(this); needToConfirm = false;" AutoPostBack="true" OnCheckedChanged="RowSelect_CheckedChanged" />
             </ItemTemplate>
         </asp:TemplateField>
         <asp:BoundField DataField="check_number" SortExpression="check_number" HeaderText="Check Number" />
@@ -28,7 +31,7 @@
         <asp:BoundField DataField="contact_number" SortExpression="contact_number" HeaderText="Contact Number" />
         <asp:BoundField DataField="Account Number" SortExpression="Account Number" HeaderText="Account Number" />
         <asp:BoundField DataField="Date" SortExpression="Date" HeaderText="Date" />
-        <asp:BoundField DataField="amount" SortExpression="amount" HeaderText="Amount" />
+        <asp:BoundField DataField="amount" SortExpression="amount" HeaderText="Amount" ItemStyle-CssClass="amount" />
         <asp:BoundField DataField="branch_name" SortExpression="branch_name" HeaderText="Branch Name" />
         <asp:BoundField DataField="drawee_bank" SortExpression="drawee_bank" HeaderText="Drawee Bank" />
         <asp:BoundField DataField="drawee_bank_branch" SortExpression="drawee_bank_branch" HeaderText="Drawee Bank Branch" />
@@ -38,21 +41,22 @@
     </Columns>
     </asp:GridView>
       </div>
-    <asp:SqlDataSource ID="SqlDataSource1" runat="server" 
-        ConnectionString="<%$ ConnectionStrings:ConnectionString %>" >
-        </asp:SqlDataSource>
-      
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    Confirmed:
+    <asp:Label ID="totalCon" runat="server" Text="Label"></asp:Label>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Total:
+    <asp:Label ID="totalCount" runat="server" Text="Label"></asp:Label>
     <br />
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <asp:Button ID="fundButton" runat="server" Text="Validate" 
-        onclick="fundButton_Click" />
+        onclick="fundButton_Click" OnClientClick="needToConfirm = false;" />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;
     <asp:Button ID="unfundButton" runat="server" Text="Revoke" 
-        onclick="unfundButton_Click" />
+        onclick="unfundButton_Click" OnClientClick="needToConfirm = false;" />
     <br />
     <br />
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <asp:Button ID="Button1" runat="server" onclick="Button1_Click" 
+    <asp:Button ID="Button1" runat="server" onclick="Button1_Click" OnClientClick="return GenerateList(); needToConfirm = false;" 
         Text="Generate List" />
 
     <script type="text/javascript">
@@ -74,5 +78,38 @@
                 }
             }
         }
+
+        function GenerateList() {
+            if (confirm("Are you sure you want to generate list?")) {
+                return true;
+            }
+            return false;
+        }
+
+        var needToConfirm = true;
+        window.onbeforeunload = confirmExit;
+        function confirmExit() {
+            var totalCon = document.getElementById("<%=totalConHide.ClientID%>").value;
+            var total = document.getElementById("<%=totalCountHide.ClientID%>").value;
+            if (/Firefox[\/\s](\d+)/.test(navigator.userAgent) && new Number(RegExp.$1) >= 4) {
+                if (totalCon < total) {
+                    if (needToConfirm)
+                        return totalCon + "/" + total + " have been verified."
+                }
+            }
+            else {
+                if (totalCon < total) {
+                    if (needToConfirm)
+                        return totalCon + "/" + total + " have been verified."
+                }
+            }
+
+
+
+        }
+
+
 </script>
+    <asp:HiddenField ID="totalConHide" runat="server" />
+    <asp:HiddenField ID="totalCountHide" runat="server" />
 </asp:Content>

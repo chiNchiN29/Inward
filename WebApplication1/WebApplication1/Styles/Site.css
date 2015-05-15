@@ -8,7 +8,7 @@ body
     font-family: "Helvetica Neue", "Lucida Grande", "Segoe UI", Arial, Helvetica, Verdana, sans-serif;
     margin: 0px;
     padding: 0px;
-    color: #696969;
+    color: #000000;
 }
 
 a:link, a:visited
@@ -116,7 +116,7 @@ first child of the left and right table columns */
     color: #f9f9f9;
     line-height: 2em;
     font-size: 2em;
-    width: 395px;
+    width: 361px;
 }
 
 .main
@@ -259,18 +259,16 @@ div.accountInfo
     color: #000000;  
 }  
  
-.gridView th
-{  
-    padding: 4px 2px;   
-    color: #fff;   
-    background: #424242 url(grd_head.png) repeat-x top;  
-    border-left: solid 1px #000000;   
-    font-size: 0.9em;   
-}  
+.gridViewFooterStyle
+{
+    background: #424242;
+    color: #fff;
+}
 
 .GridHeader
 {
-    padding: 4px 2px; 
+    padding: 4px 2px;   
+    color: #fff;
     background: #424242 url(grd_head.png) repeat-x top; 
     font-weight: bold;
     border-left: solid 1px #000000; 
@@ -300,6 +298,20 @@ div.accountInfo
     font-size:13px;
     color: red;
 }
+
+.gridView2
+{               
+    background-color: #fff;
+    margin: 5px 0 10px 0;  
+    border: solid 2px #000000;
+}
+     
+.gridView2 td 
+{   
+    padding: 2px;   
+    border: solid 1px #000000;   
+    color: #000000;  
+}  
 
 /* MISC  
 ----------------------------------------------------------*/

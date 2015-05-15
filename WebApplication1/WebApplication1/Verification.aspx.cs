@@ -23,8 +23,8 @@ namespace WebApplication1
     public partial class Verification : System.Web.UI.Page
     {
         SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
-       
-
+        int totalVerified = 0;
+    
         protected void Page_Load(object sender, EventArgs e)
         {
             bool login = System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
@@ -50,7 +50,11 @@ namespace WebApplication1
                     if (!Page.IsPostBack)
                     {
                         ViewState["myDataTable"] = FillDataTable();
+                        
+                    
+
                     }
+                    
                     int counter = 0;
                     if (!ReturnValue())
                     {
@@ -141,10 +145,8 @@ namespace WebApplication1
                     if (rb.Checked == true)
                     {
                         return row.RowIndex;
-
                     }
                 }
-                
             }
             return x;
         }
@@ -155,7 +157,7 @@ namespace WebApplication1
             if (i != -1)
             {
                 GridViewRow row = GridView1.Rows[i];
-                string wew = row.Cells[1].Text;
+                string wew2 = row.Cells[1].Text;
                 Response.Write(i);
                 row.BackColor = System.Drawing.Color.Aqua;
                 row.Style.Add("class", "SelectedRowStyle");
@@ -176,17 +178,8 @@ namespace WebApplication1
                 ShowChequeImage(session, image);
                 ShowSigDTImage(row.RowIndex);
             }
-            else
-            {
-                StringBuilder sb = new StringBuilder();
-                sb.Append("<script language='javascript'>");
-                sb.Append("alert('Please select a chec');");
-                sb.Append("<");
-                sb.Append("/script>");
 
-                if (!ClientScript.IsClientScriptBlockRegistered("ErrorPopup"))
-                    ClientScript.RegisterClientScriptBlock(this.GetType(), "ErrorPopup", sb.ToString()); 
-            }
+           
         }
 
         //Signature image in Database
@@ -249,27 +242,40 @@ namespace WebApplication1
 
         protected void acceptButton_Click(object sender, EventArgs e)
         {
-           
            int i = GetRowIndex();
            if (i != -1)
            {
-               connection.Open();
-               SqlCommand update = new SqlCommand("update CHEQUE SET verification = @verify WHERE account_number = @acctnumber AND check_number = @chknumber", connection);
-               update.Parameters.AddWithValue("@acctnumber", GridView1.Rows[i].Cells[3].Text);
-               update.Parameters.AddWithValue("@chknumber", GridView1.Rows[i].Cells[1].Text);
-               update.Parameters.AddWithValue("@verify", "YES");
-               update.ExecuteNonQuery();
-               connection.Close();
+               if (Image1.ImageUrl == "~/Resources/H2DefaultImage.jpg" || Image2.ImageUrl == "~/Resources/H2DefaultImage.jpg")
+               {
+                   StringBuilder sb = new StringBuilder();
+                   sb.Append("<script language='javascript'>");
+                   sb.Append("alert('Cannot verify check because there is no existing image');");
+                   sb.Append("<");
+                   sb.Append("/script>");
 
-               DataTable dt = FillDataTable();
-               GridView1.DataSource = dt;
-               GridView1.DataBind();
+                   if (!ClientScript.IsClientScriptBlockRegistered("ErrorPopup"))
+                       ClientScript.RegisterClientScriptBlock(this.GetType(), "ErrorPopup", sb.ToString());
+               }
+               else
+               {
+                   connection.Open();
+                   SqlCommand update = new SqlCommand("update CHEQUE SET verification = @verify WHERE account_number = @acctnumber AND check_number = @chknumber", connection);
+                   update.Parameters.AddWithValue("@acctnumber", GridView1.Rows[i].Cells[3].Text);
+                   update.Parameters.AddWithValue("@chknumber", GridView1.Rows[i].Cells[1].Text);
+                   update.Parameters.AddWithValue("@verify", "YES");
+                   update.ExecuteNonQuery();
+                   connection.Close();
+
+                   DataTable dt = FillDataTable();
+                   GridView1.DataSource = dt;
+                   GridView1.DataBind();
+               }
            }
            else
            {
                StringBuilder sb = new StringBuilder();
                sb.Append("<script language='javascript'>");
-               sb.Append("alert('No existing image or check');");
+               sb.Append("alert('Please select a check');");
                sb.Append("<");
                sb.Append("/script>");
 
@@ -281,18 +287,45 @@ namespace WebApplication1
         protected void rejectButton_Click(object sender, EventArgs e)
         {
             int i = GetRowIndex();
+            if (i != -1)
+            {
+                if (Image1.ImageUrl == "~/Resources/H2DefaultImage.jpg" || Image2.ImageUrl == "~/Resources/H2DefaultImage.jpg")
+                {
+                    StringBuilder sb = new StringBuilder();
+                    sb.Append("<script language='javascript'>");
+                    sb.Append("alert('Cannot verify check because there is no existing image');");
+                    sb.Append("<");
+                    sb.Append("/script>");
 
-            connection.Open();
-            SqlCommand update = new SqlCommand("update CHEQUE SET verification = @verify WHERE account_number = @acctnumber AND check_number = @chknumber", connection);
-            update.Parameters.AddWithValue("@acctnumber", GridView1.Rows[i].Cells[3].Text);
-            update.Parameters.AddWithValue("@chknumber", GridView1.Rows[i].Cells[1].Text);
-            update.Parameters.AddWithValue("@verify", "NO");
-            update.ExecuteNonQuery();
-            connection.Close();
+                    if (!ClientScript.IsClientScriptBlockRegistered("ErrorPopup"))
+                        ClientScript.RegisterClientScriptBlock(this.GetType(), "ErrorPopup", sb.ToString());
+                }
+                else
+                {
+                    connection.Open();
+                    SqlCommand update = new SqlCommand("update CHEQUE SET verification = @verify WHERE account_number = @acctnumber AND check_number = @chknumber", connection);
+                    update.Parameters.AddWithValue("@acctnumber", GridView1.Rows[i].Cells[3].Text);
+                    update.Parameters.AddWithValue("@chknumber", GridView1.Rows[i].Cells[1].Text);
+                    update.Parameters.AddWithValue("@verify", "NO");
+                    update.ExecuteNonQuery();
+                    connection.Close();
 
-            DataTable dt = FillDataTable();
-            GridView1.DataSource = dt;
-            GridView1.DataBind();
+                    DataTable dt = FillDataTable();
+                    GridView1.DataSource = dt;
+                    GridView1.DataBind();
+                }
+            }
+            else
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append("<script language='javascript'>");
+                sb.Append("alert('Please select a check');");
+                sb.Append("<");
+                sb.Append("/script>");
+
+                if (!ClientScript.IsClientScriptBlockRegistered("ErrorPopup"))
+                    ClientScript.RegisterClientScriptBlock(this.GetType(), "ErrorPopup", sb.ToString());
+            }   
         }
 
         //insert signatures in database
@@ -382,7 +415,7 @@ namespace WebApplication1
         public DataTable FillDataTable()
         {
             string wew = Membership.GetUser(User.Identity.Name).ToString();
-            SqlCommand cmd = new SqlCommand("SELECT check_number, customer_name, CHEQUE.account_number AS 'Account Number', CONVERT(VARCHAR(10), check_date, 101) AS Date , amount, balance as Balance, BRANCH.branch_name AS 'Branch Name', drawee_bank, drawee_bank_branch, verification FROM CHEQUE, CUSTOMER, ACCOUNT, THRESHOLD, BRANCH, END_USER WHERE END_USER.username = @username AND END_USER.user_id = BRANCH.user_id AND BRANCH.branch_name = CHEQUE.branch_name AND CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id AND CHEQUE.amount >= minimum AND verification <> 'BTA' ORDER BY CHEQUE.account_number", connection);
+            SqlCommand cmd = new SqlCommand("SELECT check_number, customer_name, CHEQUE.account_number AS 'Account Number', CONVERT(VARCHAR(10), check_date, 101) AS Date , convert(varchar,cast(amount as money),1) AS amount, convert(varchar,cast(balance as money),1) AS balance, BRANCH.branch_name AS 'Branch Name', drawee_bank, drawee_bank_branch, verification FROM CHEQUE, CUSTOMER, ACCOUNT, THRESHOLD, BRANCH, END_USER WHERE END_USER.username = @username AND END_USER.user_id = BRANCH.user_id AND BRANCH.branch_name = CHEQUE.branch_name AND CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id AND CHEQUE.amount >= minimum AND verification <> 'BTA' ORDER BY CHEQUE.account_number", connection);
             cmd.Parameters.AddWithValue("@username", wew); 
             DataTable dt = new DataTable();
             SqlDataAdapter da = new SqlDataAdapter(cmd);
@@ -417,17 +450,30 @@ namespace WebApplication1
 
         protected void GridView1_RowDataBound(Object sender, GridViewRowEventArgs e)
         {
+            int total = GridView1.Rows.Count;
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
                 string verified = e.Row.Cells[10].Text;
                 if (verified.Equals("YES"))
                 {
-                    e.Row.ForeColor = System.Drawing.Color.Green;                 
+                    e.Row.ForeColor = System.Drawing.Color.Green;
+                    totalVerified++;
                 }
                 if (verified.Equals("NO"))
                 {
                     e.Row.ForeColor = System.Drawing.Color.Red;
+                    int wew = totalVerified++;
+                    //totalVerified++;
                 }
+            }
+            else if (e.Row.RowType == DataControlRowType.Footer)
+            {
+                e.Row.Cells[9].Text = "Verified: " + totalVerified.ToString();
+                e.Row.Cells[10].Text = "Total: " + total.ToString();
+                totalVer.Text = totalVerified.ToString();
+                totalCount.Text = total.ToString();
+                totalVerHide.Value = totalVerified.ToString();
+                totalCountHide.Value = total.ToString();
             }
         }
     }

@@ -22,6 +22,7 @@ namespace WebApplication1
             
         SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
         SqlCommand cmd;
+        int totalConfirmed = 0;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -182,7 +183,7 @@ namespace WebApplication1
 
         public DataTable FillDataTable()
         {
-            string query = "SELECT check_number, customer_name, customer_address, contact_number, CHEQUE.account_number AS 'Account Number', CONVERT(VARCHAR(10), check_date, 101) AS Date, amount, branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed FROM CHEQUE, CUSTOMER, ACCOUNT, THRESHOLD WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id AND ((verification = 'YES' AND amount > maximum) OR verification = 'NO')  ORDER BY CHEQUE.account_number";
+            string query = "SELECT check_number, customer_name, customer_address, contact_number, CHEQUE.account_number AS 'Account Number', CONVERT(VARCHAR(10), check_date, 101) AS Date, convert(varchar,cast(amount as money),1) AS amount, branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed FROM CHEQUE, CUSTOMER, ACCOUNT, THRESHOLD WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id AND ((verification = 'YES' AND amount > maximum) OR verification = 'NO')  ORDER BY CHEQUE.account_number";
             connection.Open();
             DataTable dt = new DataTable();
             SqlDataAdapter da = new SqlDataAdapter(query, connection);
@@ -234,16 +235,17 @@ namespace WebApplication1
                 }
             }
             return x;
-        }
 
+        }
+        
+        
         protected void RowSelect_CheckedChanged(Object sender, EventArgs e)
         {
             int i = GetRowIndex();
             if (i != -1)
             {
                 GridViewRow row = GridView1.Rows[i];
-                string wew = row.Cells[1].Text;
-                Response.Write(i);
+                
                 row.BackColor = System.Drawing.Color.Aqua;
                 row.Style.Add("class", "SelectedRowStyle");
             }
@@ -257,6 +259,34 @@ namespace WebApplication1
 
                 if (!ClientScript.IsClientScriptBlockRegistered("ErrorPopup"))
                     ClientScript.RegisterClientScriptBlock(this.GetType(), "ErrorPopup", sb.ToString());
+            }
+        }
+
+        protected void GridView1_RowDataBound(Object sender, GridViewRowEventArgs e)
+        {
+            int total = GridView1.Rows.Count;
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                string confirmed = e.Row.Cells[13].Text;
+                if (confirmed.Equals("YES"))
+                {
+                    e.Row.ForeColor = System.Drawing.Color.Green;
+                    totalConfirmed += 1;
+                }
+                if (confirmed.Equals("NO"))
+                {
+                    e.Row.ForeColor = System.Drawing.Color.Red;
+                    totalConfirmed += 1;
+                }
+            }
+            else if (e.Row.RowType == DataControlRowType.Footer)
+            {
+                e.Row.Cells[12].Text = "Confirmed: " + totalConfirmed.ToString();
+                e.Row.Cells[13].Text = "Total: " + total.ToString();
+                totalCon.Text = totalConfirmed.ToString();
+                totalCount.Text = total.ToString();
+                totalConHide.Value = totalConfirmed.ToString();
+                totalCountHide.Value = total.ToString();
             }
         }
     }
