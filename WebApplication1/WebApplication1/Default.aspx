@@ -1,6 +1,8 @@
 ﻿<%@ Page Title="Home Page" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true"
     CodeBehind="Default.aspx.cs" Inherits="WebApplication1._Default" %>
 
+<%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="cc1" %>
+
 <asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeadContent">
     <style type="text/css">
         .grid_scroll
@@ -70,11 +72,9 @@
             <asp:FileUpload ID="FileUpload3" runat="server" AllowMultiple="true"/>
             <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" 
             ControlToValidate="FileUpload3" 
-            ErrorMessage="Only image files are allowed"
-            
-                ValidationExpression="(.*\.([Jj][Pp][Gg])|.*\.([Jj][Pp][Ee][Gg])|.*\.([Pp][Nn][Gg])|.*\.([Tt][Ii][Ff])$)" 
-                ForeColor="Red"></asp:RegularExpressionValidator>
-            <br />
+            ErrorMessage="Image files only"
+            ValidationExpression="(.*\.([Jj][Pp][Gg])|.*\.([Jj][Pp][Ee][Gg])|.*\.([Pp][Nn][Gg])|.*\.([Tt][Ii][Ff])$)" 
+            ForeColor="Red"></asp:RegularExpressionValidator>
             <asp:Button ID="uploadDoc" runat="server" Text="Upload Image" 
             OnClick="uploadDoc_Click" Width="155px"/>   
         </div>

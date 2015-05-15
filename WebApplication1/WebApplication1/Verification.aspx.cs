@@ -68,6 +68,7 @@ namespace WebApplication1
                         CSM.RegisterClientScriptBlock(this.GetType(), "Confirm", "<script language=\"JavaScript\">window.onbeforeunload = confirmExit;function confirmExit(){return \"A total of " + counter + "/" + GridView1.Rows.Count + " has been verified.  Are you sure you want to exit this page?\";}</script>", false);
                     }//}
                 }
+                connection.Close();
             }
         }
 
@@ -82,8 +83,8 @@ namespace WebApplication1
             SessionFactory factory = SessionFactory.NewInstance();
             ISession session;
             parameters[DotCMIS.SessionParameter.User] = "admin";
-            //parameters[DotCMIS.SessionParameter.Password] = "092095";
-            parameters[DotCMIS.SessionParameter.Password] = "admin";
+            parameters[DotCMIS.SessionParameter.Password] = "092095";
+            //parameters[DotCMIS.SessionParameter.Password] = "admin";
             //parameters[DotCMIS.SessionParameter.Password] = "H2scs2015";
             parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
             parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
@@ -162,8 +163,8 @@ namespace WebApplication1
                 SessionFactory factory = SessionFactory.NewInstance();
                 ISession session;
                 parameters[DotCMIS.SessionParameter.User] = "admin";
-                //parameters[DotCMIS.SessionParameter.Password] = "092095";
-                parameters[DotCMIS.SessionParameter.Password] = "admin";
+                parameters[DotCMIS.SessionParameter.Password] = "092095";
+                //parameters[DotCMIS.SessionParameter.Password] = "admin";
                 //parameters[DotCMIS.SessionParameter.Password] = "H2scs2015";
                 parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
                 parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
@@ -324,7 +325,7 @@ namespace WebApplication1
             Response.AddHeader("content-disposition", "attachment;filename=" + fileName + ".csv");
             Response.Charset = "";
     
-            Response.ContentType = "application/text";
+            Response.ContentType = "text/csv";
 
             System.Text.StringBuilder sb = new System.Text.StringBuilder();
             
@@ -343,8 +344,10 @@ namespace WebApplication1
                 }
                 sb.Append("\r\n");
             }
-            Response.Output.Write(sb.ToString());
-            Response.Flush();
+            //Response.Output.Write(sb.ToString());
+            //Response.Flush();
+            //Response.End();
+            Response.Write(sb.ToString());
             Response.End();
         }
 
@@ -378,7 +381,6 @@ namespace WebApplication1
 
         public DataTable FillDataTable()
         {
-            connection.Open();
             string wew = Membership.GetUser(User.Identity.Name).ToString();
             SqlCommand cmd = new SqlCommand("SELECT check_number, customer_name, CHEQUE.account_number AS 'Account Number', CONVERT(VARCHAR(10), check_date, 101) AS Date , amount, balance as Balance, BRANCH.branch_name AS 'Branch Name', drawee_bank, drawee_bank_branch, verification FROM CHEQUE, CUSTOMER, ACCOUNT, THRESHOLD, BRANCH, END_USER WHERE END_USER.username = @username AND END_USER.user_id = BRANCH.user_id AND BRANCH.branch_name = CHEQUE.branch_name AND CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id AND CHEQUE.amount >= minimum AND verification <> 'BTA' ORDER BY CHEQUE.account_number", connection);
             cmd.Parameters.AddWithValue("@username", wew); 
@@ -387,7 +389,7 @@ namespace WebApplication1
             da.Fill(dt);
             GridView1.DataSource = dt;
             GridView1.DataBind();
-            connection.Close();
+          
             return dt;
         }
 

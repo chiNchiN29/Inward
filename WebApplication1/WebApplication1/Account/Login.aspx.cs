@@ -21,13 +21,11 @@ namespace WebApplication1.Account
 
         protected void Button1_Click(object sender, EventArgs e)
         {
-            //if (Membership.ValidateUser(TextBox1.Text, TextBox2.Text))
-            //{
+            if (Membership.ValidateUser(TextBox1.Text, TextBox2.Text))
+            {
                 connection.Open();
                 SqlCommand usernameChecker = new SqlCommand("SELECT username FROM END_USER WHERE username = '" + TextBox1.Text + "'", connection);
                 SqlCommand passwordChecker = new SqlCommand("SELECT password FROM END_USER WHERE username = '" + TextBox1.Text + "'", connection);
-                string username = usernameChecker.ExecuteScalar().ToString();
-                string password = passwordChecker.ExecuteScalar().ToString();
                 if (usernameChecker.ExecuteScalar() != null && passwordChecker.ExecuteScalar() != null)
                 {
                     if (TextBox1.Text == usernameChecker.ExecuteScalar().ToString() && TextBox2.Text == passwordChecker.ExecuteScalar().ToString())
@@ -44,5 +42,6 @@ namespace WebApplication1.Account
                     Label2.Visible = true;
                 }
             }
+        }
     }
 }
