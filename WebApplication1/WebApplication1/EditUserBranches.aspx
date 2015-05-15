@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="EditUserBranches.aspx.cs" Inherits="WebApplication1.EditUserBranches" %>
+﻿<%@ Page Title="User Branches" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="EditUserBranches.aspx.cs" Inherits="WebApplication1.EditUserBranches" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
@@ -8,16 +8,15 @@
     </p>
     Branches:<br />
     <br />
-    <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="false">
+    <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="false" CssClass="gridView2" HeaderStyle-CssClass="GridHeader">
     <Columns>
         <asp:TemplateField>
                 <ItemTemplate>
                     <asp:CheckBox ID="chkBox" runat="server" />
                 </ItemTemplate>
             </asp:TemplateField>
-    <asp:BoundField DataField="branch_name" HeaderText="Branch Name" />
-    <asp:BoundField DataField="number_checks" HeaderText="Number of Checks" />
-    <asp:BoundField DataField="username" HeaderText="Handler" />
+    <asp:BoundField DataField="branch_name" HeaderText="Branch Name" ItemStyle-Width="100px" /> 
+    <asp:BoundField DataField="username" HeaderText="Handler" ItemStyle-Width="100px" />
     </Columns>
     </asp:GridView>
     <br />
@@ -25,7 +24,4 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <asp:Button ID="cancelBtn" runat="server" onclick="cancelBtn_Click" 
         Text="Cancel" />
-    <asp:SqlDataSource ID="SqlDataSource1" runat="server"
-    ConnectionString="<%$ ConnectionStrings:ConnectionString %>" >
-    </asp:SqlDataSource>
-</asp:Content>
+    </asp:Content>

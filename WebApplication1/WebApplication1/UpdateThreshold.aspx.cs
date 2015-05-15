@@ -6,6 +6,8 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data.SqlClient;
 using System.Configuration;
+using System.Threading;
+using System.Globalization;
 
 namespace WebApplication1
 {
@@ -20,21 +22,24 @@ namespace WebApplication1
             SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
             connection.Open();
             SqlCommand select = new SqlCommand("select minimum from THRESHOLD", connection);
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-PH", false);
             Label2.Text = String.Format("{0:C}", select.ExecuteScalar());
+            
             SqlCommand select2 = new SqlCommand("select maximum from THRESHOLD", connection);
             Label5.Text = String.Format("{0:C}", select2.ExecuteScalar());
+            
+
+            if (!Page.IsPostBack)
+            {
+               
+            }
             connection.Close();
         }
 
         protected void Button1_Click(object sender, EventArgs e)
         {
-            ClientScriptManager CSM = Page.ClientScript;
             if (TextBox1.Text != "" || TextBox2.Text != "")
             {
-                if (!ReturnValue())
-                {
-                    string strconfirm = "<script>if(!window.confirm('Do you wish to proceed with the change?')){window.location.href='Default.aspx'}</script>";
-                    CSM.RegisterClientScriptBlock(this.GetType(), "Confirm", strconfirm, false);
                     SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
                     connection.Open();
                     int num1;
@@ -46,11 +51,8 @@ namespace WebApplication1
                             SqlCommand updateMin = new SqlCommand("update THRESHOLD SET minimum = @thresh", connection);
                             updateMin.Parameters.AddWithValue("@thresh", TextBox1.Text);
                             updateMin.ExecuteNonQuery();
-                        }
-                        else
-                        {
-                            Label7.Visible = true;
-                            Label7.Text = "Input is invalid.";
+                            SqlCommand select = new SqlCommand("select minimum from THRESHOLD", connection);
+                            Label2.Text = String.Format("{0:C}", select.ExecuteScalar());
                         }
                     }
 
@@ -62,25 +64,17 @@ namespace WebApplication1
                             SqlCommand updateMax = new SqlCommand("update THRESHOLD SET maximum = @thresh", connection);
                             updateMax.Parameters.AddWithValue("@thresh", TextBox2.Text);
                             updateMax.ExecuteNonQuery();
-                        }
-                        else
-                        {
-                            Label8.Visible = true;
-                            Label8.Text = "Input is invalid.";
+                            SqlCommand select2 = new SqlCommand("select maximum from THRESHOLD", connection);
+                            Label5.Text = String.Format("{0:C}", select2.ExecuteScalar());
                         }
                     }
                     connection.Close();
                 }
-            }
+            
             else
             {
                 Response.Redirect("Default.aspx");
             }
         }
-
-        bool ReturnValue()
-        {
-            return false;
-        }       
     }
 }

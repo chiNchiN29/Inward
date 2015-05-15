@@ -230,7 +230,7 @@ namespace WebApplication1
                 {
                     string line = sr.ReadLine();
                     string[] heart = line.Split(',');
-                    SqlCommand validator = new SqlCommand("select check_number from END_USER where check_number = '" + heart[0] + "'");
+                    SqlCommand validator = new SqlCommand("select check_number from CHEQUE where check_number = '" + heart[0] + "'", connection);
                     if (validator.ExecuteScalar() == null)
                     {
                         SqlCommand insert = new SqlCommand("insert into CHEQUE(check_number, amount, check_date, branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed, account_number) values (@checknum, @amount, @date, @branch, @draweebank, @draweebranch, @funded, @verified, @confirmed, @acctnum)", connection);
@@ -266,14 +266,13 @@ namespace WebApplication1
             }
             catch (Exception b)
             {
-                Response.Write("Please re-check the format of the data for any missing fields.");
+                //Response.Write("Please re-check the format of the data for any missing fields.");
+                Response.Write(b);
             }
 
-            //insert into branches
-            SqlCommand insertBranches = new SqlCommand("insert into BRANCH (branch_name, number_checks) SELECT branch_name, COUNT(*) FROM CHEQUE GROUP BY branch_name", connection);
-            insertBranches.ExecuteNonQuery();
+      
 
-            connection.Close();
+             connection.Close();
         }
 
         protected void clearCheck_Click1(object sender, EventArgs e)
@@ -299,7 +298,7 @@ namespace WebApplication1
 
         public DataTable FillDataTable()
         {
-            string query = "SELECT check_number, customer_name, CHEQUE.account_number AS 'Account Number', CONVERT(VARCHAR(10), check_date, 101) AS Date, amount, balance, branch_name, drawee_bank, drawee_bank_branch, verification, funded FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id ORDER BY CHEQUE.check_number";
+            string query = "SELECT check_number, customer_name, CHEQUE.account_number AS 'Account Number', CONVERT(VARCHAR(10), check_date, 101) AS Date, convert(varchar,cast(amount as money),1) AS amount, convert(varchar,cast(balance as money),1) AS balance, branch_name, drawee_bank, drawee_bank_branch, verification, funded FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id ORDER BY CHEQUE.check_number";
           
             DataTable dt = new DataTable();
             SqlDataAdapter da = new SqlDataAdapter(query, connection);
