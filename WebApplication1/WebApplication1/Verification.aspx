@@ -30,7 +30,23 @@
         }
         #images
         {
-            width: 920px;
+            width:920px;
+        }
+        #imageLeft
+        {
+            width:460px;
+            float:left;
+            text-align:center;
+        }
+        #imageRight
+        {
+            width:460px;
+            float:right;
+            text-align:center;
+        }
+        #buttonWield
+        {
+            text-align:center;
         }
         .amount
         {
@@ -93,36 +109,34 @@
         Width="86px" onclick="rejectButton_Click" OnClientClick="needToConfirm = false;" />
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <br />
-    <br/>
-    <asp:Label ID="Label1" runat="server" AssociatedControlID="Image1" 
-        BorderStyle="None" Text="Image"></asp:Label>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
-    <asp:Label ID="Label2" runat="server" AssociatedControlID="Image2" 
-        Text="Signature"></asp:Label>
+    
     <br/>
     <div id="images">
-    <asp:Image ID="Image1" runat="server" CssClass="image_box" Height="180px" 
-        Width="450px" Visible="False" ImageAlign="Left" 
-        ImageUrl="~/Resources/H2DefaultImage.jpg"/> &nbsp&nbsp&nbsp
-    <asp:Image ID="Image2" runat="server" CssClass="image_box" Height="180px" 
-        Width="450px" Visible="False" ImageAlign="Right" 
-        ImageUrl="~/Resources/H2DefaultImage.jpg"/>
+        <div id="imageLeft">
+            <asp:Label ID="Label1" runat="server" AssociatedControlID="Image1" 
+            BorderStyle="None" Text="Image"></asp:Label>
+            <asp:Image ID="Image1" runat="server" CssClass="image_box" Height="180px" 
+            Width="450px" Visible="False" ImageAlign="Left" 
+            ImageUrl="~/Resources/H2DefaultImage.jpg"/>
+        </div>
+        <div id="imageRight">
+            <asp:Label ID="Label2" runat="server" AssociatedControlID="Image2" 
+            Text="Signature"></asp:Label>
+            <asp:Image ID="Image2" runat="server" CssClass="image_box" Height="180px" 
+            Width="450px" Visible="False" ImageAlign="Right" 
+            ImageUrl="~/Resources/H2DefaultImage.jpg"/>
+        </div>
+        <div id="emptySpace">
+            
+        </div>
+        <div id="buttonWield">
+            <asp:Button ID="Button1" runat="server" onclick="Button1_Click" OnClientClick="return GenerateList(); needToConfirm = false;" 
+            Text="Generate List" />
+        </div>
     </div>
     <br/>
-    <br/><br/>
-
+    <br />
     
-    &nbsp&nbsp&nbsp&nbsp
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <asp:Button ID="Button1" runat="server" onclick="Button1_Click" OnClientClick="return GenerateList(); needToConfirm = false;" 
-        Text="Generate List" />
 
         <script type="text/javascript">
             function CheckOtherIsCheckedByGVID(spanChk) {

@@ -11,21 +11,15 @@ using System.Globalization;
 
 namespace WebApplication1
 {
-    public partial class UpdateThreshold : System.Web.UI.Page
+    public partial class UpdateThreshold : BasePage
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            bool login = System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
-            if (login == false)
-                Response.Redirect("~/Account/Login.aspx");
-
-            SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
-            connection.Open();
-            SqlCommand select = new SqlCommand("select minimum from THRESHOLD", connection);
+            SqlCommand select = new SqlCommand("select minimum from THRESHOLD", activeConnection);
             Thread.CurrentThread.CurrentCulture = new CultureInfo("en-PH", false);
             Label2.Text = String.Format("{0:C}", select.ExecuteScalar());
             
-            SqlCommand select2 = new SqlCommand("select maximum from THRESHOLD", connection);
+            SqlCommand select2 = new SqlCommand("select maximum from THRESHOLD", activeConnection);
             Label5.Text = String.Format("{0:C}", select2.ExecuteScalar());
             
 
@@ -33,10 +27,10 @@ namespace WebApplication1
             {
                
             }
-            connection.Close();
+            activeConnection.Close();
         }
 
-        protected void Button1_Click(object sender, EventArgs e)
+        protected void SetThresholds(object sender, EventArgs e)
         {
             if (TextBox1.Text != "" || TextBox2.Text != "")
             {

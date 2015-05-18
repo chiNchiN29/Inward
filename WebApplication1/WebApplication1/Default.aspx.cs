@@ -19,28 +19,27 @@ using System.Text;
 
 namespace WebApplication1
 {
+<<<<<<< HEAD
     public partial class _Default : System.Web.UI.Page
     {
         SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
         DataTable dt;
     
+=======
+    public partial class _Default : BasePage
+    {    
+>>>>>>> master
         protected void Page_Load(object sender, EventArgs e)
         {
-            bool login = System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
-            if (login == false)
-                Response.Redirect("~/Account/Login.aspx");
-           
-            CreatingSessionUsingAtomPub();
-         
             if (!IsPostBack)
             {
                 ViewState["myDataTable"] = FillDataTable();
             }
-   
         }
 
-        private void CreatingSessionUsingAtomPub()
+        protected void UploadImage(Object sender, EventArgs e)
         {
+<<<<<<< HEAD
             Dictionary<string, string> parameters = new Dictionary<string, string>();
             SessionFactory factory = SessionFactory.NewInstance();
             ISession session;
@@ -147,26 +146,18 @@ namespace WebApplication1
                 return true;
             }
             catch (DotCMIS.Exceptions.CmisObjectNotFoundException)
+=======
+            HttpFileCollection hfc = Request.Files;
+            for (int i = 0; i < hfc.Count; i++)
+>>>>>>> master
             {
-                return false;
+                HttpPostedFile hpf = hfc[i];
+                if (hpf.ContentLength > 0)
+                {
+                    UploadADocument(session, imageToByteArray(System.Drawing.Image.FromStream(hpf.InputStream)), Path.GetFileNameWithoutExtension(hpf.FileName));
+                }
             }
-        }
-
-        private static void CreateAFolder(ISession session, String FolderName)
-        {
-            Dictionary<String, object> FolderProperties = new Dictionary<string, object>();
-            FolderProperties[DotCMIS.PropertyIds.Name] = FolderName;
-            FolderProperties[DotCMIS.PropertyIds.ObjectTypeId] = "cmis:folder";
-            session.GetRootFolder().CreateFolder(FolderProperties);
-        }
-
-        private static void CreateASubFolder(ISession session, String FolderName, String ParentFolderPath)
-        {
-            Dictionary<String, object> FolderProperties = new Dictionary<string, object>();
-            FolderProperties[DotCMIS.PropertyIds.Name] = FolderName;
-            FolderProperties[DotCMIS.PropertyIds.ObjectTypeId] = "cmis:folder";
-            IFolder newFolder = (IFolder)session.GetObjectByPath(ParentFolderPath);
-            newFolder.CreateFolder(FolderProperties);
+            Response.Write("<script langauge=\"javascript\">alert(\"Images successfully added\");</script>");
         }
 
         private void UploadADocument(ISession session, byte[] ImageFile, string fileName)
@@ -186,6 +177,7 @@ namespace WebApplication1
             folder.CreateDocument(DocumentProperties, contentStream, null);
         }
 
+<<<<<<< HEAD
         protected void uploadDoc_Click(Object sender, EventArgs e)
         {
             
@@ -220,6 +212,8 @@ namespace WebApplication1
             }
         }
 
+=======
+>>>>>>> master
         private static byte[] imageToByteArray(System.Drawing.Image imageIn)
         {
             using (MemoryStream ms = new MemoryStream())
@@ -229,22 +223,21 @@ namespace WebApplication1
             }
         }
 
-        protected void uploadDoc0_Click(object sender, EventArgs e)
+        protected void UploadCheckData(object sender, EventArgs e)
         {
             try
             {
-                connection.Open();
                 //string filepath = FileUpload2.PostedFile.FileName;
                 StreamReader sr = new StreamReader(FileUpload2.PostedFile.InputStream);
                 while (!sr.EndOfStream)
                 {
                     string line = sr.ReadLine();
                     string[] heart = line.Split(',');
-                    SqlCommand validator = new SqlCommand("select check_number from CHEQUE where check_number = '" + heart[0] + "'", connection);
+                    SqlCommand validator = new SqlCommand("select check_number from CHEQUE where check_number = '" + heart[0] + "'", activeConnection);
                     if (validator.ExecuteScalar() == null)
                     {
-                        SqlCommand insert = new SqlCommand("insert into CHEQUE(check_number, amount, check_date, branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed, account_number) values (@checknum, @amount, @date, @branch, @draweebank, @draweebranch, @funded, @verified, @confirmed, @acctnum)", connection);
-                        SqlCommand checker = new SqlCommand("select minimum from THRESHOLD", connection);
+                        SqlCommand insert = new SqlCommand("insert into CHEQUE(check_number, amount, check_date, branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed, account_number) values (@checknum, @amount, @date, @branch, @draweebank, @draweebranch, @funded, @verified, @confirmed, @acctnum)", activeConnection);
+                        SqlCommand checker = new SqlCommand("select minimum from THRESHOLD", activeConnection);
                         insert.Parameters.AddWithValue("@checknum", heart[0]);
                         insert.Parameters.AddWithValue("@amount", heart[1]);
                         insert.Parameters.AddWithValue("@date", heart[2]);
@@ -279,19 +272,25 @@ namespace WebApplication1
                 Response.Write("Please re-check the format of the data for any missing fields.");
               
             }
+<<<<<<< HEAD
              connection.Close();
+=======
+
+      
+
+             activeConnection.Close();
+>>>>>>> master
         }
 
         protected void clearCheck_Click1(object sender, EventArgs e)
         {
-            connection.Open();
-            SqlCommand delete = new SqlCommand("DELETE FROM CHEQUE", connection);
-            SqlCommand deleteBranches = new SqlCommand("DELETE FROM BRANCH DBCC CHECKIDENT('BRANCH', RESEED, 0)", connection);
+            SqlCommand delete = new SqlCommand("DELETE FROM CHEQUE", activeConnection);
+            SqlCommand deleteBranches = new SqlCommand("DELETE FROM BRANCH DBCC CHECKIDENT('BRANCH', RESEED, 0)", activeConnection);
             delete.ExecuteNonQuery();
             deleteBranches.ExecuteNonQuery();
             
             GridView1.DataBind();
-            connection.Close();
+            activeConnection.Close();
             
         }
 
@@ -305,6 +304,7 @@ namespace WebApplication1
 
         public DataTable FillDataTable()
         {
+<<<<<<< HEAD
             //string query = "SELECT check_number, customer_name, CHEQUE.account_number AS 'Account Number', check_date, amount, balance, branch_name, drawee_bank, drawee_bank_branch, verification, funded FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id ORDER BY CHEQUE.check_number";
             StringBuilder query = new StringBuilder();
             query.Append("SELECT check_number, customer_name, CHEQUE.account_number, check_date, amount, balance, branch_name, drawee_bank, drawee_bank_branch, verification, funded ");
@@ -314,6 +314,12 @@ namespace WebApplication1
 
             dt = new DataTable();
             SqlDataAdapter da = new SqlDataAdapter(query.ToString(), connection);
+=======
+            string query = "SELECT check_number, customer_name, CHEQUE.account_number AS 'Account Number', CONVERT(VARCHAR(10), check_date, 101) AS Date, convert(varchar,cast(amount as money),1) AS amount, convert(varchar,cast(balance as money),1) AS balance, branch_name, drawee_bank, drawee_bank_branch, verification, funded FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id ORDER BY CHEQUE.check_number";
+          
+            DataTable dt = new DataTable();
+            SqlDataAdapter da = new SqlDataAdapter(query, activeConnection);
+>>>>>>> master
             da.Fill(dt);
             GridView1.DataSource = dt;
             GridView1.DataBind();

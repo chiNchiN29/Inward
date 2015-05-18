@@ -17,9 +17,12 @@ using System.Drawing;
 
 namespace WebApplication1
 {
+
     public partial class Confirmation : System.Web.UI.Page
     {
         SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+
+   
         SqlCommand cmd;
         DataTable dt;
         SqlDataAdapter da;
@@ -29,6 +32,7 @@ namespace WebApplication1
 
         protected void Page_Load(object sender, EventArgs e)
         {
+
             //bool login = System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
             //if (login == false)
             //{
@@ -37,21 +41,21 @@ namespace WebApplication1
             //else
             //{
             //    connection.Open();
-            //    SqlCommand checker = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = '" + Membership.GetUser().UserName + "' AND END_USER.role_id = ROLE.role_id", connection);
-            //    if (checker.ExecuteScalar().ToString() != "BANK BRANCH")
-            //    {
-            //        string script = "alert(\"You are not authorized to view this page!\");location ='/Default.aspx';";
-            //        ScriptManager.RegisterStartupScript(this, GetType(),
-            //                              "alertMessage", script, true);
-            //    }
-                //else
-                //{
-                    if (!IsPostBack)
-                    {
-                        ViewState["myDataTable"] = FillDataTable();
-                    }
-            //    }
-            //}
+ 
+            	SqlCommand checker = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = '" + Membership.GetUser().UserName + "' AND END_USER.role_id = ROLE.role_id", activeConnection);
+            	if (checker.ExecuteScalar().ToString() != "BANK BRANCH" && checker.ExecuteScalar().ToString() != "OVERSEER")
+            	{
+                	string script = "alert(\"You are not authorized to view this page!\");location ='/Default.aspx';";
+                	ScriptManager.RegisterStartupScript(this, GetType(),
+                                        "alertMessage", script, true);
+            	}
+           	 else
+           	 {
+                	if (!IsPostBack)
+                	{
+                    		ViewState["myDataTable"] = FillDataTable();
+                	}
+            	}	
         }
 
         protected void fundButton_Click(object sender, EventArgs e)
@@ -66,6 +70,7 @@ namespace WebApplication1
                 cmd.Parameters.AddWithValue("@fund", "YES");
                 cmd.ExecuteNonQuery();
                 connection.Close();
+
 
                 dt = FillDataTable();
                 
@@ -94,13 +99,12 @@ namespace WebApplication1
             int i = GetRowIndex();
             if (i != -1)
             {
-                connection.Open();
-                cmd = new SqlCommand("update CHEQUE SET confirmed = @fund WHERE account_number = @acctnumber AND check_number = @chknumber", connection);
+                cmd = new SqlCommand("update CHEQUE SET confirmed = @fund WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection);
                 cmd.Parameters.AddWithValue("@acctnumber", GridView1.Rows[i].Cells[5].Text);
                 cmd.Parameters.AddWithValue("@chknumber", GridView1.Rows[i].Cells[1].Text);
                 cmd.Parameters.AddWithValue("@fund", "NO");
                 cmd.ExecuteNonQuery();
-                connection.Close();
+                activeConnection.Close();
 
                 dt = FillDataTable();
                 
@@ -168,6 +172,7 @@ namespace WebApplication1
                             da.Fill(dt);
                             return dt;
                         }
+
                     }
                 }
             }
@@ -183,6 +188,7 @@ namespace WebApplication1
 
         public DataTable FillDataTable()
         {
+
             StringBuilder query = new StringBuilder();
             query.Append("SELECT check_number, customer_name, customer_address, contact_number, CHEQUE.account_number, check_date, amount, branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed ");
             query.Append("FROM CHEQUE, CUSTOMER, ACCOUNT, THRESHOLD ");
@@ -196,7 +202,7 @@ namespace WebApplication1
             da.Fill(dt);
             GridView1.DataSource = dt;
             GridView1.DataBind();
-            connection.Close();
+            activeConnection.Close();
 
             return dt;
         }
@@ -240,7 +246,6 @@ namespace WebApplication1
                 }
             }
             return x;
-
         }
         
         

@@ -33,8 +33,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+<<<<<<< HEAD
     <Reference Include="AjaxControlToolkit">
       <HintPath>E:\Inward\WebApplication1\WebApplication1\bin\AjaxControlToolkit.dll</HintPath>
+=======
+    <Reference Include="AjaxControlToolkit, Version=15.1.1.100, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\backup\Inward\WebApplication1\WebApplication1\bin\AjaxControlToolkit.dll</HintPath>
+>>>>>>> master
     </Reference>
     <Reference Include="DotCMIS">
       <HintPath>..\..\..\..\..\Downloads\DotCMIS.dll</HintPath>
@@ -120,6 +126,9 @@
     </Compile>
     <Compile Include="Account\SignUp.aspx.designer.cs">
       <DependentUpon>SignUp.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="BasePage.cs">
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Confirmation.aspx.cs">
       <DependentUpon>Confirmation.aspx</DependentUpon>
