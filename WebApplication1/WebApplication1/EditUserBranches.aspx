@@ -12,7 +12,7 @@
     <Columns>
         <asp:TemplateField>
                 <ItemTemplate>
-                    <asp:CheckBox ID="chkBox" runat="server" OnCheckedChanged="chkBox_Checked" AutoPostBack="true"/>
+                    <asp:CheckBox ID="chkBox" runat="server" />
                 </ItemTemplate>
             </asp:TemplateField>
     <asp:BoundField DataField="branch_name" HeaderText="Branch Name" ItemStyle-Width="100px" /> 

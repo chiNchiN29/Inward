@@ -42,7 +42,7 @@ namespace WebApplication1
             //{
             //    connection.Open();
  
-            	SqlCommand checker = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = '" + Membership.GetUser().UserName + "' AND END_USER.role_id = ROLE.role_id", activeConnection);
+            	SqlCommand checker = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = '" + Membership.GetUser().UserName + "' AND END_USER.role_id = ROLE.role_id", connection);
             	if (checker.ExecuteScalar().ToString() != "BANK BRANCH" && checker.ExecuteScalar().ToString() != "OVERSEER")
             	{
                 	string script = "alert(\"You are not authorized to view this page!\");location ='/Default.aspx';";
@@ -99,12 +99,12 @@ namespace WebApplication1
             int i = GetRowIndex();
             if (i != -1)
             {
-                cmd = new SqlCommand("update CHEQUE SET confirmed = @fund WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection);
+                connection.Open();
+                cmd = new SqlCommand("update CHEQUE SET confirmed = @fund WHERE account_number = @acctnumber AND check_number = @chknumber", connection);
                 cmd.Parameters.AddWithValue("@acctnumber", GridView1.Rows[i].Cells[5].Text);
                 cmd.Parameters.AddWithValue("@chknumber", GridView1.Rows[i].Cells[1].Text);
                 cmd.Parameters.AddWithValue("@fund", "NO");
-                cmd.ExecuteNonQuery();
-                activeConnection.Close();
+                connection.Close();
 
                 dt = FillDataTable();
                 
@@ -202,7 +202,7 @@ namespace WebApplication1
             da.Fill(dt);
             GridView1.DataSource = dt;
             GridView1.DataBind();
-            activeConnection.Close();
+            connection.Close();
 
             return dt;
         }

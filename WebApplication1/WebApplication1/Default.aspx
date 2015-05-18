@@ -5,49 +5,6 @@
 
 <asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeadContent">
 
-    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/themes/base/jquery-ui.css"
-        type="text/css" media="all" />
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="http://github.com/malsup/blockui/raw/master/jquery.blockUI.js?v2.34"></script>
-    <script type="text/javascript">
-
-<<<<<<< HEAD
-//        $(function () {
-//            $('#<%= uploadDoc.ClientID %>').click(function () {
-//                $.blockUI({ message: '<h1>Uploading Images</h1>', css: {
-//                    border: 'none',
-//                    padding: '15px',
-//                    backgroundColor: '#000',
-//                    '-webkit-border-radius': '10px',
-//                    '-moz-border-radius': '10px',
-//                    opacity: 4,
-//                    color: '#fff'
-//                }
-//                });
-//            });
-//        });
-=======
-        function UploadTransition() {
-            $('#<%= uploadDoc.ClientID %>').click(function () {
-                $.blockUI({ message: '<h1>Uploading Images</h1>', css: {
-                    border: 'none',
-                    padding: '15px',
-                    backgroundColor: '#000',
-                    '-webkit-border-radius': '10px',
-                    '-moz-border-radius': '10px',
-                    opacity: 4,
-                    color: '#fff'
-                }
-                });
-            });
-    };
->>>>>>> master
-
-            UploadTransition();
-
-    </script>
-
 
     <style type="text/css">
         
@@ -146,12 +103,10 @@
             ValidationExpression="(.*\.([Jj][Pp][Gg])|.*\.([Jj][Pp][Ee][Gg])|.*\.([Pp][Nn][Gg])|.*\.([Tt][Ii][Ff])$)" 
             ForeColor="Red"></asp:RegularExpressionValidator>
             <asp:Button ID="uploadDoc" runat="server" Text="Upload Image" 
-<<<<<<< HEAD
+
             OnClick="uploadDoc_Click" OnClientClick="skm_LockScreen('Uploading Images');" Width="155px"/>   
             <div id="skm_LockPane" class="LockOff"></div> 
-=======
-            OnClick="UploadImage" OnClientClick="function UploadTransition();" Width="155px"/>   
->>>>>>> master
+
         </div>
         <div id="dataLoad">
             <asp:Label ID="Label2" runat="server" Font-Size="Larger" ForeColor="Black" 
