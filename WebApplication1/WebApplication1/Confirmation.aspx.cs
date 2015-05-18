@@ -16,37 +16,25 @@ using System.Web.Security;
 
 namespace WebApplication1
 {
-    public partial class Confirmation : System.Web.UI.Page
-    {
-    
-            
-        SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+    public partial class Confirmation : BasePage
+    { 
         SqlCommand cmd;
         int totalConfirmed = 0;
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            bool login = System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
-            if (login == false)
+            SqlCommand checker = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = '" + Membership.GetUser().UserName + "' AND END_USER.role_id = ROLE.role_id", activeConnection);
+            if (checker.ExecuteScalar().ToString() != "BANK BRANCH" && checker.ExecuteScalar().ToString() != "OVERSEER")
             {
-                Response.Redirect("~/Account/Login.aspx");
+                string script = "alert(\"You are not authorized to view this page!\");location ='/Default.aspx';";
+                ScriptManager.RegisterStartupScript(this, GetType(),
+                                        "alertMessage", script, true);
             }
             else
             {
-                connection.Open();
-                SqlCommand checker = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = '" + Membership.GetUser().UserName + "' AND END_USER.role_id = ROLE.role_id", connection);
-                if (checker.ExecuteScalar().ToString() != "BANK BRANCH")
+                if (!IsPostBack)
                 {
-                    string script = "alert(\"You are not authorized to view this page!\");location ='/Default.aspx';";
-                    ScriptManager.RegisterStartupScript(this, GetType(),
-                                          "alertMessage", script, true);
-                }
-                else
-                {
-                    if (!IsPostBack)
-                    {
-                        ViewState["myDataTable"] = FillDataTable();
-                    }
+                    ViewState["myDataTable"] = FillDataTable();
                 }
             }
         }
@@ -56,13 +44,12 @@ namespace WebApplication1
             int i = GetRowIndex();
             if (i != -1)
             {
-                connection.Open();
-                SqlCommand update = new SqlCommand("update CHEQUE SET confirmed = @fund WHERE account_number = @acctnumber AND check_number = @chknumber", connection);
+                SqlCommand update = new SqlCommand("update CHEQUE SET confirmed = @fund WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection);
                 update.Parameters.AddWithValue("@acctnumber", GridView1.Rows[i].Cells[5].Text);
                 update.Parameters.AddWithValue("@chknumber", GridView1.Rows[i].Cells[1].Text);
                 update.Parameters.AddWithValue("@fund", "YES");
                 update.ExecuteNonQuery();
-                connection.Close();
+                activeConnection.Close();
 
                 DataTable dt = FillDataTable();
                 GridView1.DataSource = dt;
@@ -86,13 +73,12 @@ namespace WebApplication1
             int i = GetRowIndex();
             if (i != -1)
             {
-                connection.Open();
-                cmd = new SqlCommand("update CHEQUE SET confirmed = @fund WHERE account_number = @acctnumber AND check_number = @chknumber", connection);
+                cmd = new SqlCommand("update CHEQUE SET confirmed = @fund WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection);
                 cmd.Parameters.AddWithValue("@acctnumber", GridView1.Rows[i].Cells[5].Text);
                 cmd.Parameters.AddWithValue("@chknumber", GridView1.Rows[i].Cells[1].Text);
                 cmd.Parameters.AddWithValue("@fund", "NO");
                 cmd.ExecuteNonQuery();
-                connection.Close();
+                activeConnection.Close();
 
                 DataTable dt = FillDataTable();
                 GridView1.DataSource = dt;
@@ -155,19 +141,16 @@ namespace WebApplication1
 
         private DataTable GetData()
         {
-            using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString))
+            using (cmd = new SqlCommand("SELECT check_number AS CheckNo, amount AS Amount, CONVERT(VARCHAR(10), check_date, 101) AS Date, branch_name AS 'Branch Name', drawee_bank AS 'Drawee Bank', drawee_bank_branch AS 'Drawee Bank Branch', funded AS 'Funded?', verification AS 'Verified?', confirmed AS 'Confirmed?', CHEQUE.account_number FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id AND confirmed = 'NO' ORDER BY CHEQUE.account_number"))
             {
-                using (cmd = new SqlCommand("SELECT check_number AS CheckNo, amount AS Amount, CONVERT(VARCHAR(10), check_date, 101) AS Date, branch_name AS 'Branch Name', drawee_bank AS 'Drawee Bank', drawee_bank_branch AS 'Drawee Bank Branch', funded AS 'Funded?', verification AS 'Verified?', confirmed AS 'Confirmed?', CHEQUE.account_number FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id AND confirmed = 'NO' ORDER BY CHEQUE.account_number"))
+                using (SqlDataAdapter sda = new SqlDataAdapter())
                 {
-                    using (SqlDataAdapter sda = new SqlDataAdapter())
+                    cmd.Connection = activeConnection;
+                    sda.SelectCommand = cmd;
+                    using (DataTable dt = new DataTable())
                     {
-                        cmd.Connection = connection;
-                        sda.SelectCommand = cmd;
-                        using (DataTable dt = new DataTable())
-                        {
-                            sda.Fill(dt);
-                            return dt;
-                        }
+                        sda.Fill(dt);
+                        return dt;
                     }
                 }
             }
@@ -184,13 +167,12 @@ namespace WebApplication1
         public DataTable FillDataTable()
         {
             string query = "SELECT check_number, customer_name, customer_address, contact_number, CHEQUE.account_number AS 'Account Number', CONVERT(VARCHAR(10), check_date, 101) AS Date, convert(varchar,cast(amount as money),1) AS amount, branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed FROM CHEQUE, CUSTOMER, ACCOUNT, THRESHOLD WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id AND ((verification = 'YES' AND amount > maximum) OR verification = 'NO')  ORDER BY CHEQUE.account_number";
-            connection.Open();
             DataTable dt = new DataTable();
-            SqlDataAdapter da = new SqlDataAdapter(query, connection);
+            SqlDataAdapter da = new SqlDataAdapter(query, activeConnection);
             da.Fill(dt);
             GridView1.DataSource = dt;
             GridView1.DataBind();
-            connection.Close();
+            activeConnection.Close();
 
             return dt;
         }
@@ -235,7 +217,6 @@ namespace WebApplication1
                 }
             }
             return x;
-
         }
         
         

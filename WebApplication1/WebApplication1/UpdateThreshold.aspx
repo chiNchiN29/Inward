@@ -42,25 +42,25 @@
         <br />
         <asp:Label ID="Label3" runat="server" Text="New Minimum Threshold Amount:"></asp:Label>
         <br />
-        <asp:TextBox ID="TextBox1" runat="server" TextMode=Number></asp:TextBox>
+        <asp:TextBox ID="TextBox1" runat="server" TextMode="Number"></asp:TextBox>
         <br />
     </div>
     
 
     <div id="max">
-        <asp:Label ID="Label4" runat="server" Text="Current Maximum Threshold Amount"></asp:Label>
-        :<br />
+        <asp:Label ID="Label4" runat="server" Text="Current Maximum Threshold Amount:"></asp:Label>
+        <br />
         <asp:Label ID="Label5" runat="server" Text="Label"></asp:Label>
         <br />
         <br />
         <asp:Label ID="Label6" runat="server" Text="New Maximum Threshold Amount:"></asp:Label>
         <br />
-        <asp:TextBox ID="TextBox2" runat="server" TextMode=Number></asp:TextBox>
+        <asp:TextBox ID="TextBox2" runat="server" TextMode="Number"></asp:TextBox>
         <br />
     </div>
 
     <div id="clear">
-    <asp:Button ID="Button1" runat="server" onclick="Button1_Click" Text="Set" OnClientClick="return ConfirmSettings();"
+    <asp:Button ID="Button1" runat="server" onclick="SetThresholds" Text="Set" OnClientClick="return ConfirmSettings();"
     Width="91px" />
     </div>
     

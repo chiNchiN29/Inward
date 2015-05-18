@@ -12,7 +12,7 @@
     <script type="text/javascript" src="http://github.com/malsup/blockui/raw/master/jquery.blockUI.js?v2.34"></script>
     <script type="text/javascript">
 
-        $(function () {
+        function UploadTransition() {
             $('#<%= uploadDoc.ClientID %>').click(function () {
                 $.blockUI({ message: '<h1>Uploading Images</h1>', css: {
                     border: 'none',
@@ -25,8 +25,9 @@
                 }
                 });
             });
-        });
+    };
 
+            UploadTransition();
 
     </script>
 
@@ -105,7 +106,7 @@
             ValidationExpression="(.*\.([Jj][Pp][Gg])|.*\.([Jj][Pp][Ee][Gg])|.*\.([Pp][Nn][Gg])|.*\.([Tt][Ii][Ff])$)" 
             ForeColor="Red"></asp:RegularExpressionValidator>
             <asp:Button ID="uploadDoc" runat="server" Text="Upload Image" 
-            OnClick="uploadDoc_Click" Width="155px"/>   
+            OnClick="UploadImage" OnClientClick="function UploadTransition();" Width="155px"/>   
         </div>
         <div id="dataLoad">
             <asp:Label ID="Label2" runat="server" Font-Size="Larger" ForeColor="Black" 
@@ -118,7 +119,7 @@
             ValidationExpression="(.*\.([cC][sS][vV])$)" ForeColor="Red"></asp:RegularExpressionValidator> 
             <br />   
             <asp:Button ID="uploadDoc0" runat="server" Text="Load" 
-            OnClick="uploadDoc0_Click" Width="156px"/>
+            OnClick="UploadCheckData" Width="156px"/>
         </div>
         <div id="buttonHolder">
             <asp:Button ID="clearCheck" runat="server" onclientclick="return DeleteItem()" 

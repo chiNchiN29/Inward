@@ -15,7 +15,7 @@
         <Columns>
             <asp:TemplateField>
                <ItemTemplate>
-                    <asp:RadioButton ID="RowSelect" runat="server" OnClick="javascript:CheckOtherIsCheckedByGVID(this);" AutoPostBack="true" OnCheckedChanged="RowSelect_CheckedChanged" />
+                    <asp:RadioButton ID="RowSelect" runat="server" OnClick="javascript:CheckOtherIsCheckedByGVID(this);" AutoPostBack="true" OnCheckedChanged="RowSelect_CheckedChanged"/>
                </ItemTemplate>
             </asp:TemplateField>
             <asp:BoundField DataField="user_id" HeaderText="ID" Visible="false" />
