@@ -15,6 +15,8 @@ namespace WebApplication1
         SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
         protected void Page_Load(object sender, EventArgs e)
         {
+
+
             DefaultView();
             bool login = System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
             if (login == false)
@@ -48,6 +50,7 @@ namespace WebApplication1
                         TBAView();
                     }
                 }
+
             }
         protected void NavigationMenu_MenuItemClick(object sender, MenuEventArgs e)
         {

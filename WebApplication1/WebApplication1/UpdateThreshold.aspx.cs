@@ -11,23 +11,22 @@ using System.Globalization;
 
 namespace WebApplication1
 {
-    public partial class UpdateThreshold : BasePage
+    public partial class UpdateThreshold : System.Web.UI.Page
     {
+        SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+
         protected void Page_Load(object sender, EventArgs e)
         {
-            SqlCommand select = new SqlCommand("select minimum from THRESHOLD", activeConnection);
+            connection.Open();
+            SqlCommand select = new SqlCommand("select minimum from THRESHOLD", connection);
             Thread.CurrentThread.CurrentCulture = new CultureInfo("en-PH", false);
             Label2.Text = String.Format("{0:C}", select.ExecuteScalar());
             
-            SqlCommand select2 = new SqlCommand("select maximum from THRESHOLD", activeConnection);
+            SqlCommand select2 = new SqlCommand("select maximum from THRESHOLD", connection);
             Label5.Text = String.Format("{0:C}", select2.ExecuteScalar());
             
 
-            if (!Page.IsPostBack)
-            {
-               
-            }
-            activeConnection.Close();
+                  connection.Close();
         }
 
         protected void SetThresholds(object sender, EventArgs e)
