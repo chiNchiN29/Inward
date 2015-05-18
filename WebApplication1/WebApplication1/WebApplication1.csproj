@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AjaxControlToolkit">
+      <HintPath>E:\Inward\WebApplication1\WebApplication1\bin\AjaxControlToolkit.dll</HintPath>
+    </Reference>
     <Reference Include="DotCMIS">
       <HintPath>..\..\..\..\..\Downloads\DotCMIS.dll</HintPath>
     </Reference>

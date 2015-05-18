@@ -15,12 +15,14 @@ using System.Drawing;
 using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
+using System.Text;
 
 namespace WebApplication1
 {
     public partial class _Default : System.Web.UI.Page
     {
         SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+        DataTable dt;
     
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -43,8 +45,8 @@ namespace WebApplication1
             SessionFactory factory = SessionFactory.NewInstance();
             ISession session;
             parameters[DotCMIS.SessionParameter.User] = "admin";
-            parameters[DotCMIS.SessionParameter.Password] = "092095";
-            //parameters[DotCMIS.SessionParameter.Password] = "admin";
+            //parameters[DotCMIS.SessionParameter.Password] = "092095";
+            parameters[DotCMIS.SessionParameter.Password] = "admin";
             //parameters[DotCMIS.SessionParameter.Password] = "H2scs2015";
             parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
             parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
@@ -186,29 +188,36 @@ namespace WebApplication1
 
         protected void uploadDoc_Click(Object sender, EventArgs e)
         {
+            
             Dictionary<string, string> parameters = new Dictionary<string, string>();
             SessionFactory factory = SessionFactory.NewInstance();
             ISession session;
             parameters[DotCMIS.SessionParameter.User] = "admin";
-            parameters[DotCMIS.SessionParameter.Password] = "092095";
-            //parameters[DotCMIS.SessionParameter.Password] = "admin";
+            //parameters[DotCMIS.SessionParameter.Password] = "092095";
+            parameters[DotCMIS.SessionParameter.Password] = "admin";
             //parameters[DotCMIS.SessionParameter.Password] = "H2scs2015";
             parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
             parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
             //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
             session = factory.GetRepositories(parameters)[0].CreateSession();
 
-            
-            HttpFileCollection hfc = Request.Files;
-            for (int i = 0; i < hfc.Count; i++)
+            try
             {
-                HttpPostedFile hpf = hfc[i];
-                if (hpf.ContentLength > 0)
+                HttpFileCollection hfc = Request.Files;
+                for (int i = 0; i < hfc.Count; i++)
                 {
-                    UploadADocument(session, imageToByteArray(System.Drawing.Image.FromStream(hpf.InputStream)), Path.GetFileNameWithoutExtension(hpf.FileName));
+                    HttpPostedFile hpf = hfc[i];
+                    if (hpf.ContentLength > 0)
+                    {
+                        UploadADocument(session, imageToByteArray(System.Drawing.Image.FromStream(hpf.InputStream)), Path.GetFileNameWithoutExtension(hpf.FileName));
+                    }
                 }
-            }   
-            Response.Write("<script langauge=\"javascript\">alert(\"Images successfully added\");</script>");
+                Response.Write("<script langauge=\"javascript\">alert(\"Images successfully added\");</script>");
+            }
+            catch (Exception x)
+            {
+                Response.Write("<script langauge=\"javascript\">alert(\"An image already exists with the same name\");</script>");
+            }
         }
 
         private static byte[] imageToByteArray(System.Drawing.Image imageIn)
@@ -267,12 +276,9 @@ namespace WebApplication1
             }
             catch (Exception b)
             {
-                //Response.Write("Please re-check the format of the data for any missing fields.");
-                Response.Write(b);
+                Response.Write("Please re-check the format of the data for any missing fields.");
+              
             }
-
-      
-
              connection.Close();
         }
 
@@ -291,7 +297,7 @@ namespace WebApplication1
 
         protected void GridView1_Sorting(object sender, GridViewSortEventArgs e)
         {
-            DataTable dt = ViewState["myDataTable"] as DataTable;
+            dt = ViewState["myDataTable"] as DataTable;
             dt.DefaultView.Sort = e.SortExpression + " " + GetSortDirection(e.SortExpression);
             GridView1.DataSource = dt;
             GridView1.DataBind();
@@ -299,10 +305,15 @@ namespace WebApplication1
 
         public DataTable FillDataTable()
         {
-            string query = "SELECT check_number, customer_name, CHEQUE.account_number AS 'Account Number', CONVERT(VARCHAR(10), check_date, 101) AS Date, convert(varchar,cast(amount as money),1) AS amount, convert(varchar,cast(balance as money),1) AS balance, branch_name, drawee_bank, drawee_bank_branch, verification, funded FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id ORDER BY CHEQUE.check_number";
-          
-            DataTable dt = new DataTable();
-            SqlDataAdapter da = new SqlDataAdapter(query, connection);
+            //string query = "SELECT check_number, customer_name, CHEQUE.account_number AS 'Account Number', check_date, amount, balance, branch_name, drawee_bank, drawee_bank_branch, verification, funded FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id ORDER BY CHEQUE.check_number";
+            StringBuilder query = new StringBuilder();
+            query.Append("SELECT check_number, customer_name, CHEQUE.account_number, check_date, amount, balance, branch_name, drawee_bank, drawee_bank_branch, verification, funded ");
+            query.Append("FROM CHEQUE, CUSTOMER, ACCOUNT ");
+            query.Append("WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id ");
+            query.Append("ORDER BY CHEQUE.check_number");
+
+            dt = new DataTable();
+            SqlDataAdapter da = new SqlDataAdapter(query.ToString(), connection);
             da.Fill(dt);
             GridView1.DataSource = dt;
             GridView1.DataBind();

@@ -10,18 +10,11 @@
             border: solid 2px black;
             width: 900px;
         }
-        .SelectedRowStyle
-        {
-           background: aqua;
-        }
-        .gridview
-        {
-            
-        }
+       
         .YesVer
         {
-            color: Green;
-            border: solid 1px #000000; 
+            color: #009900;
+             border-bottom-color: Black;
         }
         .image_box
         {
@@ -43,7 +36,11 @@
         {
             text-align: right;
         }
-        
+        .NoVer
+        {
+            color: Red;
+            border-bottom-color: Black;
+        }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
@@ -54,8 +51,8 @@
     <br /><br/>
     <div class ="grid_scroll">
         &nbsp;&nbsp;&nbsp;
-        <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="false"
-             CssClass="gridView" AllowSorting="true" OnSorting="GridView1_Sorting" HeaderStyle-CssClass="GridHeader" 
+        <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="false" BorderColor="Black" ForeColor="Black" HeaderStyle-ForeColor="White"
+              AllowSorting="true" OnSorting="GridView1_Sorting" HeaderStyle-CssClass="GridHeader" 
              OnRowDataBound="GridView1_RowDataBound" ShowFooter="True" FooterStyle-CssClass="gridViewFooterStyle" >
                  <Columns>
                     <asp:TemplateField>
@@ -65,11 +62,11 @@
                     </asp:TemplateField>
                      <asp:BoundField DataField="check_number" SortExpression="check_number" HeaderText="Check Number" />
                      <asp:BoundField DataField="customer_name" SortExpression="customer_name" HeaderText="Name" />
-                     <asp:BoundField DataField="Account Number" SortExpression="Account Number" HeaderText="Account Number" />
-                     <asp:BoundField DataField="Date" SortExpression="Date" HeaderText="Date" />
-                     <asp:BoundField DataField="amount" SortExpression="amount" HeaderText="Amount" ItemStyle-CssClass="amount" />
-                     <asp:BoundField DataField="balance" SortExpression="balance" HeaderText="Balance" ItemStyle-CssClass="amount" />
-                     <asp:BoundField DataField="Branch Name" SortExpression="Branch Name" HeaderText="Branch Name" />
+                     <asp:BoundField DataField="account_number" SortExpression="account_number" HeaderText="Account Number" />
+                     <asp:BoundField DataField="check_date" SortExpression="check_date" DataFormatString="{0:d}" HeaderText="Date" />
+                     <asp:BoundField DataField="amount" SortExpression="amount" HeaderText="Amount" DataFormatString="{0:N}" ItemStyle-CssClass="amount" />
+                     <asp:BoundField DataField="balance" SortExpression="balance" HeaderText="Balance" DataFormatString="{0:N}" ItemStyle-CssClass="amount" />
+                     <asp:BoundField DataField="branch_name" SortExpression="branch_name" HeaderText="Branch Name" />
                      <asp:BoundField DataField="drawee_bank" SortExpression="drawee_bank" HeaderText="Drawee Bank" />
                      <asp:BoundField DataField="drawee_bank_branch" SortExpression="drawee_bank_branch" HeaderText="Drawee Bank Branch" />
                      <asp:BoundField DataField="verification" SortExpression="verification" HeaderText="Verified?" />
@@ -78,9 +75,9 @@
 </div>
        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
     Verified:
-    <asp:Label ID="totalVer" runat="server" Text="Label"></asp:Label>
+    <asp:Label ID="totalVer" runat="server" Text="0"></asp:Label>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Total:
-    <asp:Label ID="totalCount" runat="server" Text="Label"></asp:Label>
+    <asp:Label ID="totalCount" runat="server" Text="0"></asp:Label>
     <br />
 &nbsp;&nbsp;
        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -134,6 +131,7 @@
                 if (IsChecked) {
                 }
                 var CurrentRdbID = spanChk.id;
+               
                 var Chk = spanChk;
                 Parent = document.getElementById("<%=GridView1.ClientID%>");
                 var items = Parent.getElementsByTagName('input');

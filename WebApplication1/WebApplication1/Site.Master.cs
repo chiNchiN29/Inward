@@ -15,42 +15,42 @@ namespace WebApplication1
         SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
         protected void Page_Load(object sender, EventArgs e)
         {
-            bool login = System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
-            if (login == false)
-            {
-                NavigationMenu.Visible = false;
-            }
-            else
-            {
-                connection.Open();
-                Label3.Text = System.DateTime.Now.ToLongTimeString();
-                string meep = Membership.GetUser().UserName;
-                SqlCommand checker = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = '" + Membership.GetUser().UserName + "' AND END_USER.role_id = ROLE.role_id", connection);
-                    if (checker.ExecuteScalar().ToString() == "ADMIN")
-                    {
-                        NavigationMenu.FindItem("Signature Verification").Enabled = false;
-                        NavigationMenu.FindItem("Confirmation").Enabled = false;
-                    }
-                    else if (checker.ExecuteScalar().ToString() == "CLEARING DEPT")
-                    {
-                        NavigationMenu.FindItem("User Maintenance").Enabled = false;
-                        NavigationMenu.FindItem("Confirmation").Enabled = false;
-                        NavigationMenu.FindItem("Update Thresholds").Enabled = false;
-                    }
-                    else if (checker.ExecuteScalar().ToString() == "BANK BRANCH")
-                    {
-                        NavigationMenu.FindItem("User Maintenance").Enabled = false;
-                        NavigationMenu.FindItem("Signature Verification").Enabled = false;
-                        NavigationMenu.FindItem("Update Thresholds").Enabled = false;
-                    }
-                    else
-                    {
-                        NavigationMenu.FindItem("User Maintenance").Enabled = false;
-                        NavigationMenu.FindItem("Confirmation").Enabled = false;
-                        NavigationMenu.FindItem("Signature Verification").Enabled = false;
-                        NavigationMenu.FindItem("Update Thresholds").Enabled = false;
-                    }
-                }
+            //bool login = System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+            //if (login == false)
+            //{
+            //    NavigationMenu.Visible = false;
+            //}
+            //else
+            //{
+            //    connection.Open();
+            //    Label3.Text = System.DateTime.Now.ToLongTimeString();
+            //    string meep = Membership.GetUser().UserName;
+            //    SqlCommand checker = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = '" + Membership.GetUser().UserName + "' AND END_USER.role_id = ROLE.role_id", connection);
+            //        if (checker.ExecuteScalar().ToString() == "ADMIN")
+            //        {
+            //            NavigationMenu.FindItem("Signature Verification").Enabled = false;
+            //            NavigationMenu.FindItem("Confirmation").Enabled = false;
+            //        }
+            //        else if (checker.ExecuteScalar().ToString() == "CLEARING DEPT")
+            //        {
+            //            NavigationMenu.FindItem("User Maintenance").Enabled = false;
+            //            NavigationMenu.FindItem("Confirmation").Enabled = false;
+            //            NavigationMenu.FindItem("Update Thresholds").Enabled = false;
+            //        }
+            //        else if (checker.ExecuteScalar().ToString() == "BANK BRANCH")
+            //        {
+            //            NavigationMenu.FindItem("User Maintenance").Enabled = false;
+            //            NavigationMenu.FindItem("Signature Verification").Enabled = false;
+            //            NavigationMenu.FindItem("Update Thresholds").Enabled = false;
+            //        }
+            //        else
+            //        {
+            //            NavigationMenu.FindItem("User Maintenance").Enabled = false;
+            //            NavigationMenu.FindItem("Confirmation").Enabled = false;
+            //            NavigationMenu.FindItem("Signature Verification").Enabled = false;
+            //            NavigationMenu.FindItem("Update Thresholds").Enabled = false;
+            //        }
+            //    }
             }
         protected void NavigationMenu_MenuItemClick(object sender, MenuEventArgs e)
         {

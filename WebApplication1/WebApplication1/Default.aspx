@@ -12,26 +12,49 @@
     <script type="text/javascript" src="http://github.com/malsup/blockui/raw/master/jquery.blockUI.js?v2.34"></script>
     <script type="text/javascript">
 
-        $(function () {
-            $('#<%= uploadDoc.ClientID %>').click(function () {
-                $.blockUI({ message: '<h1>Uploading Images</h1>', css: {
-                    border: 'none',
-                    padding: '15px',
-                    backgroundColor: '#000',
-                    '-webkit-border-radius': '10px',
-                    '-moz-border-radius': '10px',
-                    opacity: 4,
-                    color: '#fff'
-                }
-                });
-            });
-        });
+//        $(function () {
+//            $('#<%= uploadDoc.ClientID %>').click(function () {
+//                $.blockUI({ message: '<h1>Uploading Images</h1>', css: {
+//                    border: 'none',
+//                    padding: '15px',
+//                    backgroundColor: '#000',
+//                    '-webkit-border-radius': '10px',
+//                    '-moz-border-radius': '10px',
+//                    opacity: 4,
+//                    color: '#fff'
+//                }
+//                });
+//            });
+//        });
 
 
     </script>
 
 
     <style type="text/css">
+        
+        .LockOff { 
+         display: none; 
+         visibility: hidden; 
+      } 
+
+      .LockOn { 
+         display: block; 
+         visibility: visible; 
+         position: absolute; 
+         z-index: 999; 
+         top: 0px; 
+         left: 0px; 
+         width: 105%; 
+         height: 105%; 
+         background-color: #ccc; 
+         text-align: center; 
+         padding-top: 20%; 
+         filter: alpha(opacity=100); 
+         opacity: 0.8;
+         font-size: large; 
+         font-weight: bolder;
+      } 
         .grid_scroll
         {
             overflow: scroll;
@@ -81,10 +104,10 @@
         <Columns>
             <asp:BoundField DataField="check_number" SortExpression="check_number" HeaderText="Check Number" />
             <asp:BoundField DataField="customer_name" SortExpression="customer_name" HeaderText="Name" />
-            <asp:BoundField DataField="Account Number" SortExpression="Account Number" HeaderText="Account Number" />
-            <asp:BoundField DataField="Date" SortExpression="Date" HeaderText="Date" />
-            <asp:BoundField DataField="amount" SortExpression="amount" HeaderText="Amount" ItemStyle-CssClass="amount" />
-            <asp:BoundField DataField="balance" SortExpression="balance" HeaderText="Balance" ItemStyle-CssClass="amount" />
+            <asp:BoundField DataField="account_number" SortExpression="account_number" HeaderText="Account Number" />
+            <asp:BoundField DataField="check_date" SortExpression="check_date" DataFormatString="{0:d}" HeaderText="Date" />
+            <asp:BoundField DataField="amount" SortExpression="amount" HeaderText="Amount" DataFormatString="{0:N}" ItemStyle-CssClass="amount" />
+            <asp:BoundField DataField="balance" SortExpression="balance" HeaderText="Balance" DataFormatString="{0:N}" ItemStyle-CssClass="amount" />
             <asp:BoundField DataField="branch_name" SortExpression="branch_name" HeaderText="Branch Name" />
             <asp:BoundField DataField="drawee_bank" SortExpression="drawee_bank" HeaderText="Drawee Bank" />
             <asp:BoundField DataField="drawee_bank_branch" SortExpression="drawee_bank_branch" HeaderText="Drawee Bank Branch" />
@@ -105,7 +128,8 @@
             ValidationExpression="(.*\.([Jj][Pp][Gg])|.*\.([Jj][Pp][Ee][Gg])|.*\.([Pp][Nn][Gg])|.*\.([Tt][Ii][Ff])$)" 
             ForeColor="Red"></asp:RegularExpressionValidator>
             <asp:Button ID="uploadDoc" runat="server" Text="Upload Image" 
-            OnClick="uploadDoc_Click" Width="155px"/>   
+            OnClick="uploadDoc_Click" OnClientClick="skm_LockScreen('Uploading Images');" Width="155px"/>   
+            <div id="skm_LockPane" class="LockOff"></div> 
         </div>
         <div id="dataLoad">
             <asp:Label ID="Label2" runat="server" Font-Size="Larger" ForeColor="Black" 
@@ -135,6 +159,15 @@
            }
            return false;
        }
+
+       function skm_LockScreen(str) {
+           var lock = document.getElementById('skm_LockPane');
+           if (lock)
+               lock.className = 'LockOn';
+
+           lock.innerHTML = str;
+       } 
+
  </script>
 
  

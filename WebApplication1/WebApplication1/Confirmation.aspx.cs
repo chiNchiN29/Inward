@@ -13,42 +13,45 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
 using System.Web.Security;
+using System.Drawing;
 
 namespace WebApplication1
 {
     public partial class Confirmation : System.Web.UI.Page
     {
-    
-            
         SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
         SqlCommand cmd;
+        DataTable dt;
+        SqlDataAdapter da;
+        GridViewRow row;
+        
         int totalConfirmed = 0;
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            bool login = System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
-            if (login == false)
-            {
-                Response.Redirect("~/Account/Login.aspx");
-            }
-            else
-            {
-                connection.Open();
-                SqlCommand checker = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = '" + Membership.GetUser().UserName + "' AND END_USER.role_id = ROLE.role_id", connection);
-                if (checker.ExecuteScalar().ToString() != "BANK BRANCH")
-                {
-                    string script = "alert(\"You are not authorized to view this page!\");location ='/Default.aspx';";
-                    ScriptManager.RegisterStartupScript(this, GetType(),
-                                          "alertMessage", script, true);
-                }
-                else
-                {
+            //bool login = System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+            //if (login == false)
+            //{
+            //    Response.Redirect("~/Account/Login.aspx");
+            //}
+            //else
+            //{
+            //    connection.Open();
+            //    SqlCommand checker = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = '" + Membership.GetUser().UserName + "' AND END_USER.role_id = ROLE.role_id", connection);
+            //    if (checker.ExecuteScalar().ToString() != "BANK BRANCH")
+            //    {
+            //        string script = "alert(\"You are not authorized to view this page!\");location ='/Default.aspx';";
+            //        ScriptManager.RegisterStartupScript(this, GetType(),
+            //                              "alertMessage", script, true);
+            //    }
+                //else
+                //{
                     if (!IsPostBack)
                     {
                         ViewState["myDataTable"] = FillDataTable();
                     }
-                }
-            }
+            //    }
+            //}
         }
 
         protected void fundButton_Click(object sender, EventArgs e)
@@ -57,28 +60,33 @@ namespace WebApplication1
             if (i != -1)
             {
                 connection.Open();
-                SqlCommand update = new SqlCommand("update CHEQUE SET confirmed = @fund WHERE account_number = @acctnumber AND check_number = @chknumber", connection);
-                update.Parameters.AddWithValue("@acctnumber", GridView1.Rows[i].Cells[5].Text);
-                update.Parameters.AddWithValue("@chknumber", GridView1.Rows[i].Cells[1].Text);
-                update.Parameters.AddWithValue("@fund", "YES");
-                update.ExecuteNonQuery();
+                cmd = new SqlCommand("update CHEQUE SET confirmed = @fund WHERE account_number = @acctnumber AND check_number = @chknumber", connection);
+                cmd.Parameters.AddWithValue("@acctnumber", GridView1.Rows[i].Cells[5].Text);
+                cmd.Parameters.AddWithValue("@chknumber", GridView1.Rows[i].Cells[1].Text);
+                cmd.Parameters.AddWithValue("@fund", "YES");
+                cmd.ExecuteNonQuery();
                 connection.Close();
 
-                DataTable dt = FillDataTable();
-                GridView1.DataSource = dt;
-                GridView1.DataBind();
+                dt = FillDataTable();
+                
             }
             else
             {
-                StringBuilder sb = new StringBuilder();
-                sb.Append("<script language='javascript'>");
-                sb.Append("alert('Please select a customer first');");
-                sb.Append("<");
-                sb.Append("/script>");
-
-                if (!ClientScript.IsClientScriptBlockRegistered("ErrorPopup"))
-                    ClientScript.RegisterClientScriptBlock(this.GetType(), "ErrorPopup", sb.ToString());
+                ErrorMessage("Please select a customer");
             }
+        }
+
+        private void ErrorMessage(string message)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("<script language='javascript'>");
+            sb.Append("alert('");
+            sb.Append(message);
+            sb.Append("');");
+            sb.Append("</script>");
+
+            if (!ClientScript.IsClientScriptBlockRegistered("ErrorPopup"))
+                ClientScript.RegisterClientScriptBlock(this.GetType(), "ErrorPopup", sb.ToString());
         }
 
         protected void unfundButton_Click(object sender, EventArgs e)
@@ -94,20 +102,12 @@ namespace WebApplication1
                 cmd.ExecuteNonQuery();
                 connection.Close();
 
-                DataTable dt = FillDataTable();
-                GridView1.DataSource = dt;
-                GridView1.DataBind();
+                dt = FillDataTable();
+                
             }
             else
             {
-                StringBuilder sb = new StringBuilder();
-                sb.Append("<script language='javascript'>");
-                sb.Append("alert('Please select a customer first');");
-                sb.Append("<");
-                sb.Append("/script>");
-
-                if (!ClientScript.IsClientScriptBlockRegistered("ErrorPopup"))
-                    ClientScript.RegisterClientScriptBlock(this.GetType(), "ErrorPopup", sb.ToString());
+                ErrorMessage("Please select a customer");
             }
             
         }
@@ -115,9 +115,9 @@ namespace WebApplication1
         protected void Button1_Click(object sender, EventArgs e)
         {
             // Retrieves the schema of the table.
-            DataTable dtSchema = new DataTable();
-            dtSchema.Clear();
-            dtSchema = GetData();
+            dt = new DataTable();
+            dt.Clear();
+            dt = GetData();
 
             // set the resulting file attachment name to the name of the report...
             string fileName = "test";
@@ -132,15 +132,15 @@ namespace WebApplication1
 
             System.Text.StringBuilder sb = new System.Text.StringBuilder();
 
-            foreach (DataRow datar in dtSchema.Rows)
+            foreach (DataRow datar in dt.Rows)
             {
-                for (int i = 0; i < dtSchema.Columns.Count; i++)
+                for (int i = 0; i < dt.Columns.Count; i++)
                 {
                     if (!Convert.IsDBNull(datar[i]))
                     {
                         sb.Append(datar[i].ToString());
                     }
-                    if (i < dtSchema.Columns.Count - 1)
+                    if (i < dt.Columns.Count - 1)
                     {
                         sb.Append(",");
                     }
@@ -155,17 +155,17 @@ namespace WebApplication1
 
         private DataTable GetData()
         {
-            using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString))
+            using (connection)
             {
-                using (cmd = new SqlCommand("SELECT check_number AS CheckNo, amount AS Amount, CONVERT(VARCHAR(10), check_date, 101) AS Date, branch_name AS 'Branch Name', drawee_bank AS 'Drawee Bank', drawee_bank_branch AS 'Drawee Bank Branch', funded AS 'Funded?', verification AS 'Verified?', confirmed AS 'Confirmed?', CHEQUE.account_number FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id AND confirmed = 'NO' ORDER BY CHEQUE.account_number"))
+                using (cmd = new SqlCommand("SELECT check_number, amount, CONVERT(VARCHAR(10), check_date, 101), branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed, CHEQUE.account_number FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id AND confirmed = 'NO' ORDER BY CHEQUE.account_number"))
                 {
-                    using (SqlDataAdapter sda = new SqlDataAdapter())
+                    using (da = new SqlDataAdapter())
                     {
                         cmd.Connection = connection;
-                        sda.SelectCommand = cmd;
-                        using (DataTable dt = new DataTable())
+                        da.SelectCommand = cmd;
+                        using (dt = new DataTable())
                         {
-                            sda.Fill(dt);
+                            da.Fill(dt);
                             return dt;
                         }
                     }
@@ -175,7 +175,7 @@ namespace WebApplication1
 
         protected void GridView1_Sorting(Object sender, GridViewSortEventArgs e)
         {
-            DataTable dt = ViewState["myDataTable"] as DataTable;
+            dt = ViewState["myDataTable"] as DataTable;
             dt.DefaultView.Sort = e.SortExpression + " " + GetSortDirection(e.SortExpression);
             GridView1.DataSource = dt;
             GridView1.DataBind();
@@ -183,10 +183,16 @@ namespace WebApplication1
 
         public DataTable FillDataTable()
         {
-            string query = "SELECT check_number, customer_name, customer_address, contact_number, CHEQUE.account_number AS 'Account Number', CONVERT(VARCHAR(10), check_date, 101) AS Date, convert(varchar,cast(amount as money),1) AS amount, branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed FROM CHEQUE, CUSTOMER, ACCOUNT, THRESHOLD WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id AND ((verification = 'YES' AND amount > maximum) OR verification = 'NO')  ORDER BY CHEQUE.account_number";
+            StringBuilder query = new StringBuilder();
+            query.Append("SELECT check_number, customer_name, customer_address, contact_number, CHEQUE.account_number, check_date, amount, branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed ");
+            query.Append("FROM CHEQUE, CUSTOMER, ACCOUNT, THRESHOLD ");
+            query.Append("WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id ");
+            query.Append("AND ((verification = 'YES' AND amount > maximum) OR verification = 'NO') ");
+            query.Append("ORDER BY CHEQUE.account_number");
+
             connection.Open();
-            DataTable dt = new DataTable();
-            SqlDataAdapter da = new SqlDataAdapter(query, connection);
+            dt = new DataTable();
+            da = new SqlDataAdapter(query.ToString(), connection);
             da.Fill(dt);
             GridView1.DataSource = dt;
             GridView1.DataBind();
@@ -211,7 +217,6 @@ namespace WebApplication1
                     }
                 }
             }
-
             ViewState["SortDirection"] = sortDirection;
             ViewState["SortExpression"] = column;
 
@@ -224,7 +229,7 @@ namespace WebApplication1
             int x = -1;
             for (int i = 0; i <= GridView1.Rows.Count - 1; i++)
             {
-                GridViewRow row = GridView1.Rows[i];
+                row = GridView1.Rows[i];
                 RadioButton rb = (RadioButton)row.FindControl("RowSelect");
                 if (rb != null)
                 {
@@ -241,24 +246,22 @@ namespace WebApplication1
         
         protected void RowSelect_CheckedChanged(Object sender, EventArgs e)
         {
+            string previousRow = ViewState["SelectRow"] as string;
+            if (previousRow != null)
+            {
+                int rows = int.Parse(previousRow);
+                row = GridView1.Rows[rows];
+                row.BackColor = Color.White;
+            }
+
             int i = GetRowIndex();
+            ViewState["SelectRow"] = i.ToString();  
+
             if (i != -1)
             {
-                GridViewRow row = GridView1.Rows[i];
-                
+                row = GridView1.Rows[i];
                 row.BackColor = System.Drawing.Color.Aqua;
-                row.Style.Add("class", "SelectedRowStyle");
-            }
-            else
-            {
-                StringBuilder sb = new StringBuilder();
-                sb.Append("<script language='javascript'>");
-                sb.Append("alert('Please select a chec');");
-                sb.Append("<");
-                sb.Append("/script>");
-
-                if (!ClientScript.IsClientScriptBlockRegistered("ErrorPopup"))
-                    ClientScript.RegisterClientScriptBlock(this.GetType(), "ErrorPopup", sb.ToString());
+            
             }
         }
 
@@ -270,13 +273,13 @@ namespace WebApplication1
                 string confirmed = e.Row.Cells[13].Text;
                 if (confirmed.Equals("YES"))
                 {
-                    e.Row.ForeColor = System.Drawing.Color.Green;
-                    totalConfirmed += 1;
+                    e.Row.CssClass = "YesVer";
+                    totalConfirmed++;
                 }
                 if (confirmed.Equals("NO"))
                 {
-                    e.Row.ForeColor = System.Drawing.Color.Red;
-                    totalConfirmed += 1;
+                    e.Row.CssClass = "NoVer";
+                    totalConfirmed++;
                 }
             }
             else if (e.Row.RowType == DataControlRowType.Footer)
