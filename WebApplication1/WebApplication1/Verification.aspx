@@ -114,14 +114,14 @@
             <asp:Label ID="Label1" runat="server" AssociatedControlID="Image1" 
             BorderStyle="None" Text="Image"></asp:Label>
             <asp:Image ID="Image1" runat="server" CssClass="image_box" Height="180px" 
-            Width="450px" Visible="False" ImageAlign="Left" 
+            Width="450px" ImageAlign="Left" 
             ImageUrl="~/Resources/H2DefaultImage.jpg"/>
         </div>
         <div id="imageRight">
             <asp:Label ID="Label2" runat="server" AssociatedControlID="Image2" 
             Text="Signature"></asp:Label>
             <asp:Image ID="Image2" runat="server" CssClass="image_box" Height="180px" 
-            Width="450px" Visible="False" ImageAlign="Right" 
+            Width="450px" ImageAlign="Right" 
             ImageUrl="~/Resources/H2DefaultImage.jpg"/>
         </div>
         <div id="emptySpace">

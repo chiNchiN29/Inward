@@ -1,96 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
+using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web;
+using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using DotCMIS;
-using DotCMIS.Client.Impl;
 using DotCMIS.Client;
-using DotCMIS.Data.Impl;
-using DotCMIS.Data.Extensions;
-using System.IO;
+using DotCMIS.Client.Impl;
 using DotCMIS.Data;
-using System.Drawing;
-using System.Data;
-using System.Data.SqlClient;
-using System.Configuration;
-using System.Web.Security;
-using System.Text;
+using DotCMIS.Data.Extensions;
+using DotCMIS.Data.Impl;
 
 namespace WebApplication1
 {
-    public partial class Verification : System.Web.UI.Page
+    public partial class Verification : BasePage
     {
-
-        SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
         SqlDataAdapter da;
         SqlCommand cmd;
         GridViewRow row;
         DataTable dt;
-
         int totalVerified = 0;
     
         protected void Page_Load(object sender, EventArgs e)
         {
-
-            //bool login = System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
-            //if (login == false)
-            //{
-            //    Response.Redirect("~/Account/Login.aspx");
-            //}
-            //else
-            //{
-            //    connection.Open();
-            //    SqlCommand checker = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = '" + Membership.GetUser().UserName + "' AND END_USER.role_id = ROLE.role_id", connection);
-            //    if(checker.ExecuteScalar().ToString() != "CLEARING DEPT" && checker.ExecuteScalar().ToString() != "OVERSEER")
-            //    {
-            //        string script = "alert(\"You are not authorized to view this page!\");location ='/Default.aspx';";
-            //        ScriptManager.RegisterStartupScript(this, GetType(),
-            //                              "alertMessage", script, true);
-            //    }
-            //    else
-            //    {
-            //string afterrow = ViewState["SelectRow"] as string;
-            //if (afterrow != null)
-            //{
-            //    int wew = int.Parse(afterrow);
-            //    GridViewRow row = GridView1.Rows[wew];
-            //    RadioButton rb = (RadioButton)row.FindControl("RowSelect");
-            //    rb.Checked = true;
-            //}
-               
-                    CreatingSessionUsingAtomPub();
-                   
                     if (!Page.IsPostBack)
                     {
                         ViewState["myDataTable"] = FillDataTable();
                         ViewState["SelectRow"] = -1;
                         
                     }
-
-                //}
-                connection.Close();
-            //}
+                activeConnection.Close();
         }
 
-        private void CreatingSessionUsingAtomPub()
-        {
-            Dictionary<string, string> parameters = new Dictionary<string, string>();
-            SessionFactory factory = SessionFactory.NewInstance();
-            ISession session;
-            parameters[DotCMIS.SessionParameter.User] = "admin";
-            //parameters[DotCMIS.SessionParameter.Password] = "092095";
-            parameters[DotCMIS.SessionParameter.Password] = "admin";
-            //parameters[DotCMIS.SessionParameter.Password] = "H2scs2015";
-            parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
-            parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
-            //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
-            session = factory.GetRepositories(parameters)[0].CreateSession();
-        }
-
-
-
+       
         private static byte[] imageToByteArray(System.Drawing.Image imageIn)
         {
             using (MemoryStream ms = new MemoryStream())
@@ -147,19 +96,7 @@ namespace WebApplication1
 
                 row = GridView1.Rows[i];
                 row.BackColor = Color.Aqua;
-                Dictionary<string, string> parameters = new Dictionary<string, string>();
-                SessionFactory factory = SessionFactory.NewInstance();
-                ISession session;
-                parameters[DotCMIS.SessionParameter.User] = "admin";
-                //parameters[DotCMIS.SessionParameter.Password] = "092095";
-                parameters[DotCMIS.SessionParameter.Password] = "admin";
-                //parameters[DotCMIS.SessionParameter.Password] = "H2scs2015";
-                parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
-                parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
-                //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
-                session = factory.GetRepositories(parameters)[0].CreateSession();
-
-                 row = GridView1.Rows[i];
+                row = GridView1.Rows[i];
             
                 string im = row.Cells[3].Text;
                 string age = row.Cells[1].Text;
@@ -174,8 +111,7 @@ namespace WebApplication1
         {
             try
             {
-                connection.Open();
-                cmd = new SqlCommand("select signature_image from SIGNATURE WHERE account_number= @acctnumber", connection);
+                cmd = new SqlCommand("select signature_image from SIGNATURE WHERE account_number= @acctnumber", activeConnection);
                 cmd.Parameters.AddWithValue("@acctnumber", GridView1.Rows[rowIndex].Cells[3].Text);
 
 
@@ -183,7 +119,7 @@ namespace WebApplication1
                 string base64string2 = Convert.ToBase64String(result, 0, result.Length);
                 Image2.ImageUrl = "data:image/jpeg;base64," + base64string2;
                 Image2.Visible = true;
-                connection.Close();
+                activeConnection.Close();
             }
             catch
             {
@@ -237,13 +173,13 @@ namespace WebApplication1
            //    }
            //    else
            //    {
-                   connection.Open();
-                   SqlCommand cmd = new SqlCommand("update CHEQUE SET verification = @verify WHERE account_number = @acctnumber AND check_number = @chknumber", connection);
+                   activeConnection.Open();
+                   SqlCommand cmd = new SqlCommand("update CHEQUE SET verification = @verify WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection);
                    cmd.Parameters.AddWithValue("@acctnumber", GridView1.Rows[i].Cells[3].Text);
                    cmd.Parameters.AddWithValue("@chknumber", GridView1.Rows[i].Cells[1].Text);
                    cmd.Parameters.AddWithValue("@verify", "YES");
                    cmd.ExecuteNonQuery();
-                   connection.Close();
+                   activeConnection.Close();
 
                   dt = FillDataTable();
 
@@ -279,14 +215,13 @@ namespace WebApplication1
             //    }
             //    else
             //    {
-                    connection.Open();
-                    SqlCommand update = new SqlCommand("update CHEQUE SET verification = @verify WHERE account_number = @acctnumber AND check_number = @chknumber", connection);
+                    SqlCommand update = new SqlCommand("update CHEQUE SET verification = @verify WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection);
 
                     update.Parameters.AddWithValue("@acctnumber", GridView1.Rows[i].Cells[3].Text);
                     update.Parameters.AddWithValue("@chknumber", GridView1.Rows[i].Cells[1].Text);
                     update.Parameters.AddWithValue("@verify", "NO");
                     update.ExecuteNonQuery();
-                    connection.Close();
+                    activeConnection.Close();
 
                     dt = FillDataTable();
 
@@ -307,13 +242,11 @@ namespace WebApplication1
         //insert signatures in database
         protected void insertSig_Click(object sender, EventArgs e)
         {
-
-            connection.Open();
-            SqlCommand cmd = new SqlCommand("insert into SIGNATURE(signature_image, account_number) values (@Sig, @ID)", connection);
+            SqlCommand cmd = new SqlCommand("insert into SIGNATURE(signature_image, account_number) values (@Sig, @ID)", activeConnection);
             cmd.Parameters.AddWithValue("@Sig", imageToByteArray(System.Drawing.Image.FromStream(FileUpload1.PostedFile.InputStream)));
             cmd.Parameters.AddWithValue("@ID", TextBox1.Text);
             cmd.ExecuteNonQuery();
-            connection.Close();
+            activeConnection.Close();
 
         }
 
@@ -361,24 +294,21 @@ namespace WebApplication1
 
         private DataTable GetData()
         {
-            using (connection)
-            {
-                using (cmd = new SqlCommand("SELECT check_number, amount, CONVERT(VARCHAR(10), check_date, 101), branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed, CHEQUE.account_number FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id AND verification = 'NO' ORDER BY CHEQUE.account_number"))
-                {
-                    using (da = new SqlDataAdapter())
-                    {
-                        cmd.Connection = connection;
-                        da.SelectCommand = cmd;
-                        using (DataTable dt = new DataTable())
-                        {
-                            da.Fill(dt);
-                            return dt;
-                        }
 
+            using (cmd = new SqlCommand("SELECT check_number, amount, CONVERT(VARCHAR(10), check_date, 101), branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed, CHEQUE.account_number FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id AND verification = 'NO' ORDER BY CHEQUE.account_number"))
+            {
+                using (da = new SqlDataAdapter())
+                {
+                    cmd.Connection = activeConnection;
+                    da.SelectCommand = cmd;
+                    using (DataTable dt = new DataTable())
+                    {
+                        da.Fill(dt);
+                        return dt;
                     }
+
                 }
             }
-            
         }
 
         protected void GridView1_Sorting(Object sender, GridViewSortEventArgs e)
@@ -391,14 +321,14 @@ namespace WebApplication1
 
         public DataTable FillDataTable()
         {
-            string user = Membership.GetUser(User.Identity.Name).ToString();
+            string user = Session["UserName"].ToString();
             StringBuilder query = new StringBuilder();
             query.Append("SELECT check_number, customer_name, CHEQUE.account_number, check_date, amount, balance, BRANCH.branch_name, drawee_bank, drawee_bank_branch, verification ");
             query.Append("FROM CHEQUE, CUSTOMER, ACCOUNT, THRESHOLD, BRANCH, END_USER ");
             query.Append("WHERE END_USER.username = @username AND END_USER.user_id = BRANCH.user_id AND BRANCH.branch_name = CHEQUE.branch_name AND CHEQUE.account_number = ACCOUNT.account_number ");
             query.Append("AND ACCOUNT.customer_id = CUSTOMER.customer_id AND CHEQUE.amount >= minimum AND verification <> 'BTA' ");
             query.Append("ORDER BY CHEQUE.account_number");
-            cmd = new SqlCommand(query.ToString(), connection);
+            cmd = new SqlCommand(query.ToString(), activeConnection);
             cmd.Parameters.AddWithValue("@username", user); 
             dt = new DataTable();
             da = new SqlDataAdapter(cmd);
@@ -435,7 +365,7 @@ namespace WebApplication1
         protected void GridView1_RowDataBound(Object sender, GridViewRowEventArgs e)
         {
             int total = GridView1.Rows.Count;
-            
+
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
                 string verified = e.Row.Cells[10].Text;
@@ -459,19 +389,6 @@ namespace WebApplication1
                 totalVerHide.Value = totalVerified.ToString();
                 totalCountHide.Value = total.ToString();
             }
-        }
-
-        private void ErrorMessage(string message)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append("<script language='javascript'>");
-            sb.Append("alert('");
-            sb.Append(message);
-            sb.Append("');");
-            sb.Append("</script>");
-
-            if (!ClientScript.IsClientScriptBlockRegistered("ErrorPopup"))
-                ClientScript.RegisterClientScriptBlock(this.GetType(), "ErrorPopup", sb.ToString());
         }
     }
 }
