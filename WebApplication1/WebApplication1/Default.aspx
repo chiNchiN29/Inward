@@ -74,8 +74,9 @@
 </asp:Content>
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
     <div class="grid_scroll">
-    <asp:GridView ID="GridView1" runat="server" CssClass="gridView" AutoGenerateColumns="false"
-    AllowSorting="true" OnSorting="GridView1_Sorting" HeaderStyle-CssClass="GridHeader">
+    <asp:GridView ID="ViewAllCheck" runat="server" CssClass="gridView" AutoGenerateColumns="false"
+    AllowSorting="true" OnSorting="GridView1_Sorting" 
+            HeaderStyle-CssClass="GridHeader">
         <Columns>
             <asp:BoundField DataField="check_number" SortExpression="check_number" HeaderText="Check Number" />
             <asp:BoundField DataField="customer_name" SortExpression="customer_name" HeaderText="Name" />
@@ -93,26 +94,27 @@
     </div>
 <div id="loader">
         <div id="imageLoad">
-            <asp:Label ID="Label1" runat="server" Font-Size="Larger" ForeColor="Black" 
+            <asp:Label ID="lblLoadImg" runat="server" Font-Size="Larger" ForeColor="Black" 
             Text="1. Load Image"></asp:Label>
             <br />
-            <asp:FileUpload ID="FileUpload3" runat="server" AllowMultiple="true"/>
+            <asp:FileUpload ID="ImageUpload" runat="server" AllowMultiple="true"/>
             <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" 
             ControlToValidate="FileUpload3" 
             ErrorMessage="Image files only"
             ValidationExpression="(.*\.([Jj][Pp][Gg])|.*\.([Jj][Pp][Ee][Gg])|.*\.([Pp][Nn][Gg])|.*\.([Tt][Ii][Ff])$)" 
             ForeColor="Red"></asp:RegularExpressionValidator>
-            <asp:Button ID="uploadDoc" runat="server" Text="Upload Image" 
+            <asp:Button ID="uploadImgBtn" runat="server" Text="Upload Image" 
 
-            OnClick="uploadDoc_Click" OnClientClick="skm_LockScreen('Uploading Images');" Width="155px"/>   
+            OnClick="uploadImgBtn_Click" OnClientClick="skm_LockScreen('Uploading Images');" 
+                Width="155px"/>   
             <div id="skm_LockPane" class="LockOff"></div> 
 
         </div>
         <div id="dataLoad">
-            <asp:Label ID="Label2" runat="server" Font-Size="Larger" ForeColor="Black" 
+            <asp:Label ID="lblCheckData" runat="server" Font-Size="Larger" ForeColor="Black" 
             Text="2. Load Check Data"></asp:Label>
             <br />
-            <asp:FileUpload ID="FileUpload2" runat="server"/>
+            <asp:FileUpload ID="DataUpload" runat="server"/>
             <asp:RegularExpressionValidator ID="regexValidator" runat="server" 
             ControlToValidate="FileUpload2" 
             ErrorMessage="Only csv files are allowed"  

@@ -30,8 +30,8 @@ namespace WebApplication1
         protected void Page_Load(object sender, EventArgs e)
         {
 
-            SqlCommand checker = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = '" + Session["UserName"] + "' AND END_USER.role_id = ROLE.role_id", activeConnection);
-            if (checker.ExecuteScalar().ToString() != "BANK BRANCH" && checker.ExecuteScalar().ToString() != "OVERSEER")
+            cmd = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = '" + Session["UserName"] + "' AND END_USER.role_id = ROLE.role_id", activeConnection);
+            if (cmd.ExecuteScalar().ToString() != "BANK BRANCH" && cmd.ExecuteScalar().ToString() != "OVERSEER")
             {
                 string script = "alert(\"You are not authorized to view this page!\");location ='/Default.aspx';";
                 ScriptManager.RegisterStartupScript(this, GetType(),
@@ -50,71 +50,57 @@ namespace WebApplication1
         protected void fundButton_Click(object sender, EventArgs e)
         {
             int i = Convert.ToInt32(ViewState["SelectRow"].ToString());
-            if (i != -1)
+            if (i == -1)
             {
-                cmd = new SqlCommand("update CHEQUE SET confirmed = @fund WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection);
-                cmd.Parameters.AddWithValue("@acctnumber", GridView1.Rows[i].Cells[5].Text);
-                cmd.Parameters.AddWithValue("@chknumber", GridView1.Rows[i].Cells[1].Text);
-                cmd.Parameters.AddWithValue("@fund", "YES");
-                cmd.ExecuteNonQuery();
-				activeConnection.Close();
-                dt = FillDataTable(); 
-				
-                GridViewRow row = GridView1.Rows[i];
-                RadioButton rb = (RadioButton)row.FindControl("RowSelect");
-                rb.InputAttributes["checked"] = "true";
-                row.BackColor = Color.Aqua;
-
+                ErrorMessage("Please select a customer");
             }
             else
             {
-                ErrorMessage("Please select a customer");
+                cmd = new SqlCommand("update CHEQUE SET confirmed = @fund WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection);
+                cmd.Parameters.AddWithValue("@acctnumber", ConfirmView.Rows[i].Cells[5].Text);
+                cmd.Parameters.AddWithValue("@chknumber", ConfirmView.Rows[i].Cells[1].Text);
+                cmd.Parameters.AddWithValue("@fund", "YES");
+                cmd.ExecuteNonQuery();
+                activeConnection.Close();
+                dt = FillDataTable();
+
+                GridViewRow row = ConfirmView.Rows[i];
+                RadioButton rb = (RadioButton)row.FindControl("RowSelect");
+                rb.InputAttributes["checked"] = "true";
+                row.BackColor = Color.Aqua;   
             }
         }
 
         protected void unfundButton_Click(object sender, EventArgs e)
         {
             int i = Convert.ToInt32(ViewState["SelectRow"].ToString());
-            if (i != -1)
+            if (i == -1)
+            {
+                ErrorMessage("Please select a customer");
+               
+                
+                
+            }
+            else
             {
                 cmd = new SqlCommand("update CHEQUE SET confirmed = @fund WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection);
-                cmd.Parameters.AddWithValue("@acctnumber", GridView1.Rows[i].Cells[5].Text);
-                cmd.Parameters.AddWithValue("@chknumber", GridView1.Rows[i].Cells[1].Text);
+                cmd.Parameters.AddWithValue("@acctnumber", ConfirmView.Rows[i].Cells[5].Text);
+                cmd.Parameters.AddWithValue("@chknumber", ConfirmView.Rows[i].Cells[1].Text);
                 cmd.Parameters.AddWithValue("@fund", "NO");
                 cmd.ExecuteNonQuery();
 
                 activeConnection.Close();
                 dt = FillDataTable();
 
-                GridViewRow row = GridView1.Rows[i];
+                GridViewRow row = ConfirmView.Rows[i];
                 RadioButton rb = (RadioButton)row.FindControl("RowSelect");
                 rb.InputAttributes["checked"] = "true";
                 row.BackColor = Color.Aqua;
-                
-                
-            }
-            else
-            {
-                ErrorMessage("Please select a customer");
             }
             
         }
-        private void ErrorMessage(string message)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append("<script language='javascript'>");
-            sb.Append("alert('");
-            sb.Append(message);
-            sb.Append("');");
-            sb.Append("</script>");
 
-            if (!ClientScript.IsClientScriptBlockRegistered("ErrorPopup"))
-                ClientScript.RegisterClientScriptBlock(this.GetType(), "ErrorPopup", sb.ToString());
-        }
-
-        
-
-        protected void Button1_Click(object sender, EventArgs e)
+        protected void genListBtn_Click(object sender, EventArgs e)
         {
             // Retrieves the schema of the table.
             dt = new DataTable();
@@ -176,12 +162,12 @@ namespace WebApplication1
             }
         }
 
-        protected void GridView1_Sorting(Object sender, GridViewSortEventArgs e)
+        protected void ConfirmView_Sorting(Object sender, GridViewSortEventArgs e)
         {
             dt = ViewState["myDataTable"] as DataTable;
             dt.DefaultView.Sort = e.SortExpression + " " + GetSortDirection(e.SortExpression);
-            GridView1.DataSource = dt;
-            GridView1.DataBind();
+            ConfirmView.DataSource = dt;
+            ConfirmView.DataBind();
         }
 
         public DataTable FillDataTable()
@@ -197,8 +183,8 @@ namespace WebApplication1
             dt = new DataTable();
             da = new SqlDataAdapter(query.ToString(), activeConnection);
             da.Fill(dt);
-            GridView1.DataSource = dt;
-            GridView1.DataBind();
+            ConfirmView.DataSource = dt;
+            ConfirmView.DataBind();
             activeConnection.Close();
 
             return dt;
@@ -231,7 +217,7 @@ namespace WebApplication1
             int previousRow = Convert.ToInt32(ViewState["SelectRow"].ToString());
             if (previousRow != -1)
             {
-                row = GridView1.Rows[previousRow];
+                row = ConfirmView.Rows[previousRow];
                 row.BackColor = Color.White;
             }
 
@@ -240,15 +226,15 @@ namespace WebApplication1
             int i = row.RowIndex;
             ViewState["SelectRow"] = i;
 
-            row = GridView1.Rows[i];
+            row = ConfirmView.Rows[i];
             row.BackColor = System.Drawing.Color.Aqua;
             
         
         }
 
-        protected void GridView1_RowDataBound(Object sender, GridViewRowEventArgs e)
+        protected void ConfirmView_RowDataBound(Object sender, GridViewRowEventArgs e)
         {
-            int total = GridView1.Rows.Count;
+            int total = ConfirmView.Rows.Count;
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
                 string confirmed = e.Row.Cells[13].Text;

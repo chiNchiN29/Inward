@@ -47,7 +47,7 @@
                 }
             }
     </script>
-    <asp:DropDownList ID="DropDownList1"  runat="server">
+    <asp:DropDownList ID="RoleDrpDwn"  runat="server">
     </asp:DropDownList>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <asp:Button ID="branchBtn" runat="server" Text="Assign Branches" 
@@ -56,7 +56,4 @@
     <br />
     <asp:Button ID="assignBtn" runat="server" Text="Assign" 
         onclick="assignBtn_Click" />
-    <asp:SqlDataSource ID="SqlDataSource1" runat="server"
-    ConnectionString="<%$ ConnectionStrings:ConnectionString %>">
-    </asp:SqlDataSource>
-</asp:Content>
+    </asp:Content>

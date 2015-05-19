@@ -30,13 +30,12 @@ namespace WebApplication1
     
         protected void Page_Load(object sender, EventArgs e)
         {
-                    if (!Page.IsPostBack)
-                    {
-                        ViewState["myDataTable"] = FillDataTable();
-                        ViewState["SelectRow"] = -1;
-                        
-                    }
-                activeConnection.Close();
+            if (!Page.IsPostBack)
+            {
+                ViewState["myDataTable"] = FillDataTable();
+                ViewState["SelectRow"] = -1;
+            }
+            activeConnection.Close();
         }
 
        
@@ -65,13 +64,13 @@ namespace WebApplication1
                 }
                 string base64string = Convert.ToBase64String(result, 0, result.Length);
 
-                Image1.ImageUrl = "data:image/jpeg;base64," + base64string;
-                Image1.Visible = true;
+                checkImage.ImageUrl = "data:image/jpeg;base64," + base64string;
+                checkImage.Visible = true;
             }
             catch
             {
-                Image1.ImageUrl = "~/Resources/H2DefaultImage.jpg";
-                Image1.Visible = true;
+                checkImage.ImageUrl = "~/Resources/H2DefaultImage.jpg";
+                checkImage.Visible = true;
             }
 
         }
@@ -82,7 +81,7 @@ namespace WebApplication1
             int previousRow = Convert.ToInt32(ViewState["SelectRow"].ToString());
             if (previousRow != -1)
             {
-                row = GridView1.Rows[previousRow];
+                row = VerifyView.Rows[previousRow];
                 row.BackColor = Color.White;
             }
 
@@ -94,9 +93,9 @@ namespace WebApplication1
             if (i != -1)
             {
 
-                row = GridView1.Rows[i];
+                row = VerifyView.Rows[i];
                 row.BackColor = Color.Aqua;
-                row = GridView1.Rows[i];
+                row = VerifyView.Rows[i];
             
                 string im = row.Cells[3].Text;
                 string age = row.Cells[1].Text;
@@ -112,19 +111,18 @@ namespace WebApplication1
             try
             {
                 cmd = new SqlCommand("select signature_image from SIGNATURE WHERE account_number= @acctnumber", activeConnection);
-                cmd.Parameters.AddWithValue("@acctnumber", GridView1.Rows[rowIndex].Cells[3].Text);
-
+                cmd.Parameters.AddWithValue("@acctnumber", VerifyView.Rows[rowIndex].Cells[3].Text);
 
                 byte[] result = cmd.ExecuteScalar() as byte[];
                 string base64string2 = Convert.ToBase64String(result, 0, result.Length);
-                Image2.ImageUrl = "data:image/jpeg;base64," + base64string2;
-                Image2.Visible = true;
+                sigImage.ImageUrl = "data:image/jpeg;base64," + base64string2;
+                sigImage.Visible = true;
                 activeConnection.Close();
             }
             catch
             {
-                Image2.ImageUrl = "~/Resources/H2DefaultImage.jpg";
-                Image2.Visible = true;
+                sigImage.ImageUrl = "~/Resources/H2DefaultImage.jpg";
+                sigImage.Visible = true;
             }
 
         }
@@ -142,8 +140,8 @@ namespace WebApplication1
                 result2 = streamReader.ToArray();
             }
             string base64string2 = Convert.ToBase64String(result2, 0, result2.Length);
-            Image2.ImageUrl = "data:image/jpeg;base64," + base64string2;
-            Image2.Visible = true;
+            sigImage.ImageUrl = "data:image/jpeg;base64," + base64string2;
+            sigImage.Visible = true;
         }
 
         //for controls in not master page
@@ -165,78 +163,69 @@ namespace WebApplication1
         {
             int i = Convert.ToInt32(ViewState["SelectRow"].ToString());
 
-           //if (i != -1)
-           //{
-           //    if (Image1.ImageUrl == "~/Resources/H2DefaultImage.jpg" || Image2.ImageUrl == "~/Resources/H2DefaultImage.jpg")
-           //    {
-           //       ErrorMessage("Cannot validate because there is no existing check or signature");
-           //    }
-           //    else
-           //    {
+           if (i == -1)
+           {
+               ErrorMessage("Please select a check");
+           }
+           else
+           {
+               if (checkImage.ImageUrl == "~/Resources/H2DefaultImage.jpg" || sigImage.ImageUrl == "~/Resources/H2DefaultImage.jpg")
+               {
+                   ErrorMessage("Cannot validate because there is no existing check or signature");
+               }
+               else
+               {
                    activeConnection.Open();
                    SqlCommand cmd = new SqlCommand("update CHEQUE SET verification = @verify WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection);
-                   cmd.Parameters.AddWithValue("@acctnumber", GridView1.Rows[i].Cells[3].Text);
-                   cmd.Parameters.AddWithValue("@chknumber", GridView1.Rows[i].Cells[1].Text);
+                   cmd.Parameters.AddWithValue("@acctnumber", VerifyView.Rows[i].Cells[3].Text);
+                   cmd.Parameters.AddWithValue("@chknumber", VerifyView.Rows[i].Cells[1].Text);
                    cmd.Parameters.AddWithValue("@verify", "YES");
                    cmd.ExecuteNonQuery();
                    activeConnection.Close();
 
-                  dt = FillDataTable();
+                   dt = FillDataTable();
 
-                  GridViewRow row = GridView1.Rows[i];
-                  RadioButton rb = (RadioButton)row.FindControl("RowSelect");
-                  rb.InputAttributes["checked"] = "true";
-                  row.BackColor = Color.Aqua;
-                  
-           //    }
-           //}
-           //else
-           //{
-                  //ErrorMessage("Please select a check");
-           //}
+                   GridViewRow row = VerifyView.Rows[i];
+                   RadioButton rb = (RadioButton)row.FindControl("RowSelect");
+                   rb.InputAttributes["checked"] = "true";
+                   row.BackColor = Color.Aqua;
+
+               }
+           }
         }
 
         protected void rejectButton_Click(object sender, EventArgs e)
         {
             int i = Convert.ToInt32(ViewState["SelectRow"].ToString());
 
-            //if (i != -1)
-            //{
-            //    if (Image1.ImageUrl == "~/Resources/H2DefaultImage.jpg" || Image2.ImageUrl == "~/Resources/H2DefaultImage.jpg")
-            //    {
-            //        StringBuilder sb = new StringBuilder();
-            //        sb.Append("<script language='javascript'>");
-            //        sb.Append("alert('Cannot verify check because there is no existing image');");
-            //        sb.Append("<");
-            //        sb.Append("/script>");
-
-            //        if (!ClientScript.IsClientScriptBlockRegistered("ErrorPopup"))
-            //            ClientScript.RegisterClientScriptBlock(this.GetType(), "ErrorPopup", sb.ToString());
-            //    }
-            //    else
-            //    {
+            if (i == -1)
+            {
+                ErrorMessage("Please select a check");
+            }
+            else
+            {
+                if (checkImage.ImageUrl == "~/Resources/H2DefaultImage.jpg" || sigImage.ImageUrl == "~/Resources/H2DefaultImage.jpg")
+                {
+                    ErrorMessage("Cannot verify check because there is no existing image");
+                }
+                else
+                {
                     SqlCommand update = new SqlCommand("update CHEQUE SET verification = @verify WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection);
 
-                    update.Parameters.AddWithValue("@acctnumber", GridView1.Rows[i].Cells[3].Text);
-                    update.Parameters.AddWithValue("@chknumber", GridView1.Rows[i].Cells[1].Text);
+                    update.Parameters.AddWithValue("@acctnumber", VerifyView.Rows[i].Cells[3].Text);
+                    update.Parameters.AddWithValue("@chknumber", VerifyView.Rows[i].Cells[1].Text);
                     update.Parameters.AddWithValue("@verify", "NO");
                     update.ExecuteNonQuery();
                     activeConnection.Close();
 
                     dt = FillDataTable();
 
-                    GridViewRow row = GridView1.Rows[i];
+                    GridViewRow row = VerifyView.Rows[i];
                     RadioButton rb = (RadioButton)row.FindControl("RowSelect");
                     rb.InputAttributes["checked"] = "true";
                     row.BackColor = Color.Aqua;
-                    //GridView1.DataSource = dt;
-                    
-            //    }
-            //}
-            //else
-            //{
-                    //ErrorMessage("Please select a check");
-            //}   
+                }
+            }
         }
 
         //insert signatures in database
@@ -294,29 +283,31 @@ namespace WebApplication1
 
         private DataTable GetData()
         {
-
-            using (cmd = new SqlCommand("SELECT check_number, amount, CONVERT(VARCHAR(10), check_date, 101), branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed, CHEQUE.account_number FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id AND verification = 'NO' ORDER BY CHEQUE.account_number"))
+            using (activeConnection)
             {
-                using (da = new SqlDataAdapter())
+                using (cmd = new SqlCommand("SELECT check_number, amount, CONVERT(VARCHAR(10), check_date, 101), branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed, CHEQUE.account_number FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id AND verification = 'NO' ORDER BY CHEQUE.account_number"))
                 {
-                    cmd.Connection = activeConnection;
-                    da.SelectCommand = cmd;
-                    using (DataTable dt = new DataTable())
+                    using (da = new SqlDataAdapter())
                     {
-                        da.Fill(dt);
-                        return dt;
-                    }
+                        cmd.Connection = activeConnection;
+                        da.SelectCommand = cmd;
+                        using (DataTable dt = new DataTable())
+                        {
+                            da.Fill(dt);
+                            return dt;
+                        }
 
+                    }
                 }
             }
         }
 
-        protected void GridView1_Sorting(Object sender, GridViewSortEventArgs e)
+        protected void VerifyView_Sorting(Object sender, GridViewSortEventArgs e)
         {
             dt = ViewState["myDataTable"] as DataTable;
             dt.DefaultView.Sort = e.SortExpression + " " + GetSortDirection(e.SortExpression);
-            GridView1.DataSource = dt;
-            GridView1.DataBind();
+            VerifyView.DataSource = dt;
+            VerifyView.DataBind();
         }
 
         public DataTable FillDataTable()
@@ -334,8 +325,8 @@ namespace WebApplication1
             da = new SqlDataAdapter(cmd);
 
             da.Fill(dt);
-            GridView1.DataSource = dt;
-            GridView1.DataBind();
+            VerifyView.DataSource = dt;
+            VerifyView.DataBind();
           
             return dt;
         }
@@ -362,9 +353,9 @@ namespace WebApplication1
             return sortDirection;
         }
 
-        protected void GridView1_RowDataBound(Object sender, GridViewRowEventArgs e)
+        protected void VerifyView_RowDataBound(Object sender, GridViewRowEventArgs e)
         {
-            int total = GridView1.Rows.Count;
+            int total = VerifyView.Rows.Count;
 
             if (e.Row.RowType == DataControlRowType.DataRow)
             {

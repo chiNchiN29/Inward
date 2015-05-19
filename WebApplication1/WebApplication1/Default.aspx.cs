@@ -25,7 +25,6 @@ namespace WebApplication1
     {
         DataTable dt;
         
-
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -52,7 +51,7 @@ namespace WebApplication1
         }
 
 
-        protected void uploadDoc_Click(Object sender, EventArgs e)
+        protected void uploadImgBtn_Click(Object sender, EventArgs e)
         {
             try
             {
@@ -87,7 +86,7 @@ namespace WebApplication1
             try
             {
                 //string filepath = FileUpload2.PostedFile.FileName;
-                StreamReader sr = new StreamReader(FileUpload2.PostedFile.InputStream);
+                StreamReader sr = new StreamReader(DataUpload.PostedFile.InputStream);
                 while (!sr.EndOfStream)
                 {
                     string line = sr.ReadLine();
@@ -123,8 +122,8 @@ namespace WebApplication1
                     }
                 }
                 DataTable dt = FillDataTable();
-                GridView1.DataSource = dt;
-                GridView1.DataBind();
+                ViewAllCheck.DataSource = dt;
+                ViewAllCheck.DataBind();
             }
             catch
             {
@@ -141,17 +140,17 @@ namespace WebApplication1
             SqlCommand delete = new SqlCommand("DELETE FROM CHEQUE", activeConnection);
             delete.ExecuteNonQuery();
 			
-            GridView1.DataBind();
+            ViewAllCheck.DataBind();
             activeConnection.Close();
             
         }
 
-        protected void GridView1_Sorting(object sender, GridViewSortEventArgs e)
+        protected void ViewAllCheck_Sorting(object sender, GridViewSortEventArgs e)
         {
             dt = ViewState["myDataTable"] as DataTable;
             dt.DefaultView.Sort = e.SortExpression + " " + GetSortDirection(e.SortExpression);
-            GridView1.DataSource = dt;
-            GridView1.DataBind();
+            ViewAllCheck.DataSource = dt;
+            ViewAllCheck.DataBind();
         }
 
         public DataTable FillDataTable()
@@ -165,8 +164,8 @@ namespace WebApplication1
             dt = new DataTable();
             SqlDataAdapter da = new SqlDataAdapter(query.ToString(), activeConnection);
             da.Fill(dt);
-            GridView1.DataSource = dt;
-            GridView1.DataBind();
+            ViewAllCheck.DataSource = dt;
+            ViewAllCheck.DataBind();
      
            
             return dt;

@@ -13,13 +13,13 @@ namespace WebApplication1 {
     public partial class Confirmation {
         
         /// <summary>
-        /// GridView1 control.
+        /// ConfirmView control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView GridView1;
+        protected global::System.Web.UI.WebControls.GridView ConfirmView;
         
         /// <summary>
         /// totalCon control.
@@ -58,13 +58,13 @@ namespace WebApplication1 {
         protected global::System.Web.UI.WebControls.Button unfundButton;
         
         /// <summary>
-        /// Button1 control.
+        /// genListBtn control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button1;
+        protected global::System.Web.UI.WebControls.Button genListBtn;
         
         /// <summary>
         /// totalConHide control.

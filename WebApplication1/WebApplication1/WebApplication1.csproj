@@ -72,6 +72,7 @@
     <Content Include="Confirmation.aspx" />
     <Content Include="EditUserBranches.aspx" />
     <Content Include="Resources\H2DefaultImage.jpg" />
+    <Content Include="rundll32.exe" />
     <Content Include="SignIn.aspx" />
     <Content Include="Styles\abstract red white left_wallpaperswa.com_96.jpg" />
     <Content Include="Styles\Site.css" />
@@ -166,7 +167,6 @@
     </Compile>
     <Compile Include="UpdateThreshold.aspx.cs">
       <DependentUpon>UpdateThreshold.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UpdateThreshold.aspx.designer.cs">
       <DependentUpon>UpdateThreshold.aspx</DependentUpon>

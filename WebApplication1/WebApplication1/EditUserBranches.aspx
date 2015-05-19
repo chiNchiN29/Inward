@@ -4,11 +4,12 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <p>
         User Name:
-        <asp:Label ID="Label1" runat="server" Text="Label"></asp:Label>
+        <asp:Label ID="userLbl" runat="server" Text="Label"></asp:Label>
     </p>
     Branches:<br />
     <br />
-    <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="false" CssClass="gridView2" HeaderStyle-CssClass="GridHeader">
+    <asp:GridView ID="BranchView" runat="server" AutoGenerateColumns="false" 
+        CssClass="gridView2" HeaderStyle-CssClass="GridHeader">
     <Columns>
         <asp:TemplateField>
                 <ItemTemplate>
@@ -22,6 +23,6 @@
     <br />
     <asp:Button ID="saveBtn" runat="server" Text="Save" onclick="saveBtn_Click" />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <asp:Button ID="cancelBtn" runat="server" onclick="cancelBtn_Click" 
-        Text="Cancel" />
+    <asp:Button ID="backBtn" runat="server" onclick="backBtn_Click" 
+        Text="Back" />
     </asp:Content>
