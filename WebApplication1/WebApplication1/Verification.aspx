@@ -1,8 +1,6 @@
 ﻿<%@ Page Title="Signature Verification" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Verification.aspx.cs" Inherits="WebApplication1.Verification" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
     <style type="text/css">
-        .style4
-        {}
         .grid_scroll
         {
             overflow: scroll;
@@ -139,6 +137,7 @@
     
 
         <script type="text/javascript">
+
             function CheckOtherIsCheckedByGVID(spanChk) {
 
                 var IsChecked = spanChk.checked;
@@ -166,27 +165,23 @@
                 return false;
             }
 
-
             var needToConfirm = true;
           window.onbeforeunload = confirmExit;
           function confirmExit() {
               var totalVer = document.getElementById("<%=totalVerHide.ClientID%>").value;
               var total = document.getElementById("<%=totalCountHide.ClientID%>").value;
-               if (/Firefox[\/\s](\d+)/.test(navigator.userAgent) && new Number(RegExp.$1) >= 4) {
+              if (/Firefox[\/\s](\d+)/.test(navigator.userAgent) && new Number(RegExp.$1) >= 4) {
                   if (totalVer < total) {
                       if (needToConfirm)
                           return totalVer + "/" + total + " have been verified."
                   }
-               }
+              }
               else {
                   if (totalVer < total) {
                       if (needToConfirm)
                           return totalVer + "/" + total + " have been verified."
                   }
               }
-
-                    
-  
           }
 
 </script>

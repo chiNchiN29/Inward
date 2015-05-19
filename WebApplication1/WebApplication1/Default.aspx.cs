@@ -283,10 +283,7 @@ namespace WebApplication1
         {
             connection.Open();
             SqlCommand delete = new SqlCommand("DELETE FROM CHEQUE", connection);
-            SqlCommand deleteBranches = new SqlCommand("DELETE FROM BRANCH DBCC CHECKIDENT('BRANCH', RESEED, 0)", connection);
             delete.ExecuteNonQuery();
-            deleteBranches.ExecuteNonQuery();
-            
             GridView1.DataBind();
             connection.Close();
             

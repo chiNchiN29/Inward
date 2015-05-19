@@ -59,12 +59,13 @@ namespace WebApplication1
             //    RadioButton rb = (RadioButton)row.FindControl("RowSelect");
             //    rb.Checked = true;
             //}
-                    Page.MaintainScrollPositionOnPostBack = true;
+               
                     CreatingSessionUsingAtomPub();
-
+                   
                     if (!Page.IsPostBack)
                     {
                         ViewState["myDataTable"] = FillDataTable();
+                        ViewState["SelectRow"] = -1;
                         
                     }
 
@@ -126,37 +127,20 @@ namespace WebApplication1
 
         }
 
-        //get selected row index
-        protected int GetRowIndex()
-        {
-            int x = -1;
-            for (int i = 0; i <= GridView1.Rows.Count - 1; i++)
-            {
-                row = GridView1.Rows[i];
-                RadioButton rb = (RadioButton)row.FindControl("RowSelect");
-                if (rb != null)
-                {
-                    if (rb.Checked == true)
-                    {
-                        return row.RowIndex;
-                    }
-                }
-            }
-            return x;
-        }
 
         protected void RowSelect_CheckedChanged(Object sender, EventArgs e)
         {
-            string previousRow = ViewState["SelectRow"] as string;
-            if (previousRow != null)
+            int previousRow = Convert.ToInt32(ViewState["SelectRow"].ToString());
+            if (previousRow != -1)
             {
-                int rows = int.Parse(previousRow);
-                row = GridView1.Rows[rows];
+                row = GridView1.Rows[previousRow];
                 row.BackColor = Color.White;
             }
 
-            int i = GetRowIndex();
-            ViewState["SelectRow"] = i.ToString();    
+            RadioButton rb = (RadioButton)sender;
+            row = (GridViewRow)rb.NamingContainer;
+            int i = row.RowIndex;
+            ViewState["SelectRow"] = i; 
 
             if (i != -1)
             {
@@ -243,7 +227,7 @@ namespace WebApplication1
 
         protected void acceptButton_Click(object sender, EventArgs e)
         {
-           int i = GetRowIndex();
+            int i = Convert.ToInt32(ViewState["SelectRow"].ToString());
 
            //if (i != -1)
            //{
@@ -262,6 +246,11 @@ namespace WebApplication1
                    connection.Close();
 
                   dt = FillDataTable();
+
+                  GridViewRow row = GridView1.Rows[i];
+                  RadioButton rb = (RadioButton)row.FindControl("RowSelect");
+                  rb.InputAttributes["checked"] = "true";
+                  row.BackColor = Color.Aqua;
                   
            //    }
            //}
@@ -273,7 +262,7 @@ namespace WebApplication1
 
         protected void rejectButton_Click(object sender, EventArgs e)
         {
-            int i = GetRowIndex();
+            int i = Convert.ToInt32(ViewState["SelectRow"].ToString());
 
             //if (i != -1)
             //{
@@ -293,7 +282,6 @@ namespace WebApplication1
                     connection.Open();
                     SqlCommand update = new SqlCommand("update CHEQUE SET verification = @verify WHERE account_number = @acctnumber AND check_number = @chknumber", connection);
 
-          
                     update.Parameters.AddWithValue("@acctnumber", GridView1.Rows[i].Cells[3].Text);
                     update.Parameters.AddWithValue("@chknumber", GridView1.Rows[i].Cells[1].Text);
                     update.Parameters.AddWithValue("@verify", "NO");
@@ -301,6 +289,11 @@ namespace WebApplication1
                     connection.Close();
 
                     dt = FillDataTable();
+
+                    GridViewRow row = GridView1.Rows[i];
+                    RadioButton rb = (RadioButton)row.FindControl("RowSelect");
+                    rb.InputAttributes["checked"] = "true";
+                    row.BackColor = Color.Aqua;
                     //GridView1.DataSource = dt;
                     
             //    }
@@ -368,7 +361,6 @@ namespace WebApplication1
 
         private DataTable GetData()
         {
-
             using (connection)
             {
                 using (cmd = new SqlCommand("SELECT check_number, amount, CONVERT(VARCHAR(10), check_date, 101), branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed, CHEQUE.account_number FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id AND verification = 'NO' ORDER BY CHEQUE.account_number"))
@@ -399,7 +391,6 @@ namespace WebApplication1
 
         public DataTable FillDataTable()
         {
-
             string user = Membership.GetUser(User.Identity.Name).ToString();
             StringBuilder query = new StringBuilder();
             query.Append("SELECT check_number, customer_name, CHEQUE.account_number, check_date, amount, balance, BRANCH.branch_name, drawee_bank, drawee_bank_branch, verification ");
