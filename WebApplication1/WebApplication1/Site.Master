@@ -50,7 +50,15 @@
         <div class="clear">
         <asp:ScriptManager ID="ScriptManager1" runat="server">
     </asp:ScriptManager>
-    <asp:Timer ID="Timer1" runat="server" Interval="60" OnTick="Timer1_Tick">
+    <script type="text/javascript">
+        var prm = Sys.WebForms.PageRequestManager.getInstance();
+        prm.add_beginRequest(beginRequest);
+
+        function beginRequest() {
+            prm._scrollPosition = null;
+        }
+</script>
+    <asp:Timer ID="Timer1" runat="server" Interval="60" OnTick="Timer1_Tick" ClientIDMode="AutoID">  
     </asp:Timer>
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>

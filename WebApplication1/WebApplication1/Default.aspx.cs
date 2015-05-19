@@ -139,10 +139,8 @@ namespace WebApplication1
         protected void clearCheck_Click1(object sender, EventArgs e)
         {
             SqlCommand delete = new SqlCommand("DELETE FROM CHEQUE", activeConnection);
-            SqlCommand deleteBranches = new SqlCommand("DELETE FROM BRANCH DBCC CHECKIDENT('BRANCH', RESEED, 0)", activeConnection);
             delete.ExecuteNonQuery();
-            deleteBranches.ExecuteNonQuery();
-            
+			
             GridView1.DataBind();
             activeConnection.Close();
             

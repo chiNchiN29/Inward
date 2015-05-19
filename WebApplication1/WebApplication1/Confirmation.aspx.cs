@@ -25,11 +25,11 @@ namespace WebApplication1
         DataTable dt;
         SqlDataAdapter da;
         GridViewRow row;
-        
         int totalConfirmed = 0;
 
         protected void Page_Load(object sender, EventArgs e)
         {
+
             SqlCommand checker = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = '" + Session["UserName"] + "' AND END_USER.role_id = ROLE.role_id", activeConnection);
             if (checker.ExecuteScalar().ToString() != "BANK BRANCH" && checker.ExecuteScalar().ToString() != "OVERSEER")
             {
@@ -42,13 +42,14 @@ namespace WebApplication1
                 if (!IsPostBack)
                 {
                     ViewState["myDataTable"] = FillDataTable();
+					ViewState["SelectRow"] = -1;
                 }
             }	
         }
 
         protected void fundButton_Click(object sender, EventArgs e)
         {
-            int i = GetRowIndex();
+            int i = Convert.ToInt32(ViewState["SelectRow"].ToString());
             if (i != -1)
             {
                 cmd = new SqlCommand("update CHEQUE SET confirmed = @fund WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection);
@@ -56,9 +57,14 @@ namespace WebApplication1
                 cmd.Parameters.AddWithValue("@chknumber", GridView1.Rows[i].Cells[1].Text);
                 cmd.Parameters.AddWithValue("@fund", "YES");
                 cmd.ExecuteNonQuery();
-                activeConnection.Close();
-
+				activeConnection.Close();
                 dt = FillDataTable(); 
+				
+                GridViewRow row = GridView1.Rows[i];
+                RadioButton rb = (RadioButton)row.FindControl("RowSelect");
+                rb.InputAttributes["checked"] = "true";
+                row.BackColor = Color.Aqua;
+
             }
             else
             {
@@ -66,20 +72,25 @@ namespace WebApplication1
             }
         }
 
-        
-
         protected void unfundButton_Click(object sender, EventArgs e)
         {
-            int i = GetRowIndex();
+            int i = Convert.ToInt32(ViewState["SelectRow"].ToString());
             if (i != -1)
             {
                 cmd = new SqlCommand("update CHEQUE SET confirmed = @fund WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection);
                 cmd.Parameters.AddWithValue("@acctnumber", GridView1.Rows[i].Cells[5].Text);
                 cmd.Parameters.AddWithValue("@chknumber", GridView1.Rows[i].Cells[1].Text);
                 cmd.Parameters.AddWithValue("@fund", "NO");
-                activeConnection.Close();
+                cmd.ExecuteNonQuery();
 
+                activeConnection.Close();
                 dt = FillDataTable();
+
+                GridViewRow row = GridView1.Rows[i];
+                RadioButton rb = (RadioButton)row.FindControl("RowSelect");
+                rb.InputAttributes["checked"] = "true";
+                row.BackColor = Color.Aqua;
+                
                 
             }
             else
@@ -88,6 +99,20 @@ namespace WebApplication1
             }
             
         }
+        private void ErrorMessage(string message)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("<script language='javascript'>");
+            sb.Append("alert('");
+            sb.Append(message);
+            sb.Append("');");
+            sb.Append("</script>");
+
+            if (!ClientScript.IsClientScriptBlockRegistered("ErrorPopup"))
+                ClientScript.RegisterClientScriptBlock(this.GetType(), "ErrorPopup", sb.ToString());
+        }
+
+        
 
         protected void Button1_Click(object sender, EventArgs e)
         {
@@ -201,45 +226,24 @@ namespace WebApplication1
             return sortDirection;
         }
 
-        //get selected row index
-        protected int GetRowIndex()
-        {
-            int x = -1;
-            for (int i = 0; i <= GridView1.Rows.Count - 1; i++)
-            {
-                row = GridView1.Rows[i];
-                RadioButton rb = (RadioButton)row.FindControl("RowSelect");
-                if (rb != null)
-                {
-                    if (rb.Checked == true)
-                    {
-                        return row.RowIndex;
-                    }
-                }
-            }
-            return x;
-        }
-        
-        
         protected void RowSelect_CheckedChanged(Object sender, EventArgs e)
         {
-            string previousRow = ViewState["SelectRow"] as string;
-            if (previousRow != null)
+            int previousRow = Convert.ToInt32(ViewState["SelectRow"].ToString());
+            if (previousRow != -1)
             {
-                int rows = int.Parse(previousRow);
-                row = GridView1.Rows[rows];
+                row = GridView1.Rows[previousRow];
                 row.BackColor = Color.White;
             }
 
-            int i = GetRowIndex();
-            ViewState["SelectRow"] = i.ToString();  
+            RadioButton rb = (RadioButton)sender;
+            row = (GridViewRow)rb.NamingContainer;
+            int i = row.RowIndex;
+            ViewState["SelectRow"] = i;
 
-            if (i != -1)
-            {
-                row = GridView1.Rows[i];
-                row.BackColor = System.Drawing.Color.Aqua;
+            row = GridView1.Rows[i];
+            row.BackColor = System.Drawing.Color.Aqua;
             
-            }
+        
         }
 
         protected void GridView1_RowDataBound(Object sender, GridViewRowEventArgs e)
@@ -258,6 +262,7 @@ namespace WebApplication1
                     e.Row.CssClass = "NoVer";
                     totalConfirmed++;
                 }
+               
             }
             else if (e.Row.RowType == DataControlRowType.Footer)
             {
