@@ -6,6 +6,10 @@
         {
             height: 20px;
         }
+        .style2
+        {
+            height: 22px;
+        }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
@@ -30,7 +34,8 @@
     <tr>
         <td>First Name:</td>
         <td>&nbsp;</td>
-        <td><asp:TextBox ID="TextBox5" runat="server" ToolTip="This field is REQUIRED."></asp:TextBox></td>
+        <td><asp:TextBox ID="TextBox5" runat="server" ToolTip="This field is REQUIRED." 
+                CssClass="style2"></asp:TextBox></td>
         <td>
             <asp:RequiredFieldValidator ID="RequiredFieldValidator4" runat="server" 
                 ErrorMessage="This field is required." ForeColor="Red" 
