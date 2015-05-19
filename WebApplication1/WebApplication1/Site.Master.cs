@@ -15,42 +15,46 @@ namespace WebApplication1
         SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
         protected void Page_Load(object sender, EventArgs e)
         {
-
-
-        //    DefaultView();
-        //    bool login = System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
-        //    if (login == false)
-        //    {
-        //        NavigationMenu.Visible = false;
-        //    }
-        //    else
-        //    {
-        //        connection.Open();
-        //        Label3.Text = System.DateTime.Now.ToLongTimeString();
-        //        string meep = Membership.GetUser().UserName;
-        //        SqlCommand checker = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = '" + Membership.GetUser().UserName + "' AND END_USER.role_id = ROLE.role_id", connection);
-        //            if (checker.ExecuteScalar().ToString() == "ADMIN")
-        //            {
-        //                AdminView();
-        //            }
-        //            else if (checker.ExecuteScalar().ToString() == "CLEARING DEPT")
-        //            {
-        //                ClearingDeptView();
-        //            }
-        //            else if (checker.ExecuteScalar().ToString() == "BANK BRANCH")
-        //            {
-        //                BankBranchView();
-        //            }
-        //            else if (checker.ExecuteScalar().ToString() == "OVERSEER")
-        //            {
-        //                OverseerView();
-        //            }
-        //            else
-        //            {
-        //                TBAView();
-        //            }
-        //        }
-
+            DefaultView();
+            bool login = System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+            if (login == false)
+            {
+                NavigationMenu.Visible = false;
+            }
+            else
+            {
+                try
+                {
+                    connection.Open();
+                    Label3.Text = System.DateTime.Now.ToLongTimeString();
+                    //string pool = Session["UserName"].ToString();
+                    SqlCommand checker = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = '" + Session["UserName"] + "' AND END_USER.role_id = ROLE.role_id", connection);
+                    if (checker.ExecuteScalar().ToString() == "ADMIN")
+                    {
+                        AdminView();
+                    }
+                    else if (checker.ExecuteScalar().ToString() == "CLEARING DEPT")
+                    {
+                        ClearingDeptView();
+                    }
+                    else if (checker.ExecuteScalar().ToString() == "BANK BRANCH")
+                    {
+                        BankBranchView();
+                    }
+                    else if (checker.ExecuteScalar().ToString() == "OVERSEER")
+                    {
+                        OverseerView();
+                    }
+                    else
+                    {
+                        TBAView();
+                    }
+                }
+                catch
+                {
+                    Response.Write("Error in processing request.");
+                }
+            }
         }
         protected void NavigationMenu_MenuItemClick(object sender, MenuEventArgs e)
         {
@@ -66,42 +70,42 @@ namespace WebApplication1
             UpdateTimer();
         }
 
-        //protected void BankBranchView()
-        //{
-        //    NavigationMenu.FindItem("Main Menu").Enabled = true;
-        //    NavigationMenu.FindItem("Confirmation").Enabled = true;
-        //}
-        //protected void ClearingDeptView()
-        //{
-        //    NavigationMenu.FindItem("Main Menu").Enabled = true;
-        //    NavigationMenu.FindItem("Signature Verification").Enabled = true;
-        //}
-        //protected void AdminView()
-        //{
-        //    NavigationMenu.FindItem("Main Menu").Enabled = true;
-        //    NavigationMenu.FindItem("Update Thresholds").Enabled = true;
-        //    NavigationMenu.FindItem("User Maintenance").Enabled = true;
-        //}
-        //protected void TBAView()
-        //{
-        //    NavigationMenu.FindItem("Main Menu").Enabled = true;
-        //}
-        //protected void OverseerView()
-        //{
-        //    NavigationMenu.FindItem("Main Menu").Enabled = true;
-        //    NavigationMenu.FindItem("Signature Verification").Enabled = true;
-        //    NavigationMenu.FindItem("Confirmation").Enabled = true;
-        //    NavigationMenu.FindItem("Update Thresholds").Enabled = true;
-        //    NavigationMenu.FindItem("User Maintenance").Enabled = true;
-        //}
-        //protected void DefaultView()
-        //{
-        //    NavigationMenu.FindItem("Main Menu").Enabled = false;
-        //    NavigationMenu.FindItem("Signature Verification").Enabled = false;
-        //    NavigationMenu.FindItem("Confirmation").Enabled = false;
-        //    NavigationMenu.FindItem("Update Thresholds").Enabled = false;
-        //    NavigationMenu.FindItem("User Maintenance").Enabled = false;
-        //}
+        protected void BankBranchView()
+        {
+            NavigationMenu.FindItem("Main Menu").Enabled = true;
+            NavigationMenu.FindItem("Confirmation").Enabled = true;
+        }
+        protected void ClearingDeptView()
+        {
+            NavigationMenu.FindItem("Main Menu").Enabled = true;
+            NavigationMenu.FindItem("Signature Verification").Enabled = true;
+        }
+        protected void AdminView()
+        {
+            NavigationMenu.FindItem("Main Menu").Enabled = true;
+            NavigationMenu.FindItem("Update Thresholds").Enabled = true;
+            NavigationMenu.FindItem("User Maintenance").Enabled = true;
+        }
+        protected void TBAView()
+        {
+            NavigationMenu.FindItem("Main Menu").Enabled = true;
+        }
+        protected void OverseerView()
+        {
+            NavigationMenu.FindItem("Main Menu").Enabled = true;
+            NavigationMenu.FindItem("Signature Verification").Enabled = true;
+            NavigationMenu.FindItem("Confirmation").Enabled = true;
+            NavigationMenu.FindItem("Update Thresholds").Enabled = true;
+            NavigationMenu.FindItem("User Maintenance").Enabled = true;
+        }
+        protected void DefaultView()
+        {
+            NavigationMenu.FindItem("Main Menu").Enabled = false;
+            NavigationMenu.FindItem("Signature Verification").Enabled = false;
+            NavigationMenu.FindItem("Confirmation").Enabled = false;
+            NavigationMenu.FindItem("Update Thresholds").Enabled = false;
+            NavigationMenu.FindItem("User Maintenance").Enabled = false;
+        }
     }
 
     

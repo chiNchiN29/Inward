@@ -1,30 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using DotCMIS;
-using DotCMIS.Client.Impl;
+﻿using DotCMIS;
 using DotCMIS.Client;
-using DotCMIS.Data.Impl;
-using DotCMIS.Data.Extensions;
-using System.IO;
+using DotCMIS.Client.Impl;
 using DotCMIS.Data;
+using DotCMIS.Data.Extensions;
+using DotCMIS.Data.Impl;
+using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
+using System.IO;
+using System.Linq;
 using System.Text;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
 
 namespace WebApplication1
 {
 
-    public partial class _Default : System.Web.UI.Page
+    public partial class _Default : BasePage
     {
-        SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
         DataTable dt;
-    
+        
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -32,136 +32,6 @@ namespace WebApplication1
             {
                 ViewState["myDataTable"] = FillDataTable();
             }
-        }
-
-        private void CreatingSessionUsingAtomPub()
-        {
-            Dictionary<string, string> parameters = new Dictionary<string, string>();
-            SessionFactory factory = SessionFactory.NewInstance();
-            ISession session;
-            parameters[DotCMIS.SessionParameter.User] = "admin";
-            parameters[DotCMIS.SessionParameter.Password] = "092095";
-            //parameters[DotCMIS.SessionParameter.Password] = "admin";
-            //parameters[DotCMIS.SessionParameter.Password] = "H2scs2015";
-            parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
-            parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
-            //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
-            session = factory.GetRepositories(parameters)[0].CreateSession();
-
-            #region Getting the Root Folder and it Children Folders
-            ///// get the root folder
-            //IFolder rootFolder = session.GetRootFolder();
-
-            //String FolderName = string.Empty;
-            //// list all children
-            //foreach (ICmisObject cmisObject in rootFolder.GetChildren())
-            //{
-            //    FolderName = cmisObject.Name.ToString();
-            //    //Console.WriteLine(cmisObject.Name);
-            //} 
-            #endregion
-
-            #region Checking and Creation of Target Folders
-            //Checking and Creating of Main Folder from the Root Folder
-            if (!isFolderExist(session, "/Uploads/"))
-            {
-                CreateAFolder(session, "Uploads");
-            }
-
-            //Creating a SubFolder for current Year
-            if (!isFolderExist(session, "/Uploads/" + DateTime.Now.Year.ToString()))
-            {
-                CreateASubFolder(session, DateTime.Now.Year.ToString(), "/Uploads/");
-            }
-
-            //Creating a SubFolder for current Month
-            if (!isFolderExist(session, "/Uploads/" + DateTime.Now.Year.ToString() + "/" + DateTime.Now.ToString("MM")))
-            {
-                CreateASubFolder(session, DateTime.Now.ToString("MM"), "/Uploads/" + DateTime.Now.Year.ToString());
-            }
-
-            //Creating a SubFolder for current Day
-            if (!isFolderExist(session, "/Uploads/" + DateTime.Now.Year.ToString() + "/" + DateTime.Now.ToString("MM") + "/" + DateTime.Now.ToString("dd")))
-            {
-                CreateASubFolder(session, DateTime.Now.ToString("dd"), "/Uploads/" + DateTime.Now.Year.ToString() + "/" + DateTime.Now.ToString("MM"));
-            }
-            #endregion
-
-            //#region Uploading of Image
-            //UploadADocument(session, imageToByteArray(System.Drawing.Image.FromFile(@"C:\Users\Kathrine Chua\Pictures\sad\2.jpeg")));
-            //#endregion
-
-            #region GET A PAGE
-            //// get a page
-            //IItemEnumerable<ICmisObject> children = rootFolder.GetChildren();
-            //IItemEnumerable<ICmisObject> page = children.SkipTo(20).GetPage(10); // children 20 to 30
-
-            //foreach (ICmisObject cmisObject in page)
-            //{
-            //    Console.WriteLine(cmisObject.Name);
-            //} 
-            #endregion
-
-            #region Diff. AtomPUbUrl according to Version
-            //try
-            //{
-            //    parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/service/api/cmis"; //THROWS "NOT FOUND"
-            //    
-            //    //session = factory.CreateSession(parameters);//THROWS :Repository Id is not set!"
-            //}
-            //catch
-            //{
-            //    parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/cmisatom"; //THROWS "Unauthorized" 
-            //    session = factory.GetRepositories(parameters)[0].CreateSession();
-            //    //session = factory.CreateSession(parameters);//THROWS: Repository Id is not set!"
-            //}
-            //finally
-            //{
-            //    try
-            //    {
-            //        parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom"; //THROWS "Unauthorized"
-            //        session = factory.GetRepositories(parameters)[0].CreateSession();
-            //        //session = factory.CreateSession(parameters);
-            //    }
-            //    catch
-            //    {
-            //        
-            //        session = factory.GetRepositories(parameters)[0].CreateSession();
-            //        //session = factory.CreateSession(parameters);
-            //    }
-            //} 
-            #endregion
-        }
-
-        private static Boolean isFolderExist(ISession session, String FolderPath)
-        {
-            IFolder folder;
-            try
-            {
-                folder = (IFolder)session.GetObjectByPath(FolderPath);
-                return true;
-            }
-            catch (DotCMIS.Exceptions.CmisObjectNotFoundException)
-            {
-                return false;
-            }
-        }
-
-        private static void CreateAFolder(ISession session, String FolderName)
-        {
-            Dictionary<String, object> FolderProperties = new Dictionary<string, object>();
-            FolderProperties[DotCMIS.PropertyIds.Name] = FolderName;
-            FolderProperties[DotCMIS.PropertyIds.ObjectTypeId] = "cmis:folder";
-            session.GetRootFolder().CreateFolder(FolderProperties);
-        }
-
-        private static void CreateASubFolder(ISession session, String FolderName, String ParentFolderPath)
-        {
-            Dictionary<String, object> FolderProperties = new Dictionary<string, object>();
-            FolderProperties[DotCMIS.PropertyIds.Name] = FolderName;
-            FolderProperties[DotCMIS.PropertyIds.ObjectTypeId] = "cmis:folder";
-            IFolder newFolder = (IFolder)session.GetObjectByPath(ParentFolderPath);
-            newFolder.CreateFolder(FolderProperties);
         }
 
         private void UploadADocument(ISession session, byte[] ImageFile, string fileName)
@@ -184,19 +54,6 @@ namespace WebApplication1
 
         protected void uploadDoc_Click(Object sender, EventArgs e)
         {
-            
-            Dictionary<string, string> parameters = new Dictionary<string, string>();
-            SessionFactory factory = SessionFactory.NewInstance();
-            ISession session;
-            parameters[DotCMIS.SessionParameter.User] = "admin";
-            //parameters[DotCMIS.SessionParameter.Password] = "092095";
-            parameters[DotCMIS.SessionParameter.Password] = "admin";
-            //parameters[DotCMIS.SessionParameter.Password] = "H2scs2015";
-            parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
-            parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
-            //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
-            session = factory.GetRepositories(parameters)[0].CreateSession();
-
             try
             {
                 HttpFileCollection hfc = Request.Files;
@@ -210,7 +67,7 @@ namespace WebApplication1
                 }
                 Response.Write("<script langauge=\"javascript\">alert(\"Images successfully added\");</script>");
             }
-            catch (Exception x)
+            catch
             {
                 Response.Write("<script langauge=\"javascript\">alert(\"An image already exists with the same name\");</script>");
             }
@@ -238,8 +95,8 @@ namespace WebApplication1
                     SqlCommand validator = new SqlCommand("select check_number from CHEQUE where check_number = '" + heart[0] + "'");
                     if (validator.ExecuteScalar() == null)
                     {
-                        SqlCommand insert = new SqlCommand("insert into CHEQUE(check_number, amount, check_date, branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed, account_number) values (@checknum, @amount, @date, @branch, @draweebank, @draweebranch, @funded, @verified, @confirmed, @acctnum)", connection);
-                        SqlCommand checker = new SqlCommand("select minimum from THRESHOLD", connection);
+                        SqlCommand insert = new SqlCommand("insert into CHEQUE(check_number, amount, check_date, branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed, account_number) values (@checknum, @amount, @date, @branch, @draweebank, @draweebranch, @funded, @verified, @confirmed, @acctnum)", activeConnection);
+                        SqlCommand checker = new SqlCommand("select minimum from THRESHOLD", activeConnection);
                         insert.Parameters.AddWithValue("@checknum", heart[0]);
                         insert.Parameters.AddWithValue("@amount", heart[1]);
                         insert.Parameters.AddWithValue("@date", heart[2]);
@@ -269,26 +126,25 @@ namespace WebApplication1
                 GridView1.DataSource = dt;
                 GridView1.DataBind();
             }
-            catch (Exception b)
+            catch
             {
                 Response.Write("Please re-check the format of the data for any missing fields.");
               
             }
 
-             connection.Close();
+             activeConnection.Close();
 
         }
 
         protected void clearCheck_Click1(object sender, EventArgs e)
         {
-            connection.Open();
-            SqlCommand delete = new SqlCommand("DELETE FROM CHEQUE", connection);
-            SqlCommand deleteBranches = new SqlCommand("DELETE FROM BRANCH DBCC CHECKIDENT('BRANCH', RESEED, 0)", connection);
+            SqlCommand delete = new SqlCommand("DELETE FROM CHEQUE", activeConnection);
+            SqlCommand deleteBranches = new SqlCommand("DELETE FROM BRANCH DBCC CHECKIDENT('BRANCH', RESEED, 0)", activeConnection);
             delete.ExecuteNonQuery();
             deleteBranches.ExecuteNonQuery();
             
             GridView1.DataBind();
-            connection.Close();
+            activeConnection.Close();
             
         }
 
@@ -307,9 +163,9 @@ namespace WebApplication1
             query.Append("FROM CHEQUE, CUSTOMER, ACCOUNT ");
             query.Append("WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id ");
             query.Append("ORDER BY CHEQUE.check_number");
-
+            
             dt = new DataTable();
-            SqlDataAdapter da = new SqlDataAdapter(query.ToString(), connection);
+            SqlDataAdapter da = new SqlDataAdapter(query.ToString(), activeConnection);
             da.Fill(dt);
             GridView1.DataSource = dt;
             GridView1.DataBind();

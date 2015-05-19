@@ -1,28 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using DotCMIS.Client.Impl;
-using DotCMIS.Client;
-using DotCMIS;
-using System.IO;
-using System.Text;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Configuration;
-using System.Web.Security;
 using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using DotCMIS;
+using DotCMIS.Client;
+using DotCMIS.Client.Impl;
 
 namespace WebApplication1
 {
 
-    public partial class Confirmation : System.Web.UI.Page
+    public partial class Confirmation : BasePage
     {
-        SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
-
-   
+        
         SqlCommand cmd;
         DataTable dt;
         SqlDataAdapter da;
@@ -32,30 +30,20 @@ namespace WebApplication1
 
         protected void Page_Load(object sender, EventArgs e)
         {
-
-            //bool login = System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
-            //if (login == false)
-            //{
-            //    Response.Redirect("~/Account/Login.aspx");
-            //}
-            //else
-            //{
-            //    connection.Open();
- 
-            	SqlCommand checker = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = '" + Membership.GetUser().UserName + "' AND END_USER.role_id = ROLE.role_id", connection);
-            	if (checker.ExecuteScalar().ToString() != "BANK BRANCH" && checker.ExecuteScalar().ToString() != "OVERSEER")
-            	{
-                	string script = "alert(\"You are not authorized to view this page!\");location ='/Default.aspx';";
-                	ScriptManager.RegisterStartupScript(this, GetType(),
-                                        "alertMessage", script, true);
-            	}
-           	 else
-           	 {
-                	if (!IsPostBack)
-                	{
-                    		ViewState["myDataTable"] = FillDataTable();
-                	}
-            	}	
+            SqlCommand checker = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = '" + Session["UserName"] + "' AND END_USER.role_id = ROLE.role_id", activeConnection);
+            if (checker.ExecuteScalar().ToString() != "BANK BRANCH" && checker.ExecuteScalar().ToString() != "OVERSEER")
+            {
+                string script = "alert(\"You are not authorized to view this page!\");location ='/Default.aspx';";
+                ScriptManager.RegisterStartupScript(this, GetType(),
+                                    "alertMessage", script, true);
+            }
+           	else
+           	{
+                if (!IsPostBack)
+                {
+                    ViewState["myDataTable"] = FillDataTable();
+                }
+            }	
         }
 
         protected void fundButton_Click(object sender, EventArgs e)
@@ -63,17 +51,14 @@ namespace WebApplication1
             int i = GetRowIndex();
             if (i != -1)
             {
-                connection.Open();
-                cmd = new SqlCommand("update CHEQUE SET confirmed = @fund WHERE account_number = @acctnumber AND check_number = @chknumber", connection);
+                cmd = new SqlCommand("update CHEQUE SET confirmed = @fund WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection);
                 cmd.Parameters.AddWithValue("@acctnumber", GridView1.Rows[i].Cells[5].Text);
                 cmd.Parameters.AddWithValue("@chknumber", GridView1.Rows[i].Cells[1].Text);
                 cmd.Parameters.AddWithValue("@fund", "YES");
                 cmd.ExecuteNonQuery();
-                connection.Close();
+                activeConnection.Close();
 
-
-                dt = FillDataTable();
-                
+                dt = FillDataTable(); 
             }
             else
             {
@@ -81,30 +66,18 @@ namespace WebApplication1
             }
         }
 
-        private void ErrorMessage(string message)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append("<script language='javascript'>");
-            sb.Append("alert('");
-            sb.Append(message);
-            sb.Append("');");
-            sb.Append("</script>");
-
-            if (!ClientScript.IsClientScriptBlockRegistered("ErrorPopup"))
-                ClientScript.RegisterClientScriptBlock(this.GetType(), "ErrorPopup", sb.ToString());
-        }
+        
 
         protected void unfundButton_Click(object sender, EventArgs e)
         {
             int i = GetRowIndex();
             if (i != -1)
             {
-                connection.Open();
-                cmd = new SqlCommand("update CHEQUE SET confirmed = @fund WHERE account_number = @acctnumber AND check_number = @chknumber", connection);
+                cmd = new SqlCommand("update CHEQUE SET confirmed = @fund WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection);
                 cmd.Parameters.AddWithValue("@acctnumber", GridView1.Rows[i].Cells[5].Text);
                 cmd.Parameters.AddWithValue("@chknumber", GridView1.Rows[i].Cells[1].Text);
                 cmd.Parameters.AddWithValue("@fund", "NO");
-                connection.Close();
+                activeConnection.Close();
 
                 dt = FillDataTable();
                 
@@ -159,13 +132,13 @@ namespace WebApplication1
 
         private DataTable GetData()
         {
-            using (connection)
+            using (activeConnection)
             {
                 using (cmd = new SqlCommand("SELECT check_number, amount, CONVERT(VARCHAR(10), check_date, 101), branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed, CHEQUE.account_number FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id AND confirmed = 'NO' ORDER BY CHEQUE.account_number"))
                 {
                     using (da = new SqlDataAdapter())
                     {
-                        cmd.Connection = connection;
+                        cmd.Connection = activeConnection;
                         da.SelectCommand = cmd;
                         using (dt = new DataTable())
                         {
@@ -196,13 +169,12 @@ namespace WebApplication1
             query.Append("AND ((verification = 'YES' AND amount > maximum) OR verification = 'NO') ");
             query.Append("ORDER BY CHEQUE.account_number");
 
-            connection.Open();
             dt = new DataTable();
-            da = new SqlDataAdapter(query.ToString(), connection);
+            da = new SqlDataAdapter(query.ToString(), activeConnection);
             da.Fill(dt);
             GridView1.DataSource = dt;
             GridView1.DataBind();
-            connection.Close();
+            activeConnection.Close();
 
             return dt;
         }
