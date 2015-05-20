@@ -67,8 +67,8 @@
         &nbsp;&nbsp;&nbsp;
         <asp:GridView ID="VerifyView" runat="server" AutoGenerateColumns="false" 
             BorderColor="Black" ForeColor="Black" HeaderStyle-ForeColor="White"
-              AllowSorting="true" OnSorting="GridView1_Sorting" HeaderStyle-CssClass="GridHeader" 
-             OnRowDataBound="GridView1_RowDataBound" ShowFooter="True" 
+              AllowSorting="true" OnSorting="VerifyView_Sorting" HeaderStyle-CssClass="GridHeader" 
+             OnRowDataBound="VerifyView_RowDataBound" ShowFooter="True" 
             FooterStyle-CssClass="gridViewFooterStyle" >
                  <Columns>
                     <asp:TemplateField>

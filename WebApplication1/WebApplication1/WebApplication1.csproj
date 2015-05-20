@@ -167,6 +167,7 @@
     </Compile>
     <Compile Include="UpdateThreshold.aspx.cs">
       <DependentUpon>UpdateThreshold.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UpdateThreshold.aspx.designer.cs">
       <DependentUpon>UpdateThreshold.aspx</DependentUpon>

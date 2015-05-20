@@ -28,10 +28,10 @@
     <div class="grid_scroll">
     <asp:GridView ID="ConfirmView" runat="server" AutoGenerateColumns="false" 
             BorderColor="Black" ForeColor="Black" HeaderStyle-ForeColor="White" 
-   AllowSorting="true" OnSorting="GridView1_Sorting" 
+   AllowSorting="true" OnSorting="ConfirmView_Sorting" 
     HeaderStyle-CssClass="GridHeader" ShowFooter="True" 
             FooterStyle-CssClass="gridViewFooterStyle" 
-            OnRowDataBound="GridView1_RowDataBound">
+            OnRowDataBound="ConfirmView_RowDataBound">
     <Columns>
         <asp:TemplateField>
             <ItemTemplate>

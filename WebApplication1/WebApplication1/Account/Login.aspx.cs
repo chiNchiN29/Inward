@@ -68,15 +68,8 @@ namespace WebApplication1.Account
 
                     connection.Close();
                 }
-                else
-                {
-                    Response.Write("Failed");
-                }
             }
-            else
-            {
-                Response.Write("Failed");
-            }
+
         }
     }
 }

@@ -75,7 +75,7 @@
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
     <div class="grid_scroll">
     <asp:GridView ID="ViewAllCheck" runat="server" CssClass="gridView" AutoGenerateColumns="false"
-    AllowSorting="true" OnSorting="GridView1_Sorting" 
+    AllowSorting="true" OnSorting="ViewAllCheck_Sorting" 
             HeaderStyle-CssClass="GridHeader">
         <Columns>
             <asp:BoundField DataField="check_number" SortExpression="check_number" HeaderText="Check Number" />

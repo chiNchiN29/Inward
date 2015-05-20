@@ -18,7 +18,7 @@
         Visible="False"></asp:Label>
     <br />
     <asp:CompareValidator ID="CompareValidator1" runat="server" 
-        ControlToCompare="TextBox3" ControlToValidate="TextBox4" 
+        ControlToCompare="passTxtBx" ControlToValidate="cpassTxtBx" 
         ErrorMessage="The passwords do not match." ForeColor="Red"></asp:CompareValidator>
 <br />
 <table>
@@ -29,7 +29,7 @@
         <td>
             <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" 
                 ErrorMessage="This field is required." ForeColor="Red" 
-                ControlToValidate="TextBox1"></asp:RequiredFieldValidator></td>
+                ControlToValidate="unTxtBx"></asp:RequiredFieldValidator></td>
     </tr>
     <tr>
         <td>First Name:</td>
@@ -39,7 +39,7 @@
         <td>
             <asp:RequiredFieldValidator ID="RequiredFieldValidator4" runat="server" 
                 ErrorMessage="This field is required." ForeColor="Red" 
-                ControlToValidate="TextBox1"></asp:RequiredFieldValidator></td>
+                ControlToValidate="unTxtBx"></asp:RequiredFieldValidator></td>
     </tr>
     <tr>
         <td>Last Name:</td>
@@ -48,7 +48,7 @@
         <td>
             <asp:RequiredFieldValidator ID="RequiredFieldValidator5" runat="server" 
                 ErrorMessage="This field is required." ForeColor="Red" 
-                ControlToValidate="TextBox1"></asp:RequiredFieldValidator></td>
+                ControlToValidate="unTxtBx"></asp:RequiredFieldValidator></td>
     </tr>
     <tr>
         <td>E-mail:</td>
@@ -57,7 +57,7 @@
                 ToolTip="This field is REQUIRED."></asp:TextBox></td>
         <td><asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" 
                 ErrorMessage="This field is required." ForeColor="Red" 
-                ControlToValidate="TextBox2"></asp:RequiredFieldValidator></td>
+                ControlToValidate="emTxtBx"></asp:RequiredFieldValidator></td>
     </tr>
     <tr>
         <td class="style1">Password:</td>
@@ -66,7 +66,7 @@
             <asp:TextBox ID="passTxtBx" runat="server" TextMode="Password" 
                 ToolTip="Requires at least 8 characters."></asp:TextBox>
             <cc1:PasswordStrength ID="passtxtBx_PasswordStrength" runat="server" 
-                BehaviorID="TextBox3_PasswordStrength" TargetControlID="passtxtBx" 
+                BehaviorID="passTxtBx_PasswordStrength" TargetControlID="passtxtBx" 
                 DisplayPosition="RightSide"
                 MinimumSymbolCharacters="0"
                 MinimumUpperCaseCharacters="1"
@@ -91,7 +91,7 @@
         <td><asp:TextBox ID="cpassTxtBx" runat="server" TextMode="Password"></asp:TextBox></td>
         <td><asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" 
                 ErrorMessage="This field is required." ForeColor="Red" 
-                ControlToValidate="TextBox3"></asp:RequiredFieldValidator></td>
+                ControlToValidate="cpassTxtBx"></asp:RequiredFieldValidator></td>
     </tr>
     <tr>
         <td id="buttonstuff" colspan='3' align="center">
