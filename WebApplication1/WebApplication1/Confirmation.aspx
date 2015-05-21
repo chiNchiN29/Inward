@@ -22,6 +22,12 @@
             color: #009900;
              border-bottom-color: Black;
         }
+        #dataLoad
+        {
+            width: 400px;
+            float: left;
+            margin-left: 50px;
+        }
 </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
@@ -80,7 +86,7 @@
             }
             var CurrentRdbID = spanChk.id;
             var Chk = spanChk;
-            Parent = document.getElementById("<%=GridView1.ClientID%>");
+            Parent = document.getElementById("<%=ConfirmView.ClientID%>");
             var items = Parent.getElementsByTagName('input');
             for (i = 0; i < items.length; i++) {
                 if (items[i].id != CurrentRdbID && items[i].type == "radio") {
@@ -120,6 +126,21 @@
 
 
 </script>
+    <br />
+    <div id="dataLoad">
+            <asp:Label ID="lblCheckData" runat="server" Font-Size="Larger" ForeColor="Black" 
+            Text="Load Check Data"></asp:Label>
+            <br />
+            <asp:FileUpload ID="DataUpload" runat="server"/>
+            <asp:RegularExpressionValidator ID="regexValidator" runat="server" 
+            ControlToValidate="DataUpload" 
+            ErrorMessage="Only csv files are allowed"  
+            ValidationExpression="(.*\.([cC][sS][vV])$)" ForeColor="Red"></asp:RegularExpressionValidator> 
+            <br />   
+            <asp:Button ID="uploadDoc0" runat="server" Text="Load" 
+            OnClick="UploadCheckData" Width="156px"/>
+        </div>
+    <br />
     <asp:HiddenField ID="totalConHide" runat="server" />
     <asp:HiddenField ID="totalCountHide" runat="server" />
 </asp:Content>

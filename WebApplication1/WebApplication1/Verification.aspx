@@ -113,14 +113,14 @@
     <br/>
     <div id="images">
         <div id="imageLeft">
-            <asp:Label ID="Label1" runat="server" AssociatedControlID="Image1" 
+            <asp:Label ID="Label1" runat="server" AssociatedControlID="checkImage" 
             BorderStyle="None" Text="Image"></asp:Label>
             <asp:Image ID="checkImage" runat="server" CssClass="image_box" Height="180px" 
             Width="450px" ImageAlign="Left" 
             ImageUrl="~/Resources/H2DefaultImage.jpg"/>
         </div>
         <div id="imageRight">
-            <asp:Label ID="Label2" runat="server" AssociatedControlID="Image2" 
+            <asp:Label ID="Label2" runat="server" AssociatedControlID="sigImage" 
             Text="Signature"></asp:Label>
             <asp:Image ID="sigImage" runat="server" CssClass="image_box" Height="180px" 
             Width="450px" ImageAlign="Right" 
@@ -128,10 +128,6 @@
         </div>
         <div id="emptySpace">
             
-        </div>
-        <div id="buttonWield">
-            <asp:Button ID="genListBtn" runat="server" onclick="genListBtn_Click" OnClientClick="return GenerateList(); needToConfirm = false;" 
-            Text="Generate List" />
         </div>
     </div>
     <br/>
@@ -148,7 +144,7 @@
                 var CurrentRdbID = spanChk.id;
                
                 var Chk = spanChk;
-                Parent = document.getElementById("<%=GridView1.ClientID%>");
+                Parent = document.getElementById("<%=VerifyView.ClientID%>");
                 var items = Parent.getElementsByTagName('input');
                 for (i = 0; i < items.length; i++) {
                     if (items[i].id != CurrentRdbID && items[i].type == "radio") {
@@ -160,12 +156,7 @@
                 }
             }
 
-            function GenerateList() {
-                if (confirm("Are you sure you want to generate list?")) {
-                    return true;
-                }
-                return false;
-            }
+            
 
             var needToConfirm = true;
           window.onbeforeunload = confirmExit;

@@ -239,69 +239,6 @@ namespace WebApplication1
 
         }
 
-        //Generate List
-        protected void Button1_Click(object sender, EventArgs e)
-        {
-            // Retrieves the schema of the table.
-            dt = new DataTable();
-            dt.Clear();
-            dt = GetData();
-
-            // set the resulting file attachment name to the name of the report...
-            string fileName = "test";
-
-            //Response.Write(dtSchema.Rows.Count);
-
-            Response.Clear();
-            Response.Buffer = true;
-            Response.AddHeader("content-disposition", "attachment;filename=" + fileName + ".csv");
-            Response.Charset = "";
-    
-            Response.ContentType = "text/csv";
-
-            System.Text.StringBuilder sb = new System.Text.StringBuilder();
-            
-            foreach (DataRow datar in dt.Rows)
-            {
-                for (int i = 0; i < dt.Columns.Count; i++)
-                {
-                    if (!Convert.IsDBNull(datar[i]))
-                    {
-                        sb.Append(datar[i].ToString());
-                    }
-                    if (i < dt.Columns.Count - 1)
-                    {
-                        sb.Append(",");
-                    }
-                }
-                sb.Append("\r\n");
-            }
-            Response.Output.Write(sb.ToString());
-            Response.Flush();
-            Response.End();
-        }
-
-        private DataTable GetData()
-        {
-            using (activeConnection)
-            {
-                using (cmd = new SqlCommand("SELECT check_number, amount, CONVERT(VARCHAR(10), check_date, 101), branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed, CHEQUE.account_number FROM CHEQUE, CUSTOMER, ACCOUNT WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id AND verification = 'NO' ORDER BY CHEQUE.account_number"))
-                {
-                    using (da = new SqlDataAdapter())
-                    {
-                        cmd.Connection = activeConnection;
-                        da.SelectCommand = cmd;
-                        using (DataTable dt = new DataTable())
-                        {
-                            da.Fill(dt);
-                            return dt;
-                        }
-
-                    }
-                }
-            }
-        }
-
         protected void VerifyView_Sorting(Object sender, GridViewSortEventArgs e)
         {
             dt = ViewState["myDataTable"] as DataTable;
