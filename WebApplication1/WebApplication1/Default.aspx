@@ -99,7 +99,7 @@
             <br />
             <asp:FileUpload ID="ImageUpload" runat="server" AllowMultiple="true"/>
             <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" 
-            ControlToValidate="FileUpload3" 
+            ControlToValidate="ImageUpload" 
             ErrorMessage="Image files only"
             ValidationExpression="(.*\.([Jj][Pp][Gg])|.*\.([Jj][Pp][Ee][Gg])|.*\.([Pp][Nn][Gg])|.*\.([Tt][Ii][Ff])$)" 
             ForeColor="Red"></asp:RegularExpressionValidator>
@@ -116,7 +116,7 @@
             <br />
             <asp:FileUpload ID="DataUpload" runat="server"/>
             <asp:RegularExpressionValidator ID="regexValidator" runat="server" 
-            ControlToValidate="FileUpload2" 
+            ControlToValidate="DataUpload" 
             ErrorMessage="Only csv files are allowed"  
             ValidationExpression="(.*\.([cC][sS][vV])$)" ForeColor="Red"></asp:RegularExpressionValidator> 
             <br />   

@@ -17,7 +17,6 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-
 namespace WebApplication1
 {
 
@@ -27,6 +26,7 @@ namespace WebApplication1
         
         protected void Page_Load(object sender, EventArgs e)
         {
+            
             if (!IsPostBack)
             {
                 ViewState["myDataTable"] = FillDataTable();
@@ -91,7 +91,7 @@ namespace WebApplication1
                 {
                     string line = sr.ReadLine();
                     string[] heart = line.Split(',');
-                    SqlCommand validator = new SqlCommand("select check_number from CHEQUE where check_number = '" + heart[0] + "'");
+                    SqlCommand validator = new SqlCommand("select check_number from CHEQUE where check_number = '" + heart[0] + "'", activeConnection);
                     if (validator.ExecuteScalar() == null)
                     {
                         SqlCommand insert = new SqlCommand("insert into CHEQUE(check_number, amount, check_date, branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed, account_number) values (@checknum, @amount, @date, @branch, @draweebank, @draweebranch, @funded, @verified, @confirmed, @acctnum)", activeConnection);
@@ -114,20 +114,23 @@ namespace WebApplication1
                         insert.Parameters.AddWithValue("@confirmed", heart[8]);
                         insert.Parameters.AddWithValue("@acctnum", heart[9]);
                         insert.ExecuteNonQuery();
+                       
                     }
                     else
                     {
-                        sr.Close();
+                        
                         Response.Write("Check Data Upload interrupted. A duplicate check number has been discovered.");
                     }
-                }
+                } 
+                sr.Close();
                 DataTable dt = FillDataTable();
                 ViewAllCheck.DataSource = dt;
                 ViewAllCheck.DataBind();
             }
-            catch
+            catch (Exception b)
             {
-                Response.Write("Please re-check the format of the data for any missing fields.");
+                Response.Write(b);
+                //Response.Write("Please re-check the format of the data for any missing fields.");
               
             }
 

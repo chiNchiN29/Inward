@@ -80,7 +80,7 @@
             }
             var CurrentRdbID = spanChk.id;
             var Chk = spanChk;
-            Parent = document.getElementById("<%=GridView1.ClientID%>");
+            Parent = document.getElementById("<%=ConfirmView.ClientID%>");
             var items = Parent.getElementsByTagName('input');
             for (i = 0; i < items.length; i++) {
                 if (items[i].id != CurrentRdbID && items[i].type == "radio") {

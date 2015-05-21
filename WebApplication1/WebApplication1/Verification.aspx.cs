@@ -27,18 +27,27 @@ namespace WebApplication1
         GridViewRow row;
         DataTable dt;
         int totalVerified = 0;
-    
+     
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!Page.IsPostBack)
+            cmd = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = '" + Session["UserName"] + "' AND END_USER.role_id = ROLE.role_id", activeConnection);
+            if (cmd.ExecuteScalar().ToString() != "CLEARING DEPT" && cmd.ExecuteScalar().ToString() != "OVERSEER")
             {
-                ViewState["myDataTable"] = FillDataTable();
-                ViewState["SelectRow"] = -1;
+                ErrorMessage("You are not authorized to view this page");
+                Response.Redirect("Default.aspx");
             }
+            else
+            {
+                if (!Page.IsPostBack)
+                {
+                    ViewState["myDataTable"] = FillDataTable();
+                    ViewState["SelectRow"] = -1;
+                }
+            }
+
             activeConnection.Close();
         }
 
-       
         private static byte[] imageToByteArray(System.Drawing.Image imageIn)
         {
             using (MemoryStream ms = new MemoryStream())
@@ -52,9 +61,9 @@ namespace WebApplication1
         {
             try
             {
-                string juvy = ("/Uploads/" + DateTime.Now.Year.ToString() + "/" + DateTime.Now.ToString("MM") + "/" + DateTime.Now.ToString("dd") + "/" + fileName);
-                IDocument doc = (IDocument)session.GetObjectByPath("/Uploads/" + DateTime.Now.Year.ToString() + "/" + DateTime.Now.ToString("MM") + "/" + DateTime.Now.ToString("dd") + "/" + fileName);
-
+        
+                IDocument doc = (IDocument)session.GetObjectByPath("/Uploads/" + DateTime.Now.Year.ToString() + "/" + DateTime.Now.ToString("MM") + "/" + DateTime.Now.ToString("dd") + "/" +  fileName);
+      
                 IContentStream contentStream = doc.GetContentStream();
                 byte[] result;
                 using (var streamReader = new MemoryStream())
@@ -96,7 +105,7 @@ namespace WebApplication1
                 row = VerifyView.Rows[i];
                 row.BackColor = Color.Aqua;
                 row = VerifyView.Rows[i];
-            
+          
                 string im = row.Cells[3].Text;
                 string age = row.Cells[1].Text;
                 string image = im + "_" + age;
@@ -110,6 +119,7 @@ namespace WebApplication1
         {
             try
             {
+                activeConnection.Open();
                 cmd = new SqlCommand("select signature_image from SIGNATURE WHERE account_number= @acctnumber", activeConnection);
                 cmd.Parameters.AddWithValue("@acctnumber", VerifyView.Rows[rowIndex].Cells[3].Text);
 
@@ -210,6 +220,7 @@ namespace WebApplication1
                 }
                 else
                 {
+                    activeConnection.Open();
                     SqlCommand update = new SqlCommand("update CHEQUE SET verification = @verify WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection);
 
                     update.Parameters.AddWithValue("@acctnumber", VerifyView.Rows[i].Cells[3].Text);
@@ -240,7 +251,7 @@ namespace WebApplication1
         }
 
         //Generate List
-        protected void Button1_Click(object sender, EventArgs e)
+        protected void genListBtn_Click(object sender, EventArgs e)
         {
             // Retrieves the schema of the table.
             dt = new DataTable();

@@ -13,7 +13,7 @@ namespace WebApplication1.Account
     public partial class Login : System.Web.UI.Page
     {
         SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
-        HttpCookie newUserSession = new HttpCookie("Username");
+        HttpCookie UserCookie = new HttpCookie("Username");
         protected void Page_Load(object sender, EventArgs e)
         {
             connection.Open();
@@ -41,12 +41,12 @@ namespace WebApplication1.Account
             SqlCommand usernameChecker = new SqlCommand("SELECT username FROM END_USER WHERE username = '" + Login1.UserName + "'", connection);
             SqlCommand passwordChecker = new SqlCommand("SELECT password FROM END_USER WHERE username = '" + Login1.UserName + "'", connection);
 
-            string username = usernameChecker.ExecuteScalar().ToString();
-            string password = passwordChecker.ExecuteScalar().ToString();
-
             if (usernameChecker.ExecuteScalar() != null && passwordChecker.ExecuteScalar() != null)
             {
-                if (Login1.UserName == usernameChecker.ExecuteScalar().ToString() && Login1.Password == passwordChecker.ExecuteScalar().ToString())
+                string username = usernameChecker.ExecuteScalar().ToString();
+                string password = passwordChecker.ExecuteScalar().ToString();
+
+                if (Login1.UserName == username && Login1.Password == password)
                 {
                     //FormsAuthentication.RedirectFromLoginPage(TextBox1.Text, CheckBox1.Checked);
                     SqlCommand cmd = new SqlCommand("select * from END_USER where username = @userName " +
@@ -67,6 +67,23 @@ namespace WebApplication1.Account
                     Login1.DestinationPageUrl = "~/Default.aspx";
 
                     connection.Close();
+                }
+                else
+                {
+                    e.Authenticated = false;
+                }
+
+                if (Login1.RememberMeSet)
+                {
+                    Response.Cookies["Username"].Value = Login1.UserName.ToString();
+                    Response.Cookies["Username"].Expires = DateTime.Now.AddDays(30);
+                }
+                else
+                {
+                    if (Response.Cookies["Username"] != null)
+                    {
+                        Response.Cookies["Username"].Expires = DateTime.Now.AddDays(-30);
+                    }
                 }
             }
 

@@ -13,21 +13,31 @@ namespace WebApplication1
 {
     public partial class UpdateThreshold : BasePage
     {
-        
+        SqlCommand cmd;
+   
         protected void Page_Load(object sender, EventArgs e)
         {
-            SqlCommand select = new SqlCommand("select minimum from THRESHOLD", activeConnection);
-            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-PH", false);
-            Label2.Text = String.Format("{0:C}", select.ExecuteScalar());
-            
-            SqlCommand select2 = new SqlCommand("select maximum from THRESHOLD", activeConnection);
-            Label5.Text = String.Format("{0:C}", select2.ExecuteScalar());
-            
+            cmd = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = '" + Session["UserName"] + "' AND END_USER.role_id = ROLE.role_id", activeConnection);
+            if (cmd.ExecuteScalar().ToString() != "ADMIN" && cmd.ExecuteScalar().ToString() != "OVERSEER")
+            {
+                ErrorMessage("You are not authorized to view this page");
+                Response.Redirect("Default.aspx");
+            }
+            else
+            {
+                SqlCommand select = new SqlCommand("select minimum from THRESHOLD", activeConnection);
+                Thread.CurrentThread.CurrentCulture = new CultureInfo("en-PH", false);
+                Label2.Text = String.Format("{0:C}", select.ExecuteScalar());
+
+                SqlCommand select2 = new SqlCommand("select maximum from THRESHOLD", activeConnection);
+                Label5.Text = String.Format("{0:C}", select2.ExecuteScalar());
+            }
             activeConnection.Close();
         }
 
         protected void SetThresholds(object sender, EventArgs e)
         {
+            activeConnection.Open();
             if (TextBox1.Text != "" || TextBox2.Text != "")
             {
                     int num1;
@@ -56,13 +66,14 @@ namespace WebApplication1
                             Label5.Text = String.Format("{0:C}", select2.ExecuteScalar());
                         }
                     }
-                    activeConnection.Close();
+                    
                 }
-            
+           
             else
             {
                 Response.Redirect("Default.aspx");
             }
+            activeConnection.Close();
         }
     }
 }

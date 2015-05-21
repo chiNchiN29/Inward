@@ -15,6 +15,7 @@ namespace WebApplication1
         SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
         protected void Page_Load(object sender, EventArgs e)
         {
+            Session["UserName"] = System.Web.HttpContext.Current.User.Identity;
             DefaultView();
             bool login = System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
             if (login == false)
@@ -23,6 +24,7 @@ namespace WebApplication1
             }
             else
             {
+                Session["UserName"] = System.Web.HttpContext.Current.User.Identity.Name;
                 try
                 {
                     connection.Open();

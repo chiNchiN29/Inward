@@ -33,9 +33,8 @@ namespace WebApplication1
             cmd = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = '" + Session["UserName"] + "' AND END_USER.role_id = ROLE.role_id", activeConnection);
             if (cmd.ExecuteScalar().ToString() != "BANK BRANCH" && cmd.ExecuteScalar().ToString() != "OVERSEER")
             {
-                string script = "alert(\"You are not authorized to view this page!\");location ='/Default.aspx';";
-                ScriptManager.RegisterStartupScript(this, GetType(),
-                                    "alertMessage", script, true);
+                ErrorMessage("You are not authorized to view this page");
+                Response.Redirect("Default.aspx");
             }
            	else
            	{
