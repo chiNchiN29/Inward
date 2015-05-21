@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="Change Password" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true"
-    CodeBehind="ChangePasswordSuccess.aspx.cs" Inherits="WebApplication3.Account.ChangePasswordSuccess" %>
+    CodeBehind="ChangePasswordSuccess.aspx.cs" Inherits="WebApplication1.Account.ChangePasswordSuccess" %>
 
 <asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeadContent">
 </asp:Content>
@@ -10,4 +10,7 @@
     <p>
         Your password has been changed successfully.
     </p>
+    <br />
+    <asp:Button ID="continueBtn" runat="server" Text="Continue" 
+        onclick="continueBtn_Click" />
 </asp:Content>

@@ -70,6 +70,10 @@
          {
              text-align: right;
          }
+         #buttonWield
+         {
+             width: 400px;
+         }
         </style>
 </asp:Content>
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
@@ -127,6 +131,11 @@
             <asp:Button ID="clearCheck" runat="server" onclientclick="return DeleteItem()" 
             Text="Clear Check Data" onclick="clearCheck_Click1" />  
         </div>
+        <div id="buttonWield">
+            <asp:Label ID="genLbl" runat="server" Font-Size="Larger" ForeColor="Black" Text="Generate List of Verified Cheques"></asp:Label><br/>
+            <asp:Button ID="genListBtn" runat="server" onclick="genListBtn_Click" OnClientClick="return GenerateList(); needToConfirm = false;" 
+            Text="Generate List" />
+        </div>
     </div> 
     <br />
     <br />
@@ -145,7 +154,14 @@
                lock.className = 'LockOn';
 
            lock.innerHTML = str;
-       } 
+       }
+
+       function GenerateList() {
+           if (confirm("Are you sure you want to generate list?")) {
+               return true;
+           }
+           return false;
+       }
 
  </script>
 

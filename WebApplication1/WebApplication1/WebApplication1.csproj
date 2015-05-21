@@ -71,6 +71,7 @@
     </Content>
     <Content Include="Confirmation.aspx" />
     <Content Include="EditUserBranches.aspx" />
+    <Content Include="FailurePage.aspx" />
     <Content Include="Resources\H2DefaultImage.jpg" />
     <Content Include="rundll32.exe" />
     <Content Include="SignIn.aspx" />
@@ -146,6 +147,13 @@
     </Compile>
     <Compile Include="EditUserBranches.aspx.designer.cs">
       <DependentUpon>EditUserBranches.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="FailurePage.aspx.cs">
+      <DependentUpon>FailurePage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="FailurePage.aspx.designer.cs">
+      <DependentUpon>FailurePage.aspx</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

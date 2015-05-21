@@ -8,7 +8,7 @@
     </p>
     Branches:<br />
     <br />
-    <asp:GridView ID="BranchView" runat="server" AutoGenerateColumns="false" 
+    <asp:GridView ID="branchView" runat="server" AutoGenerateColumns="false" 
         CssClass="gridView2" HeaderStyle-CssClass="GridHeader">
     <Columns>
         <asp:TemplateField>

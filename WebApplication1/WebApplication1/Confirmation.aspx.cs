@@ -179,6 +179,7 @@ namespace WebApplication1
             query.Append("AND ((verification = 'YES' AND amount > maximum) OR verification = 'NO') ");
             query.Append("ORDER BY CHEQUE.account_number");
 
+
             dt = new DataTable();
             da = new SqlDataAdapter(query.ToString(), activeConnection);
             da.Fill(dt);
@@ -259,5 +260,17 @@ namespace WebApplication1
                 totalCountHide.Value = total.ToString();
             }
         }
+
+        protected void UploadCheckData(object sender, EventArgs e)
+        {
+            
+        }
+
+        //Function to bind gridview  
+        private void Bindgrid(DataTable csvdt)
+        {
+            ConfirmView.DataSource = csvdt;
+            ConfirmView.DataBind();
+        }  
     }
 }

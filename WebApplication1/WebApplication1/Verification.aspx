@@ -129,10 +129,6 @@
         <div id="emptySpace">
             
         </div>
-        <div id="buttonWield">
-            <asp:Button ID="genListBtn" runat="server" onclick="genListBtn_Click" OnClientClick="return GenerateList(); needToConfirm = false;" 
-            Text="Generate List" />
-        </div>
     </div>
     <br/>
     <br />
@@ -160,12 +156,7 @@
                 }
             }
 
-            function GenerateList() {
-                if (confirm("Are you sure you want to generate list?")) {
-                    return true;
-                }
-                return false;
-            }
+            
 
             var needToConfirm = true;
           window.onbeforeunload = confirmExit;
