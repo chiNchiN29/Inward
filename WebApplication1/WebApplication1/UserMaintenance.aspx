@@ -46,17 +46,24 @@
                     }
                 }
             }
+
+            function DeleteUser() {
+                if (confirm("Are you sure you want to delete this user?")) {
+                    return true;
+                }
+                return false;
+            }
     </script>
-    <asp:DropDownList ID="DropDownList1"  runat="server">
+    <asp:DropDownList ID="RoleDrpDwn"  runat="server">
     </asp:DropDownList>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <asp:Button ID="deleteBtn" runat="server" Text="Delete User" 
+        Visible="false" onclick="deleteBtn_Click" OnClientClick="return DeleteUser(); needToConfirm = false;"/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
     <asp:Button ID="branchBtn" runat="server" Text="Assign Branches" 
         Visible="false" onclick="branchBtn_Click" />
     <br />
     <br />
     <asp:Button ID="assignBtn" runat="server" Text="Assign" 
         onclick="assignBtn_Click" />
-    <asp:SqlDataSource ID="SqlDataSource1" runat="server"
-    ConnectionString="<%$ ConnectionStrings:ConnectionString %>">
-    </asp:SqlDataSource>
-</asp:Content>
+    </asp:Content>

@@ -1,8 +1,6 @@
 ﻿<%@ Page Title="Signature Verification" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Verification.aspx.cs" Inherits="WebApplication1.Verification" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
     <style type="text/css">
-        .style4
-        {}
         .grid_scroll
         {
             overflow: scroll;
@@ -67,9 +65,11 @@
     <br /><br/>
     <div class ="grid_scroll">
         &nbsp;&nbsp;&nbsp;
-        <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="false" BorderColor="Black" ForeColor="Black" HeaderStyle-ForeColor="White"
-              AllowSorting="true" OnSorting="GridView1_Sorting" HeaderStyle-CssClass="GridHeader" 
-             OnRowDataBound="GridView1_RowDataBound" ShowFooter="True" FooterStyle-CssClass="gridViewFooterStyle" >
+        <asp:GridView ID="VerifyView" runat="server" AutoGenerateColumns="false" 
+            BorderColor="Black" ForeColor="Black" HeaderStyle-ForeColor="White"
+              AllowSorting="true" OnSorting="VerifyView_Sorting" HeaderStyle-CssClass="GridHeader" 
+             OnRowDataBound="VerifyView_RowDataBound" ShowFooter="True" 
+            FooterStyle-CssClass="gridViewFooterStyle" >
                  <Columns>
                     <asp:TemplateField>
                     <ItemTemplate>
@@ -113,25 +113,21 @@
     <br/>
     <div id="images">
         <div id="imageLeft">
-            <asp:Label ID="Label1" runat="server" AssociatedControlID="Image1" 
+            <asp:Label ID="Label1" runat="server" AssociatedControlID="checkImage" 
             BorderStyle="None" Text="Image"></asp:Label>
-            <asp:Image ID="Image1" runat="server" CssClass="image_box" Height="180px" 
-            Width="450px" Visible="False" ImageAlign="Left" 
+            <asp:Image ID="checkImage" runat="server" CssClass="image_box" Height="180px" 
+            Width="450px" ImageAlign="Left" 
             ImageUrl="~/Resources/H2DefaultImage.jpg"/>
         </div>
         <div id="imageRight">
-            <asp:Label ID="Label2" runat="server" AssociatedControlID="Image2" 
+            <asp:Label ID="Label2" runat="server" AssociatedControlID="sigImage" 
             Text="Signature"></asp:Label>
-            <asp:Image ID="Image2" runat="server" CssClass="image_box" Height="180px" 
-            Width="450px" Visible="False" ImageAlign="Right" 
+            <asp:Image ID="sigImage" runat="server" CssClass="image_box" Height="180px" 
+            Width="450px" ImageAlign="Right" 
             ImageUrl="~/Resources/H2DefaultImage.jpg"/>
         </div>
         <div id="emptySpace">
             
-        </div>
-        <div id="buttonWield">
-            <asp:Button ID="Button1" runat="server" onclick="Button1_Click" OnClientClick="return GenerateList(); needToConfirm = false;" 
-            Text="Generate List" />
         </div>
     </div>
     <br/>
@@ -139,6 +135,7 @@
     
 
         <script type="text/javascript">
+
             function CheckOtherIsCheckedByGVID(spanChk) {
 
                 var IsChecked = spanChk.checked;
@@ -147,7 +144,7 @@
                 var CurrentRdbID = spanChk.id;
                
                 var Chk = spanChk;
-                Parent = document.getElementById("<%=GridView1.ClientID%>");
+                Parent = document.getElementById("<%=VerifyView.ClientID%>");
                 var items = Parent.getElementsByTagName('input');
                 for (i = 0; i < items.length; i++) {
                     if (items[i].id != CurrentRdbID && items[i].type == "radio") {
@@ -159,34 +156,25 @@
                 }
             }
 
-            function GenerateList() {
-                if (confirm("Are you sure you want to generate list?")) {
-                    return true;
-                }
-                return false;
-            }
-
+            
 
             var needToConfirm = true;
           window.onbeforeunload = confirmExit;
           function confirmExit() {
               var totalVer = document.getElementById("<%=totalVerHide.ClientID%>").value;
               var total = document.getElementById("<%=totalCountHide.ClientID%>").value;
-               if (/Firefox[\/\s](\d+)/.test(navigator.userAgent) && new Number(RegExp.$1) >= 4) {
+              if (/Firefox[\/\s](\d+)/.test(navigator.userAgent) && new Number(RegExp.$1) >= 4) {
                   if (totalVer < total) {
                       if (needToConfirm)
                           return totalVer + "/" + total + " have been verified."
                   }
-               }
+              }
               else {
                   if (totalVer < total) {
                       if (needToConfirm)
                           return totalVer + "/" + total + " have been verified."
                   }
               }
-
-                    
-  
           }
 
 </script>

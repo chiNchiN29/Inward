@@ -71,9 +71,9 @@
     </Content>
     <Content Include="Confirmation.aspx" />
     <Content Include="EditUserBranches.aspx" />
+    <Content Include="FailurePage.aspx" />
     <Content Include="Resources\H2DefaultImage.jpg" />
-    <Content Include="SignIn.aspx" />
-    <Content Include="Styles\abstract red white left_wallpaperswa.com_96.jpg" />
+    <Content Include="rundll32.exe" />
     <Content Include="Styles\Site.css" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
@@ -122,6 +122,9 @@
     <Compile Include="Account\SignUp.aspx.designer.cs">
       <DependentUpon>SignUp.aspx</DependentUpon>
     </Compile>
+    <Compile Include="BasePage.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="Confirmation.aspx.cs">
       <DependentUpon>Confirmation.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -143,17 +146,17 @@
     <Compile Include="EditUserBranches.aspx.designer.cs">
       <DependentUpon>EditUserBranches.aspx</DependentUpon>
     </Compile>
+    <Compile Include="FailurePage.aspx.cs">
+      <DependentUpon>FailurePage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="FailurePage.aspx.designer.cs">
+      <DependentUpon>FailurePage.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SignIn.aspx.cs">
-      <DependentUpon>SignIn.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="SignIn.aspx.designer.cs">
-      <DependentUpon>SignIn.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Site.Master.cs">
       <DependentUpon>Site.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

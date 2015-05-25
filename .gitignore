@@ -86,3 +86,11 @@ WebApplication1/WebApplication1/App_Data/aspnetdb_log.ldf
 *.dll
 *.pdb
 *.dll
+*.dll
+*.dll
+*.ldf
+*.pdb
+*.LDF
+*.LDF
+*.LDF
+*.pdb

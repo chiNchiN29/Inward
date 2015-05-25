@@ -70,12 +70,17 @@
          {
              text-align: right;
          }
+         #buttonWield
+         {
+             width: 400px;
+         }
         </style>
 </asp:Content>
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
     <div class="grid_scroll">
-    <asp:GridView ID="GridView1" runat="server" CssClass="gridView" AutoGenerateColumns="false"
-    AllowSorting="true" OnSorting="GridView1_Sorting" HeaderStyle-CssClass="GridHeader">
+    <asp:GridView ID="ViewAllCheck" runat="server" CssClass="gridView" AutoGenerateColumns="false"
+    AllowSorting="true" OnSorting="ViewAllCheck_Sorting" 
+            HeaderStyle-CssClass="GridHeader">
         <Columns>
             <asp:BoundField DataField="check_number" SortExpression="check_number" HeaderText="Check Number" />
             <asp:BoundField DataField="customer_name" SortExpression="customer_name" HeaderText="Name" />
@@ -93,28 +98,29 @@
     </div>
 <div id="loader">
         <div id="imageLoad">
-            <asp:Label ID="Label1" runat="server" Font-Size="Larger" ForeColor="Black" 
+            <asp:Label ID="lblLoadImg" runat="server" Font-Size="Larger" ForeColor="Black" 
             Text="1. Load Image"></asp:Label>
             <br />
-            <asp:FileUpload ID="FileUpload3" runat="server" AllowMultiple="true"/>
+            <asp:FileUpload ID="ImageUpload" runat="server" AllowMultiple="true"/>
             <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" 
-            ControlToValidate="FileUpload3" 
+            ControlToValidate="ImageUpload" 
             ErrorMessage="Image files only"
             ValidationExpression="(.*\.([Jj][Pp][Gg])|.*\.([Jj][Pp][Ee][Gg])|.*\.([Pp][Nn][Gg])|.*\.([Tt][Ii][Ff])$)" 
             ForeColor="Red"></asp:RegularExpressionValidator>
-            <asp:Button ID="uploadDoc" runat="server" Text="Upload Image" 
+            <asp:Button ID="uploadImgBtn" runat="server" Text="Upload Image" 
 
-            OnClick="uploadDoc_Click" OnClientClick="skm_LockScreen('Uploading Images');" Width="155px"/>   
+            OnClick="uploadImgBtn_Click" OnClientClick="skm_LockScreen('Uploading Images');" 
+                Width="155px"/>   
             <div id="skm_LockPane" class="LockOff"></div> 
 
         </div>
         <div id="dataLoad">
-            <asp:Label ID="Label2" runat="server" Font-Size="Larger" ForeColor="Black" 
+            <asp:Label ID="lblCheckData" runat="server" Font-Size="Larger" ForeColor="Black" 
             Text="2. Load Check Data"></asp:Label>
             <br />
-            <asp:FileUpload ID="FileUpload2" runat="server"/>
+            <asp:FileUpload ID="DataUpload" runat="server"/>
             <asp:RegularExpressionValidator ID="regexValidator" runat="server" 
-            ControlToValidate="FileUpload2" 
+            ControlToValidate="DataUpload" 
             ErrorMessage="Only csv files are allowed"  
             ValidationExpression="(.*\.([cC][sS][vV])$)" ForeColor="Red"></asp:RegularExpressionValidator> 
             <br />   
@@ -124,6 +130,11 @@
         <div id="buttonHolder">
             <asp:Button ID="clearCheck" runat="server" onclientclick="return DeleteItem()" 
             Text="Clear Check Data" onclick="clearCheck_Click1" />  
+        </div>
+        <div id="buttonWield">
+            <asp:Label ID="genLbl" runat="server" Font-Size="Larger" ForeColor="Black" Text="Generate List of Verified Cheques"></asp:Label><br/>
+            <asp:Button ID="genListBtn" runat="server" onclick="genListBtn_Click" OnClientClick="return GenerateList(); needToConfirm = false;" 
+            Text="Generate List" />
         </div>
     </div> 
     <br />
@@ -143,7 +154,14 @@
                lock.className = 'LockOn';
 
            lock.innerHTML = str;
-       } 
+       }
+
+       function GenerateList() {
+           if (confirm("Are you sure you want to generate list?")) {
+               return true;
+           }
+           return false;
+       }
 
  </script>
 
