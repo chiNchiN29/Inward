@@ -10,7 +10,4 @@
     <p>
         Your password has been changed successfully.
     </p>
-    <br />
-    <asp:Button ID="continueBtn" runat="server" Text="Continue" 
-        onclick="continueBtn_Click" />
 </asp:Content>

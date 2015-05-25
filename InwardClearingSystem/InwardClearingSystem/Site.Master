@@ -14,6 +14,7 @@
         <div class="header" style="color: #FF0000">
             <div class="title">
                 <h1>
+
                     &nbsp;&nbsp;&nbsp;
                     Inward Clearing System
                 </h1>
@@ -31,11 +32,11 @@
                 </asp:LoginView>
             </div>
             <div class="clear hideSkiplink">
-                <asp:Menu ID="NavigationMenu" runat="server" CssClass="menu" 
+			<asp:Menu ID="NavigationMenu" runat="server" CssClass="menu" 
                     EnableViewState="false" IncludeStyleBlock="false" Orientation="Horizontal" 
                     onmenuitemclick="NavigationMenu_MenuItemClick">
                     <Items>
-                        <asp:MenuItem NavigateUrl="~/" Text="Main Menu"/>
+                       
                         <asp:MenuItem NavigateUrl="~/Verification.aspx" Text="Signature Verification"/>
                         <asp:MenuItem NavigateUrl="~/Confirmation.aspx" Text="Confirmation" />
                         <asp:MenuItem NavigateUrl="~/UpdateThreshold.aspx" Text="Update Thresholds"/> 
@@ -48,16 +49,16 @@
             <asp:ContentPlaceHolder ID="MainContent" runat="server"/>
         </div>
         <div class="clear">
-        <asp:ScriptManager ID="ScriptManager1" runat="server">
-    </asp:ScriptManager>
-    <script type="text/javascript">
+		<asp:ScriptManager ID="ScriptManager1" runat="server">
+		</asp:ScriptManager>
+		<script type="text/javascript">
         var prm = Sys.WebForms.PageRequestManager.getInstance();
         prm.add_beginRequest(beginRequest);
 
         function beginRequest() {
             prm._scrollPosition = null;
         }
-</script>
+		</script>
     <asp:Timer ID="Timer1" runat="server" Interval="60" OnTick="Timer1_Tick" ClientIDMode="AutoID">  
     </asp:Timer>
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
