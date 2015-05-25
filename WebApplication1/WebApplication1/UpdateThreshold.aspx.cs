@@ -17,7 +17,8 @@ namespace WebApplication1
    
         protected void Page_Load(object sender, EventArgs e)
         {
-            cmd = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = '" + Session["UserName"] + "' AND END_USER.role_id = ROLE.role_id", activeConnection);
+            cmd = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = @name AND END_USER.role_id = ROLE.role_id", activeConnection);
+            cmd.Parameters.AddWithValue("@name", Session["UserName"]);
             if (cmd.ExecuteScalar().ToString() != "ADMIN" && cmd.ExecuteScalar().ToString() != "OVERSEER")
             {
                 ErrorMessage("You are not authorized to view this page");
@@ -25,12 +26,16 @@ namespace WebApplication1
             }
             else
             {
-                SqlCommand select = new SqlCommand("select minimum from THRESHOLD", activeConnection);
-                Thread.CurrentThread.CurrentCulture = new CultureInfo("en-PH", false);
-                Label2.Text = String.Format("{0:C}", select.ExecuteScalar());
+                using (SqlCommand select = new SqlCommand("select minimum from THRESHOLD", activeConnection))
+                {
+                    Thread.CurrentThread.CurrentCulture = new CultureInfo("en-PH", false);
+                    Label2.Text = String.Format("{0:C}", select.ExecuteScalar());
+                }
 
-                SqlCommand select2 = new SqlCommand("select maximum from THRESHOLD", activeConnection);
-                Label5.Text = String.Format("{0:C}", select2.ExecuteScalar());
+                using (SqlCommand select2 = new SqlCommand("select maximum from THRESHOLD", activeConnection))
+                {
+                    Label5.Text = String.Format("{0:C}", select2.ExecuteScalar());
+                }
             }
             activeConnection.Close();
         }
@@ -46,11 +51,15 @@ namespace WebApplication1
                         bool boop = int.TryParse(TextBox1.Text, out num1);
                         if (boop == true)
                         {
-                            SqlCommand updateMin = new SqlCommand("update THRESHOLD SET minimum = @thresh", activeConnection);
-                            updateMin.Parameters.AddWithValue("@thresh", TextBox1.Text);
-                            updateMin.ExecuteNonQuery();
-                            SqlCommand select = new SqlCommand("select minimum from THRESHOLD", activeConnection);
-                            Label2.Text = String.Format("{0:C}", select.ExecuteScalar());
+                            using (SqlCommand updateMin = new SqlCommand("update THRESHOLD SET minimum = @thresh", activeConnection))
+                            {
+                                updateMin.Parameters.AddWithValue("@thresh", TextBox1.Text);
+                                updateMin.ExecuteNonQuery();
+                            }
+                            using (SqlCommand select = new SqlCommand("select minimum from THRESHOLD", activeConnection))
+                            {
+                                Label2.Text = String.Format("{0:C}", select.ExecuteScalar());
+                            }
                         }
                     }
 
@@ -59,11 +68,15 @@ namespace WebApplication1
                         bool poob = int.TryParse(TextBox2.Text, out num1);
                         if (poob == true)
                         {
-                            SqlCommand updateMax = new SqlCommand("update THRESHOLD SET maximum = @thresh", activeConnection);
-                            updateMax.Parameters.AddWithValue("@thresh", TextBox2.Text);
-                            updateMax.ExecuteNonQuery();
-                            SqlCommand select2 = new SqlCommand("select maximum from THRESHOLD", activeConnection);
-                            Label5.Text = String.Format("{0:C}", select2.ExecuteScalar());
+                            using(SqlCommand updateMax = new SqlCommand("update THRESHOLD SET maximum = @thresh", activeConnection))
+                            {
+                                updateMax.Parameters.AddWithValue("@thresh", TextBox2.Text);
+                                updateMax.ExecuteNonQuery();
+                            }
+                            using(SqlCommand select2 = new SqlCommand("select maximum from THRESHOLD", activeConnection))
+                            {
+                                Label5.Text = String.Format("{0:C}", select2.ExecuteScalar());
+                            }
                         }
                     }
                     

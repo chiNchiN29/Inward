@@ -28,7 +28,6 @@ namespace WebApplication1
         
         protected void Page_Load(object sender, EventArgs e)
         {
-            
             if (!IsPostBack)
             {
                 ViewState["myDataTable"] = FillDataTable();
@@ -93,35 +92,41 @@ namespace WebApplication1
                 {
                     string line = sr.ReadLine();
                     string[] heart = line.Split(',');
-                    SqlCommand validator = new SqlCommand("select check_number from CHEQUE where check_number = '" + heart[0] + "'", activeConnection);
-                    if (validator.ExecuteScalar() == null)
+                    using (SqlCommand validator = new SqlCommand("select check_number from CHEQUE where check_number = @checknum", activeConnection))
                     {
-                        SqlCommand insert = new SqlCommand("insert into CHEQUE(check_number, amount, check_date, branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed, account_number) values (@checknum, @amount, @date, @branch, @draweebank, @draweebranch, @funded, @verified, @confirmed, @acctnum)", activeConnection);
-                        SqlCommand checker = new SqlCommand("select minimum from THRESHOLD", activeConnection);
-                        insert.Parameters.AddWithValue("@checknum", heart[0]);
-                        insert.Parameters.AddWithValue("@amount", heart[1]);
-                        insert.Parameters.AddWithValue("@date", heart[2]);
-                        insert.Parameters.AddWithValue("@branch", heart[3]);
-                        insert.Parameters.AddWithValue("@draweebank", heart[4]);
-                        insert.Parameters.AddWithValue("@draweebranch", heart[5]);
-                        insert.Parameters.AddWithValue("@funded", heart[6]);
-                        if (decimal.Parse(heart[1]) < decimal.Parse(checker.ExecuteScalar().ToString()))
+                        validator.Parameters.AddWithValue("@checknum", heart[0]);
+                        if (validator.ExecuteScalar() == null)
                         {
-                            insert.Parameters.AddWithValue("@verified", "BTA");
+                            using (SqlCommand insert = new SqlCommand("insert into CHEQUE(check_number, amount, check_date, branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed, account_number) values (@checknum, @amount, @date, @branch, @draweebank, @draweebranch, @funded, @verified, @confirmed, @acctnum)", activeConnection))
+                            {
+                                using (SqlCommand checker = new SqlCommand("select minimum from THRESHOLD", activeConnection))
+                                {
+                                    insert.Parameters.AddWithValue("@checknum", heart[0]);
+                                    insert.Parameters.AddWithValue("@amount", heart[1]);
+                                    insert.Parameters.AddWithValue("@date", heart[2]);
+                                    insert.Parameters.AddWithValue("@branch", heart[3]);
+                                    insert.Parameters.AddWithValue("@draweebank", heart[4]);
+                                    insert.Parameters.AddWithValue("@draweebranch", heart[5]);
+                                    insert.Parameters.AddWithValue("@funded", heart[6]);
+                                    if (decimal.Parse(heart[1]) < decimal.Parse(checker.ExecuteScalar().ToString()))
+                                    {
+                                        insert.Parameters.AddWithValue("@verified", "BTA");
+                                    }
+                                    else
+                                    {
+                                        insert.Parameters.AddWithValue("@verified", heart[7]);
+                                    }
+                                    insert.Parameters.AddWithValue("@confirmed", heart[8]);
+                                    insert.Parameters.AddWithValue("@acctnum", heart[9]);
+                                    insert.ExecuteNonQuery();
+                                }
+                            }
                         }
                         else
                         {
-                            insert.Parameters.AddWithValue("@verified", heart[7]);
+
+                            Response.Write("Check Data Upload interrupted. A duplicate check number has been discovered.");
                         }
-                        insert.Parameters.AddWithValue("@confirmed", heart[8]);
-                        insert.Parameters.AddWithValue("@acctnum", heart[9]);
-                        insert.ExecuteNonQuery();
-                       
-                    }
-                    else
-                    {
-                        
-                        Response.Write("Check Data Upload interrupted. A duplicate check number has been discovered.");
                     }
                 } 
                 sr.Close();
@@ -142,11 +147,12 @@ namespace WebApplication1
 
         protected void clearCheck_Click1(object sender, EventArgs e)
         {
-            SqlCommand delete = new SqlCommand("DELETE FROM CHEQUE", activeConnection);
-            delete.ExecuteNonQuery();
-			
-            ViewAllCheck.DataBind();
-            activeConnection.Close();
+            using (SqlCommand delete = new SqlCommand("DELETE FROM CHEQUE", activeConnection))
+            {
+                delete.ExecuteNonQuery();
+                ViewAllCheck.DataBind();
+                activeConnection.Close();
+            }
             
         }
 
@@ -165,15 +171,19 @@ namespace WebApplication1
             query.Append("FROM CHEQUE, CUSTOMER, ACCOUNT ");
             query.Append("WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id ");
             query.Append("ORDER BY CHEQUE.check_number");
-            
-            dt = new DataTable();
-            SqlDataAdapter da = new SqlDataAdapter(query.ToString(), activeConnection);
-            da.Fill(dt);
-            ViewAllCheck.DataSource = dt;
-            ViewAllCheck.DataBind();
-     
-           
-            return dt;
+
+            using (dt = new DataTable())
+            {
+                using (SqlDataAdapter da = new SqlDataAdapter(query.ToString(), activeConnection))
+                {
+                    da.Fill(dt);
+                    ViewAllCheck.DataSource = dt;
+                    ViewAllCheck.DataBind();
+
+
+                    return dt;
+                }
+            }
         }
 
         //Generate List

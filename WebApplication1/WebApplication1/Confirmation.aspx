@@ -28,6 +28,26 @@
             float: left;
             margin-left: 50px;
         }
+        #images
+        {
+            width:920px;
+        }
+        #imageLeft
+        {
+            width:460px;
+            float:left;
+            text-align:center;
+        }
+        #imageRight
+        {
+            width:460px;
+            float:right;
+            text-align:center;
+        }
+        .image_box
+        {
+             border: solid 2px black;
+        }
 </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
@@ -67,12 +87,33 @@
     <asp:Label ID="totalCount" runat="server" Text="0"></asp:Label>
     <br />
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <br />
     <asp:Button ID="fundButton" runat="server" Text="Validate" 
         onclick="fundButton_Click" OnClientClick="needToConfirm = false;" />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;
     <asp:Button ID="unfundButton" runat="server" Text="Revoke" 
         onclick="unfundButton_Click" OnClientClick="needToConfirm = false;" />
     <br />
+    <br />
+    <div id="images">
+        <div id="imageLeft">
+            <asp:Label ID="Label1" runat="server" AssociatedControlID="checkImage" 
+            BorderStyle="None" Text="Image"></asp:Label>
+            <asp:Image ID="checkImage" runat="server" CssClass="image_box" Height="180px" 
+            Width="450px" ImageAlign="Left" 
+            ImageUrl="~/Resources/H2DefaultImage.jpg"/>
+        </div>
+        <div id="imageRight">
+            <asp:Label ID="Label2" runat="server" AssociatedControlID="sigImage" 
+            Text="Signature"></asp:Label>
+            <asp:Image ID="sigImage" runat="server" CssClass="image_box" Height="180px" 
+            Width="450px" ImageAlign="Right" 
+            ImageUrl="~/Resources/H2DefaultImage.jpg"/>
+        </div>
+        <div id="emptySpace">
+            
+        </div>
+    </div>
     <br />
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <asp:Button ID="genListBtn" runat="server" onclick="genListBtn_Click" OnClientClick="return GenerateList(); needToConfirm = false;" 
@@ -126,21 +167,6 @@
 
 
 </script>
-    <br />
-    <div id="dataLoad">
-            <asp:Label ID="lblCheckData" runat="server" Font-Size="Larger" ForeColor="Black" 
-            Text="Load Check Data"></asp:Label>
-            <br />
-            <asp:FileUpload ID="DataUpload" runat="server"/>
-            <asp:RegularExpressionValidator ID="regexValidator" runat="server" 
-            ControlToValidate="DataUpload" 
-            ErrorMessage="Only csv files are allowed"  
-            ValidationExpression="(.*\.([cC][sS][vV])$)" ForeColor="Red"></asp:RegularExpressionValidator> 
-            <br />   
-            <asp:Button ID="uploadDoc0" runat="server" Text="Load" 
-            OnClick="UploadCheckData" Width="156px"/>
-        </div>
-    <br />
     <asp:HiddenField ID="totalConHide" runat="server" />
     <asp:HiddenField ID="totalCountHide" runat="server" />
 </asp:Content>

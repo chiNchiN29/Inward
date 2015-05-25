@@ -30,26 +30,17 @@ namespace WebApplication1
                     connection.Open();
                     Label3.Text = System.DateTime.Now.ToLongTimeString();
                     //string pool = Session["UserName"].ToString();
-                    SqlCommand checker = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = '" + Session["UserName"] + "' AND END_USER.role_id = ROLE.role_id", connection);
-                    if (checker.ExecuteScalar().ToString() == "ADMIN")
+                    using (SqlCommand checker = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = @name AND END_USER.role_id = ROLE.role_id", connection))
                     {
-                        AdminView();
-                    }
-                    else if (checker.ExecuteScalar().ToString() == "CLEARING DEPT")
-                    {
-                        ClearingDeptView();
-                    }
-                    else if (checker.ExecuteScalar().ToString() == "BANK BRANCH")
-                    {
-                        BankBranchView();
-                    }
-                    else if (checker.ExecuteScalar().ToString() == "OVERSEER")
-                    {
-                        OverseerView();
-                    }
-                    else
-                    {
-                        TBAView();
+                        checker.Parameters.AddWithValue("@name", Session["UserName"]);
+                        if (checker.ExecuteScalar().ToString() == "ADMIN")
+                        {
+                            AdminView();
+                        }
+                        else if (checker.ExecuteScalar().ToString() == "OVERSEER")
+                        {
+                            OverseerView();
+                        }
                     }
                 }
                 catch
@@ -71,29 +62,16 @@ namespace WebApplication1
         {
             UpdateTimer();
         }
-
-        protected void BankBranchView()
-        {
-            NavigationMenu.FindItem("Main Menu").Enabled = true;
-            NavigationMenu.FindItem("Confirmation").Enabled = true;
-        }
-        protected void ClearingDeptView()
-        {
-            NavigationMenu.FindItem("Main Menu").Enabled = true;
-            NavigationMenu.FindItem("Signature Verification").Enabled = true;
-        }
         protected void AdminView()
         {
+            NavigationMenu.Visible = true;
             NavigationMenu.FindItem("Main Menu").Enabled = true;
             NavigationMenu.FindItem("Update Thresholds").Enabled = true;
             NavigationMenu.FindItem("User Maintenance").Enabled = true;
         }
-        protected void TBAView()
-        {
-            NavigationMenu.FindItem("Main Menu").Enabled = true;
-        }
         protected void OverseerView()
         {
+            NavigationMenu.Visible = true;
             NavigationMenu.FindItem("Main Menu").Enabled = true;
             NavigationMenu.FindItem("Signature Verification").Enabled = true;
             NavigationMenu.FindItem("Confirmation").Enabled = true;
@@ -102,6 +80,7 @@ namespace WebApplication1
         }
         protected void DefaultView()
         {
+            NavigationMenu.Visible = false;
             NavigationMenu.FindItem("Main Menu").Enabled = false;
             NavigationMenu.FindItem("Signature Verification").Enabled = false;
             NavigationMenu.FindItem("Confirmation").Enabled = false;

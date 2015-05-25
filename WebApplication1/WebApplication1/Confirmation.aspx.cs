@@ -14,6 +14,7 @@ using System.Web.UI.WebControls;
 using DotCMIS;
 using DotCMIS.Client;
 using DotCMIS.Client.Impl;
+using DotCMIS.Data;
 
 namespace WebApplication1
 {
@@ -30,7 +31,8 @@ namespace WebApplication1
         protected void Page_Load(object sender, EventArgs e)
         {
 
-            cmd = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = '" + Session["UserName"] + "' AND END_USER.role_id = ROLE.role_id", activeConnection);
+            cmd = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = @username AND END_USER.role_id = ROLE.role_id", activeConnection);
+            cmd.Parameters.AddWithValue("@username", Session["UserName"]);
             if (cmd.ExecuteScalar().ToString() != "BANK BRANCH" && cmd.ExecuteScalar().ToString() != "OVERSEER")
             {
                 ErrorMessage("You are not authorized to view this page");
@@ -183,6 +185,7 @@ namespace WebApplication1
             dt = new DataTable();
             da = new SqlDataAdapter(query.ToString(), activeConnection);
             da.Fill(dt);
+            da.Dispose();
             ConfirmView.DataSource = dt;
             ConfirmView.DataBind();
             activeConnection.Close();
@@ -225,10 +228,16 @@ namespace WebApplication1
             row = (GridViewRow)rb.NamingContainer;
             int i = row.RowIndex;
             ViewState["SelectRow"] = i;
-
+            
             row = ConfirmView.Rows[i];
             row.BackColor = System.Drawing.Color.Aqua;
-            
+            row = ConfirmView.Rows[i];
+
+            string im = row.Cells[3].Text;
+            string age = row.Cells[1].Text;
+            string image = im + "_" + age;
+            ShowChequeImage(session, image);
+            ShowSigDTImage(row.RowIndex);
         
         }
 
@@ -261,16 +270,53 @@ namespace WebApplication1
             }
         }
 
-        protected void UploadCheckData(object sender, EventArgs e)
+        //Signature image in Database
+        private void ShowSigDTImage(int rowIndex)
         {
-            
+            try
+            {
+                cmd = new SqlCommand("select signature_image from SIGNATURE WHERE account_number= @acctnumber", activeConnection);
+                cmd.Parameters.AddWithValue("@acctnumber", ConfirmView.Rows[rowIndex].Cells[5].Text);
+
+                byte[] result = cmd.ExecuteScalar() as byte[];
+                string base64string2 = Convert.ToBase64String(result, 0, result.Length);
+                sigImage.ImageUrl = "data:image/jpeg;base64," + base64string2;
+                sigImage.Visible = true;
+                activeConnection.Close();
+            }
+            catch
+            {
+                sigImage.ImageUrl = "~/Resources/H2DefaultImage.jpg";
+                sigImage.Visible = true;
+            }
+
         }
 
-        //Function to bind gridview  
-        private void Bindgrid(DataTable csvdt)
+        private void ShowChequeImage(ISession session, string fileName)
         {
-            ConfirmView.DataSource = csvdt;
-            ConfirmView.DataBind();
-        }  
+            try
+            {
+
+                IDocument doc = (IDocument)session.GetObjectByPath("/Uploads/" + DateTime.Now.Year.ToString() + "/" + DateTime.Now.ToString("MM") + "/" + DateTime.Now.ToString("dd") + "/" + fileName);
+
+                IContentStream contentStream = doc.GetContentStream();
+                byte[] result;
+                using (var streamReader = new MemoryStream())
+                {
+                    contentStream.Stream.CopyTo(streamReader);
+                    result = streamReader.ToArray();
+                }
+                string base64string = Convert.ToBase64String(result, 0, result.Length);
+
+                checkImage.ImageUrl = "data:image/jpeg;base64," + base64string;
+                checkImage.Visible = true;
+            }
+            catch
+            {
+                checkImage.ImageUrl = "~/Resources/H2DefaultImage.jpg";
+                checkImage.Visible = true;
+            }
+
+        }
     }
 }

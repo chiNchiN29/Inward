@@ -30,7 +30,8 @@ namespace WebApplication1
      
         protected void Page_Load(object sender, EventArgs e)
         {
-            cmd = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = '" + Session["UserName"] + "' AND END_USER.role_id = ROLE.role_id", activeConnection);
+            cmd = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = @name AND END_USER.role_id = ROLE.role_id", activeConnection);
+            cmd.Parameters.AddWithValue("@name", Session["UserName"]);
             if (cmd.ExecuteScalar().ToString() != "CLEARING DEPT" && cmd.ExecuteScalar().ToString() != "OVERSEER")
             {
                 ErrorMessage("You are not authorized to view this page");
@@ -186,13 +187,14 @@ namespace WebApplication1
                else
                {
                    activeConnection.Open();
-                   SqlCommand cmd = new SqlCommand("update CHEQUE SET verification = @verify WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection);
-                   cmd.Parameters.AddWithValue("@acctnumber", VerifyView.Rows[i].Cells[3].Text);
-                   cmd.Parameters.AddWithValue("@chknumber", VerifyView.Rows[i].Cells[1].Text);
-                   cmd.Parameters.AddWithValue("@verify", "YES");
-                   cmd.ExecuteNonQuery();
-                   activeConnection.Close();
-
+                   using (SqlCommand cmd = new SqlCommand("update CHEQUE SET verification = @verify WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection))
+                   {
+                       cmd.Parameters.AddWithValue("@acctnumber", VerifyView.Rows[i].Cells[3].Text);
+                       cmd.Parameters.AddWithValue("@chknumber", VerifyView.Rows[i].Cells[1].Text);
+                       cmd.Parameters.AddWithValue("@verify", "YES");
+                       cmd.ExecuteNonQuery();
+                       activeConnection.Close();
+                   }
                    dt = FillDataTable();
 
                    GridViewRow row = VerifyView.Rows[i];
@@ -221,13 +223,15 @@ namespace WebApplication1
                 else
                 {
                     activeConnection.Open();
-                    SqlCommand update = new SqlCommand("update CHEQUE SET verification = @verify WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection);
 
-                    update.Parameters.AddWithValue("@acctnumber", VerifyView.Rows[i].Cells[3].Text);
-                    update.Parameters.AddWithValue("@chknumber", VerifyView.Rows[i].Cells[1].Text);
-                    update.Parameters.AddWithValue("@verify", "NO");
-                    update.ExecuteNonQuery();
-                    activeConnection.Close();
+                    using (SqlCommand update = new SqlCommand("update CHEQUE SET verification = @verify WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection))
+                    {
+                        update.Parameters.AddWithValue("@acctnumber", VerifyView.Rows[i].Cells[3].Text);
+                        update.Parameters.AddWithValue("@chknumber", VerifyView.Rows[i].Cells[1].Text);
+                        update.Parameters.AddWithValue("@verify", "NO");
+                        update.ExecuteNonQuery();
+                        activeConnection.Close();
+                    }
 
                     dt = FillDataTable();
 
@@ -242,12 +246,14 @@ namespace WebApplication1
         //insert signatures in database
         protected void insertSig_Click(object sender, EventArgs e)
         {
-            SqlCommand cmd = new SqlCommand("insert into SIGNATURE(signature_image, account_number) values (@Sig, @ID)", activeConnection);
-            cmd.Parameters.AddWithValue("@Sig", imageToByteArray(System.Drawing.Image.FromStream(FileUpload1.PostedFile.InputStream)));
-            cmd.Parameters.AddWithValue("@ID", TextBox1.Text);
-            cmd.ExecuteNonQuery();
-            activeConnection.Close();
-
+            activeConnection.Open();
+            using (SqlCommand cmd = new SqlCommand("insert into SIGNATURE(signature_image, account_number) values (@Sig, @ID)", activeConnection))
+            {
+                cmd.Parameters.AddWithValue("@Sig", imageToByteArray(System.Drawing.Image.FromStream(FileUpload1.PostedFile.InputStream)));
+                cmd.Parameters.AddWithValue("@ID", TextBox1.Text);
+                cmd.ExecuteNonQuery();
+                activeConnection.Close();
+            }
         }
 
         //Generate List
@@ -331,12 +337,15 @@ namespace WebApplication1
             query.Append("AND ACCOUNT.customer_id = CUSTOMER.customer_id AND CHEQUE.amount >= minimum AND verification <> 'BTA' ");
             query.Append("ORDER BY CHEQUE.account_number");
             cmd = new SqlCommand(query.ToString(), activeConnection);
-            cmd.Parameters.AddWithValue("@username", user); 
-            dt = new DataTable();
-            da = new SqlDataAdapter(cmd);
-
-            da.Fill(dt);
-            VerifyView.DataSource = dt;
+            cmd.Parameters.AddWithValue("@username", user);
+            using (dt = new DataTable())
+            {
+                using (da = new SqlDataAdapter(cmd))
+                {
+                    da.Fill(dt);
+                }
+                VerifyView.DataSource = dt;
+            }
             VerifyView.DataBind();
           
             return dt;

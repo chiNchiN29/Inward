@@ -46,11 +46,19 @@
                     }
                 }
             }
+
+            function DeleteUser() {
+                if (confirm("Are you sure you want to delete this user?")) {
+                    return true;
+                }
+                return false;
+            }
     </script>
     <asp:DropDownList ID="RoleDrpDwn"  runat="server">
     </asp:DropDownList>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <asp:Button ID="delBtn" runat="server" onclick="delBtn_Click" Text="Delete" />
+    <asp:Button ID="deleteBtn" runat="server" Text="Delete User" 
+        Visible="false" onclick="deleteBtn_Click" OnClientClick="return DeleteUser(); needToConfirm = false;"/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
     <asp:Button ID="branchBtn" runat="server" Text="Assign Branches" 
         Visible="false" onclick="branchBtn_Click" />

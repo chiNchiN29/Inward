@@ -99,7 +99,7 @@ first child of the left and right table columns */
     position: relative;
     margin: 0px;
     padding: 0px;
-    background: #4b6c9e;
+    background: #990000;
     width: 100%;
     top: 0px;
     left: 0px;
@@ -149,8 +149,10 @@ first child of the left and right table columns */
 
 div.hideSkiplink
 {
-    background-color:#3a4f63;
-    width:100%;
+    border-color: #3a3a3c;
+    border-style: none hidden groove hidden;
+    background-color: #FFFFFF;
+    width: 100%;
 }
 
 div.menu
@@ -168,20 +170,20 @@ div.menu ul
 
 div.menu ul li a, div.menu ul li a:visited
 {
-    background-color: #465c71;
-    border: 1px #4e667d solid;
-    color: #dde4ec;
+    background-color: #FFFFFF;
+    border: 1px solid #FFFFFF;
+    color: #3a3a3c;
     display: block;
     line-height: 1.35em;
     padding: 4px 20px;
     text-decoration: none;
     white-space: nowrap;
+    text-align: center;
 }
-
 div.menu ul li a:hover
 {
-    background-color: #bfcbd6;
-    color: #465c71;
+    background-color: #999999;
+    color: #FFFFFF;
     text-decoration: none;
 }
 
