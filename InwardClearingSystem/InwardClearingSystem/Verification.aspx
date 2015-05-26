@@ -1,6 +1,6 @@
 ﻿<%@ Page Title="Signature Verification" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Verification.aspx.cs" Inherits="InwardClearingSystem.Verification" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js" type="text/javascript"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js" type="text/javascript"></script>
     <script language="javascript" type="text/javascript">
         function zoomin(obj) {
             $(obj).css("cursor", "pointer");
@@ -72,11 +72,11 @@
             color: Red;
             border-bottom-color: Black;
         }
-        .style1
-        {}
-        .style2
-        {}
-    </style>
+        #remarksBox
+        {
+            text-align: center; 
+        }
+        </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <asp:FileUpload ID="FileUpload1" runat="server" AllowMultiple="true"/>
@@ -129,6 +129,26 @@
     <asp:Button ID="rejectButton" runat="server" Text="Reject" Height="36px" 
         Width="86px" onclick="rejectButton_Click" OnClientClick="needToConfirm = false;" />
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <br />
+    
+    <br />
+&nbsp;
+    <div id="remarksBox">
+        <asp:Label ID="verifyRemarkLabel" runat="server" Text="Remarks"></asp:Label>
+        <br />
+        <asp:DropDownList ID="verifyChoice" runat="server" EnableTheming="True">
+            <asp:ListItem Value="0">&lt;SELECT ITEM&gt;</asp:ListItem>
+            <asp:ListItem>SIGNATURE DIFFERS</asp:ListItem>
+            <asp:ListItem>AMOUNT DOES NOT MATCH</asp:ListItem>
+            <asp:ListItem>POST-DATED ISSUE</asp:ListItem>
+            <asp:ListItem>FUTURE DATED ISSUE</asp:ListItem>
+        </asp:DropDownList>
+        <br />
+        <br />
+        <asp:TextBox ID="verifyRemarks" runat="server" TextMode="MultiLine" 
+            Width="200px"></asp:TextBox>
+    </div>
+    <br />
     <br />
     
     <br/>
