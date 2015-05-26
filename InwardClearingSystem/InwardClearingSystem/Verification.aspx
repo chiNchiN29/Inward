@@ -98,7 +98,7 @@
                     </ItemTemplate>
                     </asp:TemplateField>
                      <asp:BoundField DataField="check_number" SortExpression="check_number" HeaderText="Check Number" />
-                     <asp:BoundField DataField="name" SortExpression="name" HeaderText="Name" />
+                     <asp:BoundField DataField="customer_name" SortExpression="customer_name" HeaderText="Name" />
                      <asp:BoundField DataField="account_number" SortExpression="account_number" HeaderText="Account Number" />
                      <asp:BoundField DataField="check_date" SortExpression="check_date" DataFormatString="{0:d}" HeaderText="Date" />
                      <asp:BoundField DataField="amount" SortExpression="amount" HeaderText="Amount" DataFormatString="{0:N}" ItemStyle-CssClass="amount" />
