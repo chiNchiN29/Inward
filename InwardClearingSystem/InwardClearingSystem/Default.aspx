@@ -85,7 +85,7 @@
             HeaderStyle-CssClass="GridHeader">
         <Columns>
             <asp:BoundField DataField="check_number" SortExpression="check_number" HeaderText="Check Number" />
-            <asp:BoundField DataField="customer_name" SortExpression="customer_name" HeaderText="Name" />
+            <asp:BoundField DataField="name" SortExpression="name" HeaderText="Name" />
             <asp:BoundField DataField="account_number" SortExpression="account_number" HeaderText="Account Number" />
             <asp:BoundField DataField="check_date" SortExpression="check_date" DataFormatString="{0:d}" HeaderText="Date" />
             <asp:BoundField DataField="amount" SortExpression="amount" HeaderText="Amount" DataFormatString="{0:N}" ItemStyle-CssClass="amount" />
@@ -96,6 +96,8 @@
             <asp:BoundField DataField="verification" SortExpression="verification" HeaderText="Verified?" />
             <asp:BoundField DataField="funded" SortExpression="funded" HeaderText="Funded?" />
             <asp:BoundField DataField="bank_remarks" SortExpression="bank_remarks" HeaderText="Bank Remarks" />
+            <asp:BoundField DataField="modified_by" SortExpression="modified_by" HeaderText="Modified By" />
+            <asp:BoundField DataField="modified_date" SortExpression="modified_date" HeaderText="Modified Date" />
         </Columns>
     </asp:GridView>
     </div>
