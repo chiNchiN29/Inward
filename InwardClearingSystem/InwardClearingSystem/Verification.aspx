@@ -43,11 +43,11 @@
         }
         #images
         {
-            width:920px;
+            width:100%;
         }
         #imageLeft
         {
-            width:460px;
+            width:480px;
             float:left;
             text-align:center;
             position: relative;
@@ -55,7 +55,7 @@
         }
         #imageRight
         {
-            width:460px;
+            width:480px;
             float:right;
             text-align:center;
         }

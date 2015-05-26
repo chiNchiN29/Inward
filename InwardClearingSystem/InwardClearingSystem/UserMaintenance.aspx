@@ -21,7 +21,7 @@
             <asp:BoundField DataField="user_id" HeaderText="ID" Visible="false" />
             <asp:BoundField DataField="username" HeaderText="User Name" ItemStyle-Width="150px" />
             <asp:BoundField DataField="email" HeaderText="Email Address" ItemStyle-Width="200px" />
-            <asp:BoundField DataField="role_name" HeaderText="Role" ItemStyle-Width="100px" />
+            <asp:BoundField DataField="role_desc" HeaderText="Role" ItemStyle-Width="100px" />
         </Columns>
     </asp:GridView>
     Assign Role:<br />

@@ -31,17 +31,18 @@
         }
 		#images
         {
-            width:920px;
+            width:100%;
+            height:auto;
         }
         #imageLeft
         {
-            width:460px;
+            width:480px;
             float:left;
             text-align:center;
         }
         #imageRight
         {
-            width:460px;
+            width:480px;
             float:right;
             text-align:center;
         }
@@ -71,14 +72,12 @@
         </asp:TemplateField>
         <asp:BoundField DataField="check_number" SortExpression="check_number" HeaderText="Check Number" />
         <asp:BoundField DataField="customer_name" SortExpression="customer_name" HeaderText="Name" />
-        <asp:BoundField DataField="customer_address" SortExpression="customer_address" HeaderText="Address" />
+        <asp:BoundField DataField="address" SortExpression="address" HeaderText="Address" />
         <asp:BoundField DataField="contact_number" SortExpression="contact_number" HeaderText="Contact Number" />
         <asp:BoundField DataField="account_number" SortExpression="account_number" HeaderText="Account Number" />
         <asp:BoundField DataField="check_date" SortExpression="check_date" DataFormatString="{0:d}" HeaderText="Date" />
         <asp:BoundField DataField="amount" SortExpression="amount" HeaderText="Amount" DataFormatString="{0:N}" ItemStyle-CssClass="amount" />
         <asp:BoundField DataField="branch_name" SortExpression="branch_name" HeaderText="Branch Name" />
-        <asp:BoundField DataField="drawee_bank" SortExpression="drawee_bank" HeaderText="Drawee Bank" />
-        <asp:BoundField DataField="drawee_bank_branch" SortExpression="drawee_bank_branch" HeaderText="Drawee Bank Branch" />
         <asp:BoundField DataField="funded" SortExpression="funded" HeaderText="Funded?" />
         <asp:BoundField DataField="verification" SortExpression="verification" HeaderText="Verified?" />
         <asp:BoundField DataField="confirmed" SortExpression="confirmed" HeaderText="Confirmed?" />
@@ -124,11 +123,12 @@
         <div id="emptySpace">
             
         </div>
+        <div>
+            <asp:Button ID="genListBtn" runat="server" onclick="genListBtn_Click" OnClientClick="return GenerateList(); needToConfirm = false;" 
+            Text="Generate List" />
+        </div>
     </div>
     <br />
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <asp:Button ID="genListBtn" runat="server" onclick="genListBtn_Click" OnClientClick="return GenerateList(); needToConfirm = false;" 
-        Text="Generate List" />
 
     <script type="text/javascript">
         function CheckOtherIsCheckedByGVID(spanChk) {
