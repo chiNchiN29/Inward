@@ -32,11 +32,11 @@
                 </asp:LoginView>
             </div>
             <div class="clear hideSkiplink">
-			<asp:Menu ID="NavigationMenu" runat="server" CssClass="menu" 
-                    EnableViewState="false" IncludeStyleBlock="false" Orientation="Horizontal" 
+			<asp:Menu ID="NavigationMenu" runat="server" CssClass="menu"
+                     IncludeStyleBlock="false" Orientation="Horizontal" 
                     onmenuitemclick="NavigationMenu_MenuItemClick">
                     <Items>
-                       
+                        <asp:MenuItem NavigateUrl="~/Default.aspx" Text="Main Menu"/>
                         <asp:MenuItem NavigateUrl="~/Verification.aspx" Text="Signature Verification"/>
                         <asp:MenuItem NavigateUrl="~/Confirmation.aspx" Text="Confirmation" />
                         <asp:MenuItem NavigateUrl="~/UpdateThreshold.aspx" Text="Update Thresholds"/> 

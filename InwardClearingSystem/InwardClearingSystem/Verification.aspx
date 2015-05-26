@@ -16,11 +16,12 @@
     </script>
     <style type="text/css">
         .grid_scroll
-        {
+        {  
             overflow: scroll;
-            height: 261px;
+            height: 300px;
             border: solid 2px black;
-            width: 900px;
+            width: 100%;        
+            margin: 0px  
         }
    
         .YesVer

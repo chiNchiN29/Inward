@@ -30,13 +30,7 @@
          font-size: large; 
          font-weight: bolder;
       } 
-        .grid_scroll
-        {
-            overflow: scroll;
-            height: 300px;
-            border: solid 2px black;
-            width: 900px;
-        }
+
         .fileUpload
         {
             width:255px;    
@@ -46,6 +40,14 @@
             border-width:1px;
             border-color:#7f9db9;    
             height:17px;
+        }
+        .grid_scroll
+        {  
+            overflow: scroll;
+            height: 300px;
+            border: solid 2px black;
+            width: 100%;        
+            margin: 0px  
         }
         #imageLoad
          {
@@ -93,6 +95,7 @@
             <asp:BoundField DataField="drawee_bank_branch" SortExpression="drawee_bank_branch" HeaderText="Drawee Bank Branch" />
             <asp:BoundField DataField="verification" SortExpression="verification" HeaderText="Verified?" />
             <asp:BoundField DataField="funded" SortExpression="funded" HeaderText="Funded?" />
+            <asp:BoundField DataField="bank_remarks" SortExpression="bank_remarks" HeaderText="Bank Remarks" />
         </Columns>
     </asp:GridView>
     </div>
