@@ -37,6 +37,9 @@
                     onmenuitemclick="NavigationMenu_MenuItemClick">
                     <Items>
                        
+                        <asp:MenuItem NavigateUrl="~/Default.aspx" Text="Main Menu" Value="Main Menu">
+                        </asp:MenuItem>
+                       
                         <asp:MenuItem NavigateUrl="~/Verification.aspx" Text="Signature Verification"/>
                         <asp:MenuItem NavigateUrl="~/Confirmation.aspx" Text="Confirmation" />
                         <asp:MenuItem NavigateUrl="~/UpdateThreshold.aspx" Text="Update Thresholds"/> 
