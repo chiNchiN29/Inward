@@ -1,0 +1,8 @@
+C:\Users\Kathrine Chua\Google Drive\H2\Inward Clearing System\Inward\InwardClearingSystem\InwardClearingSystem\bin\InwardClearingSystem.dll
+C:\Users\Kathrine Chua\Google Drive\H2\Inward Clearing System\Inward\InwardClearingSystem\InwardClearingSystem\bin\InwardClearingSystem.pdb
+C:\Users\Kathrine Chua\Google Drive\H2\Inward Clearing System\Inward\InwardClearingSystem\InwardClearingSystem\bin\AjaxControlToolkit.dll
+C:\Users\Kathrine Chua\Google Drive\H2\Inward Clearing System\Inward\InwardClearingSystem\InwardClearingSystem\bin\DotCMIS.dll
+C:\Users\Kathrine Chua\Google Drive\H2\Inward Clearing System\Inward\InwardClearingSystem\InwardClearingSystem\bin\FlashUpload.dll
+C:\Users\Kathrine Chua\Google Drive\H2\Inward Clearing System\Inward\InwardClearingSystem\InwardClearingSystem\obj\Debug\InwardClearingSystem.csprojResolveAssemblyReference.cache
+C:\Users\Kathrine Chua\Google Drive\H2\Inward Clearing System\Inward\InwardClearingSystem\InwardClearingSystem\obj\Debug\InwardClearingSystem.dll
+C:\Users\Kathrine Chua\Google Drive\H2\Inward Clearing System\Inward\InwardClearingSystem\InwardClearingSystem\obj\Debug\InwardClearingSystem.pdb
