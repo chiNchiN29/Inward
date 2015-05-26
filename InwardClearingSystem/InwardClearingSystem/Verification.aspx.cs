@@ -190,11 +190,13 @@ namespace InwardClearingSystem
                else
                {
                    activeConnection.Open();
-                   SqlCommand cmd = new SqlCommand("update CHEQUE SET verification = @verify WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection);
-                   cmd.Parameters.AddWithValue("@acctnumber", VerifyView.Rows[i].Cells[3].Text);
-                   cmd.Parameters.AddWithValue("@chknumber", VerifyView.Rows[i].Cells[1].Text);
-                   cmd.Parameters.AddWithValue("@verify", "YES");
-                   cmd.ExecuteNonQuery();
+                   using (SqlCommand cmd = new SqlCommand("update CHEQUE SET verification = @verify WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection))
+                   {
+                       cmd.Parameters.AddWithValue("@acctnumber", VerifyView.Rows[i].Cells[3].Text);
+                       cmd.Parameters.AddWithValue("@chknumber", VerifyView.Rows[i].Cells[1].Text);
+                       cmd.Parameters.AddWithValue("@verify", "YES");
+                       cmd.ExecuteNonQuery();
+                   }
                    activeConnection.Close();
 
                    dt = FillDataTable();
@@ -222,12 +224,13 @@ namespace InwardClearingSystem
                 else
                 {
                     activeConnection.Open();
-                    SqlCommand update = new SqlCommand("update CHEQUE SET verification = @verify WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection);
-
-                    update.Parameters.AddWithValue("@acctnumber", VerifyView.Rows[i].Cells[3].Text);
-                    update.Parameters.AddWithValue("@chknumber", VerifyView.Rows[i].Cells[1].Text);
-                    update.Parameters.AddWithValue("@verify", "NO");
-                    update.ExecuteNonQuery();
+                    using (SqlCommand update = new SqlCommand("update CHEQUE SET verification = @verify WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection))
+                    {
+                        update.Parameters.AddWithValue("@acctnumber", VerifyView.Rows[i].Cells[3].Text);
+                        update.Parameters.AddWithValue("@chknumber", VerifyView.Rows[i].Cells[1].Text);
+                        update.Parameters.AddWithValue("@verify", "NO");
+                        update.ExecuteNonQuery();
+                    }
                     activeConnection.Close();
 
                     dt = FillDataTable();

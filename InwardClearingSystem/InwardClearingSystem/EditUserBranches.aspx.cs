@@ -18,27 +18,28 @@ namespace InwardClearingSystem
         
         protected void Page_Load(object sender, EventArgs e)
         {
-           
-                cmd = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = '" + Session["UserName"] + "' AND END_USER.role_id = ROLE.role_id", activeConnection);
-                if (cmd.ExecuteScalar().ToString() != "BANK BRANCH" && cmd.ExecuteScalar().ToString() != "OVERSEER")
-                {
-                    ErrorMessage("You are not authorized to view this page");
-                    Response.Redirect("Default.aspx");
-                }
-                else
-                {
-                    int userID = int.Parse(Request.QueryString["UserID"].ToString());
 
-                    if (!Page.IsPostBack)
-                    {
-                        cmd = new SqlCommand("SELECT username FROM END_USER WHERE user_id = @userid", activeConnection);
-                        cmd.Parameters.AddWithValue("@userid", userID);
-                        userLbl.Text = cmd.ExecuteScalar() as string;
-                        ViewState["myDataTable"] = FillDataTable();
-                        ViewState["Branches"] = Branches;
+            cmd = new SqlCommand("SELECT role_desc FROM [USER], ROLE WHERE username = @username AND [USER].role_id = ROLE.role_id", activeConnection);
+            cmd.Parameters.AddWithValue("@username", Session["UserName"]);
+            if (cmd.ExecuteScalar().ToString() != "BANK BRANCH" && cmd.ExecuteScalar().ToString() != "OVERSEER")
+            {
+                ErrorMessage("You are not authorized to view this page");
+                Response.Redirect("Default.aspx");
+            }
+            else
+            {
+                int userID = int.Parse(Request.QueryString["UserID"].ToString());
 
-                    }
+                if (!Page.IsPostBack)
+                {
+                    cmd = new SqlCommand("SELECT username FROM [USER] WHERE user_id = @userid", activeConnection);
+                    cmd.Parameters.AddWithValue("@userid", userID);
+                    userLbl.Text = cmd.ExecuteScalar() as string;
+                    ViewState["myDataTable"] = FillDataTable();
+                    ViewState["Branches"] = Branches;
+
                 }
+            }
        
             activeConnection.Close();
             
@@ -52,7 +53,7 @@ namespace InwardClearingSystem
         public DataTable FillDataTable()
         {
             
-            cmd = new SqlCommand("SELECT branch_name, username FROM BRANCH LEFT JOIN END_USER ON BRANCH.user_id = END_USER.user_id", activeConnection);
+            cmd = new SqlCommand("SELECT branch_name, username FROM BRANCH LEFT JOIN [USER] ON BRANCH.user_id = [USER].user_id", activeConnection);
             DataTable dt = new DataTable();
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             da.Fill(dt);

@@ -181,7 +181,7 @@ namespace InwardClearingSystem
         public DataTable FillDataTable()
         {
             query = new StringBuilder();
-            query.Append("SELECT check_number, f_name, m_name, l_name, ch.account_number, check_date, amount, balance, branch_name, ");
+            query.Append("SELECT check_number, (f_name + ' ' + m_name + ' ' + l_name) AS customer_name, ch.account_number, check_date, amount, balance, branch_name, ");
             query.Append("drawee_bank, drawee_bank_branch, verification, funded, bank_remarks, ch.modified_by, ch.modified_date ");
             query.Append("FROM CHEQUE ch, CUSTOMER c, ACCOUNT a ");
             query.Append("WHERE ch.account_number = a.account_number AND a.customer_id = c.customer_id ");

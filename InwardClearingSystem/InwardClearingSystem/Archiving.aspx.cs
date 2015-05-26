@@ -183,7 +183,6 @@ namespace OCS.DMS
             IFolder folder = (IFolder)session.GetObjectByPath("/Uploads/" + DateTime.Now.Year.ToString() + "/" + DateTime.Now.ToString("MM") + "/" + DateTime.Now.ToString("dd"));
 
             Dictionary<String, object> DocumentProperties = new Dictionary<string, object>();
-            string id = PropertyIds.ObjectTypeId;
             DocumentProperties[PropertyIds.Name] = "Mytest.jpg";
             DocumentProperties[PropertyIds.ObjectTypeId] = "cmis:document";
             ContentStream contentStream = new ContentStream

@@ -31,7 +31,7 @@ namespace InwardClearingSystem
         protected void Page_Load(object sender, EventArgs e)
         {
 
-            cmd = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = @username AND END_USER.role_id = ROLE.role_id", activeConnection);
+            cmd = new SqlCommand("SELECT role_desc FROM [USER], ROLE WHERE username = @username AND [USER].role_id = ROLE.role_id", activeConnection);
             cmd.Parameters.AddWithValue("@username", Session["UserName"]);
             if (cmd.ExecuteScalar().ToString() != "BANK BRANCH" && cmd.ExecuteScalar().ToString() != "OVERSEER")
             {
@@ -169,7 +169,7 @@ namespace InwardClearingSystem
         {
 
             StringBuilder query = new StringBuilder();
-            query.Append("SELECT check_number, customer_name, customer_address, contact_number, CHEQUE.account_number, check_date, amount, branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed ");
+            query.Append("SELECT check_number, (f_name + ' ' + m_name + ' ' + l_name) AS customer_name, address, contact_number, CHEQUE.account_number, check_date, amount, branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed ");
             query.Append("FROM CHEQUE, CUSTOMER, ACCOUNT, THRESHOLD ");
             query.Append("WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id ");
             query.Append("AND ((verification = 'YES' AND amount > maximum) OR verification = 'NO') ");

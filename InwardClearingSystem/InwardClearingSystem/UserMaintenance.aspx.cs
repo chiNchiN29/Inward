@@ -21,7 +21,8 @@ namespace InwardClearingSystem
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            cmd = new SqlCommand("SELECT role_name FROM END_USER, ROLE WHERE username = '" + Session["UserName"] + "' AND END_USER.role_id = ROLE.role_id", activeConnection);
+            cmd = new SqlCommand("SELECT role_desc FROM [USER], ROLE WHERE username = @username AND [USER].role_id = ROLE.role_id", activeConnection);
+            cmd.Parameters.AddWithValue("@username", Session["UserName"]);
             if (cmd.ExecuteScalar().ToString() != "ADMIN" && cmd.ExecuteScalar().ToString() != "OVERSEER")
             {
                 ErrorMessage("You are not authorized to view this page");
@@ -40,13 +41,13 @@ namespace InwardClearingSystem
     
         public void FillDropDown()
         {
-            query = "SELECT role_name FROM ROLE";
+            query = "SELECT role_desc FROM ROLE";
             dt = new DataTable();
             da = new SqlDataAdapter(query, activeConnection);
             da.Fill(dt);
             RoleDrpDwn.DataSource = dt;
-            RoleDrpDwn.DataTextField = "role_name";
-            RoleDrpDwn.DataValueField = "role_name";
+            RoleDrpDwn.DataTextField = "role_desc";
+            RoleDrpDwn.DataValueField = "role_desc";
             RoleDrpDwn.DataBind();
             RoleDrpDwn.Items.Insert(0, new ListItem("<Select Role>", "None"));
             activeConnection.Close();
@@ -76,7 +77,7 @@ namespace InwardClearingSystem
 
         public DataTable FillDataTable()
         {
-            query = "SELECT user_id, username, email, ROLE.role_name FROM END_USER, ROLE WHERE END_USER.role_id = ROLE.role_id";
+            query = "SELECT user_id, username, email, ROLE.role_desc FROM [USER], ROLE WHERE [USER].role_id = ROLE.role_id";
           
             dt = new DataTable();
             da = new SqlDataAdapter(query, activeConnection);
@@ -106,11 +107,11 @@ namespace InwardClearingSystem
                 {
                     row = UserView.Rows[i];
                     string user = row.Cells[2].Text;
-					using (SqlCommand select = new SqlCommand("SELECT ROLE.role_id FROM ROLE, END_USER WHERE @rolename = ROLE.role_name", activeConnection))
+					using (SqlCommand select = new SqlCommand("SELECT ROLE.role_id FROM ROLE, [USER] WHERE @rolename = ROLE.role_desc", activeConnection))
                     {
                         select.Parameters.AddWithValue("@rolename", RoleDrpDwn.Text);
 
-                    cmd = new SqlCommand("update END_USER SET role_id = @id WHERE END_USER.username = @name", activeConnection);
+                    cmd = new SqlCommand("update [USER] SET role_id = @id WHERE [USER].username = @name", activeConnection);
                     cmd.Parameters.AddWithValue("@id", select.ExecuteScalar());
                     cmd.Parameters.AddWithValue("@name", user);
                     cmd.ExecuteNonQuery();
@@ -148,7 +149,7 @@ namespace InwardClearingSystem
                 row = UserView.Rows[i];
                 string user = row.Cells[2].Text;
                 cmd.Parameters.AddWithValue("@name", user);
-                using (SqlCommand nullifier = new SqlCommand("UPDATE BRANCH SET user_id = NULL FROM BRANCH, END_USER WHERE END_USER. user_id = BRANCH.user_id AND END_USER.username = @name", activeConnection))
+                using (SqlCommand nullifier = new SqlCommand("UPDATE BRANCH SET user_id = NULL FROM BRANCH, [USER] WHERE [USER]. user_id = BRANCH.user_id AND [USER].username = @name", activeConnection))
                 {
                     nullifier.Parameters.AddWithValue("@name", user);
                     nullifier.ExecuteNonQuery();
