@@ -29,7 +29,6 @@ namespace InwardClearingSystem
         
         protected void Page_Load(object sender, EventArgs e)
         {
-            
             if (!IsPostBack)
             {
                 ViewState["myDataTable"] = FillDataTable();
@@ -100,74 +99,65 @@ namespace InwardClearingSystem
                     query.Append("verification, confirmed, bank_remarks, account_number, modified_by, modified_date) ");
                     query.Append("values (@checknum, @amount, @date, @branch, @draweebank, @draweebranch, ");
                     query.Append("@funded, @verified, @confirmed, @remarks, @acctnum, @modby, @moddate)");
-
-                    using (SqlCommand validator = new SqlCommand("select check_number from CHEQUE where check_number = @checknum", activeConnection))
+                    using (activeConnection)
                     {
+                        activeConnection.Open();
+                        SqlCommand validator = new SqlCommand("select check_number from CHEQUE where check_number = @checknum", activeConnection);
                         validator.Parameters.AddWithValue("@checknum", heart[0]);
                         if (validator.ExecuteScalar() == null)
                         {
-                            using (SqlCommand insert = new SqlCommand(query.ToString(), activeConnection))
+                            SqlCommand insert = new SqlCommand(query.ToString(), activeConnection);
+                            SqlCommand checker = new SqlCommand("select minimum from THRESHOLD", activeConnection);
+                            insert.Parameters.AddWithValue("@checknum", heart[0]);
+                            insert.Parameters.AddWithValue("@amount", heart[1]);
+                            insert.Parameters.AddWithValue("@date", heart[2]);
+                            insert.Parameters.AddWithValue("@branch", heart[3]);
+                            insert.Parameters.AddWithValue("@draweebank", heart[4]);
+                            insert.Parameters.AddWithValue("@draweebranch", heart[5]);
+                            insert.Parameters.AddWithValue("@funded", heart[6]);
+                            if (decimal.Parse(heart[1]) < decimal.Parse(checker.ExecuteScalar().ToString()))
                             {
-                                using (SqlCommand checker = new SqlCommand("select minimum from THRESHOLD", activeConnection))
-                                {
-                                    insert.Parameters.AddWithValue("@checknum", heart[0]);
-                                    insert.Parameters.AddWithValue("@amount", heart[1]);
-                                    insert.Parameters.AddWithValue("@date", heart[2]);
-                                    insert.Parameters.AddWithValue("@branch", heart[3]);
-                                    insert.Parameters.AddWithValue("@draweebank", heart[4]);
-                                    insert.Parameters.AddWithValue("@draweebranch", heart[5]);
-                                    insert.Parameters.AddWithValue("@funded", heart[6]);
-                                    if (decimal.Parse(heart[1]) < decimal.Parse(checker.ExecuteScalar().ToString()))
-                                    {
-                                        insert.Parameters.AddWithValue("@verified", "BTA");
-                                    }
-                                    else
-                                    {
-                                        insert.Parameters.AddWithValue("@verified", heart[7]);
-                                    }
-                                    insert.Parameters.AddWithValue("@confirmed", heart[8]);
-                                    insert.Parameters.AddWithValue("@remarks", heart[9]);
-                                    insert.Parameters.AddWithValue("@acctnum", heart[10]);
-                                    insert.Parameters.AddWithValue("@modby", userID);
-                                    insert.Parameters.AddWithValue("@moddate", DateTime.Now);
-                                    insert.ExecuteNonQuery();
-                                }
+                                insert.Parameters.AddWithValue("@verified", "BTA");
                             }
+                            else
+                            {
+                                insert.Parameters.AddWithValue("@verified", heart[7]);
+                            }
+                            insert.Parameters.AddWithValue("@confirmed", heart[8]);
+                            insert.Parameters.AddWithValue("@remarks", heart[9]);
+                            insert.Parameters.AddWithValue("@acctnum", heart[10]);
+                            insert.Parameters.AddWithValue("@modby", userID);
+                            insert.Parameters.AddWithValue("@moddate", DateTime.Now);
+                            insert.ExecuteNonQuery();
                         }
                         else
                         {
-
-
                             Response.Write("Check Data Upload interrupted. A duplicate check number has been discovered.");
+
                         }
                     }
-                } 
+                }
                 sr.Close();
                 DataTable dt = FillDataTable();
-                ViewAllCheck.DataSource = dt;
-                ViewAllCheck.DataBind();
             }
             catch (Exception b)
             {
                 Response.Write(b);
                 //Response.Write("Please re-check the format of the data for any missing fields.");
-              
-            }
 
-             activeConnection.Close();
+            }
 
         }
 
         protected void clearCheck_Click1(object sender, EventArgs e)
         {
-             using (SqlCommand delete = new SqlCommand("DELETE FROM [CHEQUE]", activeConnection))
+            using (activeConnection)
             {
-                delete.ExecuteNonQuery();
-
+                activeConnection.Open();
+                cmd = new SqlCommand("DELETE FROM CHEQUE", activeConnection);
+                cmd.ExecuteNonQuery();
                 ViewAllCheck.DataBind();
-                activeConnection.Close();
             }
-            
         }
 
         protected void ViewAllCheck_Sorting(object sender, GridViewSortEventArgs e)
@@ -193,7 +183,6 @@ namespace InwardClearingSystem
             ViewAllCheck.DataSource = dt;
             ViewAllCheck.DataBind();
      
-           
             return dt;
         }
 
@@ -247,23 +236,13 @@ namespace InwardClearingSystem
             query.Append("FROM CHEQUE ch, CUSTOMER c, ACCOUNT a ");
             query.Append("WHERE ch.account_number = a.account_number AND a.customer_id = c.customer_id ");
             query.Append("AND verification = 'NO' ORDER BY ch.account_number");
-            using (activeConnection)
-            {
-                using (cmd = new SqlCommand(query.ToString()))
-                {
-                    using (da = new SqlDataAdapter())
-                    {
-                        cmd.Connection = activeConnection;
-                        da.SelectCommand = cmd;
-                        using (DataTable dt = new DataTable())
-                        {
-                            da.Fill(dt);
-                            return dt;
-                        }
-
-                    }
-                }
-            }
+         
+            activeConnection.Open();
+            da = new SqlDataAdapter(query.ToString(), activeConnection);
+            dt = new DataTable();          
+            da.Fill(dt);
+            activeConnection.Close();
+            return dt;
         }
 
         private string GetSortDirection(string column)

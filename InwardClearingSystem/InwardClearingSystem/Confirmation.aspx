@@ -60,7 +60,7 @@
     <div class="grid_scroll">
     <asp:GridView ID="ConfirmView" runat="server" AutoGenerateColumns="false" 
             BorderColor="Black" ForeColor="Black" HeaderStyle-ForeColor="White" 
-   AllowSorting="true" OnSorting="ConfirmView_Sorting" 
+   AllowSorting="true" OnSorting="ConfirmView_Sorting" Width="100%"
     HeaderStyle-CssClass="GridHeader" ShowFooter="True" 
             FooterStyle-CssClass="gridViewFooterStyle" 
             OnRowDataBound="ConfirmView_RowDataBound">
@@ -81,6 +81,7 @@
         <asp:BoundField DataField="funded" SortExpression="funded" HeaderText="Funded?" />
         <asp:BoundField DataField="verification" SortExpression="verification" HeaderText="Verified?" />
         <asp:BoundField DataField="confirmed" SortExpression="confirmed" HeaderText="Confirmed?" />
+        <asp:BoundField DataField="confirm_remarks" SortExpression="confirm_remarks" HeaderText="Remarks" />
     </Columns>
     </asp:GridView>
       </div>

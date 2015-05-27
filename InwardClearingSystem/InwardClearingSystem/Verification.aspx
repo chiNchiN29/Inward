@@ -1,7 +1,21 @@
 ﻿<%@ Page Title="Signature Verification" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Verification.aspx.cs" Inherits="InwardClearingSystem.Verification" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
+<link rel="stylesheet" href="multizoom.css" type="text/css" />
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+
+<script type="text/javascript" src="multizoom.js">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js" type="text/javascript"></script>
     <script language="javascript" type="text/javascript">
+        jQuery(document).ready(function($){
+
+	$('#checkImage').addimagezoom({ // single image zoom
+		zoomrange: [3, 10],
+		magnifiersize: [300,300],
+		magnifierpos: 'right',
+		cursorshade: true
+
+	})
         function zoomin(obj) {
             $(obj).css("cursor", "pointer");
             $(obj).css("z-index", "1");
@@ -87,7 +101,7 @@
     <div class ="grid_scroll">
         &nbsp;&nbsp;&nbsp;
         <asp:GridView ID="VerifyView" runat="server" AutoGenerateColumns="false" 
-            BorderColor="Black" ForeColor="Black" HeaderStyle-ForeColor="White"
+            BorderColor="Black" ForeColor="Black" HeaderStyle-ForeColor="White" Width="100%"
               AllowSorting="true" OnSorting="VerifyView_Sorting" HeaderStyle-CssClass="GridHeader" 
              OnRowDataBound="VerifyView_RowDataBound" ShowFooter="True" 
             FooterStyle-CssClass="gridViewFooterStyle" >
@@ -107,6 +121,7 @@
                      <asp:BoundField DataField="drawee_bank" SortExpression="drawee_bank" HeaderText="Drawee Bank" />
                      <asp:BoundField DataField="drawee_bank_branch" SortExpression="drawee_bank_branch" HeaderText="Drawee Bank Branch" />
                      <asp:BoundField DataField="verification" SortExpression="verification" HeaderText="Verified?" />
+                     <asp:BoundField DataField="verify_remarks" SortExpression="verify_remarks" HeaderText="Technicalities" />
                  </Columns>
                   </asp:GridView>
 </div>
@@ -137,7 +152,7 @@
         <asp:Label ID="verifyRemarkLabel" runat="server" Text="Remarks"></asp:Label>
         <br />
         <asp:DropDownList ID="verifyChoice" runat="server" EnableTheming="True">
-            <asp:ListItem Value="0">&lt;SELECT ITEM&gt;</asp:ListItem>
+            <asp:ListItem Value="None">&lt;SELECT ITEM&gt;</asp:ListItem>
             <asp:ListItem>SIGNATURE DIFFERS</asp:ListItem>
             <asp:ListItem>AMOUNT DOES NOT MATCH</asp:ListItem>
             <asp:ListItem>POST-DATED ISSUE</asp:ListItem>
@@ -153,13 +168,14 @@
     
     <br/>
     <div id="images">
+
         <div id="imageLeft">
             <asp:Label ID="Label1" runat="server" AssociatedControlID="checkImage" 
             BorderStyle="None" Text="Image"></asp:Label>
             <asp:Image ID="checkImage" runat="server" CssClass="image_box" Height="180px" 
-            Width="450px"  ImageAlign="Left" onmouseover="zoomin(this)" onmouseout="zoomout(this)"
+            Width="450px"  ImageAlign="Left" 
             ImageUrl="~/Resources/H2DefaultImage.jpg" />
-   
+    <%--onmouseover="zoomin(this)" onmouseout="zoomout(this--%>
         </div>
         <div id="imageRight">
             <asp:Label ID="Label2" runat="server" AssociatedControlID="sigImage" 

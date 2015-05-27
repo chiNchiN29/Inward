@@ -21,25 +21,21 @@ namespace InwardClearingSystem
         public SqlConnection activeConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
         public ISession session;
   
-
         protected override void OnInit(EventArgs e)
         {
 
             base.OnInit(e);
-            Session["UserName"] = System.Web.HttpContext.Current.User.Identity.Name;
-            
+       
             bool login = System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
             if (login == false)
                 Response.Redirect("~/Account/Login.aspx");
-
+            Session["UserName"] = System.Web.HttpContext.Current.User.Identity.Name;
             activeConnection.Open();
-            string username = Session["UserName"].ToString();
-            using (SqlCommand cmd = new SqlCommand("select user_id from [USER] where username = @username", activeConnection))
-            {
-                cmd.Parameters.AddWithValue("@username", username);
-                Session["UserID"] = Convert.ToInt32(cmd.ExecuteScalar());
-                session = CreateSession("admin", "092095", "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom");
-            }
+            SqlCommand cmd = new SqlCommand("select user_id from [USER] where username = @username", activeConnection);
+            cmd.Parameters.AddWithValue("@username", Session["UserName"].ToString());
+            Session["UserID"] = Convert.ToInt32(cmd.ExecuteScalar());
+            session = CreateSession("admin", "admin", "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom");
+            
         }
 
         public void ErrorMessage(string message)
@@ -195,7 +191,7 @@ namespace InwardClearingSystem
 
         public void NextRow(GridView view, int i)
         {
-            if (i < view.Rows.Count)
+            if (i < view.Rows.Count - 1)
             {
                 int nextRow = i + 1;
                 GridViewRow row = view.Rows[nextRow];

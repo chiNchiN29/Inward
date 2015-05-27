@@ -21,36 +21,44 @@ namespace InwardClearingSystem
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            cmd = new SqlCommand("SELECT role_desc FROM [USER], ROLE WHERE username = @username AND [USER].role_id = ROLE.role_id", activeConnection);
+
+            cmd = new SqlCommand("SELECT role_desc FROM [USER] u, ROLE r WHERE username = @username AND u.role_id = r.role_id", activeConnection);
             cmd.Parameters.AddWithValue("@username", Session["UserName"]);
             if (cmd.ExecuteScalar().ToString() != "ADMIN" && cmd.ExecuteScalar().ToString() != "OVERSEER")
             {
                 ErrorMessage("You are not authorized to view this page");
                 Response.Redirect("Default.aspx");
             }
+            
             else
             {
+                activeConnection.Close();
                 if (!IsPostBack)
                 {
                     ViewState["myDataTable"] = FillDataTable();
                     ViewState["SelectRow"] = -1;
                     FillDropDown();
                 }
+                
             }
+            
         }
     
         public void FillDropDown()
         {
-            query = "SELECT role_desc FROM ROLE";
-            dt = new DataTable();
-            da = new SqlDataAdapter(query, activeConnection);
-            da.Fill(dt);
-            RoleDrpDwn.DataSource = dt;
-            RoleDrpDwn.DataTextField = "role_desc";
-            RoleDrpDwn.DataValueField = "role_desc";
-            RoleDrpDwn.DataBind();
-            RoleDrpDwn.Items.Insert(0, new ListItem("<Select Role>", "None"));
-            activeConnection.Close();
+            using (activeConnection)
+            {
+                activeConnection.Open();
+                query = "SELECT role_desc FROM ROLE";
+                dt = new DataTable();
+                da = new SqlDataAdapter(query, activeConnection);
+                da.Fill(dt);
+                RoleDrpDwn.DataSource = dt;
+                RoleDrpDwn.DataTextField = "role_desc";
+                RoleDrpDwn.DataValueField = "role_desc";
+                RoleDrpDwn.DataBind();
+                RoleDrpDwn.Items.Insert(0, new ListItem("<Select Role>", "None"));
+            }
         }
 
         protected void RowSelect_CheckedChanged(Object sender, EventArgs e)
@@ -77,15 +85,13 @@ namespace InwardClearingSystem
 
         public DataTable FillDataTable()
         {
-            query = "SELECT user_id, username, email, ROLE.role_desc FROM [USER], ROLE WHERE [USER].role_id = ROLE.role_id";
+            query = "SELECT user_id, username, email, r.role_desc FROM [USER] u, ROLE r WHERE u.role_id = r.role_id";
           
             dt = new DataTable();
             da = new SqlDataAdapter(query, activeConnection);
             da.Fill(dt);
             UserView.DataSource = dt;
             UserView.DataBind();
-       
-
             return dt;
         }
 
@@ -107,20 +113,19 @@ namespace InwardClearingSystem
                 {
                     row = UserView.Rows[i];
                     string user = row.Cells[2].Text;
-					using (SqlCommand select = new SqlCommand("SELECT ROLE.role_id FROM ROLE, [USER] WHERE @rolename = ROLE.role_desc", activeConnection))
+                    using (activeConnection)
                     {
+                        activeConnection.Open();
+                        SqlCommand select = new SqlCommand("SELECT role_id FROM ROLE WHERE @rolename = role_desc", activeConnection);
                         select.Parameters.AddWithValue("@rolename", RoleDrpDwn.Text);
 
-                    cmd = new SqlCommand("update [USER] SET role_id = @id WHERE [USER].username = @name", activeConnection);
-                    cmd.Parameters.AddWithValue("@id", select.ExecuteScalar());
-                    cmd.Parameters.AddWithValue("@name", user);
-                    cmd.ExecuteNonQuery();
+                        cmd = new SqlCommand("update [USER] SET role_id = @id WHERE username = @name", activeConnection);
+                        cmd.Parameters.AddWithValue("@id", select.ExecuteScalar());
+                        cmd.Parameters.AddWithValue("@name", user);
+                        cmd.ExecuteNonQuery();
 
-                    dt = FillDataTable();
-                    UserView.DataSource = dt;
-                    UserView.DataBind();
-                    activeConnection.Close();
-                        }
+                        dt = FillDataTable();
+                    }
                 }
             }
             ViewState["SelectRow"] = -1;
@@ -148,13 +153,11 @@ namespace InwardClearingSystem
             {
                 row = UserView.Rows[i];
                 string user = row.Cells[2].Text;
-                cmd.Parameters.AddWithValue("@name", user);
-                using (SqlCommand nullifier = new SqlCommand("UPDATE BRANCH SET user_id = NULL FROM BRANCH, [USER] WHERE [USER]. user_id = BRANCH.user_id AND [USER].username = @name", activeConnection))
+                using (activeConnection)
                 {
-                    nullifier.Parameters.AddWithValue("@name", user);
-                    nullifier.ExecuteNonQuery();
+                    cmd = new SqlCommand("UPDATE BRANCH SET user_id = NULL FROM BRANCH b, [USER] u WHERE u. user_id = b.user_id AND u.username = @name", activeConnection);
+                    cmd.Parameters.AddWithValue("@name", user);
                     cmd.ExecuteNonQuery();
-
                 }
             }
         }

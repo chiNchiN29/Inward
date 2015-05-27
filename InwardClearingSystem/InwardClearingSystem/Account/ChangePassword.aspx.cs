@@ -20,12 +20,14 @@ namespace InwardClearingSystem.Account
 
         protected void ChangeUserPassword_ChangingPassword(object sender, LoginCancelEventArgs e)
         {
-            cmd = new SqlCommand("update END_USER SET password = @newpass where END_USER.username = @user", activeConnection);
-            cmd.Parameters.AddWithValue("@newpass", ChangeUserPassword.NewPassword);
-            cmd.Parameters.AddWithValue("@user", Session["UserName"]);
-            cmd.ExecuteNonQuery();
-
-            activeConnection.Close();
+            using (activeConnection)
+            {
+                activeConnection.Open();
+                cmd = new SqlCommand("update END_USER SET password = @newpass where END_USER.username = @user", activeConnection);
+                cmd.Parameters.AddWithValue("@newpass", ChangeUserPassword.NewPassword);
+                cmd.Parameters.AddWithValue("@user", Session["UserName"]);
+                cmd.ExecuteNonQuery();
+            }
         }
 
         protected void ChangeUserPassword_ContinueButtonClick(object sender, EventArgs e)

@@ -17,8 +17,7 @@ namespace InwardClearingSystem
         DataTable dt;
         
         protected void Page_Load(object sender, EventArgs e)
-        {
-
+        {   
             cmd = new SqlCommand("SELECT role_desc FROM [USER], ROLE WHERE username = @username AND [USER].role_id = ROLE.role_id", activeConnection);
             cmd.Parameters.AddWithValue("@username", Session["UserName"]);
             if (cmd.ExecuteScalar().ToString() != "BANK BRANCH" && cmd.ExecuteScalar().ToString() != "OVERSEER")
@@ -29,7 +28,6 @@ namespace InwardClearingSystem
             else
             {
                 int userID = int.Parse(Request.QueryString["UserID"].ToString());
-
                 if (!Page.IsPostBack)
                 {
                     cmd = new SqlCommand("SELECT username FROM [USER] WHERE user_id = @userid", activeConnection);
@@ -37,10 +35,8 @@ namespace InwardClearingSystem
                     userLbl.Text = cmd.ExecuteScalar() as string;
                     ViewState["myDataTable"] = FillDataTable();
                     ViewState["Branches"] = Branches;
-
                 }
             }
-       
             activeConnection.Close();
             
         }
@@ -51,15 +47,13 @@ namespace InwardClearingSystem
         }
 
         public DataTable FillDataTable()
-        {
-            
+        {  
             cmd = new SqlCommand("SELECT branch_name, username FROM BRANCH LEFT JOIN [USER] ON BRANCH.user_id = [USER].user_id", activeConnection);
-            DataTable dt = new DataTable();
+            dt = new DataTable();
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             da.Fill(dt);
             branchView.DataSource = dt;
             branchView.DataBind();
-          
             return dt;
         }
 
@@ -81,32 +75,35 @@ namespace InwardClearingSystem
 
         protected void saveBtn_Click(object sender, EventArgs e)
         {
-            try
+            using (activeConnection)
             {
-                int userID = int.Parse(Request.QueryString["UserID"].ToString());
                 activeConnection.Open();
-                List<string> mybranches = Branches;
-                if (mybranches.Count != 0)
+                try
                 {
-                    foreach (string branchname in mybranches)
+                    int userID = int.Parse(Request.QueryString["UserID"].ToString());
+                    List<string> mybranches = Branches;
+                    if (mybranches.Count != 0)
                     {
-                        cmd = new SqlCommand("update BRANCH SET user_id = @userid WHERE branch_name = @branch", activeConnection);
-                        cmd.Parameters.AddWithValue("@userid", userID);
-                        cmd.Parameters.AddWithValue("@branch", branchname);
-                        cmd.ExecuteNonQuery();
+                        foreach (string branchname in mybranches)
+                        {
+                            cmd = new SqlCommand("update BRANCH SET user_id = @userid WHERE branch_name = @branch", activeConnection);
+                            cmd.Parameters.AddWithValue("@userid", userID);
+                            cmd.Parameters.AddWithValue("@branch", branchname);
+                            cmd.ExecuteNonQuery();
+                        }
+                        activeConnection.Close();
+                        dt = FillDataTable();
+                        Branches.Clear();
                     }
-                    activeConnection.Close();
-                    dt = FillDataTable();
-                    Branches.Clear();
+                    else
+                    {
+                        ErrorMessage("Please select a branch");
+                    }
                 }
-                else
+                catch (Exception b)
                 {
-                    ErrorMessage("Please select a branch");
+                    Response.Write(b);
                 }
-            }
-            catch (Exception b)
-            {
-                Response.Write(b);
             }
         }
 

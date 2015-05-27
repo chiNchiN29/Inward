@@ -32,7 +32,6 @@ namespace InwardClearingSystem
      
         protected void Page_Load(object sender, EventArgs e)
         {
-
             cmd = new SqlCommand("SELECT role_desc FROM [USER] u, ROLE r WHERE username = @username AND u.role_id = r.role_id", activeConnection);
             cmd.Parameters.AddWithValue("@username", Session["UserName"]);
             if (cmd.ExecuteScalar().ToString() != "CLEARING DEPT" && cmd.ExecuteScalar().ToString() != "OVERSEER")
@@ -40,6 +39,7 @@ namespace InwardClearingSystem
                 ErrorMessage("You are not authorized to view this page");
                 Response.Redirect("Default.aspx");
             }
+                   
             else
             {
                 if (!Page.IsPostBack)
@@ -48,7 +48,6 @@ namespace InwardClearingSystem
                     ViewState["SelectRow"] = -1;
                 }
             }
-
             activeConnection.Close();
         }
 
@@ -121,24 +120,25 @@ namespace InwardClearingSystem
         //Signature image in Database
         private void ShowSigDTImage(int rowIndex)
         {
-            try
+            using (activeConnection)
             {
                 activeConnection.Open();
-                cmd = new SqlCommand("select signature_image from SIGNATURE WHERE account_number= @acctnumber", activeConnection);
-                cmd.Parameters.AddWithValue("@acctnumber", VerifyView.Rows[rowIndex].Cells[3].Text);
+                try
+                {
+                    cmd = new SqlCommand("select signature_image from SIGNATURE WHERE account_number= @acctnumber", activeConnection);
+                    cmd.Parameters.AddWithValue("@acctnumber", VerifyView.Rows[rowIndex].Cells[3].Text);
 
-                byte[] result = cmd.ExecuteScalar() as byte[];
-                string base64string2 = Convert.ToBase64String(result, 0, result.Length);
-                sigImage.ImageUrl = "data:image/jpeg;base64," + base64string2;
-                sigImage.Visible = true;
-                activeConnection.Close();
+                    byte[] result = cmd.ExecuteScalar() as byte[];
+                    string base64string2 = Convert.ToBase64String(result, 0, result.Length);
+                    sigImage.ImageUrl = "data:image/jpeg;base64," + base64string2;
+                    sigImage.Visible = true;
+                }
+                catch
+                {
+                    sigImage.ImageUrl = "~/Resources/H2DefaultImage.jpg";
+                    sigImage.Visible = true;
+                }
             }
-            catch
-            {
-                sigImage.ImageUrl = "~/Resources/H2DefaultImage.jpg";
-                sigImage.Visible = true;
-            }
-
         }
 
         //Signature image in Alfresco
@@ -183,27 +183,30 @@ namespace InwardClearingSystem
            }
            else
            {
-               if (checkImage.ImageUrl == "~/Resources/H2DefaultImage.jpg" || sigImage.ImageUrl == "~/Resources/H2DefaultImage.jpg")
-               {
-                   ErrorMessage("Cannot validate because there is no existing check or signature");
-               }
-               else
+               //if (checkImage.ImageUrl == "~/Resources/H2DefaultImage.jpg" || sigImage.ImageUrl == "~/Resources/H2DefaultImage.jpg")
+               //{
+               //    ErrorMessage("Cannot validate because there is no existing check or signature");
+               //}
+               //else
+               //{
+               using (activeConnection)
                {
                    activeConnection.Open();
-                   using (SqlCommand cmd = new SqlCommand("update CHEQUE SET verification = @verify WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection))
-                   {
-                       cmd.Parameters.AddWithValue("@acctnumber", VerifyView.Rows[i].Cells[3].Text);
-                       cmd.Parameters.AddWithValue("@chknumber", VerifyView.Rows[i].Cells[1].Text);
-                       cmd.Parameters.AddWithValue("@verify", "YES");
-                       cmd.ExecuteNonQuery();
-                   }
-                   activeConnection.Close();
-
+                   cmd = new SqlCommand("update CHEQUE SET verification = @verify, modified_by = @modby, modified_date = @moddate WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection);
+                   cmd.Parameters.AddWithValue("@acctnumber", VerifyView.Rows[i].Cells[3].Text);
+                   cmd.Parameters.AddWithValue("@chknumber", VerifyView.Rows[i].Cells[1].Text);
+                   cmd.Parameters.AddWithValue("@verify", "YES");
+                   cmd.Parameters.AddWithValue("@modby", Session["UserID"]);
+                   cmd.Parameters.AddWithValue("@moddate", DateTime.Now);
+                   //cmd.Parameters.AddWithValue("@veremarks", verifyRemarks.Text);
+                   cmd.ExecuteNonQuery();
+               }
+               
                    dt = FillDataTable();
 
                    NextRow(VerifyView, i);
 
-               }
+           //    }
            }
         }
 
@@ -217,25 +220,36 @@ namespace InwardClearingSystem
             }
             else
             {
-                if (checkImage.ImageUrl == "~/Resources/H2DefaultImage.jpg" || sigImage.ImageUrl == "~/Resources/H2DefaultImage.jpg")
-                {
-                    ErrorMessage("Cannot verify check because there is no existing image");
-                }
-                else
-                {
-                    activeConnection.Open();
-                    using (SqlCommand update = new SqlCommand("update CHEQUE SET verification = @verify WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection))
+                //if (checkImage.ImageUrl == "~/Resources/H2DefaultImage.jpg" || sigImage.ImageUrl == "~/Resources/H2DefaultImage.jpg")
+                //{
+                //    ErrorMessage("Cannot verify check because there is no existing image");
+                //}
+                //else
+                //{
+                    if (String.IsNullOrWhiteSpace(verifyRemarks.Text) == true && verifyChoice.SelectedValue.Equals("None"))
                     {
-                        update.Parameters.AddWithValue("@acctnumber", VerifyView.Rows[i].Cells[3].Text);
-                        update.Parameters.AddWithValue("@chknumber", VerifyView.Rows[i].Cells[1].Text);
-                        update.Parameters.AddWithValue("@verify", "NO");
-                        update.ExecuteNonQuery();
+                        ErrorMessage("Please input technicality");
                     }
-                    activeConnection.Close();
+                    else
+                    {
+                        using (activeConnection)
+                        {
+                            activeConnection.Open();
+                            cmd = new SqlCommand("update CHEQUE SET verification = @verify, modified_by = @modby, modified_date = @moddate, verify_remarks = @veremarks WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection);
+                            cmd.Parameters.AddWithValue("@acctnumber", VerifyView.Rows[i].Cells[3].Text);
+                            cmd.Parameters.AddWithValue("@chknumber", VerifyView.Rows[i].Cells[1].Text);
+                            cmd.Parameters.AddWithValue("@verify", "NO");
+                            cmd.Parameters.AddWithValue("@veremarks", verifyChoice.SelectedItem.Text + " " + verifyRemarks.Text);
+                            cmd.Parameters.AddWithValue("@modby", Session["UserID"]);
+                            cmd.Parameters.AddWithValue("@moddate", DateTime.Now);
+                            cmd.ExecuteNonQuery();
+                        }
+                            
+   
+                        dt = FillDataTable();
 
-                    dt = FillDataTable();
-
-                    NextRow(VerifyView, i);
+                        NextRow(VerifyView, i);
+                    //}
                 }
             }
         }
@@ -301,27 +315,17 @@ namespace InwardClearingSystem
             query = new StringBuilder();
             query.Append("SELECT check_number, amount, CONVERT(VARCHAR(10), check_date, 101), branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed, ch.account_number ");
             query.Append("FROM CHEQUE ch, CUSTOMER c, ACCOUNT a ");
-            query.Append("WHERE ch.account_number = a.account_number AND a.customer_id = c.customer_id AND verification = 'NO' ORDER BY ch.account_number");
+            query.Append("WHERE ch.account_number = a.account_number AND a.customer_id = c.customer_id AND verification = 'NO' "); 
+            query.Append("ORDER BY ch.account_number");
 
-            using (activeConnection)
-            {
-                using (cmd = new SqlCommand(query.ToString()))
-                {
-                    using (da = new SqlDataAdapter())
-                    {
-                        cmd.Connection = activeConnection;
-                        da.SelectCommand = cmd;
-                        using (DataTable dt = new DataTable())
-                        {
-                            da.Fill(dt);
-                            return dt;
-                        }
-
-                    }
-                }
-            }
+            activeConnection.Open();
+            da = new SqlDataAdapter(query.ToString(), activeConnection);
+            dt = new DataTable();
+            da.Fill(dt);
+            activeConnection.Close();
+            return dt; 
         }
-
+            
         protected void VerifyView_Sorting(Object sender, GridViewSortEventArgs e)
         {
             dt = ViewState["myDataTable"] as DataTable;
@@ -335,10 +339,11 @@ namespace InwardClearingSystem
             string user = Session["UserName"].ToString();
             StringBuilder query = new StringBuilder();
             query.Append("SELECT check_number, (c.f_name + ' ' + c.m_name + ' ' + c.l_name) AS name, ch.account_number, check_date, amount, ");
-            query.Append("balance, b.branch_name, drawee_bank, drawee_bank_branch, verification ");
-            query.Append("FROM CHEQUE ch, CUSTOMER c, ACCOUNT a, THRESHOLD t, BRANCH b, [USER] u ");
-            query.Append("WHERE u.username = @username AND u.user_id = b.user_id AND b.branch_name = ch.branch_name AND ch.account_number = a.account_number ");
-            query.Append("AND a.customer_id = c.customer_id AND ch.amount >= minimum AND verification <> 'BTA' AND bank_remarks = NULL ");
+            query.Append("balance, b.branch_name, drawee_bank, drawee_bank_branch, verification, bank_remarks, verify_remarks ");
+            query.Append("FROM THRESHOLD AS t INNER JOIN CHEQUE AS ch INNER JOIN [USER] AS u INNER JOIN  BRANCH AS b ON u.user_id = b.user_id ");
+            query.Append("ON ch.branch_name = b.branch_name INNER JOIN ACCOUNT AS a ON ch.account_number = a.account_number INNER JOIN ");
+            query.Append("CUSTOMER AS c ON a.customer_id = c.customer_id ON t.minimum <= ch.amount ");
+            query.Append("WHERE (u.username = @username) AND (ch.verification <> 'BTA') AND (ch.bank_remarks = NULL OR ch.bank_remarks = ' ') ");   
             query.Append("ORDER BY ch.account_number");
             cmd = new SqlCommand(query.ToString(), activeConnection);
             cmd.Parameters.AddWithValue("@username", user); 
@@ -397,8 +402,8 @@ namespace InwardClearingSystem
             }
             else if (e.Row.RowType == DataControlRowType.Footer)
             {
-                e.Row.Cells[9].Text = "Verified: " + totalVerified.ToString();
-                e.Row.Cells[10].Text = "Total: " + total.ToString();
+                e.Row.Cells[10].Text = "Verified: " + totalVerified.ToString();
+                e.Row.Cells[11].Text = "Total: " + total.ToString();
                 totalVer.Text = totalVerified.ToString();
                 totalCount.Text = total.ToString();
                 totalVerHide.Value = totalVerified.ToString();

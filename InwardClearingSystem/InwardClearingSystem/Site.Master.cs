@@ -25,13 +25,12 @@ namespace InwardClearingSystem
             {
                 try
                 {
-                    connection.Open();
                     Label3.Text = System.DateTime.Now.ToLongTimeString();
                     //string pool = Session["UserName"].ToString();
-					using (SqlCommand checker = new SqlCommand("SELECT role_desc FROM [USER] u, [ROLE] r WHERE username = @name AND u.role_id = r.role_id", connection))
-
+                    using (connection)
                     {
-
+                        connection.Open();
+                        SqlCommand checker = new SqlCommand("SELECT role_desc FROM [USER] u, [ROLE] r WHERE username = @name AND u.role_id = r.role_id", connection);   
                         checker.Parameters.AddWithValue("@name", Session["UserName"]);
                         if (checker.ExecuteScalar().ToString() == "ADMIN")
                         {
@@ -40,7 +39,7 @@ namespace InwardClearingSystem
                         else if (checker.ExecuteScalar().ToString() == "OVERSEER")
                         {
                             OverseerView();
-                        }
+                        }   
                     }
                 }
                 catch(Exception b)
