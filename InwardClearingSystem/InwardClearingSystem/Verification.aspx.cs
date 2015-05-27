@@ -220,7 +220,6 @@ namespace InwardClearingSystem
             }
             else
             {
-<<<<<<< HEAD
                 //if (checkImage.ImageUrl == "~/Resources/H2DefaultImage.jpg" || sigImage.ImageUrl == "~/Resources/H2DefaultImage.jpg")
                 //{
                 //    ErrorMessage("Cannot verify check because there is no existing image");
@@ -228,16 +227,6 @@ namespace InwardClearingSystem
                 //else
                 //{
                     if (String.IsNullOrWhiteSpace(verifyRemarks.Text) == true && verifyChoice.SelectedValue.Equals("None"))
-=======
-                /*if (checkImage.ImageUrl == "~/Resources/H2DefaultImage.jpg" || sigImage.ImageUrl == "~/Resources/H2DefaultImage.jpg")
-                {
-                    ErrorMessage("Cannot verify check because there is no existing image");
-                }
-                else
-                {*/
-                    activeConnection.Open();
-                    using (SqlCommand update = new SqlCommand("update CHEQUE SET verification = @verify WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection))
->>>>>>> origin/master
                     {
                         ErrorMessage("Please input technicality");
                     }
@@ -259,14 +248,9 @@ namespace InwardClearingSystem
    
                         dt = FillDataTable();
 
-<<<<<<< HEAD
+
                         NextRow(VerifyView, i);
-                    //}
-                }
-=======
-                    NextRow(VerifyView, i);
-                //}
->>>>>>> origin/master
+                    }
             }
         }
 
@@ -355,18 +339,12 @@ namespace InwardClearingSystem
             string user = Session["UserName"].ToString();
             StringBuilder query = new StringBuilder();
             query.Append("SELECT check_number, (c.f_name + ' ' + c.m_name + ' ' + c.l_name) AS name, ch.account_number, check_date, amount, ");
-<<<<<<< HEAD
             query.Append("balance, b.branch_name, drawee_bank, drawee_bank_branch, verification, bank_remarks, verify_remarks ");
             query.Append("FROM THRESHOLD AS t INNER JOIN CHEQUE AS ch INNER JOIN [USER] AS u INNER JOIN  BRANCH AS b ON u.user_id = b.user_id ");
             query.Append("ON ch.branch_name = b.branch_name INNER JOIN ACCOUNT AS a ON ch.account_number = a.account_number INNER JOIN ");
             query.Append("CUSTOMER AS c ON a.customer_id = c.customer_id ON t.minimum <= ch.amount ");
             query.Append("WHERE (u.username = @username) AND (ch.verification <> 'BTA') AND (ch.bank_remarks = NULL OR ch.bank_remarks = ' ') ");   
-=======
-            query.Append("balance, b.branch_name, drawee_bank, drawee_bank_branch, verification ");
-            query.Append("FROM CHEQUE ch, CUSTOMER c, ACCOUNT a, THRESHOLD t, BRANCH b, [USER] u ");
-            query.Append("WHERE u.username = @username AND u.user_id = b.user_id AND b.branch_name = ch.branch_name AND ch.account_number = a.account_number ");
-            query.Append("AND a.customer_id = c.customer_id AND ch.amount >= minimum AND verification <> 'BTA' AND bank_remarks = ' ' ");
->>>>>>> origin/master
+
             query.Append("ORDER BY ch.account_number");
             cmd = new SqlCommand(query.ToString(), activeConnection);
             cmd.Parameters.AddWithValue("@username", user); 
