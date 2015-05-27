@@ -10,3 +10,4 @@ C:\Users\Jules\Downloads\Inward\InwardClearingSystem\InwardClearingSystem\bin\In
 C:\Users\Jules\Downloads\Inward\InwardClearingSystem\InwardClearingSystem\bin\InwardClearingSystem.pdb
 C:\Users\Jules\Downloads\Inward\InwardClearingSystem\InwardClearingSystem\obj\Debug\InwardClearingSystem.dll
 C:\Users\Jules\Downloads\Inward\InwardClearingSystem\InwardClearingSystem\obj\Debug\InwardClearingSystem.pdb
+C:\Users\Jules\Downloads\Inward\InwardClearingSystem\InwardClearingSystem\obj\Debug\InwardClearingSystem.csprojResolveAssemblyReference.cache

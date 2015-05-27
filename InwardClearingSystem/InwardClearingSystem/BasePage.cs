@@ -195,7 +195,7 @@ namespace InwardClearingSystem
 
         public void NextRow(GridView view, int i)
         {
-            if (i < view.Rows.Count)
+            if (i < view.Rows.Count - 1)
             {
                 int nextRow = i + 1;
                 GridViewRow row = view.Rows[nextRow];

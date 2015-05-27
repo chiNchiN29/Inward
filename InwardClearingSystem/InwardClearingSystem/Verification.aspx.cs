@@ -217,12 +217,12 @@ namespace InwardClearingSystem
             }
             else
             {
-                if (checkImage.ImageUrl == "~/Resources/H2DefaultImage.jpg" || sigImage.ImageUrl == "~/Resources/H2DefaultImage.jpg")
+                /*if (checkImage.ImageUrl == "~/Resources/H2DefaultImage.jpg" || sigImage.ImageUrl == "~/Resources/H2DefaultImage.jpg")
                 {
                     ErrorMessage("Cannot verify check because there is no existing image");
                 }
                 else
-                {
+                {*/
                     activeConnection.Open();
                     using (SqlCommand update = new SqlCommand("update CHEQUE SET verification = @verify WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection))
                     {
@@ -236,7 +236,7 @@ namespace InwardClearingSystem
                     dt = FillDataTable();
 
                     NextRow(VerifyView, i);
-                }
+                //}
             }
         }
 
@@ -338,7 +338,7 @@ namespace InwardClearingSystem
             query.Append("balance, b.branch_name, drawee_bank, drawee_bank_branch, verification ");
             query.Append("FROM CHEQUE ch, CUSTOMER c, ACCOUNT a, THRESHOLD t, BRANCH b, [USER] u ");
             query.Append("WHERE u.username = @username AND u.user_id = b.user_id AND b.branch_name = ch.branch_name AND ch.account_number = a.account_number ");
-            query.Append("AND a.customer_id = c.customer_id AND ch.amount >= minimum AND verification <> 'BTA' AND bank_remarks = NULL ");
+            query.Append("AND a.customer_id = c.customer_id AND ch.amount >= minimum AND verification <> 'BTA' AND bank_remarks = ' ' ");
             query.Append("ORDER BY ch.account_number");
             cmd = new SqlCommand(query.ToString(), activeConnection);
             cmd.Parameters.AddWithValue("@username", user); 

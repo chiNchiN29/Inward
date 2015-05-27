@@ -169,7 +169,7 @@ namespace InwardClearingSystem
         {
 
             StringBuilder query = new StringBuilder();
-            query.Append("SELECT check_number, (f_name + ' ' + m_name + ' ' + l_name) AS customer_name, address, contact_number, CHEQUE.account_number, check_date, amount, branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed ");
+            query.Append("SELECT check_number, (f_name + ' ' + m_name + ' ' + l_name) AS customer_name, address, contact_number, CHEQUE.account_number, check_date, amount, branch_name, funded, verification, confirmed ");
             query.Append("FROM CHEQUE, CUSTOMER, ACCOUNT, THRESHOLD ");
             query.Append("WHERE CHEQUE.account_number = ACCOUNT.account_number AND ACCOUNT.customer_id = CUSTOMER.customer_id ");
             query.Append("AND ((verification = 'YES' AND amount > maximum) OR verification = 'NO') ");
@@ -233,7 +233,7 @@ namespace InwardClearingSystem
             int total = ConfirmView.Rows.Count;
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
-                string confirmed = e.Row.Cells[13].Text;
+                string confirmed = e.Row.Cells[11].Text;
                 if (confirmed.Equals("YES"))
                 {
                     e.Row.CssClass = "YesVer";
@@ -252,8 +252,8 @@ namespace InwardClearingSystem
             }
             else if (e.Row.RowType == DataControlRowType.Footer)
             {
-                e.Row.Cells[12].Text = "Confirmed: " + totalConfirmed.ToString();
-                e.Row.Cells[13].Text = "Total: " + total.ToString();
+                e.Row.Cells[10].Text = "Confirmed: " + totalConfirmed.ToString();
+                e.Row.Cells[11].Text = "Total: " + total.ToString();
                 totalCon.Text = totalConfirmed.ToString();
                 totalCount.Text = total.ToString();
                 totalConHide.Value = totalConfirmed.ToString();

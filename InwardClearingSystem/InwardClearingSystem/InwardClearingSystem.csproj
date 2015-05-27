@@ -76,6 +76,7 @@
     <Content Include="EditUserBranches.aspx" />
     <Content Include="FailurePage.aspx" />
     <Content Include="Resources\H2DefaultImage.jpg" />
+    <Content Include="Resources\H2ics.png" />
     <Content Include="Styles\Site.css" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\jquery-1.4.1-vsdoc.js" />

@@ -43,19 +43,18 @@
         }
         #images
         {
-            width:100%;
+            width:70%;
+            margin:0 auto;
         }
         #imageLeft
         {
-            width:480px;
+            width:50%;
             float:left;
             text-align:center;
-            position: relative;
-            z-index: 1;
         }
         #imageRight
         {
-            width:480px;
+            width:50%;
             float:right;
             text-align:center;
         }
@@ -75,6 +74,23 @@
         #remarksBox
         {
             text-align: center; 
+        }
+        #verifyOptions
+        {
+            width: 50%;
+            margin:0 auto;
+        }
+        #acceptBox
+        {
+            width:50%;
+            float:left;
+            text-align:center;
+        }
+        #rejectBox
+        {
+            width:50%;
+            float:right;   
+            text-align:center;
         }
         </style>
 </asp:Content>
@@ -119,16 +135,16 @@
 &nbsp;&nbsp;
        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     
-    <asp:Button ID="acceptButton" runat="server" CssClass="style4" Height="36px" 
-        Text="Accept" Width="86px" onclick="acceptButton_Click" OnClientClick="needToConfirm = false;"  />
-   
-    
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-   
-    
-    <asp:Button ID="rejectButton" runat="server" Text="Reject" Height="36px" 
-        Width="86px" onclick="rejectButton_Click" OnClientClick="needToConfirm = false;" />
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <div id="verifyOptions">
+        <div id="acceptBox">
+            <asp:Button ID="acceptButton" runat="server" CssClass="style4" Height="36px" 
+            Text="Accept" Width="86px" onclick="acceptButton_Click" OnClientClick="needToConfirm = false;"  />
+        </div>
+        <div id="rejectBox">
+            <asp:Button ID="rejectButton" runat="server" Text="Reject" Height="36px" 
+            Width="86px" onclick="rejectButton_Click" OnClientClick="needToConfirm = false;" />
+        </div>
+    </div>
     <br />
     
     <br />
@@ -150,12 +166,11 @@
     </div>
     <br />
     <br />
-    
-    <br/>
     <div id="images">
         <div id="imageLeft">
             <asp:Label ID="Label1" runat="server" AssociatedControlID="checkImage" 
             BorderStyle="None" Text="Image"></asp:Label>
+            <br />
             <asp:Image ID="checkImage" runat="server" CssClass="image_box" Height="180px" 
             Width="450px"  ImageAlign="Left" onmouseover="zoomin(this)" onmouseout="zoomout(this)"
             ImageUrl="~/Resources/H2DefaultImage.jpg" />
@@ -164,6 +179,7 @@
         <div id="imageRight">
             <asp:Label ID="Label2" runat="server" AssociatedControlID="sigImage" 
             Text="Signature"></asp:Label>
+            <br />
             <asp:Image ID="sigImage" runat="server" CssClass="image_box" Height="180px" 
             Width="450px" ImageAlign="Right" onmouseover="zoomin(this)" onmouseout="zoomout(this)" 
             ImageUrl="~/Resources/H2DefaultImage.jpg"/>
