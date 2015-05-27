@@ -1,7 +1,7 @@
 ﻿<%@ Page Title="Confirmation" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Confirmation.aspx.cs" Inherits="InwardClearingSystem.Confirmation" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
     <style type="text/css">
-    .grid_scroll
+        .grid_scroll
         {  
             overflow: scroll;
             height: 300px;
@@ -9,11 +9,11 @@
             width: 100%;        
             margin: 0px  
         }
-    .amount
-    {
-        text-align: right;
-    }
-    .NoVer
+        .amount
+        {
+            text-align: right;
+        }
+        .NoVer
         {
             color: Red;
             border-bottom-color: Black;
@@ -31,18 +31,19 @@
         }
 		#images
         {
-            width:100%;
+            width:80%;
             height:auto;
+            margin:0 auto;
         }
         #imageLeft
         {
-            width:480px;
+            width:50%;
             float:left;
             text-align:center;
         }
         #imageRight
         {
-            width:480px;
+            width:50%;
             float:right;
             text-align:center;
         }
@@ -53,6 +54,27 @@
         #remarksBox
         {
              text-align: center;   
+        }
+        #confirmOptions
+        {
+            width:50%;
+            margin:0 auto;
+        }
+        #fundBtn
+        {
+            width:50%;
+            float:left;
+            text-align:center;
+        }
+        #unfundBtn
+        {
+            width:50%;
+            float:right;
+            text-align:center;
+        }
+        #genBtnHolder
+        {
+            text-align:center;
         }
 </style>
 </asp:Content>
@@ -91,12 +113,16 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Total:
     <asp:Label ID="totalCount" runat="server" Text="0"></asp:Label>
     <br />
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <asp:Button ID="fundButton" runat="server" Text="Validate" 
-        onclick="fundButton_Click" OnClientClick="needToConfirm = false;" />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;
-    <asp:Button ID="unfundButton" runat="server" Text="Revoke" 
-        onclick="unfundButton_Click" OnClientClick="needToConfirm = false;" />
+    <div id="confirmOptions">
+        <div id="fundBtn">
+            <asp:Button ID="fundButton" runat="server" Text="Validate" 
+            onclick="fundButton_Click" OnClientClick="needToConfirm = false;" />
+        </div>
+        <div id="unfundBtn">
+            <asp:Button ID="unfundButton" runat="server" Text="Revoke" 
+            onclick="unfundButton_Click" OnClientClick="needToConfirm = false;" />
+        </div>
+    </div>
     <br />
     &nbsp;<div id="remarksBox">
         <asp:Label ID="confirmRemarkLabel" runat="server" Text="Remarks"></asp:Label>
@@ -105,11 +131,11 @@
             Height="34px" Width="206px"></asp:TextBox>
     </div>
     <br />
-	 <br />
     <div id="images">
         <div id="imageLeft">
             <asp:Label ID="Label1" runat="server" AssociatedControlID="checkImage" 
             BorderStyle="None" Text="Image"></asp:Label>
+            <br />
             <asp:Image ID="checkImage" runat="server" CssClass="image_box" Height="180px" 
             Width="450px" ImageAlign="Left" 
             ImageUrl="~/Resources/H2DefaultImage.jpg"/>
@@ -117,6 +143,7 @@
         <div id="imageRight">
             <asp:Label ID="Label2" runat="server" AssociatedControlID="sigImage" 
             Text="Signature"></asp:Label>
+            <br />
             <asp:Image ID="sigImage" runat="server" CssClass="image_box" Height="180px" 
             Width="450px" ImageAlign="Right" 
             ImageUrl="~/Resources/H2DefaultImage.jpg"/>
@@ -124,7 +151,7 @@
         <div id="emptySpace">
             
         </div>
-        <div>
+        <div id="genBtnHolder">
             <asp:Button ID="genListBtn" runat="server" onclick="genListBtn_Click" OnClientClick="return GenerateList(); needToConfirm = false;" 
             Text="Generate List" />
         </div>

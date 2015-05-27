@@ -15,6 +15,7 @@ namespace InwardClearingSystem
         SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
         protected void Page_Load(object sender, EventArgs e)
         {
+            dateToday.Text = DateTime.Today.ToString("D");
             DefaultView();
             bool login = System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
             if (login == false)

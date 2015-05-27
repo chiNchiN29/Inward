@@ -61,8 +61,13 @@
          }
          #loader
          {
-             width: 850px;
-             margin: auto;
+             width: 80%;
+             margin:0 auto;
+         }
+         #generator
+         {
+            width:80%;
+            margin: 0 auto;   
          }
          #buttonHolder
          {
@@ -72,9 +77,15 @@
          {
              text-align: right;
          }
-         #buttonWield
+         #generateVerified
          {
              width: 400px;
+             float: left;
+         }
+         #generateConfirmed
+         {
+             width: 400px;
+             float: right;
          }
         </style>
 </asp:Content>
@@ -101,6 +112,10 @@
         </Columns>
     </asp:GridView>
     </div>
+    <div id="buttonHolder">
+            <asp:Button ID="clearCheck" runat="server" onclientclick="return DeleteItem()" 
+            Text="Clear Check Data" onclick="clearCheck_Click1" />  
+        </div>
 <div id="loader">
         <div id="imageLoad">
             <asp:Label ID="lblLoadImg" runat="server" Font-Size="Larger" ForeColor="Black" 
@@ -132,16 +147,21 @@
             <asp:Button ID="uploadDoc0" runat="server" Text="Load" 
             OnClick="UploadCheckData" Width="156px"/>
         </div>
-        <div id="buttonHolder">
-            <asp:Button ID="clearCheck" runat="server" onclientclick="return DeleteItem()" 
-            Text="Clear Check Data" onclick="clearCheck_Click1" />  
-        </div>
-        <div id="buttonWield">
+</div>
+<div id="whiteNoise" style="height:20px">
+    &nbsp;
+</div>
+
+<div id="generator">
+        <div id="generateVerified">
             <asp:Label ID="genLbl" runat="server" Font-Size="Larger" ForeColor="Black" Text="Generate List of Verified Cheques"></asp:Label><br/>
             <asp:Button ID="genListBtn" runat="server" onclick="genListBtn_Click" OnClientClick="return GenerateList(); needToConfirm = false;" 
             Text="Generate List" />
         </div>
-    </div> 
+        <div id="generateConfirmed">
+            
+        </div>
+</div> 
     <br />
     <br />
    

@@ -173,9 +173,7 @@ namespace InwardClearingSystem
             query.Append("check_date, amount, branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed, confirm_remarks ");
             query.Append("FROM CHEQUE ch, CUSTOMER c, ACCOUNT a, THRESHOLD t ");
             query.Append("WHERE ch.account_number = a.account_number AND a.customer_id = c.customer_id ");
-            query.Append("AND ((verification = 'YES' AND amount > maximum) OR verification = 'NO') ");
-            query.Append("ORDER BY ch.account_number");
-      
+
             dt = new DataTable();
             da = new SqlDataAdapter(query.ToString(), activeConnection);
             da.Fill(dt);
@@ -250,8 +248,8 @@ namespace InwardClearingSystem
             }
             else if (e.Row.RowType == DataControlRowType.Footer)
             {
-                e.Row.Cells[11].Text = "Confirmed: " + totalConfirmed.ToString();
-                e.Row.Cells[12].Text = "Total: " + total.ToString();
+                e.Row.Cells[10].Text = "Confirmed: " + totalConfirmed.ToString();
+                e.Row.Cells[11].Text = "Total: " + total.ToString();
                 totalCon.Text = totalConfirmed.ToString();
                 totalCount.Text = total.ToString();
                 totalConHide.Value = totalConfirmed.ToString();

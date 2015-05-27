@@ -1,0 +1,9 @@
+*.suo
+InwardClearingSystem/InwardClearingSystem.suo
+*.dll
+*.mdf
+InwardClearingSystem/InwardClearingSystem/App_Data/icsdb_log.LDF
+*.mdf
+*.pdb
+*.cache
+*.suo
