@@ -87,9 +87,37 @@
              width: 400px;
              float: right;
          }
+         div.gridTitleBar
+         {
+            border-style: solid solid none solid;
+            border-color: #333333; 
+            background-color: #AA3333;
+            font-family: Franklin Gothic Medium;
+            font-size: medium;
+            color: #FFFFFF;
+            width: 99.4%;
+            height: 20px;
+            padding-left: 8px;
+        }
+        .uploaderCss
+        {
+            font-family:Franklin Gothic Medium;
+            background-color:#AA3333;
+            height:30px;
+            width:155px;
+            color:#FFFFFF;
+        }
+        .uploaderCss:hover
+        {
+            background-color:ButtonHighlight;
+        }
         </style>
 </asp:Content>
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
+    <div class="gridWindow">
+    <div class="gridTitleBar">
+        All Cheques
+    </div>
     <div class="grid_scroll">
     <asp:GridView ID="ViewAllCheck" runat="server" CssClass="gridView" AutoGenerateColumns="false"
     AllowSorting="true" OnSorting="ViewAllCheck_Sorting" 
@@ -112,10 +140,11 @@
         </Columns>
     </asp:GridView>
     </div>
-    <div id="buttonHolder">
+        <div id="buttonHolder">
             <asp:Button ID="clearCheck" runat="server" onclientclick="return DeleteItem()" 
             Text="Clear Check Data" onclick="clearCheck_Click1" />  
         </div>
+    </div>
 <div id="loader">
         <div id="imageLoad">
             <asp:Label ID="lblLoadImg" runat="server" Font-Size="Larger" ForeColor="Black" 
@@ -130,7 +159,10 @@
             <asp:Button ID="uploadImgBtn" runat="server" Text="Upload Image" 
 
             OnClick="uploadImgBtn_Click" OnClientClick="skm_LockScreen('Uploading Images');" 
-                Width="155px"/>   
+                CssClass="uploaderCss"/>   
+            <cc1:RoundedCornersExtender ID="uploadImgBtn_RoundedCornersExtender" 
+                runat="server" BehaviorID="uploadImgBtn_RoundedCornersExtender" 
+                TargetControlID="uploadImgBtn" />
             <div id="skm_LockPane" class="LockOff"></div> 
 
         </div>
@@ -145,7 +177,10 @@
             ValidationExpression="(.*\.([cC][sS][vV])$)" ForeColor="Red"></asp:RegularExpressionValidator> 
             <br />   
             <asp:Button ID="uploadDoc0" runat="server" Text="Load" 
-            OnClick="UploadCheckData" Width="156px"/>
+            OnClick="UploadCheckData" CssClass="uploaderCss"/>
+            <cc1:RoundedCornersExtender ID="uploadDoc0_RoundedCornersExtender" 
+                runat="server" BehaviorID="uploadDoc0_RoundedCornersExtender" 
+                TargetControlID="uploadDoc0" />
         </div>
 </div>
 <div id="whiteNoise" style="height:20px">
@@ -156,7 +191,10 @@
         <div id="generateVerified">
             <asp:Label ID="genLbl" runat="server" Font-Size="Larger" ForeColor="Black" Text="Generate List of Verified Cheques"></asp:Label><br/>
             <asp:Button ID="genListBtn" runat="server" onclick="genListBtn_Click" OnClientClick="return GenerateList(); needToConfirm = false;" 
-            Text="Generate List" />
+            Text="Generate List" CssClass="uploaderCss"/>
+            <cc1:RoundedCornersExtender ID="genListBtn_RoundedCornersExtender" 
+                runat="server" BehaviorID="genListBtn_RoundedCornersExtender" 
+                TargetControlID="genListBtn" />
         </div>
         <div id="generateConfirmed">
             

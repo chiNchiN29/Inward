@@ -173,9 +173,8 @@ namespace InwardClearingSystem
             query.Append("SELECT check_number, (f_name + ' ' + m_name + ' ' + l_name) AS customer_name, address, contact_number, ch.account_number, ");
             query.Append("check_date, amount, branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed, confirm_remarks ");
             query.Append("FROM Cheque ch, Customer c, Account a, Threshold t ");
-            query.Append("WHERE ch.account_number = a.account_number AND a.customer_id = c.customer_id AND verified = 'NO' ");
+            query.Append("WHERE ch.account_number = a.account_number AND a.customer_id = c.customer_id AND verification = 'NO' ");
 
-            activeConnection.Open();
             dt = new DataTable();
             da = new SqlDataAdapter(query.ToString(), activeConnection);
             da.Fill(dt);

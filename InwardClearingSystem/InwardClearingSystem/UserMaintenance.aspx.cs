@@ -21,7 +21,7 @@ namespace InwardClearingSystem
 
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            delBtn.Visible = false;
             cmd = new SqlCommand("SELECT role_desc FROM [User] u, Role r WHERE username = @username AND u.role_id = r.role_id", activeConnection);
             cmd.Parameters.AddWithValue("@username", Session["UserName"]);
             if (cmd.ExecuteScalar().ToString() != "ADMIN" && cmd.ExecuteScalar().ToString() != "OVERSEER")
@@ -70,6 +70,7 @@ namespace InwardClearingSystem
 
             if (i != -1)
             {
+                delBtn.Visible = true;
                 row = UserView.Rows[i];
                 string role = row.Cells[4].Text;
                 if (role.Equals("CLEARING DEPT") || role.Equals("OVERSEER"))

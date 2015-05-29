@@ -1,4 +1,5 @@
 ﻿<%@ Page Title="Signature Verification" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Verification.aspx.cs" Inherits="InwardClearingSystem.Verification" %>
+<%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="cc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
     
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js" type="text/javascript"></script>
@@ -7,7 +8,7 @@
         .grid_scroll
         {  
             overflow: scroll;
-            height: 300px;
+            height: 60px;
             border: solid 2px black;
             width: 100%;        
             margin: 0px  
@@ -32,7 +33,7 @@
         }
         #images
         {
-            width:70%;
+            width:80%;
             margin:0 auto;
         }
         #imageLeft
@@ -60,43 +61,138 @@
             color: Red;
             border-bottom-color: Black;
         }
-        #remarksBox
-        {
-            text-align: center; 
-        }
         #verifyOptions
         {
-            width: 50%;
+            width: 70%;
+            height:110px;
+            display:inline-block;
             margin:0 auto;
         }
         #acceptBox
         {
-            width:50%;
+            width:25%;
             float:left;
             text-align:center;
+            height:110px;
+            vertical-align:middle;
+        }
+        .acceptBtn
+        {
+            vertical-align:middle; 
+            color:White;
+            height:36px; 
+            width:155px;
+        }
+        .acceptBtn:hover
+        {
+            background-color:ButtonShadow;
+        }
+        #remarksBox
+        {
+            text-align: center;
+            float:left;
+            width:48%;
         }
         #rejectBox
         {
-            width:50%;
-            float:right;   
+            width:25%;
+            float:left;   
             text-align:center;
+            height:110px;
+            vertical-align:middle;
         }
-  
- </style>
+        .rejectBtn
+        {
+            vertical-align:middle; 
+            color:White;
+            height:36px; 
+            width:155px;
+        }
+        .rejectBtn:hover
+        {
+            background-color:ButtonShadow;
+        }
+        .whiteSpace
+        {
+            margin-top:10px;
+            margin-bottom:10px;
+        }
+        </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
+
+    <div id="images">
+        <div id="imageLeft">
+            <asp:Label ID="Label1" runat="server" AssociatedControlID="checkImage" 
+            BorderStyle="None" Text="Image"></asp:Label>
+            <br />
+            <asp:Image ID="checkImage" runat="server" CssClass="image_box" Height="180px" 
+            Width="450px"  ImageAlign="Left" onmouseover="zoomin(this)" onmouseout="zoomout(this)"
+            ImageUrl="~/Resources/H2DefaultImage.jpg" />
+   
+        </div>
+        <div id="imageRight">
+            <asp:Label ID="Label2" runat="server" AssociatedControlID="sigImage" 
+            Text="Signature"></asp:Label>
+            <br />
+            <asp:Image ID="sigImage" runat="server" CssClass="image_box" Height="180px" 
+            Width="450px" ImageAlign="Right" onmouseover="zoomin(this)" onmouseout="zoomout(this)" 
+            ImageUrl="~/Resources/H2DefaultImage.jpg"/>
+        </div>
+
+    </div>
+    <div class="whiteSpace">
+    </div>
+    <div id="verifyOptions">
+        <div id="acceptBox">
+            <asp:Button ID="acceptButton" runat="server" CssClass="acceptBtn"
+            Text="Accept" onclick="acceptButton_Click" OnClientClick="needToConfirm = false;" 
+             BackColor="#00CC00" />
+            
+            <cc1:RoundedCornersExtender ID="acceptButton_RoundedCornersExtender" 
+                runat="server" BehaviorID="acceptButton_RoundedCornersExtender" 
+                TargetControlID="acceptButton">
+            </cc1:RoundedCornersExtender>
+            
+        </div>
+        <div id="remarksBox">
+            <asp:Label ID="verifyRemarkLabel" runat="server" Text="Remarks"></asp:Label>
+            <br />
+            <asp:DropDownList ID="verifyChoice" runat="server" EnableTheming="True">
+            <asp:ListItem Value="0">&lt;SELECT ITEM&gt;</asp:ListItem>
+            <asp:ListItem>SIGNATURE DIFFERS</asp:ListItem>
+            <asp:ListItem>AMOUNT DOES NOT MATCH</asp:ListItem>
+            <asp:ListItem>POST-DATED ISSUE</asp:ListItem>
+            <asp:ListItem>FUTURE DATED ISSUE</asp:ListItem>
+            </asp:DropDownList>
+            <br />
+            <asp:TextBox ID="verifyRemarks" runat="server" TextMode="MultiLine" 
+            Width="200px"></asp:TextBox>
+        </div>
+        <div id="rejectBox">
+            <asp:Button ID="rejectButton" runat="server" CssClass="rejectBtn" Text="Reject" 
+            onclick="rejectButton_Click" OnClientClick="needToConfirm = false;" BackColor="#CC0000" />
+            
+            <cc1:RoundedCornersExtender ID="rejectButton_RoundedCornersExtender" 
+                runat="server" BehaviorID="rejectButton_RoundedCornersExtender" 
+                TargetControlID="rejectButton">
+            </cc1:RoundedCornersExtender>
+            
+        </div>
+    </div>
+    <br />
+    
     <asp:FileUpload ID="FileUpload1" runat="server" AllowMultiple="true"/>
    
     <asp:Button ID="insertSig" runat="server" Text="Insert Signature" OnClick="insertSig_Click" />
     <asp:TextBox ID="TextBox1" runat="server"></asp:TextBox>
     <br /><br/>
     <div class ="grid_scroll">
-        &nbsp;&nbsp;&nbsp;
         <asp:GridView ID="VerifyView" runat="server" AutoGenerateColumns="false" 
-            BorderColor="Black" ForeColor="Black" HeaderStyle-ForeColor="White" Width="100%"
+            BorderColor="Black"
               AllowSorting="true" OnSorting="VerifyView_Sorting" HeaderStyle-CssClass="GridHeader" 
              OnRowDataBound="VerifyView_RowDataBound" ShowFooter="True" 
-            FooterStyle-CssClass="gridViewFooterStyle" >
+            FooterStyle-CssClass="gridViewFooterStyle" Width="100%">
                  <Columns>
                     <asp:TemplateField>
                     <ItemTemplate>
@@ -113,7 +209,6 @@
                      <asp:BoundField DataField="drawee_bank" SortExpression="drawee_bank" HeaderText="Drawee Bank" />
                      <asp:BoundField DataField="drawee_bank_branch" SortExpression="drawee_bank_branch" HeaderText="Drawee Bank Branch" />
                      <asp:BoundField DataField="verification" SortExpression="verification" HeaderText="Verified?" />
-                     <asp:BoundField DataField="verify_remarks" SortExpression="verify_remarks" HeaderText="Technicalities" />
                  </Columns>
                   </asp:GridView>
 </div>
@@ -122,77 +217,6 @@
     <asp:Label ID="totalVer" runat="server" Text="0"></asp:Label>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Total:
     <asp:Label ID="totalCount" runat="server" Text="0"></asp:Label>
-    <br />
-&nbsp;&nbsp;
-       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    
-    <div id="verifyOptions">
-        <div id="acceptBox">
-            <asp:Button ID="acceptButton" runat="server" CssClass="style4" Height="36px" 
-            Text="Accept" Width="86px" onclick="acceptButton_Click" OnClientClick="needToConfirm = false;"  />
-        </div>
-        <div id="rejectBox">
-            <asp:Button ID="rejectButton" runat="server" Text="Reject" Height="36px" 
-            Width="86px" onclick="rejectButton_Click" OnClientClick="needToConfirm = false;" />
-        </div>
-    </div>
-    <br />
-    
-    <br />
-&nbsp;
-    <div id="remarksBox">
-        <asp:Label ID="verifyRemarkLabel" runat="server" Text="Remarks"></asp:Label>
-        <br />
-        <asp:DropDownList ID="verifyChoice" runat="server" EnableTheming="True">
-            <asp:ListItem Value="None">&lt;SELECT ITEM&gt;</asp:ListItem>
-            <asp:ListItem>SIGNATURE DIFFERS</asp:ListItem>
-            <asp:ListItem>AMOUNT DOES NOT MATCH</asp:ListItem>
-            <asp:ListItem>POST-DATED ISSUE</asp:ListItem>
-            <asp:ListItem>FUTURE DATED ISSUE</asp:ListItem>
-        </asp:DropDownList>
-        <br />
-        <br />
-        <asp:TextBox ID="verifyRemarks" runat="server" TextMode="MultiLine" 
-            Width="200px"></asp:TextBox>
-    </div>
-    <br />
-    <br />
-    <div id="images">
-
-        <div id="imageLeft">
-            <asp:Label ID="Label1" runat="server" AssociatedControlID="checkImage" 
-            BorderStyle="None" Text="Image"></asp:Label>
-            <br />
-        
-                  <asp:Image ID="checkImage" runat="server" CssClass="image_box" Height="180px" 
-            Width="450px"  ImageAlign="Left"
-            ImageUrl="~/Resources/H2DefaultImage.jpg" />
-            <script type="text/javascript">
-                $(function () {
-                    $("#<%=checkImage.ClientID %>").elevateZoom({ scrollZoom: true, zoomWindowWidth: 450, zoomWindowHeight: 180, zoomWindowPosition: 2 });
-                                });
-
-</script>
-            </div>
-      
-          
-    
-        </div>
-        <div id="imageRight">
-            <asp:Label ID="Label2" runat="server" AssociatedControlID="sigImage" 
-            Text="Signature"></asp:Label>
-            <br />
-            <asp:Image ID="sigImage" runat="server" CssClass="image_box" Height="180px" 
-            Width="450px" ImageAlign="Right"
-            ImageUrl="~/Resources/H2DefaultImage.jpg" />
-             <script type="text/javascript">
-                 $(function () {
-                     $("#<%=sigImage.ClientID %>").elevateZoom({ scrollZoom: true, zoomWindowWidth: 450, zoomWindowHeight: 180, zoomWindowPosition: 2 });
-                 });
-
-</script>
-        </div>
-    <br/>
     <br />
     
 
