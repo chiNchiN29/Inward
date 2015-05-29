@@ -31,6 +31,15 @@ namespace InwardClearingSystem.Account {
         protected global::System.Web.UI.WebControls.TextBox unTxtBx;
         
         /// <summary>
+        /// unTxtBx_RoundedCornersExtender control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.RoundedCornersExtender unTxtBx_RoundedCornersExtender;
+        
+        /// <summary>
         /// RequiredFieldValidator1 control.
         /// </summary>
         /// <remarks>
@@ -49,6 +58,15 @@ namespace InwardClearingSystem.Account {
         protected global::System.Web.UI.WebControls.TextBox fnTxtBx;
         
         /// <summary>
+        /// fnTxtBx_RoundedCornersExtender control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.RoundedCornersExtender fnTxtBx_RoundedCornersExtender;
+        
+        /// <summary>
         /// RequiredFieldValidator4 control.
         /// </summary>
         /// <remarks>
@@ -58,6 +76,33 @@ namespace InwardClearingSystem.Account {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator4;
         
         /// <summary>
+        /// mnTxtBx control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox mnTxtBx;
+        
+        /// <summary>
+        /// RoundedCornersExtender1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.RoundedCornersExtender RoundedCornersExtender1;
+        
+        /// <summary>
+        /// RequiredFieldValidator7 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator7;
+        
+        /// <summary>
         /// lnTxtBx control.
         /// </summary>
         /// <remarks>
@@ -65,6 +110,15 @@ namespace InwardClearingSystem.Account {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox lnTxtBx;
+        
+        /// <summary>
+        /// lnTxtBx_RoundedCornersExtender control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.RoundedCornersExtender lnTxtBx_RoundedCornersExtender;
         
         /// <summary>
         /// RequiredFieldValidator5 control.
@@ -85,6 +139,15 @@ namespace InwardClearingSystem.Account {
         protected global::System.Web.UI.WebControls.TextBox emTxtBx;
         
         /// <summary>
+        /// emTxtBx_RoundedCornersExtender control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.RoundedCornersExtender emTxtBx_RoundedCornersExtender;
+        
+        /// <summary>
         /// RequiredFieldValidator2 control.
         /// </summary>
         /// <remarks>
@@ -101,6 +164,15 @@ namespace InwardClearingSystem.Account {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox passTxtBx;
+        
+        /// <summary>
+        /// passTxtBx_RoundedCornersExtender control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.RoundedCornersExtender passTxtBx_RoundedCornersExtender;
         
         /// <summary>
         /// RequiredFieldValidator6 control.
@@ -139,6 +211,15 @@ namespace InwardClearingSystem.Account {
         protected global::System.Web.UI.WebControls.TextBox cpassTxtBx;
         
         /// <summary>
+        /// cpassTxtBx_RoundedCornersExtender control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.RoundedCornersExtender cpassTxtBx_RoundedCornersExtender;
+        
+        /// <summary>
         /// RequiredFieldValidator3 control.
         /// </summary>
         /// <remarks>
@@ -164,5 +245,14 @@ namespace InwardClearingSystem.Account {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button regBtn;
+        
+        /// <summary>
+        /// regBtn_RoundedCornersExtender control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.RoundedCornersExtender regBtn_RoundedCornersExtender;
     }
 }

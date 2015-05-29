@@ -20,7 +20,7 @@ namespace InwardClearingSystem
             bool login = System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
             if (login == false)
             {
-                NavigationMenu.Visible = false;
+                skipLink.Visible = false;
             }
             else
             {
