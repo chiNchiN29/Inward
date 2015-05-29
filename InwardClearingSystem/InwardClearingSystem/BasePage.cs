@@ -35,7 +35,7 @@ namespace InwardClearingSystem
                 cmd.Parameters.AddWithValue("@username", Session["UserName"].ToString());
                 Session["UserID"] = Convert.ToInt32(cmd.ExecuteScalar());
                 
-            session = CreateSession("admin", "admin", "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom");
+            session = CreateSession("admin", "092095", "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom");
         }
 
         public void Message(string message)

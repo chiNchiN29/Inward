@@ -405,8 +405,8 @@ namespace InwardClearingSystem
             }
             else if (e.Row.RowType == DataControlRowType.Footer)
             {
-                e.Row.Cells[10].Text = "Verified: " + totalVerified.ToString();
-                e.Row.Cells[11].Text = "Total: " + total.ToString();
+                e.Row.Cells[9].Text = "Verified: " + totalVerified.ToString();
+                e.Row.Cells[10].Text = "Total: " + total.ToString();
                 totalVer.Text = totalVerified.ToString();
                 totalCount.Text = total.ToString();
                 totalVerHide.Value = totalVerified.ToString();

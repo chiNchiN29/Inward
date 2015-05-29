@@ -67,6 +67,15 @@ namespace InwardClearingSystem {
         protected global::System.Web.UI.WebControls.Button uploadImgBtn;
         
         /// <summary>
+        /// uploadImgBtn_RoundedCornersExtender control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.RoundedCornersExtender uploadImgBtn_RoundedCornersExtender;
+        
+        /// <summary>
         /// lblCheckData control.
         /// </summary>
         /// <remarks>
@@ -103,6 +112,15 @@ namespace InwardClearingSystem {
         protected global::System.Web.UI.WebControls.Button uploadDoc0;
         
         /// <summary>
+        /// uploadDoc0_RoundedCornersExtender control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.RoundedCornersExtender uploadDoc0_RoundedCornersExtender;
+        
+        /// <summary>
         /// genLbl control.
         /// </summary>
         /// <remarks>
@@ -119,5 +137,14 @@ namespace InwardClearingSystem {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button genListBtn;
+        
+        /// <summary>
+        /// genListBtn_RoundedCornersExtender control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.RoundedCornersExtender genListBtn_RoundedCornersExtender;
     }
 }

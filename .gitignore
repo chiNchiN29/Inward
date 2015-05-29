@@ -10,3 +10,7 @@ InwardClearingSystem/InwardClearingSystem/App_Data/icsdb_log.LDF
 *.suo
 *.dll
 *.cache
+*.suo
+*.dll
+InwardClearingSystem/InwardClearingSystem/bin/InwardClearingSystem.pdb
+InwardClearingSystem/InwardClearingSystem/App_Data/icsdb.mdf
