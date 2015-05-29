@@ -49,6 +49,15 @@ namespace InwardClearingSystem {
         protected global::System.Web.UI.WebControls.Button fundButton;
         
         /// <summary>
+        /// fundButton_RoundedCornersExtender control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.RoundedCornersExtender fundButton_RoundedCornersExtender;
+        
+        /// <summary>
         /// unfundButton control.
         /// </summary>
         /// <remarks>
@@ -56,6 +65,15 @@ namespace InwardClearingSystem {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button unfundButton;
+        
+        /// <summary>
+        /// unfundButton_RoundedCornersExtender control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.RoundedCornersExtender unfundButton_RoundedCornersExtender;
         
         /// <summary>
         /// confirmRemarkLabel control.

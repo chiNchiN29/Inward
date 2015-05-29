@@ -1,6 +1,7 @@
 ﻿<%@ Page Title="Confirmation" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Confirmation.aspx.cs" Inherits="InwardClearingSystem.Confirmation" %>
+<%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="cc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
-    <style type="text/css">
+     <style type="text/css">
         .grid_scroll
         {  
             overflow: scroll;
@@ -57,20 +58,43 @@
         }
         #confirmOptions
         {
-            width:50%;
+            width:65%;
             margin:0 auto;
+            font-family:Franklin Gothic Medium;
         }
-        #fundBtn
+        #fundBtnDiv
         {
             width:50%;
             float:left;
             text-align:center;
         }
-        #unfundBtn
+        .fundBtn
+        {
+            width:155px; 
+            height:36px; 
+            background-color:#00CC00;
+            color:White;
+        }
+        .fundBtn:hover
+        {  
+            background-color:ButtonShadow;
+        }
+        #unfundBtnDiv
         {
             width:50%;
             float:right;
             text-align:center;
+        }
+        .unfundBtn
+        {
+            width:155px; 
+            height:36px; 
+            background-color:#CC0000; 
+            color:White;
+        }
+        .unfundBtn:hover
+        {
+            background-color:ButtonShadow;   
         }
         #genBtnHolder
         {
@@ -81,11 +105,11 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <div class="grid_scroll">
     <asp:GridView ID="ConfirmView" runat="server" AutoGenerateColumns="false" 
-            BorderColor="Black" ForeColor="Black" HeaderStyle-ForeColor="White" 
-   AllowSorting="true" OnSorting="ConfirmView_Sorting" Width="100%"
+            BorderColor="Black"
+    AllowSorting="true" OnSorting="ConfirmView_Sorting" 
     HeaderStyle-CssClass="GridHeader" ShowFooter="True" 
             FooterStyle-CssClass="gridViewFooterStyle" 
-            OnRowDataBound="ConfirmView_RowDataBound">
+            OnRowDataBound="ConfirmView_RowDataBound" Width="100%">
     <Columns>
         <asp:TemplateField>
             <ItemTemplate>
@@ -103,7 +127,6 @@
         <asp:BoundField DataField="funded" SortExpression="funded" HeaderText="Funded?" />
         <asp:BoundField DataField="verification" SortExpression="verification" HeaderText="Verified?" />
         <asp:BoundField DataField="confirmed" SortExpression="confirmed" HeaderText="Confirmed?" />
-        <asp:BoundField DataField="confirm_remarks" SortExpression="confirm_remarks" HeaderText="Remarks" />
     </Columns>
     </asp:GridView>
       </div>
@@ -114,13 +137,23 @@
     <asp:Label ID="totalCount" runat="server" Text="0"></asp:Label>
     <br />
     <div id="confirmOptions">
-        <div id="fundBtn">
+        <div id="fundBtnDiv">
             <asp:Button ID="fundButton" runat="server" Text="Validate" 
-            onclick="fundButton_Click" OnClientClick="needToConfirm = false;" />
+            onclick="fundButton_Click" OnClientClick="needToConfirm = false;"  
+            CssClass="fundBtn"/>
+            <cc1:RoundedCornersExtender ID="fundButton_RoundedCornersExtender" 
+                runat="server" BehaviorID="fundButton_RoundedCornersExtender" 
+                TargetControlID="fundButton">
+            </cc1:RoundedCornersExtender>
         </div>
-        <div id="unfundBtn">
+        <div id="unfundBtnDiv">
             <asp:Button ID="unfundButton" runat="server" Text="Revoke" 
-            onclick="unfundButton_Click" OnClientClick="needToConfirm = false;" />
+            onclick="unfundButton_Click" OnClientClick="needToConfirm = false;"  
+            CssClass="unfundBtn"/>
+            <cc1:RoundedCornersExtender ID="unfundButton_RoundedCornersExtender" 
+                runat="server" BehaviorID="unfundButton_RoundedCornersExtender" 
+                TargetControlID="unfundButton">
+            </cc1:RoundedCornersExtender>
         </div>
     </div>
     <br />
