@@ -149,10 +149,11 @@ namespace InwardClearingSystem
                 activeConnection.Close();
                 DataTable dt = FillDataTable();
                     string wew = ViewState["UploadImageClicked"].ToString();
+                    string wew2 = ViewState["ImageCount"].ToString();
                     bool uploadClicked = bool.Parse(ViewState["UploadImageClicked"].ToString());
                     if (uploadClicked)
                     {
-                        Message("check images were uploaded");
+                        
                     }
 
                     
@@ -164,6 +165,12 @@ namespace InwardClearingSystem
 
             }
 
+        }
+
+        public int ImageCount
+        {
+            get { return Convert.ToInt32(ViewState["ImageCount"].ToString()); }
+            set { ViewState["ImageCount"] = value; }
         }
 
         protected void clearCheck_Click1(object sender, EventArgs e)
