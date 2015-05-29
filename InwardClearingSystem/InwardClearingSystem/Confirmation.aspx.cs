@@ -30,11 +30,13 @@ namespace InwardClearingSystem
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            cmd = new SqlCommand("SELECT role_desc FROM [USER], ROLE WHERE username = @username AND [USER].role_id = ROLE.role_id", activeConnection);
+    
+            cmd = new SqlCommand("SELECT role_desc FROM [User] u, Role r WHERE username = @username AND u.role_id = r.role_id", activeConnection);
             cmd.Parameters.AddWithValue("@username", Session["UserName"]);
-            if (cmd.ExecuteScalar().ToString() != "BANK BRANCH" && cmd.ExecuteScalar().ToString() != "OVERSEER")
+            string role = cmd.ExecuteScalar().ToString();
+            if (role != "BANK BRANCH" && role != "OVERSEER")
             {
-                ErrorMessage("You are not authorized to view this page");
+                Message("You are not authorized to view this page");
                 Response.Redirect("Default.aspx");
             }
             else
@@ -53,14 +55,14 @@ namespace InwardClearingSystem
             int i = Convert.ToInt32(ViewState["SelectRow"].ToString());
             if (i == -1)
             {
-                ErrorMessage("Please select a customer");
+                Message("Please select a customer");
             }
             else
             {
                 using (activeConnection)
                 {
                     activeConnection.Open();
-                    cmd = new SqlCommand("update CHEQUE SET confirmed = @fund, modified_by = @modby, modified_date = @moddate, confirm_remarks = @conremarks  WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection);
+                    cmd = new SqlCommand("update Cheque SET confirmed = @fund, modified_by = @modby, modified_date = @moddate, confirm_remarks = @conremarks  WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection);
                     cmd.Parameters.AddWithValue("@acctnumber", ConfirmView.Rows[i].Cells[5].Text);
                     cmd.Parameters.AddWithValue("@chknumber", ConfirmView.Rows[i].Cells[1].Text);
                     cmd.Parameters.AddWithValue("@fund", "YES");
@@ -79,22 +81,21 @@ namespace InwardClearingSystem
             int i = Convert.ToInt32(ViewState["SelectRow"].ToString());
             if (i == -1)
             {
-                ErrorMessage("Please select a customer");   
+                Message("Please select a customer");   
             }
             else
             {
-                using (activeConnection)
-                {
+             
                     activeConnection.Open();
-                    cmd = new SqlCommand("update CHEQUE SET confirmed = @fund, modified_by = @modby, modified_date = @moddate, confirm_remarks = @conremarks WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection);
+                    cmd = new SqlCommand("update Cheque SET confirmed = @fund, modified_by = @modby, modified_date = @moddate, confirm_remarks = @conremarks WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection);
                     cmd.Parameters.AddWithValue("@acctnumber", ConfirmView.Rows[i].Cells[5].Text);
                     cmd.Parameters.AddWithValue("@chknumber", ConfirmView.Rows[i].Cells[1].Text);
                     cmd.Parameters.AddWithValue("@fund", "NO");
                     cmd.Parameters.AddWithValue("@modby", Session["UserID"]);
                     cmd.Parameters.AddWithValue("@moddate", DateTime.Now);
                     cmd.Parameters.AddWithValue("@conremarks", confirmRemarks.Text);
-                    cmd.ExecuteNonQuery();         
-                }     
+                    cmd.ExecuteNonQuery();
+                    activeConnection.Close(); 
                 dt = FillDataTable();
                 NextRow(ConfirmView, i);
             }
@@ -147,8 +148,8 @@ namespace InwardClearingSystem
             query = new StringBuilder();
             query.Append("SELECT check_number, amount, CONVERT(VARCHAR(10), check_date, 101), branch_name, drawee_bank, ");
             query.Append("drawee_bank_branch, funded, verification, confirmed, ch.account_number ");
-            query.Append("FROM CHEQUE ch, CUSTOMER c, ACCOUNT a ");
-            query.Append("WHERE ch.account_number = a.account_number AND a.customer_id = C.customer_id AND confirmed = 'NO' ");
+            query.Append("FROM Cheque ch, Customer c, Account a ");
+            query.Append("WHERE ch.account_number = a.account_number AND a.customer_id = c.customer_id AND confirmed = 'NO' ");
             query.Append("ORDER BY ch.account_number");
             activeConnection.Open();
             da = new SqlDataAdapter(query.ToString(), activeConnection);
@@ -171,9 +172,10 @@ namespace InwardClearingSystem
             query = new StringBuilder();
             query.Append("SELECT check_number, (f_name + ' ' + m_name + ' ' + l_name) AS customer_name, address, contact_number, ch.account_number, ");
             query.Append("check_date, amount, branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed, confirm_remarks ");
-            query.Append("FROM CHEQUE ch, CUSTOMER c, ACCOUNT a, THRESHOLD t ");
-            query.Append("WHERE ch.account_number = a.account_number AND a.customer_id = c.customer_id ");
+            query.Append("FROM Cheque ch, Customer c, Account a, Threshold t ");
+            query.Append("WHERE ch.account_number = a.account_number AND a.customer_id = c.customer_id AND verified = 'NO' ");
 
+            activeConnection.Open();
             dt = new DataTable();
             da = new SqlDataAdapter(query.ToString(), activeConnection);
             da.Fill(dt);

@@ -1,33 +1,8 @@
 ﻿<%@ Page Title="Signature Verification" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Verification.aspx.cs" Inherits="InwardClearingSystem.Verification" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
-<link rel="stylesheet" href="multizoom.css" type="text/css" />
-
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
-
-<script type="text/javascript" src="multizoom.js">
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js" type="text/javascript"></script>
-    <script language="javascript" type="text/javascript">
-        jQuery(document).ready(function($){
-
-	$('#checkImage').addimagezoom({ // single image zoom
-		zoomrange: [3, 10],
-		magnifiersize: [300,300],
-		magnifierpos: 'right',
-		cursorshade: true
-
-	})
-        function zoomin(obj) {
-            $(obj).css("cursor", "pointer");
-            $(obj).css("z-index", "1");
-            $(obj).css("position", "relative");
-            $(obj).animate({ width: "900px", height: "360px" }, 'normal');
-        }
-
-        function zoomout(obj) {
-            $(obj).animate({ width: "450px", height: "180px" }, 'normal');
-     
-        }
-    </script>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js" type="text/javascript"></script>
+    <script src="Scripts/jquery.elevateZoom-3.0.8.min.js" type="text/javascript"></script>   
     <style type="text/css">
         .grid_scroll
         {  
@@ -106,7 +81,8 @@
             float:right;   
             text-align:center;
         }
-        </style>
+  
+ </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <asp:FileUpload ID="FileUpload1" runat="server" AllowMultiple="true"/>
@@ -187,21 +163,35 @@
             <asp:Label ID="Label1" runat="server" AssociatedControlID="checkImage" 
             BorderStyle="None" Text="Image"></asp:Label>
             <br />
-            <asp:Image ID="checkImage" runat="server" CssClass="image_box" Height="180px" 
-            Width="450px"  ImageAlign="Left" 
+        
+                  <asp:Image ID="checkImage" runat="server" CssClass="image_box" Height="180px" 
+            Width="450px"  ImageAlign="Left"
             ImageUrl="~/Resources/H2DefaultImage.jpg" />
-    <%--onmouseover="zoomin(this)" onmouseout="zoomout(this--%>
+            <script type="text/javascript">
+                $(function () {
+                    $("#<%=checkImage.ClientID %>").elevateZoom({ scrollZoom: true, zoomWindowWidth: 450, zoomWindowHeight: 180, zoomWindowPosition: 2 });
+                                });
+
+</script>
+            </div>
+      
+          
+    
         </div>
         <div id="imageRight">
             <asp:Label ID="Label2" runat="server" AssociatedControlID="sigImage" 
             Text="Signature"></asp:Label>
             <br />
             <asp:Image ID="sigImage" runat="server" CssClass="image_box" Height="180px" 
-            Width="450px" ImageAlign="Right" onmouseover="zoomin(this)" onmouseout="zoomout(this)" 
-            ImageUrl="~/Resources/H2DefaultImage.jpg"/>
-        </div>
+            Width="450px" ImageAlign="Right"
+            ImageUrl="~/Resources/H2DefaultImage.jpg" />
+             <script type="text/javascript">
+                 $(function () {
+                     $("#<%=sigImage.ClientID %>").elevateZoom({ scrollZoom: true, zoomWindowWidth: 450, zoomWindowHeight: 180, zoomWindowPosition: 2 });
+                 });
 
-    </div>
+</script>
+        </div>
     <br/>
     <br />
     

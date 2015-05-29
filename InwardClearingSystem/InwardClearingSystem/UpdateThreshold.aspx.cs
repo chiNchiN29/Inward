@@ -16,19 +16,19 @@ namespace InwardClearingSystem
    
         protected void Page_Load(object sender, EventArgs e)
         {
-            SqlCommand cmd = new SqlCommand("SELECT role_desc FROM [USER] u, ROLE r WHERE username = @name AND u.role_id = r.role_id", activeConnection);
+            SqlCommand cmd = new SqlCommand("SELECT role_desc FROM [User] u, Role r WHERE username = @name AND u.role_id = r.role_id", activeConnection);
             cmd.Parameters.AddWithValue("@name", Session["UserName"]);
             if (cmd.ExecuteScalar().ToString() != "ADMIN" && cmd.ExecuteScalar().ToString() != "OVERSEER")
             {
-                ErrorMessage("You are not authorized to view this page");
+                Message("You are not authorized to view this page");
                 Response.Redirect("Default.aspx");
             }
             else
             {
-                SqlCommand select = new SqlCommand("select minimum from THRESHOLD", activeConnection);
+                SqlCommand select = new SqlCommand("select minimum from Threshold", activeConnection);
                 Thread.CurrentThread.CurrentCulture = new CultureInfo("en-PH", false);
                 Label2.Text = String.Format("{0:C}", select.ExecuteScalar());
-                SqlCommand select2 = new SqlCommand("select maximum from THRESHOLD", activeConnection);
+                SqlCommand select2 = new SqlCommand("select maximum from Threshold", activeConnection);
                 Label5.Text = String.Format("{0:C}", select2.ExecuteScalar());
             }
             activeConnection.Close();
@@ -47,10 +47,10 @@ namespace InwardClearingSystem
                         using (activeConnection)
                         {
                             activeConnection.Open();
-                            SqlCommand updateMin = new SqlCommand("update THRESHOLD SET minimum = @thresh", activeConnection);
+                            SqlCommand updateMin = new SqlCommand("update Threshold SET minimum = @thresh", activeConnection);
                             updateMin.Parameters.AddWithValue("@thresh", TextBox1.Text);
                             updateMin.ExecuteNonQuery();
-                            SqlCommand select = new SqlCommand("select minimum from THRESHOLD", activeConnection);
+                            SqlCommand select = new SqlCommand("select minimum from Threshold", activeConnection);
                             Label2.Text = String.Format("{0:C}", select.ExecuteScalar());
                         }
                     }
@@ -64,10 +64,10 @@ namespace InwardClearingSystem
                         using (activeConnection)
                         {
                             activeConnection.Open();
-                            SqlCommand updateMax = new SqlCommand("update THRESHOLD SET maximum = @thresh", activeConnection);
+                            SqlCommand updateMax = new SqlCommand("update Threshold SET maximum = @thresh", activeConnection);
                             updateMax.Parameters.AddWithValue("@thresh", TextBox2.Text);
                             updateMax.ExecuteNonQuery();
-                            SqlCommand select2 = new SqlCommand("select maximum from THRESHOLD", activeConnection);
+                            SqlCommand select2 = new SqlCommand("select maximum from Threshold", activeConnection);
                             Label5.Text = String.Format("{0:C}", select2.ExecuteScalar());
                         }
                     }

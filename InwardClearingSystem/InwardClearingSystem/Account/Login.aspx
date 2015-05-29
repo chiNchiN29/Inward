@@ -37,7 +37,7 @@
     </p>
     <div class="userScreen">
     <div class="logoImage">
-        <img src="../Resources/H2ics.png">
+        <img src="../Resources/H2ics.png" />
     </div>
     <asp:Login ID="Login1" runat="server" onauthenticate="Button1_Click" 
         BackColor="White" BorderColor="#FFFFFFF" BorderPadding="4" BorderStyle="Solid" 

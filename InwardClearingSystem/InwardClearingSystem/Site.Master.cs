@@ -31,7 +31,7 @@ namespace InwardClearingSystem
                     using (connection)
                     {
                         connection.Open();
-                        SqlCommand checker = new SqlCommand("SELECT role_desc FROM [USER] u, [ROLE] r WHERE username = @name AND u.role_id = r.role_id", connection);   
+                        SqlCommand checker = new SqlCommand("SELECT role_desc FROM [User] u, Role r WHERE username = @name AND u.role_id = r.role_id", connection);   
                         checker.Parameters.AddWithValue("@name", Session["UserName"]);
                         if (checker.ExecuteScalar().ToString() == "ADMIN")
                         {

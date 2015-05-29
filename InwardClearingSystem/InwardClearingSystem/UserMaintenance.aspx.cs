@@ -22,11 +22,11 @@ namespace InwardClearingSystem
         protected void Page_Load(object sender, EventArgs e)
         {
 
-            cmd = new SqlCommand("SELECT role_desc FROM [USER] u, ROLE r WHERE username = @username AND u.role_id = r.role_id", activeConnection);
+            cmd = new SqlCommand("SELECT role_desc FROM [User] u, Role r WHERE username = @username AND u.role_id = r.role_id", activeConnection);
             cmd.Parameters.AddWithValue("@username", Session["UserName"]);
             if (cmd.ExecuteScalar().ToString() != "ADMIN" && cmd.ExecuteScalar().ToString() != "OVERSEER")
             {
-                ErrorMessage("You are not authorized to view this page");
+                Message("You are not authorized to view this page");
                 Response.Redirect("Default.aspx");
             }
             
@@ -49,7 +49,7 @@ namespace InwardClearingSystem
             using (activeConnection)
             {
                 activeConnection.Open();
-                query = "SELECT role_desc FROM ROLE";
+                query = "SELECT role_desc FROM Role";
                 dt = new DataTable();
                 da = new SqlDataAdapter(query, activeConnection);
                 da.Fill(dt);
@@ -85,7 +85,7 @@ namespace InwardClearingSystem
 
         public DataTable FillDataTable()
         {
-            query = "SELECT user_id, username, email, r.role_desc FROM [USER] u, ROLE r WHERE u.role_id = r.role_id";
+            query = "SELECT user_id, username, email, r.role_desc FROM [User] u, Role r WHERE u.role_id = r.role_id";
           
             dt = new DataTable();
             da = new SqlDataAdapter(query, activeConnection);
@@ -101,13 +101,13 @@ namespace InwardClearingSystem
 
             if (i == -1)
             {
-                ErrorMessage("Please select a user");
+                Message("Please select a user");
             }
             else
             {
                 if (RoleDrpDwn.SelectedValue.Equals("None"))
                 {
-                    ErrorMessage("Please select a role");
+                    Message("Please select a role");
                 }
                 else
                 {
@@ -116,10 +116,10 @@ namespace InwardClearingSystem
                     using (activeConnection)
                     {
                         activeConnection.Open();
-                        SqlCommand select = new SqlCommand("SELECT role_id FROM ROLE WHERE @rolename = role_desc", activeConnection);
+                        SqlCommand select = new SqlCommand("SELECT role_id FROM Role WHERE @rolename = role_desc", activeConnection);
                         select.Parameters.AddWithValue("@rolename", RoleDrpDwn.Text);
 
-                        cmd = new SqlCommand("update [USER] SET role_id = @id WHERE username = @name", activeConnection);
+                        cmd = new SqlCommand("update [User] SET role_id = @id WHERE username = @name", activeConnection);
                         cmd.Parameters.AddWithValue("@id", select.ExecuteScalar());
                         cmd.Parameters.AddWithValue("@name", user);
                         cmd.ExecuteNonQuery();
@@ -147,7 +147,7 @@ namespace InwardClearingSystem
 
             if (i == -1)
             {
-                ErrorMessage("Please select a user");
+                Message("Please select a user");
             }
             else
             {
@@ -155,7 +155,7 @@ namespace InwardClearingSystem
                 string user = row.Cells[2].Text;
                 using (activeConnection)
                 {
-                    cmd = new SqlCommand("UPDATE BRANCH SET user_id = NULL FROM BRANCH b, [USER] u WHERE u. user_id = b.user_id AND u.username = @name", activeConnection);
+                    cmd = new SqlCommand("UPDATE Branch SET user_id = NULL FROM Branch b, [User] u WHERE u. user_id = b.user_id AND u.username = @name", activeConnection);
                     cmd.Parameters.AddWithValue("@name", user);
                     cmd.ExecuteNonQuery();
                 }

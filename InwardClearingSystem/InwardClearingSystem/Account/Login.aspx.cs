@@ -43,9 +43,9 @@ namespace InwardClearingSystem.Account
             using (connection)
             {
                 connection.Open();
-                SqlCommand usernameChecker = new SqlCommand("SELECT username FROM [USER] WHERE username = @username", connection);
+                SqlCommand usernameChecker = new SqlCommand("SELECT username FROM [User] WHERE username = @username", connection);
                 usernameChecker.Parameters.AddWithValue("@username", Login1.UserName);
-                SqlCommand passwordChecker = new SqlCommand("SELECT password FROM [USER] WHERE username = @username", connection);
+                SqlCommand passwordChecker = new SqlCommand("SELECT password FROM [User] WHERE username = @username", connection);
                 passwordChecker.Parameters.AddWithValue("@username", Login1.UserName);
                 if (usernameChecker.ExecuteScalar() != null && passwordChecker.ExecuteScalar() != null)
                 {
@@ -53,7 +53,7 @@ namespace InwardClearingSystem.Account
                     string password = passwordChecker.ExecuteScalar().ToString();
                     if (Login1.UserName == username && Login1.Password == password)
                     {
-                        SqlCommand cmd = new SqlCommand("select * from [USER] where username = @userName AND password = @password", connection);
+                        SqlCommand cmd = new SqlCommand("select * from [User] where username = @userName AND password = @password", connection);
                         cmd.Parameters.AddWithValue("@userName", Login1.UserName);
                         cmd.Parameters.AddWithValue("@password", Login1.Password);
                         SqlDataReader dr = cmd.ExecuteReader();

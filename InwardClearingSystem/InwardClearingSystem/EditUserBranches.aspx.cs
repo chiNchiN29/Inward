@@ -18,11 +18,11 @@ namespace InwardClearingSystem
         
         protected void Page_Load(object sender, EventArgs e)
         {   
-            cmd = new SqlCommand("SELECT role_desc FROM [USER], ROLE WHERE username = @username AND [USER].role_id = ROLE.role_id", activeConnection);
+            cmd = new SqlCommand("SELECT role_desc FROM [User] u, Role r WHERE username = @username AND u.role_id = r.role_id", activeConnection);
             cmd.Parameters.AddWithValue("@username", Session["UserName"]);
             if (cmd.ExecuteScalar().ToString() != "BANK BRANCH" && cmd.ExecuteScalar().ToString() != "OVERSEER")
             {
-                ErrorMessage("You are not authorized to view this page");
+                Message("You are not authorized to view this page");
                 Response.Redirect("Default.aspx");
             }
             else
@@ -30,15 +30,16 @@ namespace InwardClearingSystem
                 int userID = int.Parse(Request.QueryString["UserID"].ToString());
                 if (!Page.IsPostBack)
                 {
-                    cmd = new SqlCommand("SELECT username FROM [USER] WHERE user_id = @userid", activeConnection);
+                    cmd = new SqlCommand("SELECT username FROM [User] WHERE user_id = @userid", activeConnection);
                     cmd.Parameters.AddWithValue("@userid", userID);
                     userLbl.Text = cmd.ExecuteScalar() as string;
+                    
                     ViewState["myDataTable"] = FillDataTable();
                     ViewState["Branches"] = Branches;
                 }
             }
-            activeConnection.Close();
             
+            activeConnection.Close();
         }
 
         protected void backBtn_Click(object sender, EventArgs e)
@@ -48,7 +49,7 @@ namespace InwardClearingSystem
 
         public DataTable FillDataTable()
         {  
-            cmd = new SqlCommand("SELECT branch_name, username FROM BRANCH LEFT JOIN [USER] ON BRANCH.user_id = [USER].user_id", activeConnection);
+            cmd = new SqlCommand("SELECT branch_name, username FROM Branch b LEFT JOIN [User] u ON b.user_id = u.user_id", activeConnection);
             dt = new DataTable();
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             da.Fill(dt);
@@ -59,7 +60,6 @@ namespace InwardClearingSystem
 
         protected void chkBox_CheckedChanged(object sender, EventArgs e)
         {
-          
             CheckBox cb = (CheckBox)sender;
             GridViewRow row = (GridViewRow)cb.NamingContainer;
             if (cb.Checked == true)
@@ -86,18 +86,17 @@ namespace InwardClearingSystem
                     {
                         foreach (string branchname in mybranches)
                         {
-                            cmd = new SqlCommand("update BRANCH SET user_id = @userid WHERE branch_name = @branch", activeConnection);
+                            cmd = new SqlCommand("update Branch SET user_id = @userid WHERE branch_name = @branch", activeConnection);
                             cmd.Parameters.AddWithValue("@userid", userID);
                             cmd.Parameters.AddWithValue("@branch", branchname);
                             cmd.ExecuteNonQuery();
                         }
-                        activeConnection.Close();
                         dt = FillDataTable();
                         Branches.Clear();
                     }
                     else
                     {
-                        ErrorMessage("Please select a branch");
+                        Message("Please select a branch");
                     }
                 }
                 catch (Exception b)

@@ -77,6 +77,8 @@
     <Content Include="FailurePage.aspx" />
     <Content Include="Resources\H2DefaultImage.jpg" />
     <Content Include="Resources\H2ics.png" />
+    <Content Include="Scripts\jquery.elevateZoom-3.0.8.min.js" />
+    <Content Include="Scripts\jquery.elevatezoom.js" />
     <Content Include="Styles\Site.css" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\jquery-1.4.1-vsdoc.js" />
@@ -211,7 +213,9 @@
       <DependentUpon>Verification.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Scripts\elevatezoom.jquery.json" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="Account\Web.config" />
     <Content Include="Site.Master" />
@@ -224,7 +228,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>4213</DevelopmentServerPort>
+          <DevelopmentServerPort>14450</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>

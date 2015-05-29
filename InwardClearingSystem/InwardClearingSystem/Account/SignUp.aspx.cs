@@ -22,9 +22,9 @@ namespace InwardClearingSystem.Account
             using (connection)
             {
                 connection.Open();
-                SqlCommand usernameChecker = new SqlCommand("SELECT username FROM END_USER WHERE username = @username", connection);
+                SqlCommand usernameChecker = new SqlCommand("SELECT username FROM [User] WHERE username = @username", connection);
                 usernameChecker.Parameters.AddWithValue("@username", unTxtBx.Text);
-                SqlCommand emailChecker = new SqlCommand("SELECT email FROM END_USER WHERE email = @email", connection);
+                SqlCommand emailChecker = new SqlCommand("SELECT email FROM [User] WHERE email = @email", connection);
                 emailChecker.Parameters.AddWithValue("@email", emTxtBx.Text);
                 if (usernameChecker.ExecuteScalar() != null)
                 {
@@ -47,7 +47,7 @@ namespace InwardClearingSystem.Account
                             }
                             else
                             {
-                                SqlCommand insert = new SqlCommand("insert into END_USER(username, first_name, last_name, password, email) values (@user, @first, @last, @pass, @mail)", connection);
+                                SqlCommand insert = new SqlCommand("insert into [User](username, first_name, last_name, password, email) values (@user, @first, @last, @pass, @mail)", connection);
                                 insert.Parameters.AddWithValue("@user", unTxtBx.Text);
                                 insert.Parameters.AddWithValue("@first", fnTxtBx.Text);
                                 insert.Parameters.AddWithValue("@last", lnTxtBx.Text);

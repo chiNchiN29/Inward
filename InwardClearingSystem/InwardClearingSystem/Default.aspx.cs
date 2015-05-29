@@ -27,8 +27,11 @@ namespace InwardClearingSystem
         SqlCommand cmd;
         StringBuilder query;
         
+        int noImageUploaded = 0;
+        
         protected void Page_Load(object sender, EventArgs e)
         {
+            activeConnection.Close();
             if (!IsPostBack)
             {
                 ViewState["myDataTable"] = FillDataTable();
@@ -52,11 +55,11 @@ namespace InwardClearingSystem
             folder.CreateDocument(DocumentProperties, contentStream, null);
         }
 
-
         protected void uploadImgBtn_Click(Object sender, EventArgs e)
         {
             try
             {
+                ViewState["UploadImageClicked"] = "false";
                 HttpFileCollection hfc = Request.Files;
                 for (int i = 0; i < hfc.Count; i++)
                 {
@@ -66,11 +69,14 @@ namespace InwardClearingSystem
                         UploadADocument(session, imageToByteArray(System.Drawing.Image.FromStream(hpf.InputStream)), Path.GetFileNameWithoutExtension(hpf.FileName));
                     }
                 }
-                Response.Write("<script langauge=\"javascript\">alert(\"Images successfully added\");</script>");
+                Message("Images successfully added.");
+                ViewState["ImageCount"] = hfc.Count - 1;
+                ViewState["UploadImageClicked"] = "true";
+                
             }
             catch
             {
-                Response.Write("<script langauge=\"javascript\">alert(\"An image already exists with the same name\");</script>");
+                Message("An image already exists with the same name");
             }
         }
 
@@ -89,25 +95,26 @@ namespace InwardClearingSystem
             {
                 //string filepath = FileUpload2.PostedFile.FileName;
                 StreamReader sr = new StreamReader(DataUpload.PostedFile.InputStream);
-                while (!sr.EndOfStream)
-                {
-                    string line = sr.ReadLine();
-                    string[] heart = line.Split(',');
-                    string userID = Session["UserID"].ToString();
-                    query = new StringBuilder();
-                    query.Append("insert into CHEQUE(check_number, amount, check_date, branch_name, drawee_bank, drawee_bank_branch, funded, ");
-                    query.Append("verification, confirmed, bank_remarks, account_number, modified_by, modified_date) ");
-                    query.Append("values (@checknum, @amount, @date, @branch, @draweebank, @draweebranch, ");
-                    query.Append("@funded, @verified, @confirmed, @remarks, @acctnum, @modby, @moddate)");
-                    using (activeConnection)
+                int lineCount = 0;
+               
+                    activeConnection.Open();
+                    while (!sr.EndOfStream)
                     {
-                        activeConnection.Open();
-                        SqlCommand validator = new SqlCommand("select check_number from CHEQUE where check_number = @checknum", activeConnection);
+                        string line = sr.ReadLine();
+                        string[] heart = line.Split(',');
+                        string userID = Session["UserID"].ToString();
+                        query = new StringBuilder();
+                        query.Append("insert into Cheque(check_number, amount, check_date, branch_name, drawee_bank, drawee_bank_branch, funded, ");
+                        query.Append("verification, confirmed, bank_remarks, account_number, modified_by, modified_date) ");
+                        query.Append("values (@checknum, @amount, @date, @branch, @draweebank, @draweebranch, ");
+                        query.Append("@funded, @verified, @confirmed, @remarks, @acctnum, @modby, @moddate)");
+
+                        SqlCommand validator = new SqlCommand("select check_number from Cheque where check_number = @checknum", activeConnection);
                         validator.Parameters.AddWithValue("@checknum", heart[0]);
                         if (validator.ExecuteScalar() == null)
                         {
                             SqlCommand insert = new SqlCommand(query.ToString(), activeConnection);
-                            SqlCommand checker = new SqlCommand("select minimum from THRESHOLD", activeConnection);
+                            SqlCommand checker = new SqlCommand("select minimum from Threshold", activeConnection);
                             insert.Parameters.AddWithValue("@checknum", heart[0]);
                             insert.Parameters.AddWithValue("@amount", heart[1]);
                             insert.Parameters.AddWithValue("@date", heart[2]);
@@ -129,16 +136,26 @@ namespace InwardClearingSystem
                             insert.Parameters.AddWithValue("@modby", userID);
                             insert.Parameters.AddWithValue("@moddate", DateTime.Now);
                             insert.ExecuteNonQuery();
+                            lineCount++;
                         }
-                        else
-                        {
-                            Response.Write("Check Data Upload interrupted. A duplicate check number has been discovered.");
+                        //else
+                        //{
+                        //    Message("Check Data Upload interrupted. A duplicate check number has been discovered.");
 
-                        }
+                        //}
+
                     }
-                }
-                sr.Close();
+                    sr.Close();
+                activeConnection.Close();
                 DataTable dt = FillDataTable();
+                    string wew = ViewState["UploadImageClicked"].ToString();
+                    bool uploadClicked = bool.Parse(ViewState["UploadImageClicked"].ToString());
+                    if (uploadClicked)
+                    {
+                        Message("check images were uploaded");
+                    }
+
+                    
             }
             catch (Exception b)
             {
@@ -154,7 +171,7 @@ namespace InwardClearingSystem
             using (activeConnection)
             {
                 activeConnection.Open();
-                cmd = new SqlCommand("DELETE FROM CHEQUE", activeConnection);
+                cmd = new SqlCommand("DELETE FROM Cheque", activeConnection);
                 cmd.ExecuteNonQuery();
                 ViewAllCheck.DataBind();
             }
@@ -173,26 +190,34 @@ namespace InwardClearingSystem
             query = new StringBuilder();
             query.Append("SELECT check_number, (f_name + ' ' + m_name + ' ' + l_name) AS customer_name, ch.account_number, check_date, amount, balance, branch_name, ");
             query.Append("drawee_bank, drawee_bank_branch, verification, funded, bank_remarks, ch.modified_by, ch.modified_date ");
-            query.Append("FROM CHEQUE ch, CUSTOMER c, ACCOUNT a ");
+            query.Append("FROM Cheque ch, Customer c, Account a ");
             query.Append("WHERE ch.account_number = a.account_number AND a.customer_id = c.customer_id ");
             query.Append("ORDER BY ch.check_number");
-            
+
+            activeConnection.Open();
             dt = new DataTable();
             SqlDataAdapter da = new SqlDataAdapter(query.ToString(), activeConnection);
             da.Fill(dt);
             ViewAllCheck.DataSource = dt;
             ViewAllCheck.DataBind();
-     
+            activeConnection.Close();
             return dt;
         }
 
         //Generate List
         protected void genListBtn_Click(object sender, EventArgs e)
         {
+            query = new StringBuilder();
+            query.Append("SELECT check_number, amount, CONVERT(VARCHAR(10), check_date, 101), branch_name, drawee_bank, drawee_bank_branch, ");
+            query.Append("drawee_bank, drawee_bank_branch, funded, verification, verify_remarks, ch.account_number ");
+            query.Append("FROM Cheque ch, Customer c, Account a ");
+            query.Append("WHERE ch.account_number = a.account_number AND a.customer_id = c.customer_id ");
+            query.Append("AND verification = 'NO' ORDER BY ch.account_number");
+
             // Retrieves the schema of the table.
             dt = new DataTable();
             dt.Clear();
-            dt = GetData();
+            dt = GetData(query.ToString());
 
             // set the resulting file attachment name to the name of the report...
             string fileName = "test";
@@ -226,19 +251,13 @@ namespace InwardClearingSystem
             Response.Output.Write(sb.ToString());
             Response.Flush();
             Response.End();
+       
         }
 
-        private DataTable GetData()
+        private DataTable GetData(String query)
         {
-            query = new StringBuilder();
-            query.Append("SELECT check_number, amount, CONVERT(VARCHAR(10), check_date, 101), branch_name, drawee_bank, drawee_bank_branch, ");
-            query.Append("drawee_bank, drawee_bank_branch, funded, verification, confirmed, ch.account_number ");
-            query.Append("FROM CHEQUE ch, CUSTOMER c, ACCOUNT a ");
-            query.Append("WHERE ch.account_number = a.account_number AND a.customer_id = c.customer_id ");
-            query.Append("AND verification = 'NO' ORDER BY ch.account_number");
-         
             activeConnection.Open();
-            da = new SqlDataAdapter(query.ToString(), activeConnection);
+            da = new SqlDataAdapter(query, activeConnection);
             dt = new DataTable();          
             da.Fill(dt);
             activeConnection.Close();

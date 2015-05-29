@@ -30,15 +30,15 @@ namespace InwardClearingSystem
             if (login == false)
                 Response.Redirect("~/Account/Login.aspx");
             Session["UserName"] = System.Web.HttpContext.Current.User.Identity.Name;
-            activeConnection.Open();
-            SqlCommand cmd = new SqlCommand("select user_id from [USER] where username = @username", activeConnection);
-            cmd.Parameters.AddWithValue("@username", Session["UserName"].ToString());
-            Session["UserID"] = Convert.ToInt32(cmd.ExecuteScalar());
+                activeConnection.Open();
+                SqlCommand cmd = new SqlCommand("select user_id from [User] where username = @username", activeConnection);
+                cmd.Parameters.AddWithValue("@username", Session["UserName"].ToString());
+                Session["UserID"] = Convert.ToInt32(cmd.ExecuteScalar());
+                
             session = CreateSession("admin", "admin", "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom");
-            
         }
 
-        public void ErrorMessage(string message)
+        public void Message(string message)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("<script language='javascript'>");
