@@ -5,7 +5,7 @@ body
 {
     background: #FFFFFF;
     font-size: .80em;
-    font-family: "Helvetica Neue", "Lucida Grande", "Segoe UI", Arial, Helvetica, Verdana, sans-serif;
+    font-family: Franklin Gothic Medium;
     margin: 0px;
     padding: 0px;
     color: #000000;
@@ -129,6 +129,48 @@ first child of the left and right table columns */
     min-height: 420px;
 }
 
+.defaultButton
+{
+    background-color:#990000;
+    color:#FFFFFF;
+    font-family:Franklin Gothic Medium;
+    height:30px;
+    width:155px;
+}
+
+.defaultButton:hover
+{
+    background-color:ButtonHighlight;
+}
+    
+.yesButton
+{
+    background-color:#00CC00;
+    color:#FFFFFF;   
+    font-family:Franklin Gothic Medium;
+    height:36px;
+    width:155px; 
+}
+
+.yesButton:hover
+{
+    background-color:ButtonHighlight;   
+}
+
+.noButton
+{
+    background-color:#CC0000;
+    color:#FFFFFF;   
+    font-family:Franklin Gothic Medium;
+    height:36px;
+    width:155px; 
+}
+
+.noButton:hover
+{
+    background-color:ButtonHighlight;  
+}
+
 .leftCol
 {
     padding: 6px 0px;
@@ -146,6 +188,16 @@ first child of the left and right table columns */
     line-height: normal;
 }
 
+.textbox
+{
+    height:20px;
+    outline:#990000 solid 1px;
+}
+
+.whiteSpace
+{
+    height:20px;
+}
 
 /* TAB MENU   
 ----------------------------------------------------------*/
@@ -263,6 +315,20 @@ div.accountInfo
 
 /* GRID VIEW
 ----------------------------------------------------------*/
+div.gridTitleBar
+{
+    border-width:2px;
+    border-style: solid solid none solid;
+    border-color: #333333; 
+    background-color: #AA3333;
+    font-family: Franklin Gothic Medium;
+    font-size: medium;
+    color: #FFFFFF;
+    width: 98.45%;
+    height: 20px;
+    padding-left: 8px;
+}
+
 .gridView
 {             
     width: 100%;   
@@ -286,36 +352,37 @@ div.accountInfo
 
 .GridHeader
 {
-    padding: 4px 2px;   
-    color: #fff;
-    background: #424242 url(grd_head.png) repeat-x top; 
+    padding: 4px 2px;
+    color: #000000;
+    background: #C0C0C0 none repeat-x top;
     font-weight: bold;
-    border-left: solid 1px #000000; 
-    font-size:13px;
+    border-left: solid 1px #000000;
+    font-size: 13px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Franklin Gothic Medium";
 }
 
 .GridHeader Inner
 {
     text-decoration: none;
-    color: #fff;
-    padding: 4px 2px; 
-    font-size:13px;
-   
+    color: #000000;
+    padding: 4px 2px;
+    font-size: 13px;
 }
-
 .GridHeader a
 {
     text-decoration: none;
-    color: #fff;
+    color: #000000;
     padding: 4px 2px;
-    font-size:13px;
+    font-size: 13px;
 }
-
 .GridHeader a:hover
 {
     text-decoration: underline;
-    font-size:13px;
-    color: red;
+    font-size: 13px;
+    color: #FFFFFF;
+    font-family: "Franklin Gothic Medium";
 }
 
 .gridView2

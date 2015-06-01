@@ -52,7 +52,7 @@
             </div>
             <div id="skipLink" runat="server" class="clear hideSkiplink">
             <div class="logo">
-                <img src="Resources/H2ics.png" style="height: 52px; width: 101px" />
+                <img src="Resources/H2ics2.png" style="height: 52px; width: 272px" />
             </div>
 			<asp:Menu ID="NavigationMenu" runat="server" CssClass="menu"
                      IncludeStyleBlock="false" Orientation="Horizontal" 

@@ -4,44 +4,59 @@
 <%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="cc1" %>
 
 <asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeadContent">
-
-
     <style type="text/css">
-        
-        .LockOff { 
-         display: none; 
-         visibility: hidden; 
-      } 
-
-      .LockOn { 
-         display: block; 
-         visibility: visible; 
-         position: absolute; 
-         z-index: 999; 
-         top: 0px; 
-         left: 0px; 
-         width: 105%; 
-         height: 105%; 
-         background-color: #ccc; 
-         text-align: center; 
-         padding-top: 20%; 
-         filter: alpha(opacity=100); 
-         opacity: 0.8;
-         font-size: large; 
-         font-weight: bolder;
-      } 
-
-        .fileUpload
+        .amount
         {
-            width:255px;    
-            font-size:11px;
-            color:#000000;
-            border:solid;
-            border-width:1px;
-            border-color:#7f9db9;    
-            height:17px;
+            text-align: right;
         }
-        .grid_scroll
+        .LockOff
+        { 
+            display: none; 
+            visibility: hidden; 
+        }
+        .LockOn 
+        { 
+             display: block; 
+             visibility: visible; 
+             position: absolute; 
+             z-index: 999; 
+             top: 0px; 
+             left: 0px; 
+             width: 105%; 
+             height: 105%; 
+             background-color: #ccc; 
+             text-align: center; 
+             padding-top: 20%; 
+             filter: alpha(opacity=100); 
+             opacity: 0.8;
+             font-size: large; 
+             font-weight: bolder;
+        } 
+        div.buttonHolder
+        {
+            text-align:right;
+        }
+        div.dataLoad
+        {
+            width: 400px;
+            float: right;
+        }
+        div.generateConfirmed
+        {
+            width: 400px;
+            float: right;
+        }
+        div.generateVerified
+        {
+            width: 400px;
+            float: left;
+        }
+        div.generator
+        {
+            width:80%;
+            margin: 0 auto;   
+        }
+        div.grid_scroll
         {  
             overflow: scroll;
             height: 300px;
@@ -49,67 +64,16 @@
             width: 100%;        
             margin: 0px  
         }
-        #imageLoad
-         {
+        div.imageLoad
+        {
             width: 400px;
             float: left;
-         }
-         #dataLoad
-         {
-             width: 400px;
-             float: right;
-         }
-         #loader
-         {
-             width: 80%;
-             margin:0 auto;
-         }
-         #generator
-         {
-            width:80%;
-            margin: 0 auto;   
-         }
-         #buttonHolder
-         {
-             text-align:right;
-         }
-         .amount
-         {
-             text-align: right;
-         }
-         #generateVerified
-         {
-             width: 400px;
-             float: left;
-         }
-         #generateConfirmed
-         {
-             width: 400px;
-             float: right;
-         }
-         div.gridTitleBar
-         {
-            border-style: solid solid none solid;
-            border-color: #333333; 
-            background-color: #AA3333;
-            font-family: Franklin Gothic Medium;
-            font-size: medium;
-            color: #FFFFFF;
-            width: 99.4%;
-            height: 20px;
-            padding-left: 8px;
         }
-        .uploaderCss
+        
+        div.loader
         {
-            font-family:Franklin Gothic Medium;
-            background-color:#AA3333;
-            height:30px;
-            width:155px;
-            color:#FFFFFF;
-        }
-        .uploaderCss:hover
-        {
-            background-color:ButtonHighlight;
+            width: 80%;
+            margin:0 auto;
         }
         </style>
 </asp:Content>
@@ -140,13 +104,16 @@
         </Columns>
     </asp:GridView>
     </div>
-        <div id="buttonHolder">
+        <div class="buttonHolder">
             <asp:Button ID="clearCheck" runat="server" onclientclick="return DeleteItem()" 
-            Text="Clear Check Data" onclick="clearCheck_Click1" />  
+            Text="Clear Check Data" onclick="clearCheck_Click1" CssClass="defaultButton"/>  
+            <cc1:RoundedCornersExtender ID="clearCheck_RoundedCornersExtender" 
+                runat="server" BehaviorID="clearCheck_RoundedCornersExtender" 
+                TargetControlID="clearCheck" />
         </div>
     </div>
-<div id="loader">
-        <div id="imageLoad">
+<div class="loader">
+        <div class="imageLoad">
             <asp:Label ID="lblLoadImg" runat="server" Font-Size="Larger" ForeColor="Black" 
             Text="1. Load Image"></asp:Label>
             <br />
@@ -159,14 +126,14 @@
             <asp:Button ID="uploadImgBtn" runat="server" Text="Upload Image" 
 
             OnClick="uploadImgBtn_Click" OnClientClick="skm_LockScreen('Uploading Images');" 
-                CssClass="uploaderCss"/>   
+                CssClass="defaultButton"/>   
             <cc1:RoundedCornersExtender ID="uploadImgBtn_RoundedCornersExtender" 
                 runat="server" BehaviorID="uploadImgBtn_RoundedCornersExtender" 
                 TargetControlID="uploadImgBtn" />
             <div id="skm_LockPane" class="LockOff"></div> 
 
         </div>
-        <div id="dataLoad">
+        <div class="dataLoad">
             <asp:Label ID="lblCheckData" runat="server" Font-Size="Larger" ForeColor="Black" 
             Text="2. Load Check Data"></asp:Label>
             <br />
@@ -177,21 +144,21 @@
             ValidationExpression="(.*\.([cC][sS][vV])$)" ForeColor="Red"></asp:RegularExpressionValidator> 
             <br />   
             <asp:Button ID="uploadDoc0" runat="server" Text="Load" 
-            OnClick="UploadCheckData" CssClass="uploaderCss"/>
+            OnClick="UploadCheckData" CssClass="defaultButton"/>
             <cc1:RoundedCornersExtender ID="uploadDoc0_RoundedCornersExtender" 
                 runat="server" BehaviorID="uploadDoc0_RoundedCornersExtender" 
                 TargetControlID="uploadDoc0" />
         </div>
 </div>
-<div id="whiteNoise" style="height:20px">
+<div class="whiteSpace">
     &nbsp;
 </div>
 
-<div id="generator">
-        <div id="generateVerified">
+<div class="generator">
+        <div class="generateVerified">
             <asp:Label ID="genLbl" runat="server" Font-Size="Larger" ForeColor="Black" Text="Generate List of Verified Cheques"></asp:Label><br/>
             <asp:Button ID="genListBtn" runat="server" onclick="genListBtn_Click" OnClientClick="return GenerateList(); needToConfirm = false;" 
-            Text="Generate List" CssClass="uploaderCss"/>
+            Text="Generate List" CssClass="defaultButton"/>
             <cc1:RoundedCornersExtender ID="genListBtn_RoundedCornersExtender" 
                 runat="server" BehaviorID="genListBtn_RoundedCornersExtender" 
                 TargetControlID="genListBtn" />

@@ -1,69 +1,87 @@
 ﻿<%@ Page Title="Update Thresholds" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="UpdateThreshold.aspx.cs" Inherits="InwardClearingSystem.UpdateThreshold" %>
+<%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="cc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
     <style type="text/css">
-    #container
+    .money
     {
-        width: 700px;
-        margin: auto;
+        color:#C19132;
     }
-    #min
-    {
-        text-align:center;
-        width: 300px;
-        float: left;
-        height: 130px;
-    }
-    #max
-    {
-        text-align:center;
-        width: 300px;
-        float: right;
-        height: 130px;
-    }
-    #clear
+    div.clear
     {
         clear:both;
+        text-align:center;
     }
-    #clear
+    div.container
+    {
+        width: 48%;
+        margin: auto;
+        background-color: #f1f1f1;
+        border:2px solid #333333;
+    }
+    div.max
+    {
+        
+        text-align:center;
+        font-family:Franklin Gothic Medium;
+        padding-top:20px;
+        color:#990000;
+        width: 300px;
+        float: right;
+        height: 150px;
+    }
+    div.min
     {
         text-align:center;
+        font-family:Franklin Gothic Medium;
+        padding-top:20px;
+        color:#990000;
+        width: 300px;
+        float: left;
+        height: 150px;
     }
 </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-    <div id="container">
-    <br />
-    <br />
-    <div id="min">
-        <asp:Label ID="Label1" runat="server" Text="Current Minimum Threshold Amount:"></asp:Label>
-        <br />
-        <asp:Label ID="Label2" runat="server" Text="Label"></asp:Label>
-        <br />
-        <br />
-        <asp:Label ID="Label3" runat="server" Text="New Minimum Threshold Amount:"></asp:Label>
-        <br />
-        <asp:TextBox ID="TextBox1" runat="server" TextMode="Number"></asp:TextBox>
-        <br />
-    </div>
+    <div class="container">
+        <div class="gridTitleBar">Set New Thresholds</div>
+        <div class="min">
+            <asp:Label ID="Label1" runat="server" Text="Current <strong>Minimum</strong> Threshold Amount:"></asp:Label>
+            <br />
+            <asp:Label ID="Label2" runat="server" Text="Label" CssClass="money"></asp:Label>
+            <br />
+            <br />
+            <asp:Label ID="Label3" runat="server" Text="New Minimum Threshold Amount:"></asp:Label>
+            <br />
+            <asp:TextBox ID="TextBox1" runat="server" TextMode="Number" CssClass="textbox"></asp:TextBox>
+            <cc1:RoundedCornersExtender ID="TextBox1_RoundedCornersExtender" runat="server" 
+                BehaviorID="TextBox1_RoundedCornersExtender" TargetControlID="TextBox1">
+            </cc1:RoundedCornersExtender>
+            <br />
+        </div>
     
 
-    <div id="max">
-        <asp:Label ID="Label4" runat="server" Text="Current Maximum Threshold Amount:"></asp:Label>
-        <br />
-        <asp:Label ID="Label5" runat="server" Text="Label"></asp:Label>
-        <br />
-        <br />
-        <asp:Label ID="Label6" runat="server" Text="New Maximum Threshold Amount:"></asp:Label>
-        <br />
-        <asp:TextBox ID="TextBox2" runat="server" TextMode="Number"></asp:TextBox>
-        <br />
-    </div>
+        <div class="max">
+            <asp:Label ID="Label4" runat="server" Text="Current <strong>Maximum</strong> Threshold Amount:"></asp:Label>
+            <br />
+            <asp:Label ID="Label5" runat="server" Text="Label" CssClass="money"></asp:Label>
+            <br />
+            <br />
+            <asp:Label ID="Label6" runat="server" Text="New Maximum Threshold Amount:"></asp:Label>
+            <br />
+            <asp:TextBox ID="TextBox2" runat="server" TextMode="Number" CssClass="textbox"></asp:TextBox>
+            <cc1:RoundedCornersExtender ID="TextBox2_RoundedCornersExtender" runat="server" 
+                BehaviorID="TextBox2_RoundedCornersExtender" TargetControlID="TextBox2">
+            </cc1:RoundedCornersExtender>
+            <br />
+        </div>
 
-    <div id="clear">
-    <asp:Button ID="Button1" runat="server" onclick="SetThresholds" Text="Set" OnClientClick="return ConfirmSettings();"
-    Width="91px" />
-    </div>
-    
+        <div class="clear">
+        <asp:Button ID="Button1" runat="server" onclick="SetThresholds" Text="Set" OnClientClick="return ConfirmSettings();"
+        Width="91px" CssClass="defaultButton"/>
+            <cc1:RoundedCornersExtender ID="Button1_RoundedCornersExtender" runat="server" 
+                BehaviorID="Button1_RoundedCornersExtender" TargetControlID="Button1">
+            </cc1:RoundedCornersExtender>
+        </div>
 </div>
     <br />
 

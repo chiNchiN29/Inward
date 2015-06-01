@@ -5,7 +5,23 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js" type="text/javascript"></script>
     <script src="Scripts/jquery.elevateZoom-3.0.8.min.js" type="text/javascript"></script>   
     <style type="text/css">
-        .grid_scroll
+        .amount
+        {
+            text-align: right;
+        }
+        .imageBox
+        {
+             border: solid 2px black;
+        }
+        div.acceptBox
+        {
+            width:25%;
+            float:left;
+            text-align:center;
+            height:110px;
+            vertical-align:middle;
+        }
+        div.grid_scroll
         {  
             overflow: scroll;
             height: 60px;
@@ -13,87 +29,24 @@
             width: 100%;        
             margin: 0px  
         }
-   
-        .YesVer
+        div.imageLeft
         {
-            color: #009900;
-             border-bottom-color: Black;
-        }
-        .image_box
-        {
-             border: solid 2px black;
-        }
-        .acceptButton
-        {
+            width:50%;
             float:left;
+            text-align:center;
         }
-        .rejectButton
+        div.imageRight
         {
+            width:50%;
             float:right;
+            text-align:center;
         }
-        #images
+        div.images
         {
             width:80%;
             margin:0 auto;
         }
-        #imageLeft
-        {
-            width:50%;
-            float:left;
-            text-align:center;
-        }
-        #imageRight
-        {
-            width:50%;
-            float:right;
-            text-align:center;
-        }
-        #buttonWield
-        {
-            text-align:center;
-        }
-        .amount
-        {
-            text-align: right;
-        }
-        .NoVer
-        {
-            color: Red;
-            border-bottom-color: Black;
-        }
-        #verifyOptions
-        {
-            width: 70%;
-            height:110px;
-            display:inline-block;
-            margin:0 auto;
-        }
-        #acceptBox
-        {
-            width:25%;
-            float:left;
-            text-align:center;
-            height:110px;
-            vertical-align:middle;
-        }
-        .acceptBtn
-        {
-            vertical-align:middle; 
-            color:White;
-            height:36px; 
-            width:155px;
-        }
-        .acceptBtn:hover
-        {
-            background-color:ButtonShadow;
-        }
-        #remarksBox
-        {
-            text-align: center;
-            float:left;
-            width:48%;
-        }
-        #rejectBox
+        div.rejectBox
         {
             width:25%;
             float:left;   
@@ -101,87 +54,90 @@
             height:110px;
             vertical-align:middle;
         }
-        .rejectBtn
+        div.remarksBox
         {
-            vertical-align:middle; 
-            color:White;
-            height:36px; 
-            width:155px;
+            float:left;
+            width:48%;
         }
-        .rejectBtn:hover
+        div.verifyOptions
         {
-            background-color:ButtonShadow;
+            width: 60%;
+            height:100px;
+            display:inline-block;
         }
-        .whiteSpace
+        div.verifyOptionsPositioning
         {
-            margin-top:10px;
-            margin-bottom:10px;
+            width:100%;
+            text-align:center;
         }
         </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
-    <div id="images">
-        <div id="imageLeft">
+    <div class="images">
+        <div class="imageLeft">
             <asp:Label ID="Label1" runat="server" AssociatedControlID="checkImage" 
             BorderStyle="None" Text="Image"></asp:Label>
             <br />
-            <asp:Image ID="checkImage" runat="server" CssClass="image_box" Height="180px" 
+            <asp:Image ID="checkImage" runat="server" CssClass="imageBox" Height="180px" 
             Width="450px"  ImageAlign="Left" onmouseover="zoomin(this)" onmouseout="zoomout(this)"
             ImageUrl="~/Resources/H2DefaultImage.jpg" />
    
         </div>
-        <div id="imageRight">
+        <div class="imageRight">
             <asp:Label ID="Label2" runat="server" AssociatedControlID="sigImage" 
             Text="Signature"></asp:Label>
             <br />
-            <asp:Image ID="sigImage" runat="server" CssClass="image_box" Height="180px" 
+            <asp:Image ID="sigImage" runat="server" CssClass="imageBox" Height="180px" 
             Width="450px" ImageAlign="Right" onmouseover="zoomin(this)" onmouseout="zoomout(this)" 
             ImageUrl="~/Resources/H2DefaultImage.jpg"/>
         </div>
 
     </div>
     <div class="whiteSpace">
+        &nbsp;
     </div>
-    <div id="verifyOptions">
-        <div id="acceptBox">
-            <asp:Button ID="acceptButton" runat="server" CssClass="acceptBtn"
-            Text="Accept" onclick="acceptButton_Click" OnClientClick="needToConfirm = false;" 
-             BackColor="#00CC00" />
+    <div class="verifyOptionsPositioning">
+        <div class="verifyOptions">
+            <div class="acceptBox">
+                <asp:Button ID="acceptButton" runat="server" CssClass="yesButton"
+                Text="Accept" onclick="acceptButton_Click" OnClientClick="needToConfirm = false;" />
             
-            <cc1:RoundedCornersExtender ID="acceptButton_RoundedCornersExtender" 
-                runat="server" BehaviorID="acceptButton_RoundedCornersExtender" 
-                TargetControlID="acceptButton">
-            </cc1:RoundedCornersExtender>
+                <cc1:RoundedCornersExtender ID="acceptButton_RoundedCornersExtender" 
+                    runat="server" BehaviorID="acceptButton_RoundedCornersExtender" 
+                    TargetControlID="acceptButton">
+                </cc1:RoundedCornersExtender>
             
-        </div>
-        <div id="remarksBox">
-            <asp:Label ID="verifyRemarkLabel" runat="server" Text="Remarks"></asp:Label>
-            <br />
-            <asp:DropDownList ID="verifyChoice" runat="server" EnableTheming="True">
-            <asp:ListItem Value="0">&lt;SELECT ITEM&gt;</asp:ListItem>
-            <asp:ListItem>SIGNATURE DIFFERS</asp:ListItem>
-            <asp:ListItem>AMOUNT DOES NOT MATCH</asp:ListItem>
-            <asp:ListItem>POST-DATED ISSUE</asp:ListItem>
-            <asp:ListItem>FUTURE DATED ISSUE</asp:ListItem>
-            </asp:DropDownList>
-            <br />
-            <asp:TextBox ID="verifyRemarks" runat="server" TextMode="MultiLine" 
-            Width="200px"></asp:TextBox>
-        </div>
-        <div id="rejectBox">
-            <asp:Button ID="rejectButton" runat="server" CssClass="rejectBtn" Text="Reject" 
-            onclick="rejectButton_Click" OnClientClick="needToConfirm = false;" BackColor="#CC0000" />
+            </div>
+            <div class="remarksBox">
+                <asp:Label ID="verifyRemarkLabel" runat="server" Text="Remarks"></asp:Label>
+                <br />
+                <asp:DropDownList ID="verifyChoice" runat="server" EnableTheming="True">
+                <asp:ListItem Value="0">&lt;SELECT ITEM&gt;</asp:ListItem>
+                <asp:ListItem>SIGNATURE DIFFERS</asp:ListItem>
+                <asp:ListItem>AMOUNT DOES NOT MATCH</asp:ListItem>
+                <asp:ListItem>POST-DATED ISSUE</asp:ListItem>
+                <asp:ListItem>FUTURE DATED ISSUE</asp:ListItem>
+                </asp:DropDownList>
+                <br />
+                <asp:TextBox ID="verifyRemarks" runat="server" TextMode="MultiLine" 
+                Width="200px"></asp:TextBox>
+            </div>
+            <div class="rejectBox">
+                <asp:Button ID="rejectButton" runat="server" CssClass="noButton" Text="Reject" 
+                onclick="rejectButton_Click" OnClientClick="needToConfirm = false;" />
             
-            <cc1:RoundedCornersExtender ID="rejectButton_RoundedCornersExtender" 
-                runat="server" BehaviorID="rejectButton_RoundedCornersExtender" 
-                TargetControlID="rejectButton">
-            </cc1:RoundedCornersExtender>
+                <cc1:RoundedCornersExtender ID="rejectButton_RoundedCornersExtender" 
+                    runat="server" BehaviorID="rejectButton_RoundedCornersExtender" 
+                    TargetControlID="rejectButton">
+                </cc1:RoundedCornersExtender>
             
+            </div>
         </div>
     </div>
     <br />
     
+
     <asp:FileUpload ID="FileUpload1" runat="server" AllowMultiple="true"/>
    
     <asp:Button ID="insertSig" runat="server" Text="Insert Signature" OnClick="insertSig_Click" />

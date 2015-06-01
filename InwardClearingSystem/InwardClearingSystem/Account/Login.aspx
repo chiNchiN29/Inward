@@ -5,6 +5,30 @@
 
 <asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeadContent">
     <style type="text/css">
+        .labelPositions
+        {
+            width: 100px;
+        }
+        .loginScreen
+        {
+            height:260px;
+            width:380px;
+            text-align:center;
+            float: right;
+            font-family:Franklin Gothic Medium;
+            background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #FFFFFF), color-stop(1, #B5B5B5)) !important;
+        }
+        .textBoxPositions
+        {
+            width: 331px;
+            text-align:center;
+        }
+        div.leftSide
+        {
+            width:426px;
+            height:240px;
+            float:left;
+        }
         div.logoImage
         {
             float:left;
@@ -25,38 +49,6 @@
         {
             height:50px;   
         }
-        .labelPositions
-        {
-            width: 100px;
-        }
-        .loginScreen
-        {
-            height:260px;
-            width:380px;
-            text-align:center;
-            float: right;
-            font-family:Franklin Gothic Medium;
-            background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #FFFFFF), color-stop(1, #B5B5B5)) !important;
-        }
-        .style3
-        {
-            width: 76px;
-        }
-        .textBoxPositions
-        {
-            width: 331px;
-            text-align:center;
-        }
-        .textbox
-        {
-            height:20px;   
-        }
-        #leftSide
-        {
-            width:426px;
-            height:240px;
-            float:left;
-        }
     </style>
 </asp:Content>
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
@@ -64,7 +56,7 @@
         
     </div>
     <div class="userScreen">
-    <div id="leftSide">
+    <div class="leftSide">
         <div class="registerHyperLink">
             <asp:HyperLink ID="RegisterHyperLink" runat="server" EnableViewState="False" 
             NavigateUrl="~/Account/SignUp.aspx">Register</asp:HyperLink> if you don't have an account.

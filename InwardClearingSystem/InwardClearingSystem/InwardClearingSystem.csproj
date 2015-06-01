@@ -65,6 +65,9 @@
     <Content Include="Account\ChangePasswordSuccess.aspx" />
     <Content Include="Account\Login.aspx" />
     <Content Include="Account\Register.aspx" />
+    <Content Include="Account\Resources\H2DefaultImage.jpg" />
+    <Content Include="Account\Resources\H2ics.png" />
+    <Content Include="Account\Resources\H2ics2.png" />
     <Content Include="Account\SignUp.aspx" />
     <Content Include="App_Data\icsdb.mdf" />
     <Content Include="App_Data\icsdb_log.ldf">
@@ -77,6 +80,7 @@
     <Content Include="FailurePage.aspx" />
     <Content Include="Resources\H2DefaultImage.jpg" />
     <Content Include="Resources\H2ics.png" />
+    <Content Include="Resources\H2ics2.png" />
     <Content Include="Scripts\jquery.elevateZoom-3.0.8.min.js" />
     <Content Include="Scripts\jquery.elevatezoom.js" />
     <Content Include="Styles\Site.css" />
@@ -220,6 +224,7 @@
     <Content Include="Account\Web.config" />
     <Content Include="Site.Master" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
   <ProjectExtensions>

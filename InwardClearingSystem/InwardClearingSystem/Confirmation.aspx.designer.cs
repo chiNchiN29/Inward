@@ -139,6 +139,15 @@ namespace InwardClearingSystem {
         protected global::System.Web.UI.WebControls.Button genListBtn;
         
         /// <summary>
+        /// genListBtn_RoundedCornersExtender control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.RoundedCornersExtender genListBtn_RoundedCornersExtender;
+        
+        /// <summary>
         /// totalConHide control.
         /// </summary>
         /// <remarks>
