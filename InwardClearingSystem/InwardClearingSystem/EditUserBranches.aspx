@@ -6,8 +6,9 @@
         User Name:
         <asp:Label ID="userLbl" runat="server" Text="Label"></asp:Label>
     </p>
-    Branches:<br />
     <br />
+    Branches:<br />
+    
     <asp:GridView ID="branchView" runat="server" AutoGenerateColumns="false" 
         CssClass="gridView2" HeaderStyle-CssClass="GridHeader">
     <Columns>
@@ -17,7 +18,7 @@
                 </ItemTemplate>
             </asp:TemplateField>
     <asp:BoundField DataField="branch_name" HeaderText="Branch Name" ItemStyle-Width="100px" /> 
-    <asp:BoundField DataField="username" HeaderText="Handler" ItemStyle-Width="100px" />
+    <asp:BoundField DataField="username" HeaderText="Current Handler" ItemStyle-Width="100px" />
     </Columns>
     </asp:GridView>
     <br />

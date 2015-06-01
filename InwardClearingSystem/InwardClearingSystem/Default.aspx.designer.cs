@@ -31,6 +31,15 @@ namespace InwardClearingSystem {
         protected global::System.Web.UI.WebControls.Button clearCheck;
         
         /// <summary>
+        /// clearCheck_RoundedCornersExtender control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.RoundedCornersExtender clearCheck_RoundedCornersExtender;
+        
+        /// <summary>
         /// lblLoadImg control.
         /// </summary>
         /// <remarks>

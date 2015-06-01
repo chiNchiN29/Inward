@@ -40,6 +40,15 @@ namespace InwardClearingSystem {
         protected global::System.Web.UI.WebControls.Button delBtn;
         
         /// <summary>
+        /// delBtn_RoundedCornersExtender control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.RoundedCornersExtender delBtn_RoundedCornersExtender;
+        
+        /// <summary>
         /// branchBtn control.
         /// </summary>
         /// <remarks>
@@ -49,6 +58,15 @@ namespace InwardClearingSystem {
         protected global::System.Web.UI.WebControls.Button branchBtn;
         
         /// <summary>
+        /// branchBtn_RoundedCornersExtender control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.RoundedCornersExtender branchBtn_RoundedCornersExtender;
+        
+        /// <summary>
         /// assignBtn control.
         /// </summary>
         /// <remarks>
@@ -56,5 +74,14 @@ namespace InwardClearingSystem {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button assignBtn;
+        
+        /// <summary>
+        /// assignBtn_RoundedCornersExtender control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.RoundedCornersExtender assignBtn_RoundedCornersExtender;
     }
 }

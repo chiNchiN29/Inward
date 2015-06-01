@@ -1,4 +1,5 @@
 ﻿<%@ Page Title="User Maintenance" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="UserMaintenance.aspx.cs" Inherits="InwardClearingSystem.UserMaintenance" %>
+<%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="cc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
     <style type="text/css">
         .style1
@@ -50,12 +51,23 @@
     <asp:DropDownList ID="RoleDrpDwn"  runat="server">
     </asp:DropDownList>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <asp:Button ID="delBtn" runat="server" onclick="delBtn_Click" Text="Delete" />
+    <asp:Button ID="delBtn" runat="server" onclick="delBtn_Click" Text="Delete" CssClass="defaultButton"/>
+    <cc1:RoundedCornersExtender ID="delBtn_RoundedCornersExtender" runat="server" 
+        BehaviorID="delBtn_RoundedCornersExtender" TargetControlID="delBtn">
+    </cc1:RoundedCornersExtender>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
     <asp:Button ID="branchBtn" runat="server" Text="Assign Branches" 
-        Visible="false" onclick="branchBtn_Click" />
+        Visible="false" onclick="branchBtn_Click" CssClass="defaultButton" />
+    <cc1:RoundedCornersExtender ID="branchBtn_RoundedCornersExtender" 
+        runat="server" BehaviorID="branchBtn_RoundedCornersExtender" 
+        TargetControlID="branchBtn">
+    </cc1:RoundedCornersExtender>
     <br />
     <br />
     <asp:Button ID="assignBtn" runat="server" Text="Assign" 
-        onclick="assignBtn_Click" />
+        onclick="assignBtn_Click" CssClass="defaultButton" />
+    <cc1:RoundedCornersExtender ID="assignBtn_RoundedCornersExtender" 
+        runat="server" BehaviorID="assignBtn_RoundedCornersExtender" 
+        TargetControlID="assignBtn">
+    </cc1:RoundedCornersExtender>
     </asp:Content>

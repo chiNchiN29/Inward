@@ -2,6 +2,10 @@
 <%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="cc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
      <style type="text/css">
+        .amount
+        {
+            text-align: right;
+        }
         .grid_scroll
         {  
             overflow: scroll;
@@ -10,94 +14,52 @@
             width: 100%;        
             margin: 0px  
         }
-        .amount
-        {
-            text-align: right;
-        }
-        .NoVer
-        {
-            color: Red;
-            border-bottom-color: Black;
-        }
-        .YesVer
-        {
-            color: #009900;
-             border-bottom-color: Black;
-        }
-        #dataLoad
-        {
-            width: 400px;
-            float: left;
-            margin-left: 50px;
-        }
-		#images
-        {
-            width:80%;
-            height:auto;
-            margin:0 auto;
-        }
-        #imageLeft
-        {
-            width:50%;
-            float:left;
-            text-align:center;
-        }
-        #imageRight
-        {
-            width:50%;
-            float:right;
-            text-align:center;
-        }
-        .image_box
+        .imageBox
         {
              border: solid 2px black;
         }
-        #remarksBox
-        {
-             text-align: center;   
-        }
-        #confirmOptions
+        div.confirmOptions
         {
             width:65%;
             margin:0 auto;
             font-family:Franklin Gothic Medium;
         }
-        #fundBtnDiv
+        div.fundBtnDiv
         {
             width:50%;
             float:left;
             text-align:center;
         }
-        .fundBtn
+        div.genBtnHolder
         {
-            width:155px; 
-            height:36px; 
-            background-color:#00CC00;
-            color:White;
+            text-align:center;
         }
-        .fundBtn:hover
-        {  
-            background-color:ButtonShadow;
+        div.imageLeft
+        {
+            width:50%;
+            float:left;
+            text-align:center;
         }
-        #unfundBtnDiv
+        div.imageRight
         {
             width:50%;
             float:right;
             text-align:center;
         }
-        .unfundBtn
+		div.images
         {
-            width:155px; 
-            height:36px; 
-            background-color:#CC0000; 
-            color:White;
+            width:80%;
+            height:auto;
+            margin:0 auto;
         }
-        .unfundBtn:hover
+        div.remarksBox
         {
-            background-color:ButtonShadow;   
+             text-align: center;   
         }
-        #genBtnHolder
+        div.unfundBtnDiv
         {
+            width:50%;
+            float:right;
             text-align:center;
         }
 </style>
@@ -136,20 +98,20 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Total:
     <asp:Label ID="totalCount" runat="server" Text="0"></asp:Label>
     <br />
-    <div id="confirmOptions">
-        <div id="fundBtnDiv">
+    <div class="confirmOptions">
+        <div class="fundBtnDiv">
             <asp:Button ID="fundButton" runat="server" Text="Validate" 
             onclick="fundButton_Click" OnClientClick="needToConfirm = false;"  
-            CssClass="fundBtn"/>
+            CssClass="yesButton"/>
             <cc1:RoundedCornersExtender ID="fundButton_RoundedCornersExtender" 
                 runat="server" BehaviorID="fundButton_RoundedCornersExtender" 
                 TargetControlID="fundButton">
             </cc1:RoundedCornersExtender>
         </div>
-        <div id="unfundBtnDiv">
+        <div class="unfundBtnDiv">
             <asp:Button ID="unfundButton" runat="server" Text="Revoke" 
             onclick="unfundButton_Click" OnClientClick="needToConfirm = false;"  
-            CssClass="unfundBtn"/>
+            CssClass="noButton"/>
             <cc1:RoundedCornersExtender ID="unfundButton_RoundedCornersExtender" 
                 runat="server" BehaviorID="unfundButton_RoundedCornersExtender" 
                 TargetControlID="unfundButton">
@@ -157,36 +119,39 @@
         </div>
     </div>
     <br />
-    &nbsp;<div id="remarksBox">
+    &nbsp;<div class="remarksBox">
         <asp:Label ID="confirmRemarkLabel" runat="server" Text="Remarks"></asp:Label>
         <br />
         <asp:TextBox ID="confirmRemarks" runat="server" TextMode="MultiLine" 
             Height="34px" Width="206px"></asp:TextBox>
     </div>
     <br />
-    <div id="images">
-        <div id="imageLeft">
+    <div class="images">
+        <div class="imageLeft">
             <asp:Label ID="Label1" runat="server" AssociatedControlID="checkImage" 
             BorderStyle="None" Text="Image"></asp:Label>
             <br />
-            <asp:Image ID="checkImage" runat="server" CssClass="image_box" Height="180px" 
+            <asp:Image ID="checkImage" runat="server" CssClass="imageBox" Height="180px" 
             Width="450px" ImageAlign="Left" 
             ImageUrl="~/Resources/H2DefaultImage.jpg"/>
         </div>
-        <div id="imageRight">
+        <div class="imageRight">
             <asp:Label ID="Label2" runat="server" AssociatedControlID="sigImage" 
             Text="Signature"></asp:Label>
             <br />
-            <asp:Image ID="sigImage" runat="server" CssClass="image_box" Height="180px" 
+            <asp:Image ID="sigImage" runat="server" CssClass="imageBox" Height="180px" 
             Width="450px" ImageAlign="Right" 
             ImageUrl="~/Resources/H2DefaultImage.jpg"/>
         </div>
-        <div id="emptySpace">
+        <div class="whiteSpace">
             
         </div>
-        <div id="genBtnHolder">
+        <div class="genBtnHolder">
             <asp:Button ID="genListBtn" runat="server" onclick="genListBtn_Click" OnClientClick="return GenerateList(); needToConfirm = false;" 
-            Text="Generate List" />
+            Text="Generate List" CssClass="defaultButton"/>
+            <cc1:RoundedCornersExtender ID="genListBtn_RoundedCornersExtender" 
+                runat="server" BehaviorID="genListBtn_RoundedCornersExtender" 
+                TargetControlID="genListBtn" />
         </div>
     </div>
     <br />

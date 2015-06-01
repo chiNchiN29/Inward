@@ -2,6 +2,11 @@
 <%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="cc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
     <style type="text/css">
+        .label
+        {
+            font-family:Franklin Gothic Medium;
+            color:Black;
+        }
         .table
         {
             background-color:Silver;
@@ -15,28 +20,6 @@
             color:#990000;
             font-size:x-large;
             padding-left:10px; 
-        }
-        .label
-        {
-            font-family:Franklin Gothic Medium;
-            color:Black;
-        }
-        .textbox
-        {
-            height: 20px;
-        }
-        .button
-        {
-            font-size:1.0em; 
-            font-family:Franklin Gothic Medium;
-            background-color:#990000;
-            color:#FFFFFF;  
-            height:35px; 
-            width:90px;
-        }
-        .button:hover
-        {
-            background:ButtonHighlight;
         }
     </style>
 </asp:Content>
@@ -159,7 +142,7 @@
     <tr>
         <td id="buttonstuff" colspan='3' align="center">
             <asp:Button ID="regBtn" 
-                runat="server" Text="Register" onclick="regBtn_Click" CssClass="button"/>
+                runat="server" Text="Register" onclick="regBtn_Click" CssClass="defaultButton"/>
             <cc1:RoundedCornersExtender ID="regBtn_RoundedCornersExtender" runat="server" 
                 BehaviorID="regBtn_RoundedCornersExtender" TargetControlID="regBtn" />
         </td>
