@@ -96,8 +96,9 @@ namespace InwardClearingSystem
                 //string filepath = FileUpload2.PostedFile.FileName;
                 StreamReader sr = new StreamReader(DataUpload.PostedFile.InputStream);
                 int lineCount = 0;
-               
-                    activeConnection.Open();
+
+                using (activeConnectionOpen())
+                {
                     while (!sr.EndOfStream)
                     {
                         string line = sr.ReadLine();
@@ -146,14 +147,16 @@ namespace InwardClearingSystem
 
                     }
                     sr.Close();
-                activeConnection.Close();
+                }
                 DataTable dt = FillDataTable();
                     string wew = ViewState["UploadImageClicked"].ToString();
                     string wew2 = ViewState["ImageCount"].ToString();
+                    string wew3 = lineCount.ToString();
                     bool uploadClicked = bool.Parse(ViewState["UploadImageClicked"].ToString());
                     if (uploadClicked)
                     {
-                        
+
+                        ClientScript.RegisterClientScriptBlock(this.GetType(), "script", "CompareData();", true);
                     }
 
                     
@@ -161,8 +164,7 @@ namespace InwardClearingSystem
             catch (Exception b)
             {
                 Response.Write(b);
-                //Response.Write("Please re-check the format of the data for any missing fields.");
-
+                //Response.Write("Please re-check the format of the data for any missing fields.")
             }
 
         }
@@ -175,9 +177,8 @@ namespace InwardClearingSystem
 
         protected void clearCheck_Click1(object sender, EventArgs e)
         {
-            using (activeConnection)
+            using (activeConnectionOpen())
             {
-                activeConnection.Open();
                 cmd = new SqlCommand("DELETE FROM Cheque", activeConnection);
                 cmd.ExecuteNonQuery();
                 ViewAllCheck.DataBind();
@@ -201,13 +202,13 @@ namespace InwardClearingSystem
             query.Append("WHERE ch.account_number = a.account_number AND a.customer_id = c.customer_id ");
             query.Append("ORDER BY ch.check_number");
 
-            activeConnection.Open();
+            activeConnectionOpen();
             dt = new DataTable();
             SqlDataAdapter da = new SqlDataAdapter(query.ToString(), activeConnection);
             da.Fill(dt);
             ViewAllCheck.DataSource = dt;
             ViewAllCheck.DataBind();
-            activeConnection.Close();
+            activeConnectionClose();
             return dt;
         }
 
@@ -263,11 +264,11 @@ namespace InwardClearingSystem
 
         private DataTable GetData(String query)
         {
-            activeConnection.Open();
+            activeConnectionOpen();
             da = new SqlDataAdapter(query, activeConnection);
             dt = new DataTable();          
             da.Fill(dt);
-            activeConnection.Close();
+            activeConnectionClose();
             return dt;
         }
 

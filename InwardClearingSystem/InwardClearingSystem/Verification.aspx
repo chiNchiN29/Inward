@@ -2,7 +2,7 @@
 <%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="cc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
     
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js" type="text/javascript"></script>
+    <script src="Scripts/jquery-1.8.3.min.js" type="text/javascript"></script>
     <script src="Scripts/jquery.elevateZoom-3.0.8.min.js" type="text/javascript"></script>   
     <style type="text/css">
         .grid_scroll
@@ -129,6 +129,11 @@
             <asp:Image ID="checkImage" runat="server" CssClass="image_box" Height="180px" 
             Width="450px"  ImageAlign="Left" onmouseover="zoomin(this)" onmouseout="zoomout(this)"
             ImageUrl="~/Resources/H2DefaultImage.jpg" />
+            <script type="text/javascript">
+                $(function () {
+                    $("#<%=checkImage.ClientID %>").elevateZoom({ scrollZoom: true, zoomWindowWidth: 450, zoomWindowHeight: 180, zoomWindowPosition: 2 });
+                });
+            </script>
    
         </div>
         <div id="imageRight">
@@ -138,6 +143,11 @@
             <asp:Image ID="sigImage" runat="server" CssClass="image_box" Height="180px" 
             Width="450px" ImageAlign="Right" onmouseover="zoomin(this)" onmouseout="zoomout(this)" 
             ImageUrl="~/Resources/H2DefaultImage.jpg"/>
+            <script type="text/javascript">
+                 $(function () {
+                     $("#<%=sigImage.ClientID %>").elevateZoom({ scrollZoom: true, zoomWindowWidth: 450, zoomWindowHeight: 180, zoomWindowPosition: 2 });
+                 });
+                 </script>
         </div>
 
     </div>

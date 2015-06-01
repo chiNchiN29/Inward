@@ -18,7 +18,7 @@ namespace InwardClearingSystem
 {
     public class BasePage : System.Web.UI.Page
     {
-        public SqlConnection activeConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+        public SqlConnection activeConnection = new SqlConnection();
         public ISession session;
   
         protected override void OnInit(EventArgs e)
@@ -30,12 +30,14 @@ namespace InwardClearingSystem
             if (login == false)
                 Response.Redirect("~/Account/Login.aspx");
             Session["UserName"] = System.Web.HttpContext.Current.User.Identity.Name;
-                activeConnection.Open();
+            using (activeConnectionOpen())
+            {
                 SqlCommand cmd = new SqlCommand("select user_id from [User] where username = @username", activeConnection);
                 cmd.Parameters.AddWithValue("@username", Session["UserName"].ToString());
                 Session["UserID"] = Convert.ToInt32(cmd.ExecuteScalar());
+            }
                 
-            session = CreateSession("admin", "092095", "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom");
+            session = CreateSession("admin", "admin", "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom");
         }
 
         public void Message(string message)
@@ -200,5 +202,42 @@ namespace InwardClearingSystem
                 row.BackColor = Color.Aqua;
             }
         }
+
+        public SqlConnection activeConnectionOpen()
+        {
+            activeConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+            try
+            {
+                if (activeConnection.State == ConnectionState.Closed)
+                {
+                    activeConnection.Open();
+                }
+                return activeConnection;
+            }
+            catch
+            {
+                Response.Redirect("~/FailurePage.aspx");
+                return null;
+            }
+        }
+
+        public SqlConnection activeConnectionClose()
+        {
+            activeConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+            try
+            {
+                if (activeConnection.State == ConnectionState.Open)
+                {
+                    activeConnection.Close();
+                }
+                return activeConnection;
+            }
+            catch
+            {
+                Response.Redirect("~/FailurePage.aspx");
+                return null;
+            }
+        }
+    
     }
 }

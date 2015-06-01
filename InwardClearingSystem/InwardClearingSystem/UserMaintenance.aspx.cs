@@ -22,6 +22,7 @@ namespace InwardClearingSystem
         protected void Page_Load(object sender, EventArgs e)
         {
             delBtn.Visible = false;
+            activeConnectionOpen();
             cmd = new SqlCommand("SELECT role_desc FROM [User] u, Role r WHERE username = @username AND u.role_id = r.role_id", activeConnection);
             cmd.Parameters.AddWithValue("@username", Session["UserName"]);
             if (cmd.ExecuteScalar().ToString() != "ADMIN" && cmd.ExecuteScalar().ToString() != "OVERSEER")
@@ -32,7 +33,7 @@ namespace InwardClearingSystem
             
             else
             {
-                activeConnection.Close();
+                
                 if (!IsPostBack)
                 {
                     ViewState["myDataTable"] = FillDataTable();
@@ -41,14 +42,13 @@ namespace InwardClearingSystem
                 }
                 
             }
-            
+            activeConnectionClose();   
         }
     
         public void FillDropDown()
         {
-            using (activeConnection)
+            using (activeConnectionOpen())
             {
-                activeConnection.Open();
                 query = "SELECT role_desc FROM Role";
                 dt = new DataTable();
                 da = new SqlDataAdapter(query, activeConnection);
@@ -154,7 +154,7 @@ namespace InwardClearingSystem
             {
                 row = UserView.Rows[i];
                 string user = row.Cells[2].Text;
-                using (activeConnection)
+                using (activeConnectionOpen())
                 {
                     cmd = new SqlCommand("UPDATE Branch SET user_id = NULL FROM Branch b, [User] u WHERE u. user_id = b.user_id AND u.username = @name", activeConnection);
                     cmd.Parameters.AddWithValue("@name", user);

@@ -32,15 +32,15 @@ namespace InwardClearingSystem
      
         protected void Page_Load(object sender, EventArgs e)
         {
-       
+            activeConnectionOpen();
             cmd = new SqlCommand("SELECT role_desc FROM [User] u, Role r WHERE username = @username AND u.role_id = r.role_id", activeConnection);
             cmd.Parameters.AddWithValue("@username", Session["UserName"]);
             string role = cmd.ExecuteScalar().ToString();
-            activeConnection.Close();
+            activeConnectionClose();
             if (role != "CLEARING DEPT" && role != "OVERSEER")
             {
                 Message("You are not authorized to view this page");
-                Response.Redirect("Default.aspx");
+                Response.Redirect("~/Default.aspx");
                 
             }
                             
@@ -124,9 +124,8 @@ namespace InwardClearingSystem
         //Signature image in Database
         private void ShowSigDTImage(int rowIndex)
         {
-            using (activeConnection)
+            using (activeConnectionOpen())
             {
-                activeConnection.Open();
                 try
                 {
                     cmd = new SqlCommand("select signature_image from Signature WHERE account_number= @acctnumber", activeConnection);
@@ -193,8 +192,9 @@ namespace InwardClearingSystem
                //}
                //else
                //{
-        
-                   activeConnection.Open();
+
+               using (activeConnectionOpen())
+               {
                    cmd = new SqlCommand("update Cheque SET verification = @verify, modified_by = @modby, modified_date = @moddate WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection);
                    cmd.Parameters.AddWithValue("@acctnumber", VerifyView.Rows[i].Cells[3].Text);
                    cmd.Parameters.AddWithValue("@chknumber", VerifyView.Rows[i].Cells[1].Text);
@@ -207,6 +207,7 @@ namespace InwardClearingSystem
                    dt = FillDataTable();
 
                    NextRow(VerifyView, i);
+               }
 
            //    }
            }
@@ -234,8 +235,9 @@ namespace InwardClearingSystem
                     }
                     else
                     {
-                        
-                            activeConnection.Open();
+
+                        using (activeConnectionOpen())
+                        {
                             cmd = new SqlCommand("update Cheque SET verification = @verify, modified_by = @modby, modified_date = @moddate, verify_remarks = @veremarks WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection);
                             cmd.Parameters.AddWithValue("@acctnumber", VerifyView.Rows[i].Cells[3].Text);
                             cmd.Parameters.AddWithValue("@chknumber", VerifyView.Rows[i].Cells[1].Text);
@@ -246,11 +248,12 @@ namespace InwardClearingSystem
                             cmd.ExecuteNonQuery();
 
                             activeConnection.Close();
-   
-                        dt = FillDataTable();
+
+                            dt = FillDataTable();
 
 
-                        NextRow(VerifyView, i);
+                            NextRow(VerifyView, i);
+                        }
                     }
             }
         }
@@ -319,11 +322,11 @@ namespace InwardClearingSystem
             query.Append("WHERE ch.account_number = a.account_number AND a.customer_id = c.customer_id AND verification = 'NO' "); 
             query.Append("ORDER BY ch.account_number");
 
-            activeConnection.Open();
+            activeConnectionOpen();
             da = new SqlDataAdapter(query.ToString(), activeConnection);
             dt = new DataTable();
             da.Fill(dt);
-            activeConnection.Close();
+            activeConnectionClose();
             return dt; 
         }
             
@@ -347,7 +350,7 @@ namespace InwardClearingSystem
             query.Append("WHERE (u.username = @username) AND (ch.verification <> 'BTA') AND (ch.bank_remarks = NULL OR ch.bank_remarks = ' ') ");   
             query.Append("ORDER BY ch.account_number");
 
-            activeConnection.Open();
+            activeConnectionOpen();
             cmd = new SqlCommand(query.ToString(), activeConnection);
             cmd.Parameters.AddWithValue("@username", user); 
             dt = new DataTable();
@@ -356,7 +359,7 @@ namespace InwardClearingSystem
             da.Fill(dt);
             VerifyView.DataSource = dt;
             VerifyView.DataBind();
-            activeConnection.Close();
+            activeConnectionClose();
             return dt;
         }
 

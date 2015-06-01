@@ -160,7 +160,7 @@
 
             OnClick="uploadImgBtn_Click" OnClientClick="skm_LockScreen('Uploading Images');" 
                 CssClass="uploaderCss"/>   
-            <cc1:RoundedCornersExtender ID="uploadImgBtn_RoundedCornersExtender" 
+            <cc1:roundedcornersextender ID="uploadImgBtn_RoundedCornersExtender" 
                 runat="server" BehaviorID="uploadImgBtn_RoundedCornersExtender" 
                 TargetControlID="uploadImgBtn" />
             <div id="skm_LockPane" class="LockOff"></div> 
@@ -192,7 +192,7 @@
             <asp:Label ID="genLbl" runat="server" Font-Size="Larger" ForeColor="Black" Text="Generate List of Verified Cheques"></asp:Label><br/>
             <asp:Button ID="genListBtn" runat="server" onclick="genListBtn_Click" OnClientClick="return GenerateList(); needToConfirm = false;" 
             Text="Generate List" CssClass="uploaderCss"/>
-            <cc1:RoundedCornersExtender ID="genListBtn_RoundedCornersExtender" 
+            <cc1:roundedcornersextender ID="genListBtn_RoundedCornersExtender" 
                 runat="server" BehaviorID="genListBtn_RoundedCornersExtender" 
                 TargetControlID="genListBtn" />
         </div>
@@ -226,10 +226,16 @@
            return false;
        }
 
- </script>
 
+       function CompareData() {
+           var im = document.getElementById("<%=ImgCount.ClientID%>").value;
+           var data = document.getElementById("<%=DataCount.ClientID%>").value;
+           alert(im + " images were uploaded.\n" + data + " check data were uploaded");
+       }
+       </script>
  
        
- 
+ <asp:HiddenField ID="ImgCount" runat="server" />
+    <asp:HiddenField ID="DataCount" runat="server" />
    
     </asp:Content>

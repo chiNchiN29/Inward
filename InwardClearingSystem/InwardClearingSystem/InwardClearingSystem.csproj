@@ -77,6 +77,7 @@
     <Content Include="FailurePage.aspx" />
     <Content Include="Resources\H2DefaultImage.jpg" />
     <Content Include="Resources\H2ics.png" />
+    <Content Include="Scripts\jquery-1.8.3.min.js" />
     <Content Include="Scripts\jquery.elevateZoom-3.0.8.min.js" />
     <Content Include="Scripts\jquery.elevatezoom.js" />
     <Content Include="Styles\Site.css" />

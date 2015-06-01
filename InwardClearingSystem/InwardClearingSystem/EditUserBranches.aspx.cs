@@ -17,7 +17,8 @@ namespace InwardClearingSystem
         DataTable dt;
         
         protected void Page_Load(object sender, EventArgs e)
-        {   
+        {
+            activeConnectionOpen();
             cmd = new SqlCommand("SELECT role_desc FROM [User] u, Role r WHERE username = @username AND u.role_id = r.role_id", activeConnection);
             cmd.Parameters.AddWithValue("@username", Session["UserName"]);
             if (cmd.ExecuteScalar().ToString() != "BANK BRANCH" && cmd.ExecuteScalar().ToString() != "OVERSEER")
@@ -38,23 +39,24 @@ namespace InwardClearingSystem
                     ViewState["Branches"] = Branches;
                 }
             }
-            
-            activeConnection.Close();
+            activeConnectionClose();
         }
 
         protected void backBtn_Click(object sender, EventArgs e)
         {
-            Response.Redirect("UserMaintenance.aspx");
+            Response.Redirect("~/UserMaintenance.aspx");
         }
 
         public DataTable FillDataTable()
-        {  
+        {
+            activeConnectionOpen();
             cmd = new SqlCommand("SELECT branch_name, username FROM Branch b LEFT JOIN [User] u ON b.user_id = u.user_id", activeConnection);
             dt = new DataTable();
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             da.Fill(dt);
             branchView.DataSource = dt;
             branchView.DataBind();
+            activeConnectionClose();
             return dt;
         }
 
@@ -75,9 +77,8 @@ namespace InwardClearingSystem
 
         protected void saveBtn_Click(object sender, EventArgs e)
         {
-            using (activeConnection)
+            using (activeConnectionOpen())
             {
-                activeConnection.Open();
                 try
                 {
                     int userID = int.Parse(Request.QueryString["UserID"].ToString());

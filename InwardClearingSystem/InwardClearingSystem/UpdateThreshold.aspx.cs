@@ -16,12 +16,13 @@ namespace InwardClearingSystem
    
         protected void Page_Load(object sender, EventArgs e)
         {
+            activeConnectionOpen();
             SqlCommand cmd = new SqlCommand("SELECT role_desc FROM [User] u, Role r WHERE username = @name AND u.role_id = r.role_id", activeConnection);
             cmd.Parameters.AddWithValue("@name", Session["UserName"]);
             if (cmd.ExecuteScalar().ToString() != "ADMIN" && cmd.ExecuteScalar().ToString() != "OVERSEER")
             {
                 Message("You are not authorized to view this page");
-                Response.Redirect("Default.aspx");
+                Response.Redirect("~/Default.aspx");
             }
             else
             {
@@ -31,7 +32,7 @@ namespace InwardClearingSystem
                 SqlCommand select2 = new SqlCommand("select maximum from Threshold", activeConnection);
                 Label5.Text = String.Format("{0:C}", select2.ExecuteScalar());
             }
-            activeConnection.Close();
+            activeConnectionClose();
         }
 
         protected void SetThresholds(object sender, EventArgs e)
@@ -44,9 +45,8 @@ namespace InwardClearingSystem
                     bool boop = int.TryParse(TextBox1.Text, out num1);
                     if (boop == true)
                     {
-                        using (activeConnection)
+                        using (activeConnectionOpen())
                         {
-                            activeConnection.Open();
                             SqlCommand updateMin = new SqlCommand("update Threshold SET minimum = @thresh", activeConnection);
                             updateMin.Parameters.AddWithValue("@thresh", TextBox1.Text);
                             updateMin.ExecuteNonQuery();
@@ -61,9 +61,8 @@ namespace InwardClearingSystem
                     bool poob = int.TryParse(TextBox2.Text, out num1);
                     if (poob == true)
                     {
-                        using (activeConnection)
+                        using (activeConnectionOpen())
                         {
-                            activeConnection.Open();
                             SqlCommand updateMax = new SqlCommand("update Threshold SET maximum = @thresh", activeConnection);
                             updateMax.Parameters.AddWithValue("@thresh", TextBox2.Text);
                             updateMax.ExecuteNonQuery();
@@ -76,7 +75,7 @@ namespace InwardClearingSystem
             }
             else
             {
-                Response.Redirect("Default.aspx");
+                Response.Redirect("~/Default.aspx");
             }
         }
     }
