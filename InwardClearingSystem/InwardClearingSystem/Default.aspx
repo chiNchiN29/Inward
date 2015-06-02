@@ -19,18 +19,22 @@
              display: block; 
              visibility: visible; 
              position: absolute; 
-             z-index: 999; 
              top: 0px; 
-             left: 0px; 
-             width: 105%; 
-             height: 105%; 
+             left: 0px;
+             width: 100%; 
+             height: 100%;
              background-color: #ccc; 
-             text-align: center; 
-             padding-top: 20%; 
-             filter: alpha(opacity=100); 
+              text-align: center;
+              vertical-align: middle; 
              opacity: 0.8;
              font-size: large; 
              font-weight: bolder;
+            background-image: url('../resources/loading.gif');
+             background-size: 150px;
+             background-repeat: no-repeat;
+             background-position: center;
+             
+          
         } 
         div.buttonHolder
         {
@@ -81,6 +85,7 @@
         </style>
 </asp:Content>
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
+
     <div class="gridWindow">
     <div class="gridTitleBar" style="width:99.4%">
         All Cheques
@@ -129,7 +134,7 @@
             <asp:Button ID="uploadImgBtn" runat="server" Text="Upload Image" 
 
             OnClick="uploadImgBtn_Click" OnClientClick="skm_LockScreen('Uploading Images');" 
-                CssClass="defaultButton"/>   
+                CssClass="defaultButton" />   
             <cc1:RoundedCornersExtender ID="uploadImgBtn_RoundedCornersExtender" 
                 runat="server" BehaviorID="uploadImgBtn_RoundedCornersExtender" 
                 TargetControlID="uploadImgBtn" />
@@ -187,8 +192,9 @@
            var lock = document.getElementById('skm_LockPane');
            if (lock)
                lock.className = 'LockOn';
-
-           lock.innerHTML = str;
+               lock.innerHTML = str;
+           
+           
        }
 
        function GenerateList() {
@@ -198,7 +204,7 @@
            return false;
        }
 
-
+     
        function CompareData() {
            var im = document.getElementById("<%=ImgCount.ClientID%>").value;
            var data = document.getElementById("<%=DataCount.ClientID%>").value;

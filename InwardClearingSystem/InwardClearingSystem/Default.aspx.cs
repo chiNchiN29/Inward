@@ -16,6 +16,7 @@ using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Security.Cryptography;
 
 namespace InwardClearingSystem
 {
@@ -53,15 +54,30 @@ namespace InwardClearingSystem
             folder.CreateDocument(DocumentProperties, contentStream, null);
         }
 
+        private static string GetChecksum(string file)
+        {
+            string m_checksum;
+            using (FileStream stream = File.OpenRead(file))
+            {
+                MD5 m_md5 = new MD5CryptoServiceProvider();
+                //SHA256Managed sha = new SHA256Managed();
+                byte[] checksum = m_md5.ComputeHash(stream);
+                m_checksum = BitConverter.ToString(checksum).Replace("-", String.Empty);
+            }
+            return m_checksum;
+        }
+
         protected void uploadImgBtn_Click(Object sender, EventArgs e)
         {
             try
             {
+              
                 ViewState["UploadImageClicked"] = "false";
                 HttpFileCollection hfc = Request.Files;
                 for (int i = 0; i < hfc.Count; i++)
                 {
                     HttpPostedFile hpf = hfc[i];
+                    string beforesum = GetChecksum(hpf.FileName);
                     if (hpf.ContentLength > 0)
                     {
                         UploadADocument(session, imageToByteArray(System.Drawing.Image.FromStream(hpf.InputStream)), Path.GetFileNameWithoutExtension(hpf.FileName));
@@ -155,12 +171,14 @@ namespace InwardClearingSystem
                 DataTable dt = FillDataTable();
                     string wew = ViewState["UploadImageClicked"].ToString();
                     string wew2 = ViewState["ImageCount"].ToString();
+                    ImgCount.Value = ViewState["ImageCount"].ToString();
+                    DataCount.Value = lineCount.ToString();
                     string wew3 = lineCount.ToString();
                     bool uploadClicked = bool.Parse(ViewState["UploadImageClicked"].ToString());
                     if (uploadClicked)
                     {
 
-                        ClientScript.RegisterClientScriptBlock(this.GetType(), "script", "CompareData();", true);
+                        ClientScript.RegisterStartupScript(this.GetType(), "script", "CompareData();", true);
                     }
 
                     
@@ -213,6 +231,7 @@ namespace InwardClearingSystem
             ViewAllCheck.DataSource = dt;
             ViewAllCheck.DataBind();
             activeConnectionClose();
+
             return dt;
         }
 
