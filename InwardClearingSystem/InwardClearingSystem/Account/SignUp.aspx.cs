@@ -22,45 +22,50 @@ namespace InwardClearingSystem.Account
             using (connection)
             {
                 connection.Open();
-                SqlCommand usernameChecker = new SqlCommand("SELECT username FROM [User] WHERE username = @username", connection);
-                usernameChecker.Parameters.AddWithValue("@username", unTxtBx.Text);
-                SqlCommand emailChecker = new SqlCommand("SELECT email FROM [User] WHERE email = @email", connection);
-                emailChecker.Parameters.AddWithValue("@email", emTxtBx.Text);
-                if (usernameChecker.ExecuteScalar() != null)
+                using (SqlCommand usernameChecker = new SqlCommand("SELECT username FROM [User] WHERE username = @username", connection))
                 {
-                    Response.Write("The username is taken. Please choose another.");
-                }
-                else
-                {
-                    if (emailChecker.ExecuteScalar() != null)
+                    usernameChecker.Parameters.AddWithValue("@username", unTxtBx.Text);
+                    using (SqlCommand emailChecker = new SqlCommand("SELECT email FROM [User] WHERE email = @email", connection))
                     {
-                        Response.Write("The email is taken. Please choose another.");
-                    }
-                    else
-                    {
-                        if (passTxtBx.Text == cpassTxtBx.Text)
+                        emailChecker.Parameters.AddWithValue("@email", emTxtBx.Text);
+                        if (usernameChecker.ExecuteScalar() != null)
                         {
-                            if (passTxtBx.Text.Count() < 8)
-                            {
-                                Label4.Visible = true;
-                                Label4.Text = "You must have at least 8 characters for your password.";
-                            }
-                            else
-                            {
-                                SqlCommand insert = new SqlCommand("insert into [User](username, first_name, last_name, password, email) values (@user, @first, @last, @pass, @mail)", connection);
-                                insert.Parameters.AddWithValue("@user", unTxtBx.Text);
-                                insert.Parameters.AddWithValue("@first", fnTxtBx.Text);
-                                insert.Parameters.AddWithValue("@last", lnTxtBx.Text);
-                                insert.Parameters.AddWithValue("@pass", passTxtBx.Text);
-                                insert.Parameters.AddWithValue("@mail", emTxtBx.Text);
-                                insert.ExecuteNonQuery();
-                                Response.Redirect("~/Account/Login.aspx");
-                             
-                            }
+                            Response.Write("The username is taken. Please choose another.");
                         }
                         else
                         {
-                            Response.Write("The passwords do not match. Please try again.");
+                            if (emailChecker.ExecuteScalar() != null)
+                            {
+                                Response.Write("The email is taken. Please choose another.");
+                            }
+                            else
+                            {
+                                if (passTxtBx.Text == cpassTxtBx.Text)
+                                {
+                                    if (passTxtBx.Text.Count() < 8)
+                                    {
+                                        Label4.Visible = true;
+                                        Label4.Text = "You must have at least 8 characters for your password.";
+                                    }
+                                    else
+                                    {
+                                        using (SqlCommand insert = new SqlCommand("insert into [User](username, first_name, last_name, password, email) values (@user, @first, @last, @pass, @mail)", connection))
+                                        {
+                                            insert.Parameters.AddWithValue("@user", unTxtBx.Text);
+                                            insert.Parameters.AddWithValue("@first", fnTxtBx.Text);
+                                            insert.Parameters.AddWithValue("@last", lnTxtBx.Text);
+                                            insert.Parameters.AddWithValue("@pass", passTxtBx.Text);
+                                            insert.Parameters.AddWithValue("@mail", emTxtBx.Text);
+                                            insert.ExecuteNonQuery();
+                                            Response.Redirect("~/Account/Login.aspx");
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    Response.Write("The passwords do not match. Please try again.");
+                                }
+                            }
                         }
                     }
                 }

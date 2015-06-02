@@ -5,7 +5,7 @@ body
 {
     background: #FFFFFF;
     font-size: .80em;
-    font-family: Franklin Gothic Medium;
+    font-family: Segoe UI;
     margin: 0px;
     padding: 0px;
     color: #000000;
@@ -133,7 +133,7 @@ first child of the left and right table columns */
 {
     background-color:#990000;
     color:#FFFFFF;
-    font-family:Franklin Gothic Medium;
+    font-family:Segoe UI;
     height:30px;
     width:155px;
 }
@@ -147,7 +147,7 @@ first child of the left and right table columns */
 {
     background-color:#00CC00;
     color:#FFFFFF;   
-    font-family:Franklin Gothic Medium;
+    font-family:Segoe UI;
     height:36px;
     width:155px; 
 }
@@ -161,7 +161,7 @@ first child of the left and right table columns */
 {
     background-color:#CC0000;
     color:#FFFFFF;   
-    font-family:Franklin Gothic Medium;
+    font-family:Segoe UI;
     height:36px;
     width:155px; 
 }
@@ -321,10 +321,10 @@ div.gridTitleBar
     border-style: solid solid none solid;
     border-color: #333333; 
     background-color: #AA3333;
-    font-family: Franklin Gothic Medium;
+    font-family: Segoe UI;
     font-size: medium;
     color: #FFFFFF;
-    width: 98.45%;
+    width: auto;
     height: 20px;
     padding-left: 8px;
 }
@@ -360,7 +360,7 @@ div.gridTitleBar
     font-size: 13px;
     border-style: solid;
     border-width: 1px;
-    font-family: "Franklin Gothic Medium";
+    font-family: "Segoe UI";
 }
 
 .GridHeader Inner
@@ -382,7 +382,7 @@ div.gridTitleBar
     text-decoration: underline;
     font-size: 13px;
     color: #FFFFFF;
-    font-family: "Franklin Gothic Medium";
+    font-family: "Segoe UI";
 }
 
 .gridView2

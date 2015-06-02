@@ -34,6 +34,7 @@
         } 
         div.buttonHolder
         {
+            padding-top:15px;
             text-align:right;
         }
         div.dataLoad
@@ -45,11 +46,13 @@
         {
             width: 400px;
             float: right;
+            padding-top:20px;
         }
         div.generateVerified
         {
             width: 400px;
             float: left;
+            padding-top:20px;
         }
         div.generator
         {
@@ -79,7 +82,7 @@
 </asp:Content>
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
     <div class="gridWindow">
-    <div class="gridTitleBar">
+    <div class="gridTitleBar" style="width:99.4%">
         All Cheques
     </div>
     <div class="grid_scroll">
@@ -106,7 +109,7 @@
     </div>
         <div class="buttonHolder">
             <asp:Button ID="clearCheck" runat="server" onclientclick="return DeleteItem()" 
-            Text="Clear Check Data" onclick="clearCheck_Click1" CssClass="defaultButton"/>  
+            Text="Clear Check Data" onclick="clearCheck_Click1" CssClass="defaultButton" BackColor="#AA3333"/>  
             <cc1:RoundedCornersExtender ID="clearCheck_RoundedCornersExtender" 
                 runat="server" BehaviorID="clearCheck_RoundedCornersExtender" 
                 TargetControlID="clearCheck" />

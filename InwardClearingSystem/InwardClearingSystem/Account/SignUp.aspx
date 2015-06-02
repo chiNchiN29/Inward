@@ -4,7 +4,7 @@
     <style type="text/css">
         .label
         {
-            font-family:Franklin Gothic Medium;
+            font-family:Segoe UI;
             color:Black;
         }
         .table
@@ -16,7 +16,7 @@
         }
         .title
         {
-            font-family:Franklin Gothic Medium;
+            font-family:Segoe UI;
             color:#990000;
             font-size:x-large;
             padding-left:10px; 

@@ -11,7 +11,8 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <br />
-    <span class="style1"><strong>User Maintenance</strong></span><br />
+<div class="gridDiv" style="width:35%; border:2px solid #333333">
+    <div class="gridTitleBar"><strong>User Maintenance</strong></div>
     <asp:GridView ID="UserView" runat="server" DataKeyNames="user_id" AutoGenerateColumns="false" HeaderStyle-CssClass="GridHeader" CssClass="gridView2">
         <Columns>
             <asp:TemplateField>
@@ -25,6 +26,8 @@
             <asp:BoundField DataField="role_desc" HeaderText="Role" ItemStyle-Width="100px" />
         </Columns>
     </asp:GridView>
+</div>
+<br />
     Assign Role:<br />
 
      <script type="text/javascript">

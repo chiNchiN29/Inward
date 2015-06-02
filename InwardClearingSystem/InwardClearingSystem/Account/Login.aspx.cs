@@ -43,65 +43,71 @@ namespace InwardClearingSystem.Account
             using (connection)
             {
                 connection.Open();
-                SqlCommand usernameChecker = new SqlCommand("SELECT username FROM [User] WHERE username = @username", connection);
-                usernameChecker.Parameters.AddWithValue("@username", Login1.UserName);
-                SqlCommand passwordChecker = new SqlCommand("SELECT password FROM [User] WHERE username = @username", connection);
-                passwordChecker.Parameters.AddWithValue("@username", Login1.UserName);
-                if (usernameChecker.ExecuteScalar() != null && passwordChecker.ExecuteScalar() != null)
+                using (SqlCommand usernameChecker = new SqlCommand("SELECT username FROM [User] WHERE username = @username", connection))
                 {
-                    string username = usernameChecker.ExecuteScalar().ToString();
-                    string password = passwordChecker.ExecuteScalar().ToString();
-                    if (Login1.UserName == username && Login1.Password == password)
+                    usernameChecker.Parameters.AddWithValue("@username", Login1.UserName);
+                    using (SqlCommand passwordChecker = new SqlCommand("SELECT password FROM [User] WHERE username = @username", connection))
                     {
-                        SqlCommand cmd = new SqlCommand("select * from [User] where username = @userName AND password = @password", connection);
-                        cmd.Parameters.AddWithValue("@userName", Login1.UserName);
-                        cmd.Parameters.AddWithValue("@password", Login1.Password);
-                        SqlDataReader dr = cmd.ExecuteReader();
-                        while (dr.Read())
+                        passwordChecker.Parameters.AddWithValue("@username", Login1.UserName);
+                        if (usernameChecker.ExecuteScalar() != null && passwordChecker.ExecuteScalar() != null)
                         {
-                            Session["UserName"] = (string)dr["username"];
-                            Session["FirstName"] = dr["f_name"].ToString();
-                            Session["LastName"] = dr["l_name"].ToString();
-                            Session["Email"] = dr["email"].ToString();
-                            Session["RoleID"] = Convert.ToInt32(dr["role_id"]);
-                            Session["UserID"] = Convert.ToInt32(dr["user_id"]);
+                            string username = usernameChecker.ExecuteScalar().ToString();
+                            string password = passwordChecker.ExecuteScalar().ToString();
+                            if (Login1.UserName == username && Login1.Password == password)
+                            {
+                                using (SqlCommand cmd = new SqlCommand("select * from [User] where username = @userName AND password = @password", connection))
+                                {
+                                    cmd.Parameters.AddWithValue("@userName", Login1.UserName);
+                                    cmd.Parameters.AddWithValue("@password", Login1.Password);
+                                    SqlDataReader dr = cmd.ExecuteReader();
+                                    while (dr.Read())
+                                    {
+                                        Session["UserName"] = (string)dr["username"];
+                                        Session["FirstName"] = dr["f_name"].ToString();
+                                        Session["LastName"] = dr["l_name"].ToString();
+                                        Session["Email"] = dr["email"].ToString();
+                                        Session["RoleID"] = Convert.ToInt32(dr["role_id"]);
+                                        Session["UserID"] = Convert.ToInt32(dr["user_id"]);
+                                    }
+                                    e.Authenticated = true;
+                                    role_id = Convert.ToInt32(Session["RoleID"]);
+                                    switch (role_id)
+                                    {
+                                        default:
+                                            Login1.DestinationPageUrl = "~/Default.aspx";
+                                            connection.Close();
+                                            break;
+
+                                        case 2:
+                                            Login1.DestinationPageUrl = "~/Verification.aspx";
+                                            connection.Close();
+                                            break;
+
+                                        case 3:
+                                            Login1.DestinationPageUrl = "~/Confirmation.aspx";
+                                            connection.Close();
+                                            break;
+                                    }
+                                }
+                            }
                         }
-                        e.Authenticated = true;
-                        role_id = Convert.ToInt32(Session["RoleID"]);
-                        switch (role_id)
+                        else
                         {
-                            default:
-                                Login1.DestinationPageUrl = "~/Default.aspx";
-                                connection.Close();
-                                break;
-
-                            case 2:
-                                Login1.DestinationPageUrl = "~/Verification.aspx";
-                                connection.Close();
-                                break;
-
-                            case 3:
-                                Login1.DestinationPageUrl = "~/Confirmation.aspx";
-                                connection.Close();
-                                break;
+                            e.Authenticated = false;
                         }
-                    }
-                }
-                else
-                {
-                    e.Authenticated = false;
-                }
 
-                if (Login1.RememberMeSet)
-                {
-                    Response.Cookies["Username"].Value = Login1.UserName.ToString();
-                    Response.Cookies["Username"].Expires = DateTime.Now.AddDays(30);
-                }
-                else
-                {
-                    if (Response.Cookies["Username"] != null)
-                    {
-                        Response.Cookies["Username"].Expires = DateTime.Now.AddDays(-30);
+                        if (Login1.RememberMeSet)
+                        {
+                            Response.Cookies["Username"].Value = Login1.UserName.ToString();
+                            Response.Cookies["Username"].Expires = DateTime.Now.AddDays(30);
+                        }
+                        else
+                        {
+                            if (Response.Cookies["Username"] != null)
+                            {
+                                Response.Cookies["Username"].Expires = DateTime.Now.AddDays(-30);
+                            }
+                        }
                     }
                 }
             }

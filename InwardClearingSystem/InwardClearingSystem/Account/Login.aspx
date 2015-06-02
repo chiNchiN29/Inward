@@ -15,7 +15,7 @@
             width:380px;
             text-align:center;
             float: right;
-            font-family:Franklin Gothic Medium;
+            font-family:Segoe UI;
             background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #FFFFFF), color-stop(1, #B5B5B5)) !important;
         }
         .textBoxPositions

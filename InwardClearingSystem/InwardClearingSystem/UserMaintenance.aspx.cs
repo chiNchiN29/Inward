@@ -117,15 +117,17 @@ namespace InwardClearingSystem
                     using (activeConnection)
                     {
                         activeConnection.Open();
-                        SqlCommand select = new SqlCommand("SELECT role_id FROM Role WHERE @rolename = role_desc", activeConnection);
-                        select.Parameters.AddWithValue("@rolename", RoleDrpDwn.Text);
+                        using (SqlCommand select = new SqlCommand("SELECT role_id FROM Role WHERE @rolename = role_desc", activeConnection))
+                        {
+                            select.Parameters.AddWithValue("@rolename", RoleDrpDwn.Text);
 
-                        cmd = new SqlCommand("update [User] SET role_id = @id WHERE username = @name", activeConnection);
-                        cmd.Parameters.AddWithValue("@id", select.ExecuteScalar());
-                        cmd.Parameters.AddWithValue("@name", user);
-                        cmd.ExecuteNonQuery();
+                            cmd = new SqlCommand("update [User] SET role_id = @id WHERE username = @name", activeConnection);
+                            cmd.Parameters.AddWithValue("@id", select.ExecuteScalar());
+                            cmd.Parameters.AddWithValue("@name", user);
+                            cmd.ExecuteNonQuery();
 
-                        dt = FillDataTable();
+                            dt = FillDataTable();
+                        }
                     }
                 }
             }

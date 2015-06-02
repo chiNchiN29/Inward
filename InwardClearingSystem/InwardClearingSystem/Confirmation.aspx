@@ -22,7 +22,7 @@
         {
             width:65%;
             margin:0 auto;
-            font-family:Franklin Gothic Medium;
+            font-family:Segoe UI;
         }
         div.fundBtnDiv
         {

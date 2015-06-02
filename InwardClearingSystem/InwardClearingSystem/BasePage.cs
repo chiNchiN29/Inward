@@ -32,12 +32,14 @@ namespace InwardClearingSystem
             Session["UserName"] = System.Web.HttpContext.Current.User.Identity.Name;
             using (activeConnectionOpen())
             {
-                SqlCommand cmd = new SqlCommand("select user_id from [User] where username = @username", activeConnection);
-                cmd.Parameters.AddWithValue("@username", Session["UserName"].ToString());
-                Session["UserID"] = Convert.ToInt32(cmd.ExecuteScalar());
+                using (SqlCommand cmd = new SqlCommand("select user_id from [User] where username = @username", activeConnection))
+                {
+                    cmd.Parameters.AddWithValue("@username", Session["UserName"].ToString());
+                    Session["UserID"] = Convert.ToInt32(cmd.ExecuteScalar());
+                }
             }
                 
-            session = CreateSession("admin", "admin", "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom");
+            session = CreateSession("admin", "092095", "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom");
         }
 
         public void Message(string message)

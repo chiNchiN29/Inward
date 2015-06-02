@@ -22,8 +22,8 @@
     </Columns>
     </asp:GridView>
     <br />
-    <asp:Button ID="saveBtn" runat="server" Text="Save" onclick="saveBtn_Click" />
+    <asp:Button ID="saveBtn" runat="server" Text="Save" onclick="saveBtn_Click" CssClass="yesButton" />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <asp:Button ID="backBtn" runat="server" onclick="backBtn_Click" 
-        Text="Back" />
+        Text="Back" CssClass="noButton" />
     </asp:Content>

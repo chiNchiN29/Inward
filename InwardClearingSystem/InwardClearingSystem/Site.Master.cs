@@ -31,16 +31,18 @@ namespace InwardClearingSystem
                     using (connection)
                     {
                         connection.Open();
-                        SqlCommand checker = new SqlCommand("SELECT role_desc FROM [User] u, Role r WHERE username = @name AND u.role_id = r.role_id", connection);   
-                        checker.Parameters.AddWithValue("@name", Session["UserName"]);
-                        if (checker.ExecuteScalar().ToString() == "ADMIN")
+                        using (SqlCommand checker = new SqlCommand("SELECT role_desc FROM [User] u, Role r WHERE username = @name AND u.role_id = r.role_id", connection))
                         {
-                            AdminView();
+                            checker.Parameters.AddWithValue("@name", Session["UserName"]);
+                            if (checker.ExecuteScalar().ToString() == "ADMIN")
+                            {
+                                AdminView();
+                            }
+                            else if (checker.ExecuteScalar().ToString() == "OVERSEER")
+                            {
+                                OverseerView();
+                            }
                         }
-                        else if (checker.ExecuteScalar().ToString() == "OVERSEER")
-                        {
-                            OverseerView();
-                        }   
                     }
                 }
                 catch(Exception b)

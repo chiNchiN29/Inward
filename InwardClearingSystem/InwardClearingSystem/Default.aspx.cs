@@ -27,8 +27,6 @@ namespace InwardClearingSystem
         SqlCommand cmd;
         StringBuilder query;
         
-        int noImageUploaded = 0;
-        
         protected void Page_Load(object sender, EventArgs e)
         {
             activeConnection.Close();
@@ -110,40 +108,46 @@ namespace InwardClearingSystem
                         query.Append("values (@checknum, @amount, @date, @branch, @draweebank, @draweebranch, ");
                         query.Append("@funded, @verified, @confirmed, @remarks, @acctnum, @modby, @moddate)");
 
-                        SqlCommand validator = new SqlCommand("select check_number from Cheque where check_number = @checknum", activeConnection);
-                        validator.Parameters.AddWithValue("@checknum", heart[0]);
-                        if (validator.ExecuteScalar() == null)
+                        using (SqlCommand validator = new SqlCommand("select check_number from Cheque where check_number = @checknum", activeConnection))
                         {
-                            SqlCommand insert = new SqlCommand(query.ToString(), activeConnection);
-                            SqlCommand checker = new SqlCommand("select minimum from Threshold", activeConnection);
-                            insert.Parameters.AddWithValue("@checknum", heart[0]);
-                            insert.Parameters.AddWithValue("@amount", heart[1]);
-                            insert.Parameters.AddWithValue("@date", heart[2]);
-                            insert.Parameters.AddWithValue("@branch", heart[3]);
-                            insert.Parameters.AddWithValue("@draweebank", heart[4]);
-                            insert.Parameters.AddWithValue("@draweebranch", heart[5]);
-                            insert.Parameters.AddWithValue("@funded", heart[6]);
-                            if (decimal.Parse(heart[1]) < decimal.Parse(checker.ExecuteScalar().ToString()))
+                            validator.Parameters.AddWithValue("@checknum", heart[0]);
+                            if (validator.ExecuteScalar() == null)
                             {
-                                insert.Parameters.AddWithValue("@verified", "BTA");
+                                using (SqlCommand insert = new SqlCommand(query.ToString(), activeConnection))
+                                {
+                                    using (SqlCommand checker = new SqlCommand("select minimum from Threshold", activeConnection))
+                                    {
+                                        insert.Parameters.AddWithValue("@checknum", heart[0]);
+                                        insert.Parameters.AddWithValue("@amount", heart[1]);
+                                        insert.Parameters.AddWithValue("@date", heart[2]);
+                                        insert.Parameters.AddWithValue("@branch", heart[3]);
+                                        insert.Parameters.AddWithValue("@draweebank", heart[4]);
+                                        insert.Parameters.AddWithValue("@draweebranch", heart[5]);
+                                        insert.Parameters.AddWithValue("@funded", heart[6]);
+                                        if (decimal.Parse(heart[1]) < decimal.Parse(checker.ExecuteScalar().ToString()))
+                                        {
+                                            insert.Parameters.AddWithValue("@verified", "BTA");
+                                        }
+                                        else
+                                        {
+                                            insert.Parameters.AddWithValue("@verified", heart[7]);
+                                        }
+                                        insert.Parameters.AddWithValue("@confirmed", heart[8]);
+                                        insert.Parameters.AddWithValue("@remarks", heart[9]);
+                                        insert.Parameters.AddWithValue("@acctnum", heart[10]);
+                                        insert.Parameters.AddWithValue("@modby", userID);
+                                        insert.Parameters.AddWithValue("@moddate", DateTime.Now);
+                                        insert.ExecuteNonQuery();
+                                        lineCount++;
+                                    }
+                                }
                             }
-                            else
-                            {
-                                insert.Parameters.AddWithValue("@verified", heart[7]);
-                            }
-                            insert.Parameters.AddWithValue("@confirmed", heart[8]);
-                            insert.Parameters.AddWithValue("@remarks", heart[9]);
-                            insert.Parameters.AddWithValue("@acctnum", heart[10]);
-                            insert.Parameters.AddWithValue("@modby", userID);
-                            insert.Parameters.AddWithValue("@moddate", DateTime.Now);
-                            insert.ExecuteNonQuery();
-                            lineCount++;
-                        }
-                        //else
-                        //{
-                        //    Message("Check Data Upload interrupted. A duplicate check number has been discovered.");
+                            //else
+                            //{
+                            //    Message("Check Data Upload interrupted. A duplicate check number has been discovered.");
 
-                        //}
+                            //}
+                        }
 
                     }
                     sr.Close();

@@ -15,11 +15,10 @@
         }
         div.acceptBox
         {
-            width:25%;
+            width:50%;
             float:left;
             text-align:center;
             height:110px;
-            vertical-align:middle;
         }
         div.grid_scroll
         {  
@@ -48,31 +47,33 @@
         }
         div.rejectBox
         {
-            width:25%;
-            float:left;   
+            width:50%;
+            float:right;   
             text-align:center;
             height:110px;
-            vertical-align:middle;
         }
         div.remarksBox
         {
-            float:left;
             width:48%;
+            margin: 0 auto;
         }
         div.verifyOptions
         {
-            width: 60%;
+            width: 100%;
             height:100px;
             display:inline-block;
         }
         div.verifyOptionsPositioning
         {
-            width:100%;
+            width:30%;
             text-align:center;
+            padding-top:200px;
+            margin:0 auto;
         }
         </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
+    <div class="whiteSpace">&nbsp;</div>
 
     <div class="images">
         <div class="imageLeft">
@@ -108,6 +109,20 @@
         &nbsp;
     </div>
     <div class="verifyOptionsPositioning">
+        <div class="remarksBox">
+                <asp:Label ID="verifyRemarkLabel" runat="server" Text="Remarks"></asp:Label>
+                <br />
+                <asp:DropDownList ID="verifyChoice" runat="server" EnableTheming="True">
+                <asp:ListItem Value="0">&lt;SELECT ITEM&gt;</asp:ListItem>
+                <asp:ListItem>SIGNATURE DIFFERS</asp:ListItem>
+                <asp:ListItem>AMOUNT DOES NOT MATCH</asp:ListItem>
+                <asp:ListItem>POST-DATED ISSUE</asp:ListItem>
+                <asp:ListItem>FUTURE DATED ISSUE</asp:ListItem>
+                </asp:DropDownList>
+                <br />
+                <asp:TextBox ID="verifyRemarks" runat="server" TextMode="MultiLine" Width="205px"></asp:TextBox>
+            </div>
+            <br />
         <div class="verifyOptions">
             <div class="acceptBox">
                 <asp:Button ID="acceptButton" runat="server" CssClass="yesButton"
@@ -119,20 +134,7 @@
                 </cc1:RoundedCornersExtender>
             
             </div>
-            <div class="remarksBox">
-                <asp:Label ID="verifyRemarkLabel" runat="server" Text="Remarks"></asp:Label>
-                <br />
-                <asp:DropDownList ID="verifyChoice" runat="server" EnableTheming="True">
-                <asp:ListItem Value="0">&lt;SELECT ITEM&gt;</asp:ListItem>
-                <asp:ListItem>SIGNATURE DIFFERS</asp:ListItem>
-                <asp:ListItem>AMOUNT DOES NOT MATCH</asp:ListItem>
-                <asp:ListItem>POST-DATED ISSUE</asp:ListItem>
-                <asp:ListItem>FUTURE DATED ISSUE</asp:ListItem>
-                </asp:DropDownList>
-                <br />
-                <asp:TextBox ID="verifyRemarks" runat="server" TextMode="MultiLine" 
-                Width="200px"></asp:TextBox>
-            </div>
+            
             <div class="rejectBox">
                 <asp:Button ID="rejectButton" runat="server" CssClass="noButton" Text="Reject" 
                 onclick="rejectButton_Click" OnClientClick="needToConfirm = false;" />
