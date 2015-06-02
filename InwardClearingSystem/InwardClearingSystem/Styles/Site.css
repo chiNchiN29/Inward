@@ -372,6 +372,8 @@ div.gridTitleBar
     color: #fff;
 }
 
+
+
 .GridHeader
 {
     padding: 4px 2px;
@@ -420,6 +422,12 @@ div.gridTitleBar
     border: solid 1px #000000;   
     color: #000000;  
 }  
+
+.gridView2 tr.paging td
+{
+    border: none;
+}
+
 /* MISC  
 ----------------------------------------------------------*/
 

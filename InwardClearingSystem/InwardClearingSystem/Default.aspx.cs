@@ -258,10 +258,10 @@ namespace InwardClearingSystem
 
             Response.Clear();
             Response.Buffer = true;
-            Response.AddHeader("content-disposition", "attachment;filename=" + fileName + ".csv");
+            Response.AddHeader("content-disposition", "attachment;filename=" + fileName + ".xls");
             Response.Charset = "";
 
-            Response.ContentType = "text/csv";
+            Response.ContentType = "application/vnd.xls";
 
             System.Text.StringBuilder sb = new System.Text.StringBuilder();
 

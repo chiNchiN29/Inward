@@ -70,6 +70,11 @@
             padding-top:200px;
             margin:0 auto;
         }
+        
+        .YesVer
+        {
+            color: #009900;
+        }
         </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">

@@ -60,7 +60,7 @@
     </cc1:RoundedCornersExtender>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
     <asp:Button ID="branchBtn" runat="server" Text="Assign Branches" 
-        Visible="false" onclick="branchBtn_Click" CssClass="defaultButton" />
+        onclick="branchBtn_Click" CssClass="defaultButton" />
     <cc1:RoundedCornersExtender ID="branchBtn_RoundedCornersExtender" 
         runat="server" BehaviorID="branchBtn_RoundedCornersExtender" 
         TargetControlID="branchBtn">

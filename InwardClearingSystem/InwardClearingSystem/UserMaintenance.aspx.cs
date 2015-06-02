@@ -21,7 +21,6 @@ namespace InwardClearingSystem
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            delBtn.Visible = false;
             activeConnectionOpen();
             cmd = new SqlCommand("SELECT role_desc FROM [User] u, Role r WHERE username = @username AND u.role_id = r.role_id", activeConnection);
             cmd.Parameters.AddWithValue("@username", Session["UserName"]);
@@ -70,7 +69,6 @@ namespace InwardClearingSystem
 
             if (i != -1)
             {
-                delBtn.Visible = true;
                 row = UserView.Rows[i];
                 string role = row.Cells[4].Text;
                 if (role.Equals("CLEARING DEPT") || role.Equals("OVERSEER"))
@@ -136,12 +134,12 @@ namespace InwardClearingSystem
 
         protected void branchBtn_Click(object sender, EventArgs e)
         {
-            int i = Convert.ToInt32(ViewState["SelectRow"].ToString());
-            if (i != -1)
-            {
-                string userId = UserView.DataKeys[i].Value.ToString();
-                Response.Redirect("EditUserBranches.aspx?UserID=" + userId);     
-            }
+            //int i = Convert.ToInt32(ViewState["SelectRow"].ToString());
+            //if (i != -1)
+            //{
+            //    string userId = UserView.DataKeys[i].Value.ToString();
+                Response.Redirect("~/EditUserBranches.aspx");     
+            //}
         }
 
         protected void delBtn_Click(object sender, EventArgs e)

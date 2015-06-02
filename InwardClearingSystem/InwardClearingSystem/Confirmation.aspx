@@ -1,6 +1,8 @@
 ﻿<%@ Page Title="Confirmation" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Confirmation.aspx.cs" Inherits="InwardClearingSystem.Confirmation" %>
 <%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="cc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
+     <script src="Scripts/jquery-1.8.3.min.js" type="text/javascript"></script>
+    <script src="Scripts/jquery.elevateZoom-3.0.8.min.js" type="text/javascript"></script>
      <style type="text/css">
         .amount
         {
@@ -134,6 +136,11 @@
             <asp:Image ID="checkImage" runat="server" CssClass="imageBox" Height="180px" 
             Width="450px" ImageAlign="Left" 
             ImageUrl="~/Resources/H2DefaultImage.jpg"/>
+            <script type="text/javascript">
+                $(function () {
+                    $("#<%=checkImage.ClientID %>").elevateZoom({ scrollZoom: true, zoomWindowWidth: 450, zoomWindowHeight: 180, zoomWindowPosition: 2 });
+                });
+            </script>
         </div>
         <div class="imageRight">
             <asp:Label ID="Label2" runat="server" AssociatedControlID="sigImage" 
@@ -142,6 +149,11 @@
             <asp:Image ID="sigImage" runat="server" CssClass="imageBox" Height="180px" 
             Width="450px" ImageAlign="Right" 
             ImageUrl="~/Resources/H2DefaultImage.jpg"/>
+            <script type="text/javascript">
+                $(function () {
+                    $("#<%=sigImage.ClientID %>").elevateZoom({ scrollZoom: true, zoomWindowWidth: 450, zoomWindowHeight: 180, zoomWindowPosition: 2 });
+                });
+                 </script>
         </div>
         <div class="whiteSpace">
             

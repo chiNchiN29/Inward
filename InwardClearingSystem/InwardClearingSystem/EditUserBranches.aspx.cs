@@ -7,6 +7,7 @@ using System.Web.UI.WebControls;
 using System.Data.SqlClient;
 using System.Configuration;
 using System.Data;
+using System.Text;
 
 namespace InwardClearingSystem
 {
@@ -15,6 +16,9 @@ namespace InwardClearingSystem
         SqlCommand cmd;
         List<string> newBranch = new List<string>();
         DataTable dt;
+        StringBuilder query;
+        SqlDataAdapter da;
+        
         
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -28,15 +32,12 @@ namespace InwardClearingSystem
             }
             else
             {
-                int userID = int.Parse(Request.QueryString["UserID"].ToString());
                 if (!Page.IsPostBack)
                 {
-                    cmd = new SqlCommand("SELECT username FROM [User] WHERE user_id = @userid", activeConnection);
-                    cmd.Parameters.AddWithValue("@userid", userID);
-                    userLbl.Text = cmd.ExecuteScalar() as string;
-                    
                     ViewState["myDataTable"] = FillDataTable();
                     ViewState["Branches"] = Branches;
+                    
+                    FillDropDown();
                 }
             }
             activeConnectionClose();
@@ -50,7 +51,7 @@ namespace InwardClearingSystem
         public DataTable FillDataTable()
         {
             activeConnectionOpen();
-            cmd = new SqlCommand("SELECT branch_name, username FROM Branch b LEFT JOIN [User] u ON b.user_id = u.user_id", activeConnection);
+            cmd = new SqlCommand("SELECT branch_name, username FROM Branch b LEFT JOIN [User] u ON b.user_id = u.user_id ORDER BY " + ViewState["SortExpression"].ToString(), activeConnection);
             dt = new DataTable();
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             da.Fill(dt);
@@ -81,23 +82,27 @@ namespace InwardClearingSystem
             {
                 try
                 {
-                    int userID = int.Parse(Request.QueryString["UserID"].ToString());
                     List<string> mybranches = Branches;
-                    if (mybranches.Count != 0)
+                    if (UserDrpDwn.SelectedValue.Equals("None"))
+                    {
+                        Message("Please select a user");
+                    }
+                    else if (mybranches.Count == 0)
+                    {
+                        Message("Please select a branch");
+
+                    }
+                    else
                     {
                         foreach (string branchname in mybranches)
                         {
                             cmd = new SqlCommand("update Branch SET user_id = @userid WHERE branch_name = @branch", activeConnection);
-                            cmd.Parameters.AddWithValue("@userid", userID);
+                            cmd.Parameters.AddWithValue("@userid", UserDrpDwn.SelectedValue);
                             cmd.Parameters.AddWithValue("@branch", branchname);
                             cmd.ExecuteNonQuery();
                         }
                         dt = FillDataTable();
                         Branches.Clear();
-                    }
-                    else
-                    {
-                        Message("Please select a branch");
                     }
                 }
                 catch (Exception b)
@@ -117,6 +122,62 @@ namespace InwardClearingSystem
                 }
                 return (List<string>)(this.ViewState["Branches"]);
             }
+        }
+
+        protected void branchView_PageIndex(object sender, GridViewPageEventArgs e)
+        {
+            branchView.PageIndex = e.NewPageIndex;
+            Branches.Clear();
+            FillDataTable();
+        }
+
+        public void FillDropDown()
+        {
+            using (activeConnectionOpen())
+            {
+                query = new StringBuilder();
+                query.Append("SELECT user_id, username ");
+                query.Append("FROM [User] u, Role r ");
+                query.Append("WHERE u.role_id = r.role_id AND (r.role_desc = 'CLEARING DEPT' OR r.role_desc = 'OVERSEER')");
+                dt = new DataTable();
+                da = new SqlDataAdapter(query.ToString(), activeConnection);
+                da.Fill(dt);
+                UserDrpDwn.DataSource = dt;
+                UserDrpDwn.DataTextField = "username";
+                UserDrpDwn.DataValueField = "user_id";
+                UserDrpDwn.DataBind();
+                UserDrpDwn.Items.Insert(0, new ListItem("<Select User>", "None"));
+            }
+        }
+
+        protected void BranchView_Sorting(Object sender, GridViewSortEventArgs e)
+        {
+            dt = ViewState["myDataTable"] as DataTable;
+            dt.DefaultView.Sort = e.SortExpression + " " + GetSortDirection(e.SortExpression);
+            branchView.DataSource = dt;
+            branchView.DataBind();
+        }
+
+        private string GetSortDirection(string column)
+        {
+            string sortDirection = "DESC";
+            string sortExpression = ViewState["SortExpression"] as string;
+
+            if (sortExpression != null)
+            {
+                if (sortExpression == column)
+                {
+                    string lastDirection = ViewState["SortDirection"] as string;
+                    if ((lastDirection != null) && (lastDirection == "DESC"))
+                    {
+                        sortDirection = "ASC";
+                    }
+                }
+            }
+            ViewState["SortDirection"] = sortDirection;
+            ViewState["SortExpression"] = column;
+
+            return sortDirection;
         }
     }
 }
