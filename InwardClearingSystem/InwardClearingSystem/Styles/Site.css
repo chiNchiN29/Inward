@@ -135,12 +135,30 @@ first child of the left and right table columns */
     color:#FFFFFF;
     font-family:Segoe UI;
     height:30px;
-    width:155px;
+    width:130px;
 }
 
 .defaultButton:hover
 {
     background-color:ButtonHighlight;
+    outline:#990000 solid 1px;
+    color:#990000;
+}
+ 
+.gridButton
+{
+    background-color:#AA3333;
+    color:#FFFFFF;
+    font-family:Segoe UI;
+    height:30px;
+    width:150px;
+}
+
+.gridButton:hover
+{
+    background-color:ButtonHighlight;
+    outline:#AA3333 solid 1px;
+    color:#AA3333;
 }
     
 .yesButton
@@ -149,12 +167,14 @@ first child of the left and right table columns */
     color:#FFFFFF;   
     font-family:Segoe UI;
     height:36px;
-    width:155px; 
+    width:130px; 
 }
 
 .yesButton:hover
 {
-    background-color:ButtonHighlight;   
+    background-color:ButtonHighlight; 
+    color:#00CC00;
+    outline:#00CC00 solid 1px;
 }
 
 .noButton
@@ -163,12 +183,14 @@ first child of the left and right table columns */
     color:#FFFFFF;   
     font-family:Segoe UI;
     height:36px;
-    width:155px; 
+    width:130px; 
 }
 
 .noButton:hover
 {
-    background-color:ButtonHighlight;  
+    background-color:ButtonHighlight;
+    color:#CC0000;
+    outline:#CC0000 solid 1px; 
 }
 
 .leftCol
@@ -360,7 +382,7 @@ div.gridTitleBar
     font-size: 13px;
     border-style: solid;
     border-width: 1px;
-    font-family: "Segoe UI";
+    font-family: Segoe UI;
 }
 
 .GridHeader Inner
@@ -382,7 +404,7 @@ div.gridTitleBar
     text-decoration: underline;
     font-size: 13px;
     color: #FFFFFF;
-    font-family: "Segoe UI";
+    font-family: Segoe UI;
 }
 
 .gridView2

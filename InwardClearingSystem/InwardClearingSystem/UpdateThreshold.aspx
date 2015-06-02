@@ -57,9 +57,6 @@
             <asp:Label ID="Label3" runat="server" Text="New Minimum Threshold Amount:"></asp:Label>
             <br />
             <asp:TextBox ID="TextBox1" runat="server" TextMode="Number" CssClass="textbox"></asp:TextBox>
-            <cc1:RoundedCornersExtender ID="TextBox1_RoundedCornersExtender" runat="server" 
-                BehaviorID="TextBox1_RoundedCornersExtender" TargetControlID="TextBox1">
-            </cc1:RoundedCornersExtender>
             <br />
         </div>
     
@@ -73,9 +70,6 @@
             <asp:Label ID="Label6" runat="server" Text="New Maximum Threshold Amount:"></asp:Label>
             <br />
             <asp:TextBox ID="TextBox2" runat="server" TextMode="Number" CssClass="textbox"></asp:TextBox>
-            <cc1:RoundedCornersExtender ID="TextBox2_RoundedCornersExtender" runat="server" 
-                BehaviorID="TextBox2_RoundedCornersExtender" TargetControlID="TextBox2">
-            </cc1:RoundedCornersExtender>
             <br />
         </div>
 

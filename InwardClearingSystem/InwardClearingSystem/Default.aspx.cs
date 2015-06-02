@@ -1,22 +1,23 @@
-﻿using DotCMIS;
+﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using DotCMIS;
 using DotCMIS.Client;
 using DotCMIS.Client.Impl;
 using DotCMIS.Data;
 using DotCMIS.Data.Extensions;
 using DotCMIS.Data.Impl;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Data;
-using System.Data.SqlClient;
-using System.Configuration;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Security.Cryptography;
+using Yogesh.ExcelXml;
 
 namespace InwardClearingSystem
 {
@@ -316,6 +317,44 @@ namespace InwardClearingSystem
             ViewState["SortExpression"] = column;
 
             return sortDirection;
+        }
+
+        protected void ProduceFinalReport(object sender, EventArgs e)
+        {
+            query = new StringBuilder();
+            query.Append("SELECT * ");
+            query.Append("FROM Cheque ");
+            query.Append("WHERE (verification = 'NO' ");
+            query.Append("OR confirmed = 'NO') ");
+            query.Append("OR (confirm_remarks <> '&nbsp;' ");
+            query.Append("AND confirm_remarks <> NULL) ");
+            query.Append("OR (verify_remarks <> '&nbsp;' ");
+            query.Append("AND verify_remarks <> NULL)");
+            DataTable dt = GetData(query.ToString());
+            string attachment = "attachment; filename=trial.xls";
+            Response.ClearContent();
+            Response.AddHeader("content-disposition", attachment);
+            Response.ContentType = "application/vnd.ms-excel";
+            string tab = "";
+            foreach (DataColumn dc in dt.Columns)
+            {
+                Response.Write(tab + dc.ColumnName);
+                tab = "\t";
+            }
+            Response.Write("\n");
+
+            int i;
+            foreach (DataRow dr in dt.Rows)
+            {
+                tab = "";
+                for (i = 0; i < dt.Columns.Count; i++)
+                {
+                    Response.Write(tab + dr[i].ToString());
+                    tab = "\t";
+                }
+                Response.Write("\n");
+            }
+            Response.End();
         }
     }
 }

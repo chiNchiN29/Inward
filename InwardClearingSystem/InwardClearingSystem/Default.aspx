@@ -114,7 +114,7 @@
     </div>
         <div class="buttonHolder">
             <asp:Button ID="clearCheck" runat="server" onclientclick="return DeleteItem()" 
-            Text="Clear Check Data" onclick="clearCheck_Click1" CssClass="defaultButton" BackColor="#AA3333"/>  
+            Text="Clear Check Data" onclick="clearCheck_Click1" CssClass="gridButton" />  
             <cc1:RoundedCornersExtender ID="clearCheck_RoundedCornersExtender" 
                 runat="server" BehaviorID="clearCheck_RoundedCornersExtender" 
                 TargetControlID="clearCheck" />
@@ -178,6 +178,7 @@
         </div>
 </div> 
     <br />
+    <asp:Button ID="reportProducer" runat="server" Text="Produce Report" OnClick="ProduceFinalReport" />
     <br />
    
    <script type="text/javascript">

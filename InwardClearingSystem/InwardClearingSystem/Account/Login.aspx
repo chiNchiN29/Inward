@@ -94,8 +94,6 @@
                                 </td>
                                 <td class="textBoxPositions">
                                     <asp:TextBox ID="UserName" runat="server" Font-Size="0.8em" Width="75%" CssClass="textbox"></asp:TextBox>
-                                    <cc1:RoundedCornersExtender ID="UserName_RoundedCornersExtender" runat="server" 
-                                        BehaviorID="UserName_RoundedCornersExtender" TargetControlID="UserName" />
                                     <asp:RequiredFieldValidator ID="UserNameRequired" runat="server" 
                                         ControlToValidate="UserName" ErrorMessage="User Name is required." 
                                         ToolTip="User Name is required." ValidationGroup="Login1">*</asp:RequiredFieldValidator>
@@ -107,8 +105,6 @@
                                 </td>
                                 <td class="textBoxPositions">
                                     <asp:TextBox ID="Password" runat="server" Font-Size="0.8em" TextMode="Password" Width="75%" CssClass="textbox"></asp:TextBox>
-                                    <cc1:RoundedCornersExtender ID="Password_RoundedCornersExtender" runat="server" 
-                                        BehaviorID="Password_RoundedCornersExtender" TargetControlID="Password" />
                                     <asp:RequiredFieldValidator ID="PasswordRequired" runat="server" 
                                         ControlToValidate="Password" ErrorMessage="Password is required." 
                                         ToolTip="Password is required." ValidationGroup="Login1">*</asp:RequiredFieldValidator>
@@ -143,7 +139,7 @@
             ForeColor="White" />
     </asp:Login>
         <cc1:RoundedCornersExtender ID="Login1_RoundedCornersExtender" runat="server" 
-            BehaviorID="Login1_RoundedCornersExtender" TargetControlID="Login1" BorderColor="#666666">
+            BehaviorID="Login1_RoundedCornersExtender" TargetControlID="Login1" BorderColor="#990000">
         </cc1:RoundedCornersExtender>
     </div>
 </asp:Content>
