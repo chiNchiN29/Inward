@@ -186,30 +186,30 @@ namespace InwardClearingSystem
            }
            else
            {
-               //if (checkImage.ImageUrl == "~/Resources/H2DefaultImage.jpg" || sigImage.ImageUrl == "~/Resources/H2DefaultImage.jpg")
-               //{
-               //    Message("Cannot validate because there is no existing check or signature");
-               //}
-               //else
-               //{
-
-               using (activeConnectionOpen())
+               if (checkImage.ImageUrl == "~/Resources/H2DefaultImage.jpg" || sigImage.ImageUrl == "~/Resources/H2DefaultImage.jpg")
                {
-                   cmd = new SqlCommand("update Cheque SET verification = @verify, modified_by = @modby, modified_date = @moddate WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection);
-                   cmd.Parameters.AddWithValue("@acctnumber", VerifyView.Rows[i].Cells[3].Text);
-                   cmd.Parameters.AddWithValue("@chknumber", VerifyView.Rows[i].Cells[1].Text);
-                   cmd.Parameters.AddWithValue("@verify", "YES");
-                   cmd.Parameters.AddWithValue("@modby", Session["UserID"]);
-                   cmd.Parameters.AddWithValue("@moddate", DateTime.Now);
-                   //cmd.Parameters.AddWithValue("@veremarks", verifyRemarks.Text);
-                   cmd.ExecuteNonQuery();
-                   activeConnection.Close();
-                   dt = FillDataTable();
-
-                   NextRow(VerifyView, i);
+                   Message("Cannot validate because there is no existing check or signature");
                }
+               else
+               {
 
-           //    }
+                   using (activeConnectionOpen())
+                   {
+                       cmd = new SqlCommand("update Cheque SET verification = @verify, modified_by = @modby, modified_date = @moddate WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection);
+                       cmd.Parameters.AddWithValue("@acctnumber", VerifyView.Rows[i].Cells[3].Text);
+                       cmd.Parameters.AddWithValue("@chknumber", VerifyView.Rows[i].Cells[1].Text);
+                       cmd.Parameters.AddWithValue("@verify", "YES");
+                       cmd.Parameters.AddWithValue("@modby", Session["UserID"]);
+                       cmd.Parameters.AddWithValue("@moddate", DateTime.Now);
+                       //cmd.Parameters.AddWithValue("@veremarks", verifyRemarks.Text);
+                       cmd.ExecuteNonQuery();
+                       activeConnection.Close();
+                       dt = FillDataTable();
+
+                       NextRow(VerifyView, i);
+                   }
+
+               }
            }
         }
 
@@ -223,38 +223,36 @@ namespace InwardClearingSystem
             }
             else
             {
-                //if (checkImage.ImageUrl == "~/Resources/H2DefaultImage.jpg" || sigImage.ImageUrl == "~/Resources/H2DefaultImage.jpg")
-                //{
-                //    Message("Cannot verify check because there is no existing image");
-                //}
-                //else
-                //{
-                    if (String.IsNullOrWhiteSpace(verifyRemarks.Text) == true && verifyChoice.SelectedValue.Equals("None"))
+                if (checkImage.ImageUrl == "~/Resources/H2DefaultImage.jpg" || sigImage.ImageUrl == "~/Resources/H2DefaultImage.jpg")
+                {
+                    Message("Cannot verify check because there is no existing image");
+                }
+                else if (String.IsNullOrWhiteSpace(verifyRemarks.Text) == true && verifyChoice.SelectedValue.Equals("None"))
+                {
+                    Message("Please input technicality");
+                }
+                else
+                {
+
+                    using (activeConnectionOpen())
                     {
-                        Message("Please input technicality");
+                        cmd = new SqlCommand("update Cheque SET verification = @verify, modified_by = @modby, modified_date = @moddate, verify_remarks = @veremarks WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection);
+                        cmd.Parameters.AddWithValue("@acctnumber", VerifyView.Rows[i].Cells[3].Text);
+                        cmd.Parameters.AddWithValue("@chknumber", VerifyView.Rows[i].Cells[1].Text);
+                        cmd.Parameters.AddWithValue("@verify", "NO");
+                        cmd.Parameters.AddWithValue("@veremarks", verifyChoice.SelectedItem.Text + " " + verifyRemarks.Text);
+                        cmd.Parameters.AddWithValue("@modby", Session["UserID"]);
+                        cmd.Parameters.AddWithValue("@moddate", DateTime.Now);
+                        cmd.ExecuteNonQuery();
+
+                        activeConnection.Close();
+
+                        dt = FillDataTable();
+
+
+                        NextRow(VerifyView, i);
                     }
-                    else
-                    {
-
-                        using (activeConnectionOpen())
-                        {
-                            cmd = new SqlCommand("update Cheque SET verification = @verify, modified_by = @modby, modified_date = @moddate, verify_remarks = @veremarks WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection);
-                            cmd.Parameters.AddWithValue("@acctnumber", VerifyView.Rows[i].Cells[3].Text);
-                            cmd.Parameters.AddWithValue("@chknumber", VerifyView.Rows[i].Cells[1].Text);
-                            cmd.Parameters.AddWithValue("@verify", "NO");
-                            cmd.Parameters.AddWithValue("@veremarks", verifyChoice.SelectedItem.Text + " " + verifyRemarks.Text);
-                            cmd.Parameters.AddWithValue("@modby", Session["UserID"]);
-                            cmd.Parameters.AddWithValue("@moddate", DateTime.Now);
-                            cmd.ExecuteNonQuery();
-
-                            activeConnection.Close();
-
-                            dt = FillDataTable();
-
-
-                            NextRow(VerifyView, i);
-                        }
-                    }
+                }
             }
         }
 
