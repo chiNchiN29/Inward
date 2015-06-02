@@ -327,9 +327,11 @@ namespace InwardClearingSystem
             query.Append("WHERE (verification = 'NO' ");
             query.Append("OR confirmed = 'NO') ");
             query.Append("OR (confirm_remarks <> '&nbsp;' ");
-            query.Append("AND confirm_remarks <> NULL) ");
+            query.Append("AND confirm_remarks <> NULL ");
+            query.Append("AND confirm_remarks <> '') ");
             query.Append("OR (verify_remarks <> '&nbsp;' ");
-            query.Append("AND verify_remarks <> NULL)");
+            query.Append("AND verify_remarks <> NULL");
+            query.Append("AND verify_remarks <> '') ");
             DataTable dt = GetData(query.ToString());
             string attachment = "attachment; filename=trial.xls";
             Response.ClearContent();
