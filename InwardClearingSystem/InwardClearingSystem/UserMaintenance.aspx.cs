@@ -124,7 +124,7 @@ namespace InwardClearingSystem
                             cmd.Parameters.AddWithValue("@name", user);
                             cmd.ExecuteNonQuery();
 
-                            dt = FillDataTable();
+                            FillDataTable();
                         }
                     }
                 }

@@ -209,7 +209,7 @@
    
    <script type="text/javascript">
        function DeleteItem() {
-           if (confirm("Are you sure you want to delete ...?")) {
+           if (confirm("Are you sure you want to delete?")) {
                return true;
            }
            return false;

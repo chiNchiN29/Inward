@@ -204,7 +204,7 @@ namespace InwardClearingSystem
                        //cmd.Parameters.AddWithValue("@veremarks", verifyRemarks.Text);
                        cmd.ExecuteNonQuery();
                        activeConnection.Close();
-                       dt = FillDataTable();
+                       FillDataTable();
 
                        NextRow(VerifyView, i);
                    }
@@ -247,7 +247,7 @@ namespace InwardClearingSystem
 
                         activeConnection.Close();
 
-                        dt = FillDataTable();
+                        FillDataTable();
 
 
                         NextRow(VerifyView, i);

@@ -101,7 +101,7 @@ namespace InwardClearingSystem
                             cmd.Parameters.AddWithValue("@branch", branchname);
                             cmd.ExecuteNonQuery();
                         }
-                        dt = FillDataTable();
+                        FillDataTable();
                         Branches.Clear();
                     }
                 }

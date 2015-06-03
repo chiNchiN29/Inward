@@ -17,7 +17,6 @@ using DotCMIS.Client.Impl;
 using DotCMIS.Data;
 using DotCMIS.Data.Extensions;
 using DotCMIS.Data.Impl;
-using Yogesh.ExcelXml;
 
 namespace InwardClearingSystem
 {
@@ -168,7 +167,7 @@ namespace InwardClearingSystem
                     }
                     sr.Close();
                 }
-                DataTable dt = FillDataTable();
+                    FillDataTable();
                     string wew = ViewState["UploadImageClicked"].ToString();
                     string wew2 = ViewState["ImageCount"].ToString();
                     ImgCount.Value = ViewState["ImageCount"].ToString();
