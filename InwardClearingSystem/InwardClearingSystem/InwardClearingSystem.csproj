@@ -71,7 +71,7 @@
     <Content Include="Account\ChangePasswordSuccess.aspx" />
     <Content Include="Account\Login.aspx" />
     <Content Include="Account\Register.aspx" />
-    <Content Include="Account\SignUp.aspx" />
+    <Content Include="SignUp.aspx" />
     <Content Include="App_Data\icsdb.mdf" />
     <Content Include="App_Data\icsdb_log.ldf">
       <DependentUpon>icsdb.mdf</DependentUpon>
@@ -83,6 +83,9 @@
     <Content Include="FailurePage.aspx" />
     <Content Include="Resources\H2DefaultImage.jpg" />
     <Content Include="Resources\H2ics.png" />
+    <Content Include="Resources\H2ics2.png" />
+    <Content Include="Resources\loading.gif" />
+    <Content Include="Resources\No_image_available.jpg" />
     <Content Include="Scripts\jquery-1.8.3.min.js" />
     <Content Include="Scripts\jquery.elevateZoom-3.0.8.min.js" />
     <Content Include="Scripts\jquery.elevatezoom.js" />
@@ -142,11 +145,11 @@
     <Compile Include="Account\Register.aspx.designer.cs">
       <DependentUpon>Register.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Account\SignUp.aspx.cs">
+    <Compile Include="SignUp.aspx.cs">
       <DependentUpon>SignUp.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Account\SignUp.aspx.designer.cs">
+    <Compile Include="SignUp.aspx.designer.cs">
       <DependentUpon>SignUp.aspx</DependentUpon>
     </Compile>
     <Compile Include="Archiving.aspx.cs">

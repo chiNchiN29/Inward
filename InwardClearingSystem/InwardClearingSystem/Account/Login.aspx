@@ -57,10 +57,6 @@
     </div>
     <div class="userScreen">
     <div class="leftSide">
-        <div class="registerHyperLink">
-            <asp:HyperLink ID="RegisterHyperLink" runat="server" EnableViewState="False" 
-            NavigateUrl="~/Account/SignUp.aspx">Register</asp:HyperLink> if you don't have an account.
-        </div>
         <br />
         <div class="logoImage">
             <img src="../Resources/H2ics.png">
@@ -122,7 +118,7 @@
                                     <asp:Button ID="LoginButton" runat="server" BackColor="#990000" 
                                         CommandName="Login" 
                                         Font-Size="1.0em" ForeColor="#FFFFFF" Text="Login" 
-                                        ValidationGroup="Login1" Height="35px" Width="90px"/>
+                                        ValidationGroup="Login1" Height="35px" Width="90px" CssClass="defaultButton"/>
                                     <cc1:RoundedCornersExtender ID="LoginButton_RoundedCornersExtender" 
                                         runat="server" BehaviorID="LoginButton_RoundedCornersExtender" 
                                         TargetControlID="LoginButton" BorderColor="#666666"/>

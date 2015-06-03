@@ -51,7 +51,7 @@ namespace InwardClearingSystem
         public DataTable FillDataTable()
         {
             activeConnectionOpen();
-            cmd = new SqlCommand("SELECT branch_name, username FROM Branch b LEFT JOIN [User] u ON b.user_id = u.user_id ORDER BY " + ViewState["SortExpression"].ToString(), activeConnection);
+            cmd = new SqlCommand("SELECT branch_name, username FROM Branch b LEFT JOIN [User] u ON b.user_id = u.user_id", activeConnection);
             dt = new DataTable();
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             da.Fill(dt);

@@ -36,6 +36,13 @@
         {
             text-align:center;
         }
+        div.gridDetails
+        {
+            float:right;  
+            color:#990000;
+            font-size:1.3em;
+            padding-right:20px; 
+        }
         div.imageLeft
         {
             width:50%;
@@ -71,7 +78,7 @@
     <asp:GridView ID="ConfirmView" runat="server" AutoGenerateColumns="false" 
             BorderColor="Black"
     AllowSorting="true" OnSorting="ConfirmView_Sorting" 
-    HeaderStyle-CssClass="GridHeader" ShowFooter="True" 
+    HeaderStyle-CssClass="GridHeader"
             FooterStyle-CssClass="gridViewFooterStyle" 
             OnRowDataBound="ConfirmView_RowDataBound" Width="100%">
     <Columns>
@@ -93,12 +100,13 @@
         <asp:BoundField DataField="confirmed" SortExpression="confirmed" HeaderText="Confirmed?" />
     </Columns>
     </asp:GridView>
-      </div>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    </div>
+    <div class="gridDetails">
     Confirmed:
-    <asp:Label ID="totalCon" runat="server" Text="0"></asp:Label>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Total:
-    <asp:Label ID="totalCount" runat="server" Text="0"></asp:Label>
+    <asp:Label ID="totalCon" runat="server" Text="0" ForeColor="Black"></asp:Label>
+    /
+    <asp:Label ID="totalCount" runat="server" Text="0" ForeColor="Black"></asp:Label>
+    </div>
     <br />
     <div class="confirmOptions">
         <div class="fundBtnDiv">
@@ -135,7 +143,7 @@
             <br />
             <asp:Image ID="checkImage" runat="server" CssClass="imageBox" Height="180px" 
             Width="450px" ImageAlign="Left" 
-            ImageUrl="~/Resources/H2DefaultImage.jpg"/>
+            ImageUrl="~/Resources/No_image_available.jpg"/>
             <script type="text/javascript">
                 $(function () {
                     $("#<%=checkImage.ClientID %>").elevateZoom({ scrollZoom: true, zoomWindowWidth: 450, zoomWindowHeight: 180, zoomWindowPosition: 2 });
@@ -148,7 +156,7 @@
             <br />
             <asp:Image ID="sigImage" runat="server" CssClass="imageBox" Height="180px" 
             Width="450px" ImageAlign="Right" 
-            ImageUrl="~/Resources/H2DefaultImage.jpg"/>
+            ImageUrl="~/Resources/No_image_available.jpg"/>
             <script type="text/javascript">
                 $(function () {
                     $("#<%=sigImage.ClientID %>").elevateZoom({ scrollZoom: true, zoomWindowWidth: 450, zoomWindowHeight: 180, zoomWindowPosition: 2 });

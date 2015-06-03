@@ -259,6 +259,7 @@ namespace InwardClearingSystem
         //insert signatures in database
         protected void insertSig_Click(object sender, EventArgs e)
         {
+            activeConnectionOpen();
             int userID = Convert.ToInt32(Session["UserID"]);
             cmd = new SqlCommand("insert into Signature(signature_image, account_number, modified_by, modified_date) values (@Sig, @ID, @modby, @moddate)", activeConnection);
             cmd.Parameters.AddWithValue("@Sig", imageToByteArray(System.Drawing.Image.FromStream(FileUpload1.PostedFile.InputStream)));
@@ -266,7 +267,7 @@ namespace InwardClearingSystem
             cmd.Parameters.AddWithValue("@modby", userID);
             cmd.Parameters.AddWithValue("@moddate", DateTime.Now);
             cmd.ExecuteNonQuery();
-            activeConnection.Close();
+            activeConnectionClose();
 
         }
 

@@ -23,10 +23,17 @@
         div.grid_scroll
         {  
             overflow: scroll;
-            height: 60px;
+            height: 200px;
             border: solid 2px black;
             width: 100%;        
             margin: 0px  
+        }
+        div.gridDetails
+        {
+            float:right;  
+            color:#990000;
+            font-size:1.3em;
+            padding-right:5px; 
         }
         div.imageLeft
         {
@@ -87,7 +94,7 @@
             <br />
             <asp:Image ID="checkImage" runat="server" CssClass="imageBox" Height="180px" 
             Width="450px"  ImageAlign="Left" onmouseover="zoomin(this)" onmouseout="zoomout(this)"
-            ImageUrl="~/Resources/H2DefaultImage.jpg" />
+            ImageUrl="~/Resources/No_image_available.jpg" />
             <script type="text/javascript">
                 $(function () {
                     $("#<%=checkImage.ClientID %>").elevateZoom({ scrollZoom: true, zoomWindowWidth: 450, zoomWindowHeight: 180, zoomWindowPosition: 2 });
@@ -101,7 +108,7 @@
             <br />
             <asp:Image ID="sigImage" runat="server" CssClass="imageBox" Height="180px" 
             Width="450px" ImageAlign="Right" onmouseover="zoomin(this)" onmouseout="zoomout(this)" 
-            ImageUrl="~/Resources/H2DefaultImage.jpg"/>
+            ImageUrl="~/Resources/No_image_available.jpg"/>
             <script type="text/javascript">
                  $(function () {
                      $("#<%=sigImage.ClientID %>").elevateZoom({ scrollZoom: true, zoomWindowWidth: 450, zoomWindowHeight: 180, zoomWindowPosition: 2 });
@@ -164,7 +171,7 @@
         <asp:GridView ID="VerifyView" runat="server" AutoGenerateColumns="false" 
             BorderColor="Black"
               AllowSorting="true" OnSorting="VerifyView_Sorting" HeaderStyle-CssClass="GridHeader" 
-             OnRowDataBound="VerifyView_RowDataBound" ShowFooter="True" 
+             OnRowDataBound="VerifyView_RowDataBound" 
             FooterStyle-CssClass="gridViewFooterStyle" Width="100%">
                  <Columns>
                     <asp:TemplateField>
@@ -185,11 +192,12 @@
                  </Columns>
                   </asp:GridView>
 </div>
-       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    <div class="gridDetails">
     Verified:
-    <asp:Label ID="totalVer" runat="server" Text="0"></asp:Label>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Total:
-    <asp:Label ID="totalCount" runat="server" Text="0"></asp:Label>
+    <asp:Label ID="totalVer" runat="server" Text="0" ForeColor="Black"></asp:Label>
+    /
+    <asp:Label ID="totalCount" runat="server" Text="0" ForeColor="Black"></asp:Label>
+    </div>
     <br />
     
 

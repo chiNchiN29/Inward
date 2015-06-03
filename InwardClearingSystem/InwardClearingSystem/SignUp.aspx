@@ -40,8 +40,6 @@
     <tr>
         <td class="label">Username:</td>
         <td><asp:TextBox ID="unTxtBx" runat="server" ToolTip="This field is REQUIRED." CssClass="textbox"></asp:TextBox>
-            <cc1:RoundedCornersExtender ID="unTxtBx_RoundedCornersExtender" runat="server" 
-                BehaviorID="unTxtBx_RoundedCornersExtender" TargetControlID="unTxtBx" />
             <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" 
                 ErrorMessage="This field is required." ForeColor="Red" 
                 ControlToValidate="unTxtBx"></asp:RequiredFieldValidator></td>
@@ -52,8 +50,6 @@
         <td class="label">First Name:</td>
         <td><asp:TextBox ID="fnTxtBx" runat="server" ToolTip="This field is REQUIRED." 
                 CssClass="textbox"></asp:TextBox>
-            <cc1:RoundedCornersExtender ID="fnTxtBx_RoundedCornersExtender" runat="server" 
-                BehaviorID="fnTxtBx_RoundedCornersExtender" TargetControlID="fnTxtBx" />
             <asp:RequiredFieldValidator ID="RequiredFieldValidator4" runat="server" 
                 ErrorMessage="This field is required." ForeColor="Red" 
                 ControlToValidate="unTxtBx"></asp:RequiredFieldValidator></td>
@@ -63,8 +59,6 @@
     <tr>
         <td class="label">Middle Name:</td>
         <td><asp:TextBox ID="mnTxtBx" runat="server" ToolTip="This field is REQUIRED." CssClass="textbox"></asp:TextBox>
-            <cc1:RoundedCornersExtender ID="RoundedCornersExtender1" runat="server" 
-                BehaviorID="mnTxtBx_RoundedCornersExtender" TargetControlID="mnTxtBx" />
             <asp:RequiredFieldValidator ID="RequiredFieldValidator7" runat="server" 
                 ErrorMessage="This field is required." ForeColor="Red" 
                 ControlToValidate="mnTxtBx"></asp:RequiredFieldValidator></td>
@@ -74,8 +68,6 @@
     <tr>
         <td class="label">Last Name:</td>
         <td><asp:TextBox ID="lnTxtBx" runat="server" ToolTip="This field is REQUIRED." CssClass="textbox"></asp:TextBox>
-            <cc1:RoundedCornersExtender ID="lnTxtBx_RoundedCornersExtender" runat="server" 
-                BehaviorID="lnTxtBx_RoundedCornersExtender" TargetControlID="lnTxtBx" />
             <asp:RequiredFieldValidator ID="RequiredFieldValidator5" runat="server" 
                 ErrorMessage="This field is required." ForeColor="Red" 
                 ControlToValidate="lnTxtBx"></asp:RequiredFieldValidator></td>
@@ -86,8 +78,6 @@
         <td class="label">E-mail:</td>
         <td><asp:TextBox ID="emTxtBx" runat="server" TextMode="Email" 
                 ToolTip="This field is REQUIRED." CssClass="textbox"></asp:TextBox>
-            <cc1:RoundedCornersExtender ID="emTxtBx_RoundedCornersExtender" runat="server" 
-                BehaviorID="emTxtBx_RoundedCornersExtender" TargetControlID="emTxtBx" />
             <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" 
                 ErrorMessage="This field is required." ForeColor="Red" 
                 ControlToValidate="emTxtBx"></asp:RequiredFieldValidator></td>
@@ -98,9 +88,6 @@
         <td>
             <asp:TextBox ID="passTxtBx" runat="server" TextMode="Password" 
                 ToolTip="Requires at least 8 characters." CssClass="textbox"></asp:TextBox>
-            <cc1:RoundedCornersExtender ID="passTxtBx_RoundedCornersExtender" 
-                runat="server" BehaviorID="passTxtBx_RoundedCornersExtender" 
-                TargetControlID="passTxtBx" />
             <asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" 
                 ErrorMessage="This field is required." ForeColor="Red" 
                 ControlToValidate="passTxtBx"></asp:RequiredFieldValidator>
@@ -127,9 +114,6 @@
     <tr>
         <td class="label">Confirm Password:</td>
         <td><asp:TextBox ID="cpassTxtBx" runat="server" TextMode="Password" CssClass="textbox"></asp:TextBox>
-            <cc1:RoundedCornersExtender ID="cpassTxtBx_RoundedCornersExtender" 
-                runat="server" BehaviorID="cpassTxtBx_RoundedCornersExtender" 
-                TargetControlID="cpassTxtBx"/>
         <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" 
                 ErrorMessage="This field is required." ForeColor="Red" 
                 ControlToValidate="cpassTxtBx"></asp:RequiredFieldValidator></td>          
@@ -145,6 +129,11 @@
                 runat="server" Text="Register" onclick="regBtn_Click" CssClass="defaultButton"/>
             <cc1:RoundedCornersExtender ID="regBtn_RoundedCornersExtender" runat="server" 
                 BehaviorID="regBtn_RoundedCornersExtender" TargetControlID="regBtn" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan='3'>
+            &nbsp;
         </td>
     </tr>
 </table>

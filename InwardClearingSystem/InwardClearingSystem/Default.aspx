@@ -24,12 +24,12 @@
              width: 100%; 
              height: 100%;
              background-color: #ccc; 
-              text-align: center;
-              vertical-align: middle; 
+             text-align: center;
+             vertical-align: middle; 
              opacity: 0.8;
              font-size: large; 
              font-weight: bolder;
-            background-image: url('../resources/loading.gif');
+             background-image: url('../resources/loading.gif');
              background-size: 150px;
              background-repeat: no-repeat;
              background-position: center;
@@ -43,8 +43,9 @@
         }
         div.dataLoad
         {
-            width: 400px;
-            float: right;
+            width: 50%;
+            float:left;
+            display:inline-block;
         }
         div.generateConfirmed
         {
@@ -68,23 +69,94 @@
             overflow: scroll;
             height: 300px;
             border: solid 2px black;
-            width: 100%;        
-            margin: 0px  
+            width: auto;        
+        }
+        div.gridWindow
+        {
+            width:100%;
+            float:left;   
         }
         div.imageLoad
         {
-            width: 400px;
-            float: left;
+            width: 50%;
+            float:left;
+            display:inline-block;
         }
-        
         div.loader
         {
-            width: 80%;
-            margin:0 auto;
+            padding-top:25px;
+            float:left;   
+        }
+        div.number
+        {
+            float:left;
+            height:auto;
+            font-family:Segoe UI;
+            font-size:7em;
+            width:10%;
+            color:#990000;
+        }
+        div.uploaderDiv
+        {
+            width: 100%;
+            height: 100px;
         }
         </style>
 </asp:Content>
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
+
+    <div class="uploaderDiv">
+        <div class="imageLoad">
+            <div class="number">
+                1
+            </div>
+            <div class="loader">
+            <asp:Label ID="lblLoadImg" runat="server" Font-Size="Larger" ForeColor="Black" 
+            Text="Load Image"></asp:Label>
+            <br />
+            <asp:FileUpload ID="ImageUpload" runat="server" AllowMultiple="true"/>
+            <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" 
+            ControlToValidate="ImageUpload" 
+            ErrorMessage="Image files only"
+            ValidationExpression="(.*\.([Jj][Pp][Gg])|.*\.([Jj][Pp][Ee][Gg])|.*\.([Pp][Nn][Gg])|.*\.([Tt][Ii][Ff])$)" 
+            ForeColor="Red"></asp:RegularExpressionValidator>
+            <br />
+            <asp:Button ID="uploadImgBtn" runat="server" Text="Upload Image" 
+            OnClick="uploadImgBtn_Click" OnClientClick="skm_LockScreen('Uploading Images');" 
+                CssClass="defaultButton" />   
+            <cc1:RoundedCornersExtender ID="uploadImgBtn_RoundedCornersExtender" 
+                runat="server" BehaviorID="uploadImgBtn_RoundedCornersExtender" 
+                TargetControlID="uploadImgBtn" />
+            <div id="skm_LockPane" class="LockOff"></div> 
+            </div>
+
+        </div>
+        <div class="dataLoad">
+            <div class="number">
+                2
+            </div>
+            <div class="loader">
+                <asp:Label ID="lblCheckData" runat="server" Font-Size="Larger" ForeColor="Black" 
+                Text="Load Check Data"></asp:Label>
+                <br />
+                <asp:FileUpload ID="DataUpload" runat="server"/>
+                <asp:RegularExpressionValidator ID="regexValidator" runat="server" 
+                ControlToValidate="DataUpload" 
+                ErrorMessage="Only csv files are allowed"  
+                ValidationExpression="(.*\.([cC][sS][vV])$)" ForeColor="Red"></asp:RegularExpressionValidator> 
+                <br />
+                <asp:Button ID="uploadDoc0" runat="server" Text="Load" 
+                OnClick="UploadCheckData" CssClass="defaultButton"/>
+                <cc1:RoundedCornersExtender ID="uploadDoc0_RoundedCornersExtender" 
+                    runat="server" BehaviorID="uploadDoc0_RoundedCornersExtender" 
+                    TargetControlID="uploadDoc0" />
+            </div>
+        </div>
+</div>
+
+<div class="whiteSpace">
+    &nbsp;
+</div>
 
     <div class="gridWindow">
     <div class="gridTitleBar" style="width:99.4%">
@@ -113,72 +185,26 @@
     </asp:GridView>
     </div>
         <div class="buttonHolder">
+            <asp:Button ID="genListBtn" runat="server" onclick="genListBtn_Click" OnClientClick="return GenerateList(); needToConfirm = false;"
+                Text="Generate List" CssClass="defaultButton"/>
+            <cc1:RoundedCornersExtender ID="genListBtn_RoundedCornersExtender"
+                runat="server" BehaviorID="genListBtn_RoundedCornersExtender" 
+                TargetControlID="genListBtn" />
+            <asp:Button ID="produceReport" runat="server" Text="Produce Report" OnClick="ProduceFinalReport" CssClass="defaultButton" />
+            <cc1:RoundedCornersExtender ID="produceReport_RoundedCornersExtender"
+                runat="server" BehaviorID="produceReport_RoundedCornersExtender" 
+                TargetControlID="produceReport" />
             <asp:Button ID="clearCheck" runat="server" onclientclick="return DeleteItem()" 
-            Text="Clear Check Data" onclick="clearCheck_Click1" CssClass="gridButton" />  
+                Text="Clear Check Data" onclick="clearCheck_Click1" CssClass="defaultButton" />  
             <cc1:RoundedCornersExtender ID="clearCheck_RoundedCornersExtender" 
                 runat="server" BehaviorID="clearCheck_RoundedCornersExtender" 
                 TargetControlID="clearCheck" />
         </div>
     </div>
-<div class="loader">
-        <div class="imageLoad">
-            <asp:Label ID="lblLoadImg" runat="server" Font-Size="Larger" ForeColor="Black" 
-            Text="1. Load Image"></asp:Label>
-            <br />
-            <asp:FileUpload ID="ImageUpload" runat="server" AllowMultiple="true"/>
-            <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" 
-            ControlToValidate="ImageUpload" 
-            ErrorMessage="Image files only"
-            ValidationExpression="(.*\.([Jj][Pp][Gg])|.*\.([Jj][Pp][Ee][Gg])|.*\.([Pp][Nn][Gg])|.*\.([Tt][Ii][Ff])$)" 
-            ForeColor="Red"></asp:RegularExpressionValidator>
-            <asp:Button ID="uploadImgBtn" runat="server" Text="Upload Image" 
 
-            OnClick="uploadImgBtn_Click" OnClientClick="skm_LockScreen('Uploading Images');" 
-                CssClass="defaultButton" />   
-            <cc1:RoundedCornersExtender ID="uploadImgBtn_RoundedCornersExtender" 
-                runat="server" BehaviorID="uploadImgBtn_RoundedCornersExtender" 
-                TargetControlID="uploadImgBtn" />
-            <div id="skm_LockPane" class="LockOff"></div> 
 
-        </div>
-        <div class="dataLoad">
-            <asp:Label ID="lblCheckData" runat="server" Font-Size="Larger" ForeColor="Black" 
-            Text="2. Load Check Data"></asp:Label>
-            <br />
-            <asp:FileUpload ID="DataUpload" runat="server"/>
-            <asp:RegularExpressionValidator ID="regexValidator" runat="server" 
-            ControlToValidate="DataUpload" 
-            ErrorMessage="Only csv files are allowed"  
-            ValidationExpression="(.*\.([cC][sS][vV])$)" ForeColor="Red"></asp:RegularExpressionValidator> 
-            <br />   
-            <asp:Button ID="uploadDoc0" runat="server" Text="Load" 
-            OnClick="UploadCheckData" CssClass="defaultButton"/>
-            <cc1:RoundedCornersExtender ID="uploadDoc0_RoundedCornersExtender" 
-                runat="server" BehaviorID="uploadDoc0_RoundedCornersExtender" 
-                TargetControlID="uploadDoc0" />
-        </div>
-</div>
-<div class="whiteSpace">
-    &nbsp;
-</div>
-
-<div class="generator">
-        <div class="generateVerified">
-            <asp:Label ID="genLbl" runat="server" Font-Size="Larger" ForeColor="Black" Text="Generate List of Verified Cheques"></asp:Label><br/>
-            <asp:Button ID="genListBtn" runat="server" onclick="genListBtn_Click" OnClientClick="return GenerateList(); needToConfirm = false;" 
-			
-            Text="Generate List" CssClass="defaultButton"/>
-            <cc1:RoundedCornersExtender ID="genListBtn_RoundedCornersExtender" 
-
-                runat="server" BehaviorID="genListBtn_RoundedCornersExtender" 
-                TargetControlID="genListBtn" />
-        </div>
-        <div id="generateConfirmed">
-            
-        </div>
-</div> 
     <br />
-    <asp:Button ID="reportProducer" runat="server" Text="Produce Report" OnClick="ProduceFinalReport" />
+    
     <br />
    
    <script type="text/javascript">

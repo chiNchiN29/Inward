@@ -17,9 +17,6 @@ namespace InwardClearingSystem.Account
         HttpCookie UserCookie = new HttpCookie("Username");
         protected void Page_Load(object sender, EventArgs e)
         {
-
-
-            RegisterHyperLink.NavigateUrl = "SignUp.aspx";
             try
             {
                 if (!IsPostBack)

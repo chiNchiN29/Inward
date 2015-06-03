@@ -78,7 +78,6 @@ namespace InwardClearingSystem
                 for (int i = 0; i < hfc.Count; i++)
                 {
                     HttpPostedFile hpf = hfc[i];
-                    string beforesum = GetChecksum(hpf.FileName);
                     if (hpf.ContentLength > 0)
                     {
                         UploadADocument(session, imageToByteArray(System.Drawing.Image.FromStream(hpf.InputStream)), Path.GetFileNameWithoutExtension(hpf.FileName));
