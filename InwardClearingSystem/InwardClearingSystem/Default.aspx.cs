@@ -37,6 +37,18 @@ namespace InwardClearingSystem
             }
         }
 
+        /// <summary>
+        /// uploads check image to alfresco
+        /// </summary>
+        /// <param name="session">
+        /// CMIS session
+        /// </param>
+        /// <param name="ImageFile">
+        /// The Image File to be uploaded
+        /// </param>
+        /// <param name="fileName">
+        /// The filename of the file
+        /// </param>
         private void UploadADocument(ISession session, byte[] ImageFile, string fileName)
         {
             IFolder folder = (IFolder)session.GetObjectByPath("/Uploads/" + DateTime.Now.Year.ToString() + "/" + DateTime.Now.ToString("MM") + "/" + DateTime.Now.ToString("dd"));
@@ -54,19 +66,7 @@ namespace InwardClearingSystem
             folder.CreateDocument(DocumentProperties, contentStream, null);
         }
 
-        private static string GetChecksum(string file)
-        {
-            string m_checksum;
-            using (FileStream stream = File.OpenRead(file))
-            {
-                MD5 m_md5 = new MD5CryptoServiceProvider();
-                //SHA256Managed sha = new SHA256Managed();
-                byte[] checksum = m_md5.ComputeHash(stream);
-                m_checksum = BitConverter.ToString(checksum).Replace("-", String.Empty);
-            }
-            return m_checksum;
-        }
-
+     
         protected void uploadImgBtn_Click(Object sender, EventArgs e)
         {
             try
@@ -93,6 +93,15 @@ namespace InwardClearingSystem
             }
         }
 
+        /// <summary>
+        /// convert image to byte
+        /// </summary>
+        /// <param name="imageIn">
+        /// Image to be converted
+        /// </param>
+        /// <returns>
+        /// The image in byte[] formate
+        /// </returns>
         private static byte[] imageToByteArray(System.Drawing.Image imageIn)
         {
             using (MemoryStream ms = new MemoryStream())
@@ -102,6 +111,11 @@ namespace InwardClearingSystem
             }
         }
 
+        /// <summary>
+        /// upload check data to database
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void UploadCheckData(object sender, EventArgs e)
         {
             try
@@ -168,11 +182,8 @@ namespace InwardClearingSystem
                     sr.Close();
                 }
                     FillDataTable();
-                    string wew = ViewState["UploadImageClicked"].ToString();
-                    string wew2 = ViewState["ImageCount"].ToString();
                     ImgCount.Value = ViewState["ImageCount"].ToString();
                     DataCount.Value = lineCount.ToString();
-                    string wew3 = lineCount.ToString();
                     bool uploadClicked = bool.Parse(ViewState["UploadImageClicked"].ToString());
                     if (uploadClicked)
                     {
@@ -190,17 +201,25 @@ namespace InwardClearingSystem
 
         }
 
+        /// <summary>
+        /// gets image count uploaded in alfresco
+        /// </summary>
         public int ImageCount
         {
             get { return Convert.ToInt32(ViewState["ImageCount"].ToString()); }
             set { ViewState["ImageCount"] = value; }
         }
 
+
+        /// <summary>
+        /// clear check data
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void clearCheck_Click1(object sender, EventArgs e)
         {
-            using (activeConnectionOpen())
+            using (cmd = new SqlCommand("DELETE FROM Cheque", activeConnectionOpen()))
             {
-                cmd = new SqlCommand("DELETE FROM Cheque", activeConnection);
                 cmd.ExecuteNonQuery();
                 ViewAllCheck.DataBind();
             }

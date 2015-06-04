@@ -137,6 +137,7 @@ first child of the left and right table columns */
     font-family:Segoe UI;
     height:30px;
     width:130px;
+    border-radius: 10px;
 }
 
 .defaultButton:hover

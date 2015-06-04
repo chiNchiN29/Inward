@@ -57,21 +57,33 @@ namespace InwardClearingSystem
             {
                 Message("Please select a customer");
             }
-            else
+            else if (String.IsNullOrWhiteSpace(confirmRemarks.Text))
             {
-                using (activeConnectionOpen())
-                {
-                    cmd = new SqlCommand("update Cheque SET confirmed = @fund, modified_by = @modby, modified_date = @moddate, confirm_remarks = @conremarks  WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection);
-                    cmd.Parameters.AddWithValue("@acctnumber", ConfirmView.Rows[i].Cells[5].Text);
-                    cmd.Parameters.AddWithValue("@chknumber", ConfirmView.Rows[i].Cells[1].Text);
-                    cmd.Parameters.AddWithValue("@fund", "YES");
-                    cmd.Parameters.AddWithValue("@modby", Session["UserID"]);
-                    cmd.Parameters.AddWithValue("@moddate", DateTime.Now);
-                    cmd.Parameters.AddWithValue("@conremarks", confirmRemarks.Text);
-                    cmd.ExecuteNonQuery();
-                    dt = FillDataTable();
-                    NextRow(ConfirmView, i);
-                }     
+                Message("Please input remarks");
+            }
+            else
+            {    
+                UpdateConfirmCheckData(i, "YES");
+                FillDataTable();
+                NextRow(ConfirmView, i);
+   
+            }
+        }
+
+        private void UpdateConfirmCheckData(int i, string confirm)
+        {
+            query = new StringBuilder();
+            query.Append("update Cheque SET confirmed = @fund, modified_by = @modby, modified_date = @moddate, confirm_remarks = @conremarks ");
+            query.Append("WHERE account_number = @acctnumber AND check_number = @chknumber ");
+            using (cmd = new SqlCommand(query.ToString(), activeConnectionOpen()))
+            {
+                cmd.Parameters.AddWithValue("@acctnumber", ConfirmView.Rows[i].Cells[5].Text);
+                cmd.Parameters.AddWithValue("@chknumber", ConfirmView.Rows[i].Cells[1].Text);
+                cmd.Parameters.AddWithValue("@fund", confirm);
+                cmd.Parameters.AddWithValue("@modby", Session["UserID"]);
+                cmd.Parameters.AddWithValue("@moddate", DateTime.Now);
+                cmd.Parameters.AddWithValue("@conremarks", confirmRemarks.Text);
+                cmd.ExecuteNonQuery();
             }
         }
 
@@ -82,25 +94,17 @@ namespace InwardClearingSystem
             {
                 Message("Please select a customer");   
             }
+            else if (String.IsNullOrWhiteSpace(confirmRemarks.Text))
+            {
+                Message("Please input remarks");
+            }
             else
             {
+                UpdateConfirmCheckData(i, "NO");
+                FillDataTable();
+                NextRow(ConfirmView, i);
 
-                using (activeConnectionOpen())
-                {
-                    cmd = new SqlCommand("update Cheque SET confirmed = @fund, modified_by = @modby, modified_date = @moddate, confirm_remarks = @conremarks WHERE account_number = @acctnumber AND check_number = @chknumber", activeConnection);
-                    cmd.Parameters.AddWithValue("@acctnumber", ConfirmView.Rows[i].Cells[5].Text);
-                    cmd.Parameters.AddWithValue("@chknumber", ConfirmView.Rows[i].Cells[1].Text);
-                    cmd.Parameters.AddWithValue("@fund", "NO");
-                    cmd.Parameters.AddWithValue("@modby", Session["UserID"]);
-                    cmd.Parameters.AddWithValue("@moddate", DateTime.Now);
-                    cmd.Parameters.AddWithValue("@conremarks", confirmRemarks.Text);
-                    cmd.ExecuteNonQuery();
-                    activeConnection.Close();
-                    dt = FillDataTable();
-                    NextRow(ConfirmView, i);
-                }
             }
-            
         }
 
         protected void genListBtn_Click(object sender, EventArgs e)
@@ -175,15 +179,17 @@ namespace InwardClearingSystem
             query.Append("check_date, amount, branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed, confirm_remarks ");
             query.Append("FROM Cheque ch, Customer c, Account a, Threshold t ");
             query.Append("WHERE ch.account_number = a.account_number AND a.customer_id = c.customer_id AND verification = 'NO' ");
-            activeConnectionOpen();
-            dt = new DataTable();
-            da = new SqlDataAdapter(query.ToString(), activeConnection);
-            da.Fill(dt);
-            ConfirmView.DataSource = dt;
-            ConfirmView.DataBind();
-            activeConnectionClose();
+            using (da = new SqlDataAdapter(query.ToString(), activeConnectionOpen()))
+            {
+                dt = new DataTable();
+            
+                da.Fill(dt);
+                ConfirmView.DataSource = dt;
+                ConfirmView.DataBind();
+                activeConnectionClose();
 
-            return dt;
+                return dt;
+            }
         }
 
         private string GetSortDirection(string column)
@@ -222,8 +228,20 @@ namespace InwardClearingSystem
             int i = row.RowIndex;
             ViewState["SelectRow"] = i;
 
-            row = ConfirmView.Rows[i];
-            row.BackColor = System.Drawing.Color.Aqua;
+            if (i != -1)
+            {
+
+                row = ConfirmView.Rows[i];
+                row.BackColor = Color.Aqua;
+                row = ConfirmView.Rows[i];
+
+                string im = row.Cells[3].Text;
+                string age = row.Cells[1].Text;
+                string image = im + "_" + age;
+                ShowChequeImage(session, image, checkImage);
+                ShowSigDTImage(row.RowIndex, cmd, ConfirmView, sigImage);
+            }
+
         }
 
         protected void ConfirmView_RowDataBound(Object sender, GridViewRowEventArgs e)

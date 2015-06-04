@@ -133,14 +133,15 @@ namespace InwardClearingSystem
 
         public void FillDropDown()
         {
-            using (activeConnectionOpen())
+
+            query = new StringBuilder();
+            query.Append("SELECT user_id, username ");
+            query.Append("FROM [User] u, Role r ");
+            query.Append("WHERE u.role_id = r.role_id AND (r.role_desc = 'CLEARING DEPT' OR r.role_desc = 'OVERSEER')");
+            using (da = new SqlDataAdapter(query.ToString(), activeConnectionOpen()))
             {
-                query = new StringBuilder();
-                query.Append("SELECT user_id, username ");
-                query.Append("FROM [User] u, Role r ");
-                query.Append("WHERE u.role_id = r.role_id AND (r.role_desc = 'CLEARING DEPT' OR r.role_desc = 'OVERSEER')");
                 dt = new DataTable();
-                da = new SqlDataAdapter(query.ToString(), activeConnection);
+                
                 da.Fill(dt);
                 UserDrpDwn.DataSource = dt;
                 UserDrpDwn.DataTextField = "username";

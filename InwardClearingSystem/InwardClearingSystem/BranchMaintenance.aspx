@@ -3,6 +3,15 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <p>BRANCH MAINTENANCE</p>
+        <asp:Button ID="searchBtn" runat="server" onclick="searchBtn_Click" 
+        Text="Search" />
+    <asp:TextBox ID="txtSearch" runat="server"></asp:TextBox>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <asp:Button ID="viewAllBtn" runat="server" onclick="viewAllBtn_Click" 
+        Text="View All" />
+    <br />
+    <asp:Button ID="pgSize" runat="server" Text="Change Page Size" />
+    <asp:TextBox ID="txtPgSize" runat="server"></asp:TextBox>
         <asp:GridView ID="BranchView" runat="server" AutoGenerateColumns="false" ShowFooter="true" CssClass="gridView2" DataKeyNames="branch_id" 
         HeaderStyle-CssClass="GridHeader" OnRowEditing="EditBranch" OnRowCancelingEdit="CancelEdit" OnRowUpdating="UpdateBranch"
         AllowPaging="true" OnPageIndexChanging="BranchView_PageIndex" PagerStyle-CssClass="paging" AllowSorting="true" OnSorting="BranchView_Sorting" >

@@ -13,6 +13,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Drawing;
+using DotCMIS.Data;
 
 namespace InwardClearingSystem
 {
@@ -20,6 +21,7 @@ namespace InwardClearingSystem
     {
         public SqlConnection activeConnection = new SqlConnection();
         public ISession session;
+      
   
         protected override void OnInit(EventArgs e)
         {
@@ -30,16 +32,13 @@ namespace InwardClearingSystem
             if (login == false)
                 Response.Redirect("~/Account/Login.aspx");
             Session["UserName"] = System.Web.HttpContext.Current.User.Identity.Name;
-            using (activeConnectionOpen())
+            using (SqlCommand cmd = new SqlCommand("select user_id from [User] where username = @username", activeConnectionOpen()))
             {
-                using (SqlCommand cmd = new SqlCommand("select user_id from [User] where username = @username", activeConnection))
-                {
-                    cmd.Parameters.AddWithValue("@username", Session["UserName"].ToString());
-                    Session["UserID"] = Convert.ToInt32(cmd.ExecuteScalar());
-                }
+                cmd.Parameters.AddWithValue("@username", Session["UserName"].ToString());
+                Session["UserID"] = Convert.ToInt32(cmd.ExecuteScalar());
             }
-                
-            session = CreateSession("admin", "092095", "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom");
+             
+            session = CreateSession("admin", "admin", "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom");
         }
 
         public void Message(string message)
@@ -240,6 +239,71 @@ namespace InwardClearingSystem
                 return null;
             }
         }
-    
+
+        public void ShowChequeImage(ISession session, string fileName, System.Web.UI.WebControls.Image image)
+        {
+            try
+            {
+                IDocument doc = (IDocument)session.GetObjectByPath("/Uploads/" + DateTime.Now.Year.ToString() + "/" + DateTime.Now.ToString("MM") + "/" + DateTime.Now.ToString("dd") + "/" + fileName);
+
+                IContentStream contentStream = doc.GetContentStream();
+                byte[] result;
+                using (var streamReader = new MemoryStream())
+                {
+                    contentStream.Stream.CopyTo(streamReader);
+                    result = streamReader.ToArray();
+                }
+                string base64string = Convert.ToBase64String(result, 0, result.Length);
+
+                image.ImageUrl = "data:image/jpeg;base64," + base64string;
+                image.Visible = true;
+            }
+            catch
+            {
+                image.ImageUrl = "~/Resources/H2DefaultImage.jpg";
+                image.Visible = true;
+            }
+
+        }
+
+        //Signature image in Alfresco
+        public void ShowSigImage(ISession session, string fileName, System.Web.UI.WebControls.Image image)
+        {
+            IDocument doc2 = (IDocument)session.GetObjectByPath("/Uploads/" + DateTime.Now.Year.ToString() + "/" + DateTime.Now.ToString("MM") + "/" + DateTime.Now.ToString("dd") + "/" + fileName + ".jpg");
+
+            IContentStream contentStream2 = doc2.GetContentStream();
+            byte[] result2;
+            using (var streamReader = new MemoryStream())
+            {
+                contentStream2.Stream.CopyTo(streamReader);
+                result2 = streamReader.ToArray();
+            }
+            string base64string2 = Convert.ToBase64String(result2, 0, result2.Length);
+            image.ImageUrl = "data:image/jpeg;base64," + base64string2;
+            image.Visible = true;
+        }
+
+        //Signature image in Database
+        public void ShowSigDTImage(int rowIndex, SqlCommand cmd, GridView view, System.Web.UI.WebControls.Image image)
+        {
+            using (activeConnectionOpen())
+            {
+                try
+                {
+                    cmd = new SqlCommand("select signature_image from Signature WHERE account_number= @acctnumber", activeConnection);
+                    cmd.Parameters.AddWithValue("@acctnumber", view.Rows[rowIndex].Cells[3].Text);
+
+                    byte[] result = cmd.ExecuteScalar() as byte[];
+                    string base64string2 = Convert.ToBase64String(result, 0, result.Length);
+                    image.ImageUrl = "data:image/jpeg;base64," + base64string2;
+                    image.Visible = true;
+                }
+                catch
+                {
+                    image.ImageUrl = "~/Resources/H2DefaultImage.jpg";
+                    image.Visible = true;
+                }
+            }
+        }
     }
 }

@@ -61,8 +61,9 @@
         }
         div.remarksBox
         {
-            width:48%;
+            width:50%;
             margin: 0 auto;
+            height: 85px;
         }
         div.verifyOptions
         {
@@ -82,6 +83,11 @@
         {
             color: #009900;
         }
+        
+        .NoVer
+        {
+            color: Red;
+        }
         </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
@@ -93,8 +99,7 @@
             BorderStyle="None" Text="Image"></asp:Label>
             <br />
             <asp:Image ID="checkImage" runat="server" CssClass="imageBox" Height="180px" 
-            Width="450px"  ImageAlign="Left" onmouseover="zoomin(this)" onmouseout="zoomout(this)"
-            ImageUrl="~/Resources/No_image_available.jpg" />
+            Width="450px"  ImageAlign="Left" ImageUrl="~/Resources/No_image_available.jpg" />
             <script type="text/javascript">
                 $(function () {
                     $("#<%=checkImage.ClientID %>").elevateZoom({ scrollZoom: true, zoomWindowWidth: 450, zoomWindowHeight: 180, zoomWindowPosition: 2 });
@@ -107,34 +112,36 @@
             Text="Signature"></asp:Label>
             <br />
             <asp:Image ID="sigImage" runat="server" CssClass="imageBox" Height="180px" 
-            Width="450px" ImageAlign="Right" onmouseover="zoomin(this)" onmouseout="zoomout(this)" 
-            ImageUrl="~/Resources/No_image_available.jpg"/>
+            Width="450px" ImageAlign="Right" ImageUrl="~/Resources/No_image_available.jpg"/>
             <script type="text/javascript">
-                 $(function () {
-                     $("#<%=sigImage.ClientID %>").elevateZoom({ scrollZoom: true, zoomWindowWidth: 450, zoomWindowHeight: 180, zoomWindowPosition: 2 });
+                $(function () {
+                     $("#<%=sigImage.ClientID %>").elevateZoom({ scrollZoom: true, zoomWindowWidth: 450, zoomWindowHeight: 180, zoomWindowPosition: 2, zoomout: false });
                  });
                  </script>
         </div>
 
     </div>
     <div class="whiteSpace">
-        &nbsp;
+     
     </div>
     <div class="verifyOptionsPositioning">
         <div class="remarksBox">
                 <asp:Label ID="verifyRemarkLabel" runat="server" Text="Remarks"></asp:Label>
                 <br />
-                <asp:DropDownList ID="verifyChoice" runat="server" EnableTheming="True">
-                <asp:ListItem Value="0">&lt;SELECT ITEM&gt;</asp:ListItem>
-                <asp:ListItem>SIGNATURE DIFFERS</asp:ListItem>
-                <asp:ListItem>AMOUNT DOES NOT MATCH</asp:ListItem>
-                <asp:ListItem>POST-DATED ISSUE</asp:ListItem>
-                <asp:ListItem>FUTURE DATED ISSUE</asp:ListItem>
-                </asp:DropDownList>
-                <br />
-                <asp:TextBox ID="verifyRemarks" runat="server" TextMode="MultiLine" Width="205px"></asp:TextBox>
+                <asp:TextBox ID="verifyRemarks" runat="server" TextMode="MultiLine" Width="242px" Height="32px" style="resize: none" ></asp:TextBox>
+                <div class="chkBoxScroll" style="overflow-y: scroll; width: 250px; height: 60px; text-align:left;">
+                    <asp:CheckBoxList ID="verifyChoice" runat="server" >
+                        <asp:ListItem>SIGNATURE DIFFERS</asp:ListItem>
+                        <asp:ListItem>AMOUNT DOES NOT MATCH</asp:ListItem>
+                        <asp:ListItem>STALE CHECK</asp:ListItem>
+                        <asp:ListItem>POST-DATED CHECK</asp:ListItem>
+                    </asp:CheckBoxList>
+                </div>
             </div>
-            <br />
+            <div class="whiteSpace">
+    </div>
+    <br />
+    <br />
         <div class="verifyOptions">
             <div class="acceptBox">
                 <asp:Button ID="acceptButton" runat="server" CssClass="yesButton"
@@ -166,12 +173,18 @@
    
     <asp:Button ID="insertSig" runat="server" Text="Insert Signature" OnClick="insertSig_Click" />
     <asp:TextBox ID="TextBox1" runat="server"></asp:TextBox>
-    <br /><br/>
+    <br />
+    <asp:Button ID="searchBtn" runat="server" onclick="searchBtn_Click" 
+        Text="Search Check#" />
+    <asp:TextBox ID="txtSearch" runat="server"></asp:TextBox>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <asp:Button ID="ViewAll" runat="server" onclick="ViewAll_Click" Text="Button" />
+    <br/>
     <div class ="grid_scroll">
         <asp:GridView ID="VerifyView" runat="server" AutoGenerateColumns="false" 
             BorderColor="Black"
               AllowSorting="true" OnSorting="VerifyView_Sorting" HeaderStyle-CssClass="GridHeader" 
-             OnRowDataBound="VerifyView_RowDataBound" 
+             OnRowDataBound="VerifyView_RowDataBound"
             FooterStyle-CssClass="gridViewFooterStyle" Width="100%">
                  <Columns>
                     <asp:TemplateField>
@@ -228,8 +241,8 @@
             var needToConfirm = true;
           window.onbeforeunload = confirmExit;
           function confirmExit() {
-              var totalVer = document.getElementById("<%=totalVerHide.ClientID%>").value;
-              var total = document.getElementById("<%=totalCountHide.ClientID%>").value;
+              var totalVer = document.getElementById("<%=totalVer.ClientID%>").text;
+              var total = document.getElementById("<%=totalCount.ClientID%>").text;
               if (/Firefox[\/\s](\d+)/.test(navigator.userAgent) && new Number(RegExp.$1) >= 4) {
                   if (totalVer < total) {
                       if (needToConfirm)
@@ -244,8 +257,4 @@
               }
           }
 </script>
-
-    <asp:HiddenField ID="totalCountHide" runat="server" />
-    <asp:HiddenField ID="totalVerHide" runat="server" />
-
 </asp:Content>
