@@ -144,7 +144,7 @@ namespace InwardClearingSystem
             //}
         }
 
-        protected void delBtn_Click(object sender, EventArgs e)
+        protected void deleteUser_Click(object sender, EventArgs e)
         {
             int i = Convert.ToInt32(ViewState["SelectRow"].ToString());
 
@@ -163,6 +163,38 @@ namespace InwardClearingSystem
                    
                     cmd.Parameters.AddWithValue("@name", user);
                     cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        protected void addUser_Click(object sender, EventArgs e)
+        {
+            Server.Transfer("~/SignUp.aspx");
+        }
+
+        protected void editUser_Click(object sender, EventArgs e)
+        {
+            int i = Convert.ToInt32(ViewState["SelectRow"].ToString());
+
+            if (i == -1)
+            {
+                Message("Please select a user");
+            }
+            else
+            {
+                row = UserView.Rows[i];
+                string user = row.Cells[2].Text;
+                using (activeConnectionOpen())
+                {
+                    cmd = new SqlCommand("SELECT * FROM [User] u WHERE u.username = @username", activeConnection);
+                    cmd.Parameters.AddWithValue("@username", user);
+                    SqlDataReader dr = new SqlDataReader();
+                    dr = cmd.ExecuteReader();
+                    Session["TBEusername"] = dr["username"];
+                    Session["TBEfirstname"] = dr["f_name"];
+                    Session["TBEmiddlename"] = dr["m_name"];
+                    Session["TBElastname"] = dr["l_name"];
+                    Session["TBEemail"] = dr["email"];
                 }
             }
         }
