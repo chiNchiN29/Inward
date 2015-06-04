@@ -13,6 +13,60 @@ namespace InwardClearingSystem {
     public partial class UserMaintenance {
         
         /// <summary>
+        /// addUser control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button addUser;
+        
+        /// <summary>
+        /// addUser_RoundedCornersExtender control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.RoundedCornersExtender addUser_RoundedCornersExtender;
+        
+        /// <summary>
+        /// editUser control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button editUser;
+        
+        /// <summary>
+        /// editUser_RoundedCornersExtender control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.RoundedCornersExtender editUser_RoundedCornersExtender;
+        
+        /// <summary>
+        /// deleteUser control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button deleteUser;
+        
+        /// <summary>
+        /// deleteUser_RoundedCornersExtender control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.RoundedCornersExtender deleteUser_RoundedCornersExtender;
+        
+        /// <summary>
         /// UserView control.
         /// </summary>
         /// <remarks>
@@ -31,22 +85,22 @@ namespace InwardClearingSystem {
         protected global::System.Web.UI.WebControls.DropDownList RoleDrpDwn;
         
         /// <summary>
-        /// delBtn control.
+        /// deleteUser control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button delBtn;
+        protected global::System.Web.UI.WebControls.Button deleteUser;
         
         /// <summary>
-        /// delBtn_RoundedCornersExtender control.
+        /// deleteUser_RoundedCornersExtender control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::AjaxControlToolkit.RoundedCornersExtender delBtn_RoundedCornersExtender;
+        protected global::AjaxControlToolkit.RoundedCornersExtender deleteUser_RoundedCornersExtender;
         
         /// <summary>
         /// branchBtn control.
