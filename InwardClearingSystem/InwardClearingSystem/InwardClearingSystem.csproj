@@ -71,6 +71,9 @@
     <Content Include="Account\ChangePasswordSuccess.aspx" />
     <Content Include="Account\Login.aspx" />
     <Content Include="Account\Register.aspx" />
+    <Content Include="Account\Resources\H2DefaultImage.jpg" />
+    <Content Include="Account\Resources\H2ics.png" />
+    <Content Include="Account\Resources\H2ics2.png" />
     <Content Include="SignUp.aspx" />
     <Content Include="App_Data\icsdb.mdf" />
     <Content Include="App_Data\icsdb_log.ldf">
