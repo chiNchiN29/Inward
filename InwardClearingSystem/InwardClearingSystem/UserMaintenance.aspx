@@ -11,22 +11,6 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <br />
-<div class="maintenancePowers">
-    <asp:Button ID="addUser" runat="server" Text="Add User" CssClass="defaultButton" OnClick="addUser_Click" />
-    <cc1:RoundedCornersExtender ID="addUser_RoundedCornersExtender" runat="server" 
-        BehaviorID="addUser_RoundedCornersExtender" TargetControlID="addUser">
-    </cc1:RoundedCornersExtender>
-
-    <asp:Button ID="editUser" runat="server" Text="Edit User" CssClass="defaultButton" OnClick="editUser_Click" />
-    <cc1:RoundedCornersExtender ID="editUser_RoundedCornersExtender" runat="server" 
-        BehaviorID="editUser_RoundedCornersExtender" TargetControlID="editUser">
-    </cc1:RoundedCornersExtender>
-
-    <asp:Button ID="deleteUser" runat="server" onclick="deleteUser_Click" Text="Delete" CssClass="defaultButton"/>
-    <cc1:RoundedCornersExtender ID="deleteUser_RoundedCornersExtender" runat="server" 
-        BehaviorID="deleteUser_RoundedCornersExtender" TargetControlID="deleteUser">
-    </cc1:RoundedCornersExtender>
-</div>
 <div class="gridDiv" style="width:35%; border:2px solid #333333">
     <div class="gridTitleBar"><strong>User Maintenance</strong></div>
     <asp:GridView ID="UserView" runat="server" DataKeyNames="user_id" AutoGenerateColumns="false" HeaderStyle-CssClass="GridHeader" CssClass="gridView2">
@@ -70,7 +54,10 @@
     <asp:DropDownList ID="RoleDrpDwn"  runat="server">
     </asp:DropDownList>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    
+    <asp:Button ID="delBtn" runat="server" onclick="delBtn_Click" Text="Delete" CssClass="defaultButton"/>
+    <cc1:RoundedCornersExtender ID="delBtn_RoundedCornersExtender" runat="server" 
+        BehaviorID="delBtn_RoundedCornersExtender" TargetControlID="delBtn">
+    </cc1:RoundedCornersExtender>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
     <asp:Button ID="branchBtn" runat="server" Text="Assign Branches" 
         onclick="branchBtn_Click" CssClass="defaultButton" />

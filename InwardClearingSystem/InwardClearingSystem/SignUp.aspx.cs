@@ -57,7 +57,7 @@ namespace InwardClearingSystem.Account
                                             insert.Parameters.AddWithValue("@pass", passTxtBx.Text);
                                             insert.Parameters.AddWithValue("@mail", emTxtBx.Text);
                                             insert.ExecuteNonQuery();
-                                            Response.Redirect("~/UserMaintenance.aspx");
+                                            Response.Redirect("~/Account/Login.aspx");
                                         }
                                     }
                                 }
