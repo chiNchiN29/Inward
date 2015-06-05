@@ -13,6 +13,24 @@ namespace InwardClearingSystem {
     public partial class UserMaintenance {
         
         /// <summary>
+        /// TextBox1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TextBox1;
+        
+        /// <summary>
+        /// searchUser control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button searchUser;
+        
+        /// <summary>
         /// addUser control.
         /// </summary>
         /// <remarks>
@@ -20,15 +38,6 @@ namespace InwardClearingSystem {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button addUser;
-        
-        /// <summary>
-        /// addUser_RoundedCornersExtender control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.RoundedCornersExtender addUser_RoundedCornersExtender;
         
         /// <summary>
         /// editUser control.
@@ -40,15 +49,6 @@ namespace InwardClearingSystem {
         protected global::System.Web.UI.WebControls.Button editUser;
         
         /// <summary>
-        /// editUser_RoundedCornersExtender control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.RoundedCornersExtender editUser_RoundedCornersExtender;
-        
-        /// <summary>
         /// deleteUser control.
         /// </summary>
         /// <remarks>
@@ -56,15 +56,6 @@ namespace InwardClearingSystem {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button deleteUser;
-        
-        /// <summary>
-        /// deleteUser_RoundedCornersExtender control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.RoundedCornersExtender deleteUser_RoundedCornersExtender;
         
         /// <summary>
         /// UserView control.
@@ -84,8 +75,7 @@ namespace InwardClearingSystem {
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList RoleDrpDwn;
         
-       
-        
+
         /// <summary>
         /// branchBtn control.
         /// </summary>
@@ -96,15 +86,6 @@ namespace InwardClearingSystem {
         protected global::System.Web.UI.WebControls.Button branchBtn;
         
         /// <summary>
-        /// branchBtn_RoundedCornersExtender control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.RoundedCornersExtender branchBtn_RoundedCornersExtender;
-        
-        /// <summary>
         /// assignBtn control.
         /// </summary>
         /// <remarks>
@@ -112,14 +93,5 @@ namespace InwardClearingSystem {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button assignBtn;
-        
-        /// <summary>
-        /// assignBtn_RoundedCornersExtender control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.RoundedCornersExtender assignBtn_RoundedCornersExtender;
     }
 }

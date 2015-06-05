@@ -143,7 +143,7 @@ first child of the left and right table columns */
 .defaultButton:hover
 {
     background:ButtonHighlight;
-    outline:#990000 solid 1px;
+    border:1px solid #990000;
     color:#990000;
 }
     
@@ -155,13 +155,14 @@ first child of the left and right table columns */
     font-family:Segoe UI;
     height:36px;
     width:130px; 
+    border-radius: 10px;
 }
 
 .yesButton:hover
 {
     background:ButtonHighlight; 
     color:#00CC00;
-    outline:#00CC00 solid 1px;
+    border:1px solid #00CC00;
 }
 
 .noButton
@@ -172,13 +173,14 @@ first child of the left and right table columns */
     font-family:Segoe UI;
     height:36px;
     width:130px; 
+    border-radius:10px;
 }
 
 .noButton:hover
 {
     background:ButtonHighlight;
     color:#CC0000;
-    outline:#CC0000 solid 1px; 
+    border:1px solid #CC0000; 
 }
 
 .leftCol

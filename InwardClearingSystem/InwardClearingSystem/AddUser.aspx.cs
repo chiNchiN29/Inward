@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Data;
 
 namespace InwardClearingSystem.Account
 {
@@ -49,13 +50,17 @@ namespace InwardClearingSystem.Account
                                     }
                                     else
                                     {
-                                        using (SqlCommand insert = new SqlCommand("insert into [User](username, first_name, last_name, password, email) values (@user, @first, @last, @pass, @mail)", connection))
+                                        using (SqlCommand insert = new SqlCommand())
                                         {
-                                            insert.Parameters.AddWithValue("@user", unTxtBx.Text);
-                                            insert.Parameters.AddWithValue("@first", fnTxtBx.Text);
-                                            insert.Parameters.AddWithValue("@last", lnTxtBx.Text);
-                                            insert.Parameters.AddWithValue("@pass", passTxtBx.Text);
-                                            insert.Parameters.AddWithValue("@mail", emTxtBx.Text);
+                                            insert.CommandText = "InsertUser";
+                                            insert.CommandType = CommandType.StoredProcedure;
+                                            insert.Connection = connection;
+                                            insert.Parameters.AddWithValue("@username", unTxtBx.Text);
+                                            insert.Parameters.AddWithValue("@password", passTxtBx.Text);
+                                            insert.Parameters.AddWithValue("@f_name", fnTxtBx.Text);
+                                            insert.Parameters.AddWithValue("@m_name", mnTxtBx.Text);
+                                            insert.Parameters.AddWithValue("@l_name", lnTxtBx.Text);
+                                            insert.Parameters.AddWithValue("@email", emTxtBx.Text);
                                             insert.ExecuteNonQuery();
                                             Response.Redirect("~/UserMaintenance.aspx");
                                         }

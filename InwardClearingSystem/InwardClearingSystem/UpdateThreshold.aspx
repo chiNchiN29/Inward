@@ -76,9 +76,6 @@
         <div class="clear">
         <asp:Button ID="Button1" runat="server" onclick="SetThresholds" Text="Set" OnClientClick="return ConfirmSettings();"
         Width="91px" CssClass="defaultButton"/>
-            <cc1:RoundedCornersExtender ID="Button1_RoundedCornersExtender" runat="server" 
-                BehaviorID="Button1_RoundedCornersExtender" TargetControlID="Button1">
-            </cc1:RoundedCornersExtender>
         </div>
 </div>
     <br />
