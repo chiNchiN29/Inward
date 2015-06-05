@@ -353,13 +353,11 @@ div.gridTitleBar
     border: solid 1px #000000;   
     color: #000000;  
 }  
- 
-.gridViewFooterStyle
-{
-    background: #424242;
-    color: #fff;
-}
 
+.gridView tr.paging td
+{
+    border: none;
+}
 
 
 .GridHeader

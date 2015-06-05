@@ -1,5 +1,9 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="BranchMaintenance.aspx.cs" Inherits="InwardClearingSystem.BranchMaintenance" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
+    <style type="text/css">
+        .style1
+        {}
+    </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <p>BRANCH MAINTENANCE</p>
@@ -10,8 +14,20 @@
     <asp:Button ID="viewAllBtn" runat="server" onclick="viewAllBtn_Click" 
         Text="View All" />
     <br />
-    <asp:Button ID="pgSize" runat="server" Text="Change Page Size" />
-    <asp:TextBox ID="txtPgSize" runat="server"></asp:TextBox>
+    Show&nbsp;
+    <asp:DropDownList ID="pgSizeDrpDwn" runat="server" CssClass="style1" AutoPostBack="true" OnSelectedIndexChanged="BranchView_PageSize" 
+        Height="20px" Width="50px">
+        <asp:ListItem>10</asp:ListItem>
+        <asp:ListItem>30</asp:ListItem>
+        <asp:ListItem>50</asp:ListItem>
+        <asp:ListItem>70</asp:ListItem>
+        <asp:ListItem>100</asp:ListItem>
+        <asp:ListItem>130</asp:ListItem>
+        <asp:ListItem>150</asp:ListItem>
+        <asp:ListItem>170</asp:ListItem>
+        <asp:ListItem>200</asp:ListItem>
+    </asp:DropDownList>
+    <br />
         <asp:GridView ID="BranchView" runat="server" AutoGenerateColumns="false" ShowFooter="true" CssClass="gridView2" DataKeyNames="branch_id" 
         HeaderStyle-CssClass="GridHeader" OnRowEditing="EditBranch" OnRowCancelingEdit="CancelEdit" OnRowUpdating="UpdateBranch"
         AllowPaging="true" OnPageIndexChanging="BranchView_PageIndex" PagerStyle-CssClass="paging" AllowSorting="true" OnSorting="BranchView_Sorting" >

@@ -186,15 +186,15 @@ namespace InwardClearingSystem
                 string user = row.Cells[2].Text;
                 using (activeConnectionOpen())
                 {
-                    cmd = new SqlCommand("SELECT * FROM [User] u WHERE u.username = @username", activeConnection);
-                    cmd.Parameters.AddWithValue("@username", user);
-                    SqlDataReader dr = new SqlDataReader();
-                    dr = cmd.ExecuteReader();
-                    Session["TBEusername"] = dr["username"];
-                    Session["TBEfirstname"] = dr["f_name"];
-                    Session["TBEmiddlename"] = dr["m_name"];
-                    Session["TBElastname"] = dr["l_name"];
-                    Session["TBEemail"] = dr["email"];
+                    //cmd = new SqlCommand("SELECT * FROM [User] u WHERE u.username = @username", activeConnection);
+                    //cmd.Parameters.AddWithValue("@username", user);
+                    //SqlDataReader dr = new SqlDataReader();
+                    //dr = cmd.ExecuteReader();
+                    //Session["TBEusername"] = dr["username"];
+                    //Session["TBEfirstname"] = dr["f_name"];
+                    //Session["TBEmiddlename"] = dr["m_name"];
+                    //Session["TBElastname"] = dr["l_name"];
+                    //Session["TBEemail"] = dr["email"];
                 }
             }
         }

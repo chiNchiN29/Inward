@@ -40,22 +40,13 @@ namespace InwardClearingSystem {
         protected global::System.Web.UI.WebControls.Button viewAllBtn;
         
         /// <summary>
-        /// pgSize control.
+        /// pgSizeDrpDwn control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button pgSize;
-        
-        /// <summary>
-        /// txtPgSize control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtPgSize;
+        protected global::System.Web.UI.WebControls.DropDownList pgSizeDrpDwn;
         
         /// <summary>
         /// BranchView control.

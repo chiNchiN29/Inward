@@ -64,6 +64,7 @@
                         <asp:MenuItem NavigateUrl="~/UpdateThreshold.aspx" Text="Update Thresholds"/> 
                         <asp:MenuItem NavigateUrl="~/UserMaintenance.aspx" Text="User Maintenance"/> 
                         <asp:MenuItem NavigateUrl="~/BranchMaintenance.aspx" Text="Branch Maintenance" />
+                        <asp:MenuItem NavigateUrl="~/AuditLog.aspx" Text="Audit Log" />
                     </Items>
                 </asp:Menu>
             </div>

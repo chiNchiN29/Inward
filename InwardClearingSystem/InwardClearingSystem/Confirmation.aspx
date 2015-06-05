@@ -75,6 +75,12 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <div class="grid_scroll">
+        <br />
+        <asp:Button ID="searchBtn" runat="server" Text="Search Check#" 
+            CssClass="defaultButton" onclick="searchBtn_Click" />
+        <asp:TextBox ID="txtSearch" runat="server"></asp:TextBox>
+        <asp:Button ID="viewAllBtn" runat="server" Text="View All" 
+            CssClass="defaultButton" onclick="viewAllBtn_Click" />
     <asp:GridView ID="ConfirmView" runat="server" AutoGenerateColumns="false" 
             BorderColor="Black"
     AllowSorting="true" OnSorting="ConfirmView_Sorting" 
@@ -89,9 +95,9 @@
         </asp:TemplateField>
         <asp:BoundField DataField="check_number" SortExpression="check_number" HeaderText="Check Number" />
         <asp:BoundField DataField="customer_name" SortExpression="customer_name" HeaderText="Name" />
+        <asp:BoundField DataField="account_number" SortExpression="account_number" HeaderText="Account Number" />
         <asp:BoundField DataField="address" SortExpression="address" HeaderText="Address" />
         <asp:BoundField DataField="contact_number" SortExpression="contact_number" HeaderText="Contact Number" />
-        <asp:BoundField DataField="account_number" SortExpression="account_number" HeaderText="Account Number" />
         <asp:BoundField DataField="check_date" SortExpression="check_date" DataFormatString="{0:d}" HeaderText="Date" />
         <asp:BoundField DataField="amount" SortExpression="amount" HeaderText="Amount" DataFormatString="{0:N}" ItemStyle-CssClass="amount" />
         <asp:BoundField DataField="branch_name" SortExpression="branch_name" HeaderText="Branch Name" />

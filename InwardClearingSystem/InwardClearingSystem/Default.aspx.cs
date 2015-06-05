@@ -236,8 +236,9 @@ namespace InwardClearingSystem
         public DataTable FillDataTable()
         {
             query = new StringBuilder();
-            query.Append("SELECT check_number, (f_name + ' ' + m_name + ' ' + l_name) AS customer_name, ch.account_number, check_date, amount, balance, branch_name, ");
-            query.Append("drawee_bank, drawee_bank_branch, verification, funded, bank_remarks, ch.modified_by, ch.modified_date ");
+            query.Append("SELECT check_number, (f_name + ' ' + m_name + ' ' + l_name) AS customer_name, ch.account_number, check_date, ");
+            query.Append("amount, balance, branch_name, drawee_bank, drawee_bank_branch, ");
+            query.Append("verification, funded, bank_remarks, ch.modified_by, ch.modified_date ");
             query.Append("FROM Cheque ch, Customer c, Account a ");
             query.Append("WHERE ch.account_number = a.account_number AND a.customer_id = c.customer_id ");
             query.Append("ORDER BY ch.check_number");
@@ -374,6 +375,55 @@ namespace InwardClearingSystem
                 Response.Write("\n");
             }
             Response.End();
+        }
+
+        protected void searchBtn_Click(object sender, EventArgs e)
+        {
+            query = new StringBuilder();
+            query.Append("SELECT check_number, (f_name + ' ' + m_name + ' ' + l_name) AS customer_name, ch.account_number, check_date, ");
+            query.Append("amount, balance, branch_name, drawee_bank, drawee_bank_branch, ");
+            query.Append("verification, funded, bank_remarks, ch.modified_by, ch.modified_date ");
+            query.Append("FROM Cheque ch, Customer c, Account a ");
+            query.Append("WHERE ch.check_number LIKE @num + '%' AND ch.account_number = a.account_number AND a.customer_id = c.customer_id ");
+            query.Append("ORDER BY ch.check_number");
+
+            using (cmd = new SqlCommand(query.ToString(), activeConnectionOpen()))
+            {
+                cmd.Parameters.AddWithValue("@num", txtSearch.Text);
+                da = new SqlDataAdapter(cmd);
+                dt = new DataTable();
+                da.Fill(dt);
+                ViewAllCheck.DataSource = dt;
+                ViewAllCheck.DataBind();
+            }
+        }
+
+        protected void viewAllBtn_Click(object sender, EventArgs e)
+        {
+            FillDataTable();
+            txtSearch.Text = "";
+        }
+
+        protected void ViewAllCheck_PageIndex(object sender, GridViewPageEventArgs e)
+        {
+            ViewAllCheck.PageIndex = e.NewPageIndex;
+            if (ViewState["SortExpression"] == null)
+            {
+                FillDataTable();
+            }
+            else
+            {
+                dt = ViewState["myDataTable"] as DataTable;
+                dt.DefaultView.Sort = ViewState["SortExpression"].ToString() + " " + ViewState["SortDirection"].ToString();
+                ViewAllCheck.DataSource = dt;
+                ViewAllCheck.DataBind();
+            }
+        }
+
+        protected void ViewAllCheck_PageSizeChange(object sender, EventArgs e)
+        {
+            ViewAllCheck.PageSize = Convert.ToInt32(pgSize.SelectedValue);
+            FillDataTable();
         }
     }
 }

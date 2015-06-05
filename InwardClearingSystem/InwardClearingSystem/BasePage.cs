@@ -305,5 +305,25 @@ namespace InwardClearingSystem
                 }
             }
         }
+
+        public void insertCheckLog(int i, string action, string remarks, GridView view)
+        {
+            string user = Session["UserName"].ToString();
+            StringBuilder query = new StringBuilder();
+            query.Append("insert into Cheque_Log(username, date_logged, action, ");
+            query.Append("remarks, check_number, account_number) ");
+            query.Append("values(@username, @date_logged, @action, @remarks, ");
+            query.Append("@chknum, @acctnum)");
+            using (SqlCommand cmd = new SqlCommand(query.ToString(), activeConnectionOpen()))
+            {
+                cmd.Parameters.AddWithValue("@username", user);
+                cmd.Parameters.AddWithValue("@date_logged", DateTime.Now);
+                cmd.Parameters.AddWithValue("@action", action);
+                cmd.Parameters.AddWithValue("@remarks", remarks);
+                cmd.Parameters.AddWithValue("@chknum", view.Rows[i].Cells[1].Text);
+                cmd.Parameters.AddWithValue("@acctnum", view.Rows[i].Cells[3].Text);
+                cmd.ExecuteNonQuery();
+            }
+        }
     }
 }

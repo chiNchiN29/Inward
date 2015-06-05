@@ -90,7 +90,6 @@
         div.number
         {
             float:left;
-            height:auto;
             font-family:Segoe UI;
             font-size:7em;
             width:10%;
@@ -101,6 +100,8 @@
             width: 100%;
             height: 100px;
         }
+        .style1
+        {}
         </style>
 </asp:Content>
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
@@ -155,17 +156,34 @@
 </div>
 
 <div class="whiteSpace">
-    &nbsp;
+    <asp:Button ID="searchBtn" runat="server" Text="Search Check#" 
+        CssClass="defaultButton" onclick="searchBtn_Click" />
+    <asp:TextBox ID="txtSearch" runat="server"></asp:TextBox>
+    <asp:Button ID="viewAllBtn" runat="server" onclick="viewAllBtn_Click" Text="View All" CssClass="defaultButton" />
+    Show
+    <asp:DropDownList ID="pgSize" runat="server" CssClass="style1" Height="20px" AutoPostBack="true" OnSelectedIndexChanged="ViewAllCheck_PageSizeChange"
+        Width="50px">
+        <asp:ListItem>10</asp:ListItem>
+        <asp:ListItem>30</asp:ListItem>
+        <asp:ListItem>50</asp:ListItem>
+        <asp:ListItem>70</asp:ListItem>
+        <asp:ListItem>100</asp:ListItem>
+        <asp:ListItem>130</asp:ListItem>
+        <asp:ListItem>150</asp:ListItem>
+        <asp:ListItem>170</asp:ListItem>
+        <asp:ListItem>200</asp:ListItem>
+    </asp:DropDownList>
+    checks
 </div>
-
+<br />
+<br />
     <div class="gridWindow">
     <div class="gridTitleBar" style="width:99.4%">
         All Cheques
     </div>
-    <div class="grid_scroll">
     <asp:GridView ID="ViewAllCheck" runat="server" CssClass="gridView" AutoGenerateColumns="false"
-    AllowSorting="true" OnSorting="ViewAllCheck_Sorting" 
-            HeaderStyle-CssClass="GridHeader">
+    AllowSorting="true" OnSorting="ViewAllCheck_Sorting" AllowPaging="true" OnPageIndexChanging="ViewAllCheck_PageIndex" PagerStyle-CssClass="paging" 
+            HeaderStyle-CssClass="GridHeader" AlternatingRowStyle-BackColor="IndianRed">
         <Columns>
             <asp:BoundField DataField="check_number" SortExpression="check_number" HeaderText="Check Number" />
             <asp:BoundField DataField="customer_name" SortExpression="customer_name" HeaderText="Name" />
@@ -183,7 +201,6 @@
             <asp:BoundField DataField="modified_date" SortExpression="modified_date" HeaderText="Modified Date" />
         </Columns>
     </asp:GridView>
-    </div>
         <div class="buttonHolder">
             <asp:Button ID="genListBtn" runat="server" onclick="genListBtn_Click" OnClientClick="return GenerateList(); needToConfirm = false;"
                 Text="Generate List" CssClass="defaultButton"/>

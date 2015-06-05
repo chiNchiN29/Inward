@@ -174,11 +174,11 @@
     <asp:Button ID="insertSig" runat="server" Text="Insert Signature" OnClick="insertSig_Click" />
     <asp:TextBox ID="TextBox1" runat="server"></asp:TextBox>
     <br />
-    <asp:Button ID="searchBtn" runat="server" onclick="searchBtn_Click" 
+    <asp:Button ID="searchBtn" runat="server" onclick="searchBtn_Click"  CssClass="defaultButton"
         Text="Search Check#" />
     <asp:TextBox ID="txtSearch" runat="server"></asp:TextBox>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <asp:Button ID="ViewAll" runat="server" onclick="ViewAll_Click" Text="Button" />
+    <asp:Button ID="ViewAll" runat="server" onclick="ViewAll_Click" CssClass="defaultButton"
+        Text="View All" />
     <br/>
     <div class ="grid_scroll">
         <asp:GridView ID="VerifyView" runat="server" AutoGenerateColumns="false" 
@@ -234,9 +234,7 @@
                         }
                     }
                 }
-            }
-
-            
+            }            
 
             var needToConfirm = true;
           window.onbeforeunload = confirmExit;

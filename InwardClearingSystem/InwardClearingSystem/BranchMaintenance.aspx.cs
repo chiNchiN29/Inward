@@ -124,7 +124,7 @@ namespace InwardClearingSystem
         protected void BranchView_PageIndex(object sender, GridViewPageEventArgs e)
         {
             BranchView.PageIndex = e.NewPageIndex;
-            if (ViewState["SortExpression"].ToString() == null)
+            if (ViewState["SortExpression"] == null)
             {
                 FillDataTable();
             }
@@ -188,6 +188,12 @@ namespace InwardClearingSystem
 
         protected void viewAllBtn_Click(object sender, EventArgs e)
         {
+            FillDataTable();
+        }
+
+        protected void BranchView_PageSize(object sender, EventArgs e)
+        {
+            BranchView.PageSize = Convert.ToInt32(pgSizeDrpDwn.SelectedValue);
             FillDataTable();
         }
     }

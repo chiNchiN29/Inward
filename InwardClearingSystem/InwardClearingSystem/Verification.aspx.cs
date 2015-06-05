@@ -42,8 +42,7 @@ namespace InwardClearingSystem
                 Message("You are not authorized to view this page");
                 Response.Redirect("~/Default.aspx");
                 
-            }
-                            
+            }                   
             else
             {
                 if (!Page.IsPostBack)
@@ -112,6 +111,7 @@ namespace InwardClearingSystem
                //{
                        
                            UpdateCheckData(i, "YES", "");
+                           insertCheckLog(i, "Verification", "Successfully verified yes", VerifyView);
                            FillDataTable();
                            NextRow(VerifyView, i);
                        
@@ -119,14 +119,7 @@ namespace InwardClearingSystem
            }
         }
 
-        private void insertCheckLog(int i)
-        {
-            query = new StringBuilder();
-            query.Append("insert into Cheque_Log(username, date_logged, action, ");
-            query.Append("remarks, check_number, account_number) ");
-            query.Append("values(@username, @date_logged, @action, @remarks, ");
-            query.Append("@chknum, @acctnum)");
-        }
+        
 
         private void UpdateCheckData(int i, string verify, string remarks )
         {
@@ -184,7 +177,7 @@ namespace InwardClearingSystem
                         }
 
                         UpdateCheckData(i, "NO", remarks + ". " + verifyRemarks.Text);
-                        
+                        insertCheckLog(i, "Verification", "Successfully verified no", VerifyView);
                         FillDataTable();
 
 
@@ -338,6 +331,7 @@ namespace InwardClearingSystem
             FillDataTable();
             txtSearch.Text = "";
         }
+
 
         //protected void VerifyView_RowCreated(object sender, GridViewRowEventArgs e)
         //{
