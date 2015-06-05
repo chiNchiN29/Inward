@@ -71,7 +71,11 @@
     <Content Include="Account\ChangePasswordSuccess.aspx" />
     <Content Include="Account\Login.aspx" />
     <Content Include="Account\Register.aspx" />
-    <Content Include="SignUp.aspx" />
+    <Content Include="Account\Resources\H2DefaultImage.jpg" />
+    <Content Include="Account\Resources\H2ics.png" />
+    <Content Include="Account\Resources\H2ics2.png" />
+    <Content Include="BranchMaintenance.aspx" />
+    <Content Include="AddUser.aspx" />
     <Content Include="App_Data\icsdb.mdf" />
     <Content Include="App_Data\icsdb_log.ldf">
       <DependentUpon>icsdb.mdf</DependentUpon>
@@ -79,6 +83,7 @@
     <Content Include="Archiving.aspx" />
     <Content Include="Confirmation.aspx" />
     <Content Include="Default.aspx" />
+    <Content Include="EditUser.aspx" />
     <Content Include="EditUserBranches.aspx" />
     <Content Include="FailurePage.aspx" />
     <Content Include="Resources\H2DefaultImage.jpg" />
@@ -145,12 +150,19 @@
     <Compile Include="Account\Register.aspx.designer.cs">
       <DependentUpon>Register.aspx</DependentUpon>
     </Compile>
-    <Compile Include="SignUp.aspx.cs">
-      <DependentUpon>SignUp.aspx</DependentUpon>
+    <Compile Include="BranchMaintenance.aspx.cs">
+      <DependentUpon>BranchMaintenance.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="SignUp.aspx.designer.cs">
-      <DependentUpon>SignUp.aspx</DependentUpon>
+    <Compile Include="BranchMaintenance.aspx.designer.cs">
+      <DependentUpon>BranchMaintenance.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="AddUser.aspx.cs">
+      <DependentUpon>AddUser.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AddUser.aspx.designer.cs">
+      <DependentUpon>AddUser.aspx</DependentUpon>
     </Compile>
     <Compile Include="Archiving.aspx.cs">
       <DependentUpon>Archiving.aspx</DependentUpon>
@@ -175,6 +187,13 @@
     </Compile>
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="EditUser.aspx.cs">
+      <DependentUpon>EditUser.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="EditUser.aspx.designer.cs">
+      <DependentUpon>EditUser.aspx</DependentUpon>
     </Compile>
     <Compile Include="EditUserBranches.aspx.cs">
       <DependentUpon>EditUserBranches.aspx</DependentUpon>

@@ -113,19 +113,11 @@
             <asp:Button ID="fundButton" runat="server" Text="Validate" 
             onclick="fundButton_Click" OnClientClick="needToConfirm = false;"  
             CssClass="yesButton"/>
-            <cc1:RoundedCornersExtender ID="fundButton_RoundedCornersExtender" 
-                runat="server" BehaviorID="fundButton_RoundedCornersExtender" 
-                TargetControlID="fundButton">
-            </cc1:RoundedCornersExtender>
         </div>
         <div class="unfundBtnDiv">
             <asp:Button ID="unfundButton" runat="server" Text="Revoke" 
             onclick="unfundButton_Click" OnClientClick="needToConfirm = false;"  
             CssClass="noButton"/>
-            <cc1:RoundedCornersExtender ID="unfundButton_RoundedCornersExtender" 
-                runat="server" BehaviorID="unfundButton_RoundedCornersExtender" 
-                TargetControlID="unfundButton">
-            </cc1:RoundedCornersExtender>
         </div>
     </div>
     <br />
@@ -169,9 +161,6 @@
         <div class="genBtnHolder">
             <asp:Button ID="genListBtn" runat="server" onclick="genListBtn_Click" OnClientClick="return GenerateList(); needToConfirm = false;" 
             Text="Generate List" CssClass="defaultButton"/>
-            <cc1:RoundedCornersExtender ID="genListBtn_RoundedCornersExtender" 
-                runat="server" BehaviorID="genListBtn_RoundedCornersExtender" 
-                TargetControlID="genListBtn" />
         </div>
     </div>
     <br />

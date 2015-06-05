@@ -45,6 +45,9 @@ namespace InwardClearingSystem
             activeConnectionClose();   
         }
     
+        /// <summary>
+        /// Fills the DropDown control with the roles in the database.
+        /// </summary>
         public void FillDropDown()
         {
             query = "SELECT role_desc FROM Role";
@@ -84,9 +87,13 @@ namespace InwardClearingSystem
             }
         }
 
+        /// <summary>
+        /// Fills the DataTable control with the information of all registered users in the database.
+        /// </summary>
+        /// <returns>Filled DataTable</returns>
         public DataTable FillDataTable()
         {
-            query = "SELECT user_id, username, email, r.role_desc FROM [User] u, Role r WHERE u.role_id = r.role_id";
+            query = "SELECT user_id, username, f_name, m_name, l_name, email, r.role_desc FROM [User] u, Role r WHERE u.role_id = r.role_id";
             using (da = new SqlDataAdapter(query, activeConnectionOpen()))
             {
                 dt = new DataTable();
@@ -169,7 +176,7 @@ namespace InwardClearingSystem
 
         protected void addUser_Click(object sender, EventArgs e)
         {
-            Server.Transfer("~/SignUp.aspx");
+            Server.Transfer("~/AddUser.aspx");
         }
 
         protected void editUser_Click(object sender, EventArgs e)
@@ -188,15 +195,25 @@ namespace InwardClearingSystem
                 {
                     cmd = new SqlCommand("SELECT * FROM [User] u WHERE u.username = @username", activeConnection);
                     cmd.Parameters.AddWithValue("@username", user);
-                    SqlDataReader dr = new SqlDataReader();
-                    dr = cmd.ExecuteReader();
-                    Session["TBEusername"] = dr["username"];
-                    Session["TBEfirstname"] = dr["f_name"];
-                    Session["TBEmiddlename"] = dr["m_name"];
-                    Session["TBElastname"] = dr["l_name"];
-                    Session["TBEemail"] = dr["email"];
+                    cmd.ExecuteNonQuery();
+                    SqlDataReader dr = cmd.ExecuteReader();
+                    while (dr.Read())
+                    {
+                        Session["TBEusername"] = dr["username"];
+                        Session["TBEfirstname"] = dr["f_name"];
+                        Session["TBEmiddlename"] = dr["m_name"];
+                        Session["TBElastname"] = dr["l_name"];
+                        Session["TBEemail"] = dr["email"];
+                        Session["TBEpassword"] = dr["password"];
+                        Server.Transfer("~/EditUser.aspx");
+                    }
                 }
             }
+        }
+
+        protected void searchUser_Click(object sender, EventArgs e)
+        {
+            
         }
     }
 }

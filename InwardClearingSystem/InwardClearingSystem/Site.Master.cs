@@ -13,6 +13,7 @@ namespace InwardClearingSystem
     public partial class SiteMaster : System.Web.UI.MasterPage
     {
         SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+        
         protected void Page_Load(object sender, EventArgs e)
         {
             dateToday.Text = DateTime.Today.ToString("D");
@@ -51,15 +52,20 @@ namespace InwardClearingSystem
                 }
             }
         }
+        
         protected void NavigationMenu_MenuItemClick(object sender, MenuEventArgs e)
         {
             Server.Transfer(e.Item.NavigateUrl);
         }
 
+        /// <summary>
+        /// Updates timer each second.
+        /// </summary>
         private void UpdateTimer()
         {
             Label3.Text = System.DateTime.Now.ToLongTimeString();
         }
+        
         protected void Timer1_Tick(object sender, EventArgs e)
         {
             UpdateTimer();
@@ -82,6 +88,7 @@ namespace InwardClearingSystem
             NavigationMenu.FindItem("Update Thresholds").Enabled = true;
             NavigationMenu.FindItem("User Maintenance").Enabled = true;
         }
+        
         protected void DefaultView()
         {
 			NavigationMenu.Visible = false; 

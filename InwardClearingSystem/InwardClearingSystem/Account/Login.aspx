@@ -119,9 +119,6 @@
                                         CommandName="Login" 
                                         Font-Size="1.0em" ForeColor="#FFFFFF" Text="Login" 
                                         ValidationGroup="Login1" Height="35px" Width="90px" CssClass="defaultButton"/>
-                                    <cc1:RoundedCornersExtender ID="LoginButton_RoundedCornersExtender" 
-                                        runat="server" BehaviorID="LoginButton_RoundedCornersExtender" 
-                                        TargetControlID="LoginButton" BorderColor="#666666"/>
                                 </td>
                             </tr>
                         </table>

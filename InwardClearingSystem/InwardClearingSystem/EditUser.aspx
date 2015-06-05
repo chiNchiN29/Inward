@@ -1,7 +1,6 @@
-﻿<%@ Page Title="Sign Up" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="SignUp.aspx.cs" Inherits="InwardClearingSystem.Account.SignUp" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="EditUser.aspx.cs" Inherits="InwardClearingSystem.EditUser" %>
 <%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="cc1" %>
-<asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
-    <style type="text/css">
+<asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server"><style type="text/css">
         .label
         {
             font-family:Segoe UI;
@@ -26,7 +25,7 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 <table class="table">
     <tr>
-        <td class="title" colspan="5">Register New User</td>
+        <td class="title" colspan="5">Edit User Information</td>
     </tr>
     <tr>
         <td colspan="5">
@@ -125,10 +124,8 @@
         </tr>
     <tr>
         <td id="buttonstuff" colspan='3' align="center">
-            <asp:Button ID="regBtn" 
-                runat="server" Text="Register" onclick="regBtn_Click" CssClass="defaultButton"/>
-            <cc1:RoundedCornersExtender ID="regBtn_RoundedCornersExtender" runat="server" 
-                BehaviorID="regBtn_RoundedCornersExtender" TargetControlID="regBtn" />
+            <asp:Button ID="editBtn" 
+                runat="server" Text="Update" onclick="editBtn_Click" CssClass="defaultButton"/>
         </td>
     </tr>
     <tr>
@@ -138,4 +135,4 @@
     </tr>
 </table>
     <br />
-    </asp:Content>
+</asp:Content>

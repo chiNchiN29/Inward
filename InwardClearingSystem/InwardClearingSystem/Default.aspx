@@ -124,9 +124,6 @@
             <asp:Button ID="uploadImgBtn" runat="server" Text="Upload Image" 
             OnClick="uploadImgBtn_Click" OnClientClick="skm_LockScreen('Uploading Images');" 
                 CssClass="defaultButton" />   
-            <cc1:RoundedCornersExtender ID="uploadImgBtn_RoundedCornersExtender" 
-                runat="server" BehaviorID="uploadImgBtn_RoundedCornersExtender" 
-                TargetControlID="uploadImgBtn" />
             <div id="skm_LockPane" class="LockOff"></div> 
             </div>
 
@@ -147,9 +144,6 @@
                 <br />
                 <asp:Button ID="uploadDoc0" runat="server" Text="Load" 
                 OnClick="UploadCheckData" CssClass="defaultButton"/>
-                <cc1:RoundedCornersExtender ID="uploadDoc0_RoundedCornersExtender" 
-                    runat="server" BehaviorID="uploadDoc0_RoundedCornersExtender" 
-                    TargetControlID="uploadDoc0" />
             </div>
         </div>
 </div>
@@ -187,18 +181,9 @@
         <div class="buttonHolder">
             <asp:Button ID="genListBtn" runat="server" onclick="genListBtn_Click" OnClientClick="return GenerateList(); needToConfirm = false;"
                 Text="Generate List" CssClass="defaultButton"/>
-            <cc1:RoundedCornersExtender ID="genListBtn_RoundedCornersExtender"
-                runat="server" BehaviorID="genListBtn_RoundedCornersExtender" 
-                TargetControlID="genListBtn" />
             <asp:Button ID="produceReport" runat="server" Text="Produce Report" OnClick="ProduceFinalReport" CssClass="defaultButton" />
-            <cc1:RoundedCornersExtender ID="produceReport_RoundedCornersExtender"
-                runat="server" BehaviorID="produceReport_RoundedCornersExtender" 
-                TargetControlID="produceReport" />
             <asp:Button ID="clearCheck" runat="server" onclientclick="return DeleteItem()" 
                 Text="Clear Check Data" onclick="clearCheck_Click1" CssClass="defaultButton" />  
-            <cc1:RoundedCornersExtender ID="clearCheck_RoundedCornersExtender" 
-                runat="server" BehaviorID="clearCheck_RoundedCornersExtender" 
-                TargetControlID="clearCheck" />
         </div>
     </div>
 

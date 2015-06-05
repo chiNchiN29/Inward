@@ -11,23 +11,22 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <br />
-    <div class="maintenancePowers">
+<div class="maintenancePowers">
+    <asp:TextBox ID="TextBox1" runat="server" placeholder="Enter User ID"></asp:TextBox>
+        
+    <asp:Button ID="searchUser" runat="server" Text="Search User ID" CssClass="defaultButton" OnClick="searchUser_Click" />
+    
     <asp:Button ID="addUser" runat="server" Text="Add User" CssClass="defaultButton" OnClick="addUser_Click" />
-    <cc1:RoundedCornersExtender ID="addUser_RoundedCornersExtender" runat="server" 
-        BehaviorID="addUser_RoundedCornersExtender" TargetControlID="addUser">
-    </cc1:RoundedCornersExtender>
 
     <asp:Button ID="editUser" runat="server" Text="Edit User" CssClass="defaultButton" OnClick="editUser_Click" />
-    <cc1:RoundedCornersExtender ID="editUser_RoundedCornersExtender" runat="server" 
-        BehaviorID="editUser_RoundedCornersExtender" TargetControlID="editUser">
-    </cc1:RoundedCornersExtender>
 
-    <asp:Button ID="deleteUser" runat="server" onclick="deleteUser_Click" Text="Delete" CssClass="defaultButton"/>
-    <cc1:RoundedCornersExtender ID="deleteUser_RoundedCornersExtender" runat="server" 
-        BehaviorID="deleteUser_RoundedCornersExtender" TargetControlID="deleteUser">
-    </cc1:RoundedCornersExtender>
+    <asp:Button ID="deleteUser" runat="server" onclick="deleteUser_Click" Text="Delete User" CssClass="defaultButton"/>
+
 </div>
-<div class="gridDiv" style="width:35%; border:2px solid #333333">
+<div class="whiteSpace">
+    &nbsp;
+</div>
+<div class="gridDiv" style="width:50%; border:2px solid #333333">
     <div class="gridTitleBar"><strong>User Maintenance</strong></div>
     <asp:GridView ID="UserView" runat="server" DataKeyNames="user_id" AutoGenerateColumns="false" HeaderStyle-CssClass="GridHeader" CssClass="gridView2">
         <Columns>
@@ -36,10 +35,13 @@
                     <asp:RadioButton ID="RowSelect" runat="server" OnClick="javascript:CheckOtherIsCheckedByGVID(this);" AutoPostBack="true" OnCheckedChanged="RowSelect_CheckedChanged"/>
                </ItemTemplate>
             </asp:TemplateField>
-            <asp:BoundField DataField="user_id" HeaderText="ID" Visible="false" />
-            <asp:BoundField DataField="username" HeaderText="User Name" ItemStyle-Width="150px" />
-            <asp:BoundField DataField="email" HeaderText="Email Address" ItemStyle-Width="200px" />
-            <asp:BoundField DataField="role_desc" HeaderText="Role" ItemStyle-Width="100px" />
+            <asp:BoundField DataField="user_id" HeaderText="ID" />
+            <asp:BoundField DataField="username" HeaderText="User Name" />
+            <asp:BoundField DataField="f_name" HeaderText="First Name" />
+            <asp:BoundField DataField="m_name" HeaderText="Middle Name" />
+            <asp:BoundField DataField="l_name" HeaderText="Last Name" />
+            <asp:BoundField DataField="email" HeaderText="Email Address" />
+            <asp:BoundField DataField="role_desc" HeaderText="Role" />
         </Columns>
     </asp:GridView>
 </div>
@@ -70,23 +72,11 @@
     <asp:DropDownList ID="RoleDrpDwn"  runat="server">
     </asp:DropDownList>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <asp:Button ID="deleteUser" runat="server" onclick="deleteUser_Click" Text="Delete" CssClass="defaultButton"/>
-    <cc1:RoundedCornersExtender ID="deleteUser_RoundedCornersExtender" runat="server" 
-        BehaviorID="deleteUser_RoundedCornersExtender" TargetControlID="deleteUser">
-    </cc1:RoundedCornersExtender>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
     <asp:Button ID="branchBtn" runat="server" Text="Assign Branches" 
         onclick="branchBtn_Click" CssClass="defaultButton" />
-    <cc1:RoundedCornersExtender ID="branchBtn_RoundedCornersExtender" 
-        runat="server" BehaviorID="branchBtn_RoundedCornersExtender" 
-        TargetControlID="branchBtn">
-    </cc1:RoundedCornersExtender>
     <br />
     <br />
     <asp:Button ID="assignBtn" runat="server" Text="Assign" 
         onclick="assignBtn_Click" CssClass="defaultButton" />
-    <cc1:RoundedCornersExtender ID="assignBtn_RoundedCornersExtender" 
-        runat="server" BehaviorID="assignBtn_RoundedCornersExtender" 
-        TargetControlID="assignBtn">
-    </cc1:RoundedCornersExtender>
     </asp:Content>

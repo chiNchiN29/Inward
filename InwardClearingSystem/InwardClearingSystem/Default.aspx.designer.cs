@@ -49,15 +49,6 @@ namespace InwardClearingSystem {
         protected global::System.Web.UI.WebControls.Button uploadImgBtn;
         
         /// <summary>
-        /// uploadImgBtn_RoundedCornersExtender control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.RoundedCornersExtender uploadImgBtn_RoundedCornersExtender;
-        
-        /// <summary>
         /// lblCheckData control.
         /// </summary>
         /// <remarks>
@@ -94,15 +85,6 @@ namespace InwardClearingSystem {
         protected global::System.Web.UI.WebControls.Button uploadDoc0;
         
         /// <summary>
-        /// uploadDoc0_RoundedCornersExtender control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.RoundedCornersExtender uploadDoc0_RoundedCornersExtender;
-        
-        /// <summary>
         /// ViewAllCheck control.
         /// </summary>
         /// <remarks>
@@ -121,15 +103,6 @@ namespace InwardClearingSystem {
         protected global::System.Web.UI.WebControls.Button genListBtn;
         
         /// <summary>
-        /// genListBtn_RoundedCornersExtender control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.RoundedCornersExtender genListBtn_RoundedCornersExtender;
-        
-        /// <summary>
         /// produceReport control.
         /// </summary>
         /// <remarks>
@@ -139,15 +112,6 @@ namespace InwardClearingSystem {
         protected global::System.Web.UI.WebControls.Button produceReport;
         
         /// <summary>
-        /// produceReport_RoundedCornersExtender control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.RoundedCornersExtender produceReport_RoundedCornersExtender;
-        
-        /// <summary>
         /// clearCheck control.
         /// </summary>
         /// <remarks>
@@ -155,15 +119,6 @@ namespace InwardClearingSystem {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button clearCheck;
-        
-        /// <summary>
-        /// clearCheck_RoundedCornersExtender control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.RoundedCornersExtender clearCheck_RoundedCornersExtender;
         
         /// <summary>
         /// ImgCount control.

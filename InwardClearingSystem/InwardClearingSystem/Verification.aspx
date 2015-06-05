@@ -147,21 +147,11 @@
                 <asp:Button ID="acceptButton" runat="server" CssClass="yesButton"
                 Text="Accept" onclick="acceptButton_Click" OnClientClick="needToConfirm = false;" />
             
-                <cc1:RoundedCornersExtender ID="acceptButton_RoundedCornersExtender" 
-                    runat="server" BehaviorID="acceptButton_RoundedCornersExtender" 
-                    TargetControlID="acceptButton">
-                </cc1:RoundedCornersExtender>
-            
             </div>
             
             <div class="rejectBox">
                 <asp:Button ID="rejectButton" runat="server" CssClass="noButton" Text="Reject" 
                 onclick="rejectButton_Click" OnClientClick="needToConfirm = false;" />
-            
-                <cc1:RoundedCornersExtender ID="rejectButton_RoundedCornersExtender" 
-                    runat="server" BehaviorID="rejectButton_RoundedCornersExtender" 
-                    TargetControlID="rejectButton">
-                </cc1:RoundedCornersExtender>
             
             </div>
         </div>
