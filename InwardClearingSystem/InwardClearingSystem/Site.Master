@@ -65,6 +65,7 @@
                         <asp:MenuItem NavigateUrl="~/UserMaintenance.aspx" Text="User Maintenance"/> 
                         <asp:MenuItem NavigateUrl="~/BranchMaintenance.aspx" Text="Branch Maintenance" />
                         <asp:MenuItem NavigateUrl="~/AuditLog.aspx" Text="Audit Log" />
+                        <asp:MenuItem NavigateUrl="~/RoleMaintenance.aspx" Text="Role Maintenance" />
                     </Items>
                 </asp:Menu>
             </div>

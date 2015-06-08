@@ -110,10 +110,10 @@ namespace InwardClearingSystem
                //else
                //{
                        
-                           UpdateCheckData(i, "YES", "");
-                           insertCheckLog(i, "Verification", "Successfully verified yes", VerifyView);
-                           FillDataTable();
-                           NextRow(VerifyView, i);
+                    UpdateCheckData(i, "YES", "");
+                    insertCheckLog(i, "Verification", "Successfully verified yes", VerifyView);
+                    FillDataTable();
+                    NextRow(VerifyView, i);
                        
                //}
            }
@@ -179,6 +179,7 @@ namespace InwardClearingSystem
                         UpdateCheckData(i, "NO", remarks + ". " + verifyRemarks.Text);
                         insertCheckLog(i, "Verification", "Successfully verified no", VerifyView);
                         FillDataTable();
+                        verifyChoice.Items.Add(verifyRemarks.Text);
 
 
                         NextRow(VerifyView, i);
