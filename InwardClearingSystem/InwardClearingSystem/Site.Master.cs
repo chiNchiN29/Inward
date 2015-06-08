@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Data;
 
 namespace InwardClearingSystem
 {
@@ -32,9 +33,12 @@ namespace InwardClearingSystem
                     using (connection)
                     {
                         connection.Open();
-                        using (SqlCommand checker = new SqlCommand("SELECT role_desc FROM [User] u, Role r WHERE username = @name AND u.role_id = r.role_id", connection))
+                        using (SqlCommand checker = new SqlCommand())
                         {
-                            checker.Parameters.AddWithValue("@name", Session["UserName"]);
+                            checker.CommandText = "CheckUserRole";
+                            checker.CommandType = CommandType.StoredProcedure;
+                            checker.Connection = connection;
+                            checker.Parameters.AddWithValue("@username", Session["UserName"]);
                             if (checker.ExecuteScalar().ToString() == "ADMIN")
                             {
                                 AdminView();

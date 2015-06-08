@@ -13,13 +13,13 @@ namespace InwardClearingSystem {
     public partial class UserMaintenance {
         
         /// <summary>
-        /// TextBox1 control.
+        /// searchBar control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TextBox1;
+        protected global::System.Web.UI.WebControls.TextBox searchBar;
         
         /// <summary>
         /// searchUser control.
@@ -75,7 +75,6 @@ namespace InwardClearingSystem {
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList RoleDrpDwn;
         
-
         /// <summary>
         /// branchBtn control.
         /// </summary>

@@ -142,10 +142,18 @@ namespace InwardClearingSystem
                             validator.Parameters.AddWithValue("@checknum", heart[0]);
                             if (validator.ExecuteScalar() == null)
                             {
-                                using (SqlCommand insert = new SqlCommand(query.ToString(), activeConnection))
+                                using (SqlCommand insert = new SqlCommand())
                                 {
-                                    using (SqlCommand checker = new SqlCommand("select minimum from Threshold", activeConnection))
+                                    insert.CommandText = "InsertCheckData";
+                                    insert.CommandType = CommandType.StoredProcedure;
+                                    insert.Connection = activeConnection;
+
+                                    using (SqlCommand checker = new SqlCommand())
                                     {
+                                        checker.CommandText = "FilterBTA";
+                                        checker.CommandType = CommandType.StoredProcedure;
+                                        checker.Connection = activeConnection;
+
                                         insert.Parameters.AddWithValue("@checknum", heart[0]);
                                         insert.Parameters.AddWithValue("@amount", heart[1]);
                                         insert.Parameters.AddWithValue("@date", heart[2]);
@@ -218,8 +226,11 @@ namespace InwardClearingSystem
         /// <param name="e"></param>
         protected void clearCheck_Click1(object sender, EventArgs e)
         {
-            using (cmd = new SqlCommand("DELETE FROM Cheque", activeConnectionOpen()))
+            using (cmd = new SqlCommand())
             {
+                cmd.CommandText = "ClearCheckData";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Connection = activeConnectionOpen();
                 cmd.ExecuteNonQuery();
                 ViewAllCheck.DataBind();
             }
@@ -235,17 +246,8 @@ namespace InwardClearingSystem
 
         public DataTable FillDataTable()
         {
-            query = new StringBuilder();
-            query.Append("SELECT check_number, (f_name + ' ' + m_name + ' ' + l_name) AS customer_name, ch.account_number, check_date, ");
-            query.Append("amount, balance, branch_name, drawee_bank, drawee_bank_branch, ");
-            query.Append("verification, funded, bank_remarks, ch.modified_by, ch.modified_date ");
-            query.Append("FROM Cheque ch, Customer c, Account a ");
-            query.Append("WHERE ch.account_number = a.account_number AND a.customer_id = c.customer_id ");
-            query.Append("ORDER BY ch.check_number");
-
-            activeConnectionOpen();
             dt = new DataTable();
-            SqlDataAdapter da = new SqlDataAdapter(query.ToString(), activeConnection);
+            SqlDataAdapter da = new SqlDataAdapter("DefaultCheckDataTable", activeConnectionOpen());
             da.Fill(dt);
             ViewAllCheck.DataSource = dt;
             ViewAllCheck.DataBind();
@@ -379,15 +381,7 @@ namespace InwardClearingSystem
 
         protected void searchBtn_Click(object sender, EventArgs e)
         {
-            query = new StringBuilder();
-            query.Append("SELECT check_number, (f_name + ' ' + m_name + ' ' + l_name) AS customer_name, ch.account_number, check_date, ");
-            query.Append("amount, balance, branch_name, drawee_bank, drawee_bank_branch, ");
-            query.Append("verification, funded, bank_remarks, ch.modified_by, ch.modified_date ");
-            query.Append("FROM Cheque ch, Customer c, Account a ");
-            query.Append("WHERE ch.check_number LIKE @num + '%' AND ch.account_number = a.account_number AND a.customer_id = c.customer_id ");
-            query.Append("ORDER BY ch.check_number");
-
-            using (cmd = new SqlCommand(query.ToString(), activeConnectionOpen()))
+            using (cmd = new SqlCommand("SearchCheckNumber", activeConnectionOpen()))
             {
                 cmd.Parameters.AddWithValue("@num", txtSearch.Text);
                 da = new SqlDataAdapter(cmd);

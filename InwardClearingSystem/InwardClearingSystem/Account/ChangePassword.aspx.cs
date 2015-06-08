@@ -22,11 +22,16 @@ namespace InwardClearingSystem.Account
         {
             using (activeConnection)
             {
-                activeConnection.Open();
-                cmd = new SqlCommand("update [User] u SET password = @newpass where u.username = @user", activeConnection);
-                cmd.Parameters.AddWithValue("@newpass", ChangeUserPassword.NewPassword);
-                cmd.Parameters.AddWithValue("@user", Session["UserName"]);
-                cmd.ExecuteNonQuery();
+                using (cmd = new SqlCommand())
+                {
+                    cmd.CommandText = "UpdatePassword";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Connection = activeConnectionOpen();
+
+                    cmd.Parameters.AddWithValue("@newpass", ChangeUserPassword.NewPassword);
+                    cmd.Parameters.AddWithValue("@user", Session["UserName"]);
+                    cmd.ExecuteNonQuery();
+                }
             }
         }
 

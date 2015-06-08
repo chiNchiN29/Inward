@@ -22,8 +22,10 @@ namespace InwardClearingSystem
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            
-            cmd = new SqlCommand("SELECT role_desc FROM [User] u, Role r WHERE username = @username AND u.role_id = r.role_id", activeConnectionOpen());
+            cmd = new SqlCommand();
+            cmd.CommandText = "CheckUserRole";
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Connection = activeConnectionOpen();
             cmd.Parameters.AddWithValue("@username", Session["UserName"]);
             if (cmd.ExecuteScalar().ToString() != "ADMIN" && cmd.ExecuteScalar().ToString() != "OVERSEER")
             {
@@ -50,8 +52,7 @@ namespace InwardClearingSystem
         /// </summary>
         public void FillDropDown()
         {
-            query = "SELECT role_desc FROM Role";
-            using (da = new SqlDataAdapter(query, activeConnectionOpen()))
+            using (da = new SqlDataAdapter("FillRoleDropDown", activeConnectionOpen()))
             {
                 
                 dt = new DataTable();
@@ -93,8 +94,7 @@ namespace InwardClearingSystem
         /// <returns>Filled DataTable</returns>
         public DataTable FillDataTable()
         {
-            query = "SELECT user_id, username, f_name, m_name, l_name, email, r.role_desc FROM [User] u, Role r WHERE u.role_id = r.role_id";
-            using (da = new SqlDataAdapter(query, activeConnectionOpen()))
+            using (da = new SqlDataAdapter("FillUserDataTable", activeConnectionOpen()))
             {
                 dt = new DataTable();
 
@@ -124,16 +124,24 @@ namespace InwardClearingSystem
                     row = UserView.Rows[i];
                     string user = row.Cells[2].Text;
                   
-                    using (SqlCommand select = new SqlCommand("SELECT role_id FROM Role WHERE @rolename = role_desc", activeConnectionOpen()))
+                    using (SqlCommand select = new SqlCommand())
                     {
-                        select.Parameters.AddWithValue("@rolename", RoleDrpDwn.Text);
+                        select.CommandText = "PickRoleFromDropDown";
+                        select.CommandType = CommandType.StoredProcedure;
+                        select.Connection = activeConnectionOpen();
+                        select.Parameters.AddWithValue("@role_desc", RoleDrpDwn.Text);
 
-                        cmd = new SqlCommand("update [User] SET role_id = @id WHERE username = @name", activeConnection);
-                        cmd.Parameters.AddWithValue("@id", select.ExecuteScalar());
-                        cmd.Parameters.AddWithValue("@name", user);
-                        cmd.ExecuteNonQuery();
+                        using (cmd = new SqlCommand())
+                        {
+                            cmd.CommandText = "UpdateUserRole";
+                            cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.Connection = activeConnection;
+                            cmd.Parameters.AddWithValue("@id", select.ExecuteScalar());
+                            cmd.Parameters.AddWithValue("@name", user);
+                            cmd.ExecuteNonQuery();
 
-                        FillDataTable();
+                            FillDataTable();
+                        }
                     }
                     
                 }
@@ -214,7 +222,18 @@ namespace InwardClearingSystem
 
         protected void searchUser_Click(object sender, EventArgs e)
         {
-            
+            using (cmd = new SqlCommand())
+            {
+                cmd.CommandText = "SearchUser";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Connection = activeConnection;
+                cmd.Parameters.AddWithValue("@search", searchBar.Text);
+                da = new SqlDataAdapter(cmd);
+                dt = new DataTable();
+                da.Fill(dt);
+                UserView.DataSource = dt;
+                UserView.DataBind();
+            }
         }
     }
 }

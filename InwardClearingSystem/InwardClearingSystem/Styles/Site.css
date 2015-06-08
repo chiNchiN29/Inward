@@ -477,3 +477,8 @@ div.dateBox
     text-align: right;
     padding-right: 10px;
 }
+
+.menu_selected
+{
+    border: 1px solid #990000;   
+}

@@ -22,25 +22,28 @@ namespace InwardClearingSystem
         
         protected void Page_Load(object sender, EventArgs e)
         {
-            activeConnectionOpen();
-            cmd = new SqlCommand("SELECT role_desc FROM [User] u, Role r WHERE username = @username AND u.role_id = r.role_id", activeConnection);
-            cmd.Parameters.AddWithValue("@username", Session["UserName"]);
-            if (cmd.ExecuteScalar().ToString() != "BANK BRANCH" && cmd.ExecuteScalar().ToString() != "OVERSEER")
+            using (cmd = new SqlCommand())
             {
-                Message("You are not authorized to view this page");
-                Response.Redirect("Default.aspx");
-            }
-            else
-            {
-                if (!Page.IsPostBack)
+                cmd.CommandText = "CheckUserRole";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Connection = activeConnectionOpen();
+                cmd.Parameters.AddWithValue("@username", Session["UserName"]);
+                if (cmd.ExecuteScalar().ToString() != "BANK BRANCH" && cmd.ExecuteScalar().ToString() != "OVERSEER")
                 {
-                    ViewState["myDataTable"] = FillDataTable();
-                    ViewState["Branches"] = Branches;
-                    
-                    FillDropDown();
+                    Message("You are not authorized to view this page");
+                    Response.Redirect("Default.aspx");
+                }
+                else
+                {
+                    if (!Page.IsPostBack)
+                    {
+                        ViewState["myDataTable"] = FillDataTable();
+                        ViewState["Branches"] = Branches;
+
+                        FillDropDown();
+                    }
                 }
             }
-            activeConnectionClose();
         }
 
         protected void backBtn_Click(object sender, EventArgs e)
@@ -50,15 +53,22 @@ namespace InwardClearingSystem
 
         public DataTable FillDataTable()
         {
-            activeConnectionOpen();
-            cmd = new SqlCommand("SELECT branch_name, username FROM Branch b LEFT JOIN [User] u ON b.user_id = u.user_id", activeConnection);
-            dt = new DataTable();
-            SqlDataAdapter da = new SqlDataAdapter(cmd);
-            da.Fill(dt);
-            branchView.DataSource = dt;
-            branchView.DataBind();
-            activeConnectionClose();
-            return dt;
+
+            using (cmd = new SqlCommand())
+            {
+                cmd.CommandText = "FillEditUserBranchesDataTable";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Connection = activeConnectionOpen();
+                dt = new DataTable();
+                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                {
+                    da.Fill(dt);
+                    branchView.DataSource = dt;
+                    branchView.DataBind();
+                    activeConnectionClose();
+                    return dt;
+                }
+            }
         }
 
         protected void chkBox_CheckedChanged(object sender, EventArgs e)
@@ -96,10 +106,15 @@ namespace InwardClearingSystem
                     {
                         foreach (string branchname in mybranches)
                         {
-                            cmd = new SqlCommand("update Branch SET user_id = @userid WHERE branch_name = @branch", activeConnection);
-                            cmd.Parameters.AddWithValue("@userid", UserDrpDwn.SelectedValue);
-                            cmd.Parameters.AddWithValue("@branch", branchname);
-                            cmd.ExecuteNonQuery();
+                            using (cmd = new SqlCommand())
+                            {
+                                cmd.CommandText = "UpdateBranchHandlers";
+                                cmd.CommandType = CommandType.StoredProcedure;
+                                cmd.Connection = activeConnection;
+                                cmd.Parameters.AddWithValue("@userid", UserDrpDwn.SelectedValue);
+                                cmd.Parameters.AddWithValue("@branch", branchname);
+                                cmd.ExecuteNonQuery();
+                            }
                         }
                         FillDataTable();
                         Branches.Clear();
@@ -133,12 +148,7 @@ namespace InwardClearingSystem
 
         public void FillDropDown()
         {
-
-            query = new StringBuilder();
-            query.Append("SELECT user_id, username ");
-            query.Append("FROM [User] u, Role r ");
-            query.Append("WHERE u.role_id = r.role_id AND (r.role_desc = 'CLEARING DEPT' OR r.role_desc = 'OVERSEER')");
-            using (da = new SqlDataAdapter(query.ToString(), activeConnectionOpen()))
+            using (da = new SqlDataAdapter("FillUserDropDown", activeConnectionOpen()))
             {
                 dt = new DataTable();
                 
