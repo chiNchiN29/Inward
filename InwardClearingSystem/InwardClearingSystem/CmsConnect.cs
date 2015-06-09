@@ -1,61 +1,18 @@
-﻿using DotCMIS;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using DotCMIS;
 using DotCMIS.Client;
 using DotCMIS.Client.Impl;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Data.SqlClient;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Drawing;
 using DotCMIS.Data;
+using System.IO;
 
 namespace InwardClearingSystem
 {
-    public class BasePage : System.Web.UI.Page
+    public class CmsConnect : System.Web.UI.Page
     {
-        public SqlConnection activeConnection = new SqlConnection();
         public ISession session;
-      
-  
-        protected override void OnInit(EventArgs e)
-        {
-
-            base.OnInit(e);
-       
-            bool login = System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
-            if (login == false)
-                Response.Redirect("~/Account/Login.aspx");
-            Session["UserName"] = System.Web.HttpContext.Current.User.Identity.Name;
-            using (SqlCommand cmd = new SqlCommand())
-            {
-                cmd.CommandText = "GetCurrentUser";
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Connection = activeConnectionOpen();
-                cmd.Parameters.AddWithValue("@username", Session["UserName"].ToString());
-                Session["UserID"] = Convert.ToInt32(cmd.ExecuteScalar());
-            }
-             
-            session = CreateSession("admin", "092095", "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom");
-        }
-
-        public void Message(string message)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append("<script language='javascript'>");
-            sb.Append("alert('");
-            sb.Append(message);
-            sb.Append("');");
-            sb.Append("</script>");
-
-            if (!ClientScript.IsClientScriptBlockRegistered("ErrorPopup"))
-                ClientScript.RegisterClientScriptBlock(this.GetType(), "ErrorPopup", sb.ToString());
-        }
 
         public ISession CreateSession(string username, string password, string url)
         {
@@ -159,8 +116,8 @@ namespace InwardClearingSystem
             {
                 Response.Redirect("FailurePage.aspx");
             }
-          
-             return session;
+
+            return session;
         }
 
         private static Boolean isFolderExist(ISession session, String FolderPath)
@@ -193,54 +150,6 @@ namespace InwardClearingSystem
             FolderProperties[DotCMIS.PropertyIds.ObjectTypeId] = "cmis:folder";
             IFolder newFolder = (IFolder)session.GetObjectByPath(ParentFolderPath);
             newFolder.CreateFolder(FolderProperties);
-        }
-
-        public void NextRow(GridView view, int i)
-        {
-            if (i < view.Rows.Count - 1)
-            {
-                int nextRow = i + 1;
-                GridViewRow row = view.Rows[nextRow];
-                RadioButton rb = (RadioButton)row.FindControl("RowSelect");
-                rb.InputAttributes["checked"] = "true";
-                row.BackColor = ColorTranslator.FromHtml("#FF7272");
-            }
-        }
-
-        public SqlConnection activeConnectionOpen()
-        {
-            activeConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
-            try
-            {
-                if (activeConnection.State == ConnectionState.Closed)
-                {
-                    activeConnection.Open();
-                }
-                return activeConnection;
-            }
-            catch
-            {
-                Response.Redirect("~/FailurePage.aspx");
-                return null;
-            }
-        }
-
-        public SqlConnection activeConnectionClose()
-        {
-            activeConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
-            try
-            {
-                if (activeConnection.State == ConnectionState.Open)
-                {
-                    activeConnection.Close();
-                }
-                return activeConnection;
-            }
-            catch
-            {
-                Response.Redirect("~/FailurePage.aspx");
-                return null;
-            }
         }
 
         public void ShowChequeImage(ISession session, string fileName, System.Web.UI.WebControls.Image image)
@@ -284,52 +193,6 @@ namespace InwardClearingSystem
             string base64string2 = Convert.ToBase64String(result2, 0, result2.Length);
             image.ImageUrl = "data:image/jpeg;base64," + base64string2;
             image.Visible = true;
-        }
-
-        //Signature image in Database
-        public void ShowSigDTImage(int rowIndex, SqlCommand cmd, GridView view, System.Web.UI.WebControls.Image image)
-        {
-            using (activeConnectionOpen())
-            {
-                try
-                {
-                    using (cmd = new SqlCommand())
-                    {
-                        cmd.CommandText = "FetchSignatureImage";
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Connection = activeConnection;
-                        cmd.Parameters.AddWithValue("@acctnumber", view.Rows[rowIndex].Cells[3].Text);
-
-                        byte[] result = cmd.ExecuteScalar() as byte[];
-                        string base64string2 = Convert.ToBase64String(result, 0, result.Length);
-                        image.ImageUrl = "data:image/jpeg;base64," + base64string2;
-                        image.Visible = true;
-                    }
-                }
-                catch
-                {
-                    image.ImageUrl = "~/Resources/H2DefaultImage.jpg";
-                    image.Visible = true;
-                }
-            }
-        }
-
-        public void insertCheckLog(int i, string action, string remarks, GridView view)
-        {
-            string user = Session["UserName"].ToString();
-            using (SqlCommand cmd = new SqlCommand())
-            {
-                cmd.CommandText = "InsertCheckLog";
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Connection = activeConnectionOpen();
-                cmd.Parameters.AddWithValue("@username", user);
-                cmd.Parameters.AddWithValue("@date_logged", DateTime.Now);
-                cmd.Parameters.AddWithValue("@action", action);
-                cmd.Parameters.AddWithValue("@remarks", remarks);
-                cmd.Parameters.AddWithValue("@chknum", view.Rows[i].Cells[1].Text);
-                cmd.Parameters.AddWithValue("@acctnum", view.Rows[i].Cells[3].Text);
-                cmd.ExecuteNonQuery();
-            }
         }
     }
 }

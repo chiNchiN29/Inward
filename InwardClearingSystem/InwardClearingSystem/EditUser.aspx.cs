@@ -13,6 +13,7 @@ namespace InwardClearingSystem
     public partial class EditUser : System.Web.UI.Page
     {
         SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+        int idPH;
         string usernamePH;
         string firstPH;
         string middlePH;
@@ -21,6 +22,7 @@ namespace InwardClearingSystem
         string passwordPH;
         protected void Page_Load(object sender, EventArgs e)
         {
+            idPH = Convert.ToInt32(Session["TBEuserID"]);
             usernamePH = Session["TBEusername"].ToString();
             firstPH = Session["TBEfirstname"].ToString();
             middlePH = Session["TBEmiddlename"].ToString();
@@ -59,8 +61,7 @@ namespace InwardClearingSystem
                     update.Parameters.AddWithValue("@m_name", mnTxtBx.Text);
                     update.Parameters.AddWithValue("@l_name", lnTxtBx.Text);
                     update.Parameters.AddWithValue("@email", emTxtBx.Text);
-                    string moop = fnTxtBx.Text;
-                    update.Parameters.AddWithValue("@referenceUserName", usernamePH);
+                    update.Parameters.AddWithValue("@referenceID", idPH);
                     update.ExecuteNonQuery();
                     Response.Redirect("~/UserMaintenance.aspx");
                 }

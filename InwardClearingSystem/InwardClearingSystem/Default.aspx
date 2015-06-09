@@ -108,36 +108,35 @@
 
     <div class="uploaderDiv">
         <div class="imageLoad">
-            <div class="number">
-                1
-            </div>
-            <div class="loader">
-            <asp:Label ID="lblLoadImg" runat="server" Font-Size="Larger" ForeColor="Black" 
+
+        <fieldset class="loader">
+        <legend>
+            <asp:Label ID="Label1" runat="server" Font-Size="Larger" ForeColor="Black" 
             Text="Load Image"></asp:Label>
-            <br />
-            <asp:FileUpload ID="ImageUpload" runat="server" AllowMultiple="true"/>
-            <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" 
+        </legend>
+        <div>
+        <asp:FileUpload ID="ImageUpload" runat="server" AllowMultiple="true"/>
+            <asp:RegularExpressionValidator ID="RegularExpressionValidator2" runat="server" 
             ControlToValidate="ImageUpload" 
             ErrorMessage="Image files only"
             ValidationExpression="(.*\.([Jj][Pp][Gg])|.*\.([Jj][Pp][Ee][Gg])|.*\.([Pp][Nn][Gg])|.*\.([Tt][Ii][Ff])$)" 
             ForeColor="Red"></asp:RegularExpressionValidator>
             <br />
-            <asp:Button ID="uploadImgBtn" runat="server" Text="Upload Image" 
+            <asp:Button ID="Button1" runat="server" Text="Upload Image" 
             OnClick="uploadImgBtn_Click" OnClientClick="skm_LockScreen('Uploading Images');" 
                 CssClass="defaultButton" />   
-            <div id="skm_LockPane" class="LockOff"></div> 
-            </div>
-
+            <div id="Div1" class="LockOff"></div> 
+        </div>
+        </fieldset>
         </div>
         <div class="dataLoad">
-            <div class="number">
-                2
-            </div>
-            <div class="loader">
-                <asp:Label ID="lblCheckData" runat="server" Font-Size="Larger" ForeColor="Black" 
+            <fieldset class="loader">
+        <legend>
+            <asp:Label ID="lblCheckData" runat="server" Font-Size="Larger" ForeColor="Black" 
                 Text="Load Check Data"></asp:Label>
-                <br />
-                <asp:FileUpload ID="DataUpload" runat="server"/>
+        </legend>
+        <div>
+        <asp:FileUpload ID="DataUpload" runat="server"/>
                 <asp:RegularExpressionValidator ID="regexValidator" runat="server" 
                 ControlToValidate="DataUpload" 
                 ErrorMessage="Only csv files are allowed"  
@@ -145,39 +144,47 @@
                 <br />
                 <asp:Button ID="uploadDoc0" runat="server" Text="Load" 
                 OnClick="UploadCheckData" CssClass="defaultButton"/>
-            </div>
         </div>
-</div>
+        </fieldset>
+        </div>
+    </div>
 
 <div class="whiteSpace">
-    <asp:Button ID="searchBtn" runat="server" Text="Search Check#" 
-        CssClass="defaultButton" onclick="searchBtn_Click" />
-    <asp:TextBox ID="txtSearch" runat="server"></asp:TextBox>
-    <asp:Button ID="viewAllBtn" runat="server" onclick="viewAllBtn_Click" Text="View All" CssClass="defaultButton" />
-    Show
-    <asp:DropDownList ID="pgSize" runat="server" CssClass="style1" Height="20px" AutoPostBack="true" OnSelectedIndexChanged="ViewAllCheck_PageSizeChange"
-        Width="50px">
-        <asp:ListItem>10</asp:ListItem>
-        <asp:ListItem>30</asp:ListItem>
-        <asp:ListItem>50</asp:ListItem>
-        <asp:ListItem>70</asp:ListItem>
-        <asp:ListItem>100</asp:ListItem>
-        <asp:ListItem>130</asp:ListItem>
-        <asp:ListItem>150</asp:ListItem>
-        <asp:ListItem>170</asp:ListItem>
-        <asp:ListItem>200</asp:ListItem>
-    </asp:DropDownList>
-    checks
+    
 </div>
 <br />
-<br />
     <div class="gridWindow">
+        <div class="viewFunctions" style="display:inline">
+            <div class="viewBar">
+                <asp:Button ID="searchBtn" runat="server" Text="Search Check#" 
+                    CssClass="defaultButton" onclick="searchBtn_Click" />
+                <asp:TextBox ID="txtSearch" runat="server"></asp:TextBox>
+                <asp:Button ID="viewAllBtn" runat="server" onclick="viewAllBtn_Click" Text="View All" CssClass="defaultButton" />
+            </div>
+            <div class="viewOptions" style="float:right">
+            Show
+            <asp:DropDownList ID="pgSize" runat="server" CssClass="style1" Height="20px" AutoPostBack="true" OnSelectedIndexChanged="ViewAllCheck_PageSizeChange"
+                Width="50px">
+                <asp:ListItem>10</asp:ListItem>
+                <asp:ListItem>30</asp:ListItem>
+                <asp:ListItem>50</asp:ListItem>
+                <asp:ListItem>70</asp:ListItem>
+                <asp:ListItem>100</asp:ListItem>
+                <asp:ListItem>130</asp:ListItem>
+                <asp:ListItem>150</asp:ListItem>
+                <asp:ListItem>170</asp:ListItem>
+                <asp:ListItem>200</asp:ListItem>
+            </asp:DropDownList>
+            checks
+        </div>
+        </div>
+    <br />
     <div class="gridTitleBar" style="width:99.4%">
         All Cheques
     </div>
     <asp:GridView ID="ViewAllCheck" runat="server" CssClass="gridView" AutoGenerateColumns="false"
     AllowSorting="true" OnSorting="ViewAllCheck_Sorting" AllowPaging="true" OnPageIndexChanging="ViewAllCheck_PageIndex" PagerStyle-CssClass="paging" 
-            HeaderStyle-CssClass="GridHeader" AlternatingRowStyle-BackColor="IndianRed">
+            HeaderStyle-CssClass="GridHeader" AlternatingRowStyle-BackColor="#F8E7E7">
         <Columns>
             <asp:BoundField DataField="check_number" SortExpression="check_number" HeaderText="Check Number" />
             <asp:BoundField DataField="customer_name" SortExpression="customer_name" HeaderText="Name" />

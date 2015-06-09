@@ -12,7 +12,7 @@ namespace InwardClearingSystem
 {
     public partial class RoleMaintenance : BasePage
     {
-        StringBuilder query;
+        String query;
         SqlCommand cmd;
         DataTable dt;
         SqlDataAdapter da;
@@ -28,8 +28,7 @@ namespace InwardClearingSystem
 
         private DataTable FillDataTable()
         {
-            query = new StringBuilder();
-            query.Append("SELECT role_id, role_desc, role_type FROM Role");
+            query = "FillRoleMaintenanceDataTable";
             using (cmd = new SqlCommand(query.ToString(), activeConnectionOpen()))
             {
                 dt = new DataTable();

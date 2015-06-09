@@ -26,7 +26,7 @@ namespace InwardClearingSystem
         GridViewRow row;
         int totalConfirmed = 0;
         RadioButton rb;
-        StringBuilder query;
+        String query;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -73,10 +73,8 @@ namespace InwardClearingSystem
 
         private void UpdateConfirmCheckData(int i, string confirm)
         {
-            query = new StringBuilder();
-            query.Append("update Cheque SET confirmed = @fund, modified_by = @modby, modified_date = @moddate, confirm_remarks = @conremarks ");
-            query.Append("WHERE account_number = @acctnumber AND check_number = @chknumber ");
-            using (cmd = new SqlCommand(query.ToString(), activeConnectionOpen()))
+            query = "UpdateCheckDataConfirmationStatus";
+            using (cmd = new SqlCommand(query, activeConnectionOpen()))
             {
                 cmd.Parameters.AddWithValue("@acctnumber", ConfirmView.Rows[i].Cells[5].Text);
                 cmd.Parameters.AddWithValue("@chknumber", ConfirmView.Rows[i].Cells[1].Text);
@@ -152,14 +150,9 @@ namespace InwardClearingSystem
 
         private DataTable GetData()
         {
-            query = new StringBuilder();
-            query.Append("SELECT check_number, amount, CONVERT(VARCHAR(10), check_date, 101), branch_name, drawee_bank, ");
-            query.Append("drawee_bank_branch, funded, verification, confirmed, ch.account_number ");
-            query.Append("FROM Cheque ch, Customer c, Account a ");
-            query.Append("WHERE ch.account_number = a.account_number AND a.customer_id = c.customer_id AND confirmed = 'NO' ");
-            query.Append("ORDER BY ch.account_number");
+            query = "FilterForConfirmationGenerateList";
             activeConnectionOpen();
-            da = new SqlDataAdapter(query.ToString(), activeConnection);
+            da = new SqlDataAdapter(query, activeConnection);
             dt = new DataTable();                        
             da.Fill(dt);
             activeConnectionClose();
@@ -176,12 +169,8 @@ namespace InwardClearingSystem
 
         public DataTable FillDataTable()
         {
-            query = new StringBuilder();
-            query.Append("SELECT check_number, (f_name + ' ' + m_name + ' ' + l_name) AS customer_name, address, contact_number, ch.account_number, ");
-            query.Append("check_date, amount, branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed, confirm_remarks ");
-            query.Append("FROM Cheque ch, Customer c, Account a, Threshold t ");
-            query.Append("WHERE ch.account_number = a.account_number AND a.customer_id = c.customer_id AND verification = 'NO' ");
-            using (da = new SqlDataAdapter(query.ToString(), activeConnectionOpen()))
+            query = "FillConfirmationDataTable";
+            using (da = new SqlDataAdapter(query, activeConnectionOpen()))
             {
                 dt = new DataTable();
             
@@ -234,7 +223,7 @@ namespace InwardClearingSystem
             {
 
                 row = ConfirmView.Rows[i];
-                row.BackColor = Color.Aqua;
+                row.BackColor = ColorTranslator.FromHtml("#FF7272");
                 row = ConfirmView.Rows[i];
 
                 string im = row.Cells[3].Text;
@@ -281,13 +270,8 @@ namespace InwardClearingSystem
 
         protected void searchBtn_Click(object sender, EventArgs e)
         {
-            query = new StringBuilder();
-            query.Append("SELECT check_number, (f_name + ' ' + m_name + ' ' + l_name) AS customer_name, address, contact_number, ch.account_number, ");
-            query.Append("check_date, amount, branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed, confirm_remarks ");
-            query.Append("FROM Cheque ch, Customer c, Account a, Threshold t ");
-            query.Append("WHERE ch.account_number = a.account_number AND a.customer_id = c.customer_id AND verification = 'NO' ");
-            query.Append("AND ch.check_number LIKE @num + '%' ");
-            using (cmd = new SqlCommand(query.ToString(), activeConnectionOpen()))
+            query = "ConfirmationSearch";
+            using (cmd = new SqlCommand(query, activeConnectionOpen()))
             {
                 cmd.Parameters.AddWithValue("@num", txtSearch.Text);
                 da = new SqlDataAdapter(cmd);
