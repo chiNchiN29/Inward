@@ -128,7 +128,6 @@ namespace InwardClearingSystem
             query.Append("WHERE account_number = @acctnumber AND check_number = @chknumber");
             using (cmd = new SqlCommand(query.ToString(), activeConnectionOpen()))
             {
-                
                 cmd.Parameters.AddWithValue("@acctnumber", VerifyView.Rows[i].Cells[3].Text);
                 cmd.Parameters.AddWithValue("@chknumber", VerifyView.Rows[i].Cells[1].Text);
                 cmd.Parameters.AddWithValue("@verify", verify);

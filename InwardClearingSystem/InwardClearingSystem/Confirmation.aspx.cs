@@ -74,11 +74,11 @@ namespace InwardClearingSystem
         private void UpdateConfirmCheckData(int i, string confirm)
         {
             query = new StringBuilder();
-            query.Append("update Cheque SET confirmed = @fund, modified_by = @modby, modified_date = @moddate, confirm_remarks = @conremarks ");
-            query.Append("WHERE account_number = @acctnumber AND check_number = @chknumber ");
+            query.Append("Update Cheque SET confirmed = @fund, modified_by = @modby, modified_date = @moddate, confirm_remarks = @conremarks ");
+            query.Append("WHERE account_number = @acctnumber AND check_number = @chknumber");
             using (cmd = new SqlCommand(query.ToString(), activeConnectionOpen()))
             {
-                cmd.Parameters.AddWithValue("@acctnumber", ConfirmView.Rows[i].Cells[5].Text);
+                cmd.Parameters.AddWithValue("@acctnumber", ConfirmView.Rows[i].Cells[3].Text);
                 cmd.Parameters.AddWithValue("@chknumber", ConfirmView.Rows[i].Cells[1].Text);
                 cmd.Parameters.AddWithValue("@fund", confirm);
                 cmd.Parameters.AddWithValue("@modby", Session["UserID"]);
@@ -181,17 +181,17 @@ namespace InwardClearingSystem
             query.Append("check_date, amount, branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed, confirm_remarks ");
             query.Append("FROM Cheque ch, Customer c, Account a, Threshold t ");
             query.Append("WHERE ch.account_number = a.account_number AND a.customer_id = c.customer_id AND verification = 'NO' ");
-            using (da = new SqlDataAdapter(query.ToString(), activeConnectionOpen()))
-            {
-                dt = new DataTable();
-            
-                da.Fill(dt);
-                ConfirmView.DataSource = dt;
-                ConfirmView.DataBind();
-                activeConnectionClose();
+            da = new SqlDataAdapter(query.ToString(), activeConnectionOpen());
 
-                return dt;
-            }
+            dt = new DataTable();
+            
+            da.Fill(dt);
+            ConfirmView.DataSource = dt;
+            ConfirmView.DataBind();
+            activeConnectionClose();
+
+            return dt;
+            
         }
 
         private string GetSortDirection(string column)

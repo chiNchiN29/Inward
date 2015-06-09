@@ -104,6 +104,7 @@
         <asp:BoundField DataField="funded" SortExpression="funded" HeaderText="Funded?" />
         <asp:BoundField DataField="verification" SortExpression="verification" HeaderText="Verified?" />
         <asp:BoundField DataField="confirmed" SortExpression="confirmed" HeaderText="Confirmed?" />
+        <asp:BoundField DataField="confirm_remarks" SortExpression="confirm_remarks" HeaderText="Remarks" />
     </Columns>
     </asp:GridView>
     </div>

@@ -15,7 +15,8 @@
  
     
     <asp:GridView ID="branchView" runat="server" AutoGenerateColumns="false" CssClass="gridView2" HeaderStyle-CssClass="GridHeader" 
-    OnPageIndexChanging="branchView_PageIndex" AllowPaging="true" PagerStyle-CssClass="paging" AllowSorting="true" OnSorting="BranchView_Sorting" >
+    OnPageIndexChanging="branchView_PageIndex" AllowPaging="true" PagerStyle-CssClass="paging" AllowSorting="true" OnSorting="BranchView_Sorting"
+     ShowHeaderWhenEmpty="true" >
     <Columns>
         <asp:TemplateField>
             <HeaderTemplate>

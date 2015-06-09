@@ -16,10 +16,14 @@ namespace InwardClearingSystem
         SqlCommand cmd;
         DataTable dt;
         SqlDataAdapter da;
-        
+        string function = "Role Maintenance";
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (checkAccess(Convert.ToInt32(Session["RoleID"]), function) == 1)
+            {
+                Response.Redirect("~/FailurePage.aspx");
+            }
             if (!Page.IsPostBack)
             {
                 FillDataTable();

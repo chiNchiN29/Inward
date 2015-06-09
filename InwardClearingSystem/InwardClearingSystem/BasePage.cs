@@ -32,10 +32,16 @@ namespace InwardClearingSystem
             if (login == false)
                 Response.Redirect("~/Account/Login.aspx");
             Session["UserName"] = System.Web.HttpContext.Current.User.Identity.Name;
-            using (SqlCommand cmd = new SqlCommand("select user_id from [User] where username = @username", activeConnectionOpen()))
+            using (SqlCommand cmd = new SqlCommand("select user_id, role_id from [User] where username = @username", activeConnectionOpen()))
             {
                 cmd.Parameters.AddWithValue("@username", Session["UserName"].ToString());
-                Session["UserID"] = Convert.ToInt32(cmd.ExecuteScalar());
+                SqlDataReader dr;
+                dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    Session["UserID"] = Convert.ToInt32(dr["user_id"]);
+                    Session["RoleID"] = Convert.ToInt32(dr["role_id"]);
+                }
             }
              
             session = CreateSession("admin", "admin", "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom");
@@ -308,21 +314,60 @@ namespace InwardClearingSystem
 
         public void insertCheckLog(int i, string action, string remarks, GridView view)
         {
-            string user = Session["UserName"].ToString();
-            StringBuilder query = new StringBuilder();
-            query.Append("insert into Cheque_Log(username, date_logged, action, ");
-            query.Append("remarks, check_number, account_number) ");
-            query.Append("values(@username, @date_logged, @action, @remarks, ");
-            query.Append("@chknum, @acctnum)");
-            using (SqlCommand cmd = new SqlCommand(query.ToString(), activeConnectionOpen()))
+            try
             {
-                cmd.Parameters.AddWithValue("@username", user);
-                cmd.Parameters.AddWithValue("@date_logged", DateTime.Now);
-                cmd.Parameters.AddWithValue("@action", action);
-                cmd.Parameters.AddWithValue("@remarks", remarks);
-                cmd.Parameters.AddWithValue("@chknum", view.Rows[i].Cells[1].Text);
-                cmd.Parameters.AddWithValue("@acctnum", view.Rows[i].Cells[3].Text);
-                cmd.ExecuteNonQuery();
+                string user = Session["UserName"].ToString();
+                StringBuilder query = new StringBuilder();
+                query.Append("insert into Cheque_Log(username, date_logged, action, ");
+                query.Append("remarks, check_number, account_number) ");
+                query.Append("values(@username, @date_logged, @action, @remarks, ");
+                query.Append("@chknum, @acctnum)");
+                using (SqlCommand cmd = new SqlCommand(query.ToString(), activeConnectionOpen()))
+                {
+                    cmd.Parameters.AddWithValue("@username", user);
+                    cmd.Parameters.AddWithValue("@date_logged", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@action", action);
+                    cmd.Parameters.AddWithValue("@remarks", remarks);
+                    cmd.Parameters.AddWithValue("@chknum", view.Rows[i].Cells[1].Text);
+                    cmd.Parameters.AddWithValue("@acctnum", view.Rows[i].Cells[3].Text);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public int checkAccess(int roleID, string function)
+        {
+            SqlCommand cmd;
+            StringBuilder query;
+            try
+            {
+                //get function ID
+                query = new StringBuilder();
+                query.Append("SELECT function_id FROM Functions WHERE function_name = @fname");
+                cmd = new SqlCommand(query.ToString(), activeConnectionOpen());
+                cmd.Parameters.AddWithValue("@fname", function);
+                string functionID = cmd.ExecuteScalar().ToString();
+
+                query = new StringBuilder();
+                query.Append("SELECT role_id ");
+                query.Append("FROM Role_Function rf ");
+                query.Append("WHERE rf.role_id = @roleID AND rf.function_id = @functionID");
+                cmd = new SqlCommand(query.ToString(), activeConnectionOpen());
+                cmd.Parameters.AddWithValue("@roleID", roleID);
+                cmd.Parameters.AddWithValue("@functionID", functionID);
+                if (cmd.ExecuteScalar() == null)
+                {
+                    return 1;
+                }
+                return 0;
+            }
+            catch
+            {
+                throw;
             }
         }
     }

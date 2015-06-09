@@ -22,6 +22,15 @@ namespace InwardClearingSystem {
         protected global::System.Web.UI.WebControls.Label lblHeader;
         
         /// <summary>
+        /// lblError control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblError;
+        
+        /// <summary>
         /// txtRoleName control.
         /// </summary>
         /// <remarks>
@@ -29,6 +38,15 @@ namespace InwardClearingSystem {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtRoleName;
+        
+        /// <summary>
+        /// roleNameValidator control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator roleNameValidator;
         
         /// <summary>
         /// txtRoleType control.
@@ -40,22 +58,22 @@ namespace InwardClearingSystem {
         protected global::System.Web.UI.WebControls.TextBox txtRoleType;
         
         /// <summary>
-        /// CheckBoxList1 control.
+        /// roleTypeValidator control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBoxList CheckBoxList1;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator roleTypeValidator;
         
         /// <summary>
-        /// FunctionData control.
+        /// chkBoxFunctions control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.SqlDataSource FunctionData;
+        protected global::System.Web.UI.WebControls.CheckBoxList chkBoxFunctions;
         
         /// <summary>
         /// addBtn control.
@@ -76,13 +94,13 @@ namespace InwardClearingSystem {
         protected global::System.Web.UI.WebControls.Button saveBtn;
         
         /// <summary>
-        /// cancelBtn control.
+        /// backBtn control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button cancelBtn;
+        protected global::System.Web.UI.WebControls.Button backBtn;
         
         /// <summary>
         /// delBtn control.

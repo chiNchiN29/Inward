@@ -137,7 +137,7 @@ namespace InwardClearingSystem
                             cmd.CommandType = CommandType.StoredProcedure;
                             cmd.Connection = activeConnection;
                             cmd.Parameters.AddWithValue("@id", select.ExecuteScalar());
-                            cmd.Parameters.AddWithValue("@name", user);
+                            cmd.Parameters.AddWithValue("@username", user);
                             cmd.ExecuteNonQuery();
 
                             FillDataTable();
