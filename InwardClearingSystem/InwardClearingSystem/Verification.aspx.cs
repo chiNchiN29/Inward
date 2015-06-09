@@ -28,7 +28,7 @@ namespace InwardClearingSystem
         DataTable dt;
         int totalVerified = 0;
         RadioButton rb;
-        StringBuilder query;
+        String query;
      
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -82,7 +82,7 @@ namespace InwardClearingSystem
             {
 
                 row = VerifyView.Rows[i];
-                row.BackColor = Color.Aqua;
+                row.BackColor = ColorTranslator.FromHtml("#FF7272");
                 row = VerifyView.Rows[i];
           
                 string im = row.Cells[3].Text;
@@ -123,10 +123,8 @@ namespace InwardClearingSystem
 
         private void UpdateCheckData(int i, string verify, string remarks )
         {
-            query = new StringBuilder();
-            query.Append("update Cheque SET verification = @verify, modified_by = @modby, modified_date = @moddate, verify_remarks = @veremarks ");
-            query.Append("WHERE account_number = @acctnumber AND check_number = @chknumber");
-            using (cmd = new SqlCommand(query.ToString(), activeConnectionOpen()))
+            query = "UpdateCheckDataVerificationStatus";
+            using (cmd = new SqlCommand(query, activeConnectionOpen()))
             {
                 cmd.Parameters.AddWithValue("@acctnumber", VerifyView.Rows[i].Cells[3].Text);
                 cmd.Parameters.AddWithValue("@chknumber", VerifyView.Rows[i].Cells[1].Text);
@@ -204,11 +202,7 @@ namespace InwardClearingSystem
 
         private DataTable GetData()
         {
-            query = new StringBuilder();
-            query.Append("SELECT check_number, amount, CONVERT(VARCHAR(10), check_date, 101), branch_name, drawee_bank, drawee_bank_branch, funded, verification, confirmed, ch.account_number ");
-            query.Append("FROM Cheque ch, Customer c, Account a ");
-            query.Append("WHERE ch.account_number = a.account_number AND a.customer_id = c.customer_id AND verification = 'NO' "); 
-            query.Append("ORDER BY ch.account_number");
+            query = "FilterForVerificationGenerateList";
 
             activeConnectionOpen();
             da = new SqlDataAdapter(query.ToString(), activeConnection);
@@ -229,15 +223,8 @@ namespace InwardClearingSystem
         public DataTable FillDataTable()
         {
             string user = Session["UserName"].ToString();
-            query = new StringBuilder();
-            query.Append("SELECT check_number, (c.f_name + ' ' + c.m_name + ' ' + c.l_name) AS name, ch.account_number, check_date, amount, ");
-            query.Append("balance, b.branch_name, drawee_bank, drawee_bank_branch, verification, bank_remarks, verify_remarks ");
-            query.Append("FROM Threshold AS t INNER JOIN Cheque AS ch INNER JOIN [User] AS u INNER JOIN  Branch AS b ON u.user_id = b.user_id ");
-            query.Append("ON ch.branch_name = b.branch_name INNER JOIN Account AS a ON ch.account_number = a.account_number INNER JOIN ");
-            query.Append("Customer AS c ON a.customer_id = c.customer_id ON t.minimum <= ch.amount ");
-            query.Append("WHERE (u.username = @username) AND (ch.verification <> 'BTA') AND (ch.bank_remarks = NULL OR ch.bank_remarks = ' ') ");   
-            query.Append("ORDER BY ch.account_number");
-            using (cmd = new SqlCommand(query.ToString(), activeConnectionOpen()))
+            query = "FillVerificationDataTable";
+            using (cmd = new SqlCommand(query, activeConnectionOpen()))
             {
                 
                 cmd.Parameters.AddWithValue("@username", user); 
@@ -304,15 +291,8 @@ namespace InwardClearingSystem
         protected void searchBtn_Click(object sender, EventArgs e)
         {
             string user = Session["UserName"].ToString();
-            query = new StringBuilder();
-            query.Append("SELECT check_number, (c.f_name + ' ' + c.m_name + ' ' + c.l_name) AS name, ch.account_number, check_date, amount, ");
-            query.Append("balance, b.branch_name, drawee_bank, drawee_bank_branch, verification, bank_remarks, verify_remarks ");
-            query.Append("FROM Threshold AS t INNER JOIN Cheque AS ch INNER JOIN [User] AS u INNER JOIN  Branch AS b ON u.user_id = b.user_id ");
-            query.Append("ON ch.branch_name = b.branch_name INNER JOIN Account AS a ON ch.account_number = a.account_number INNER JOIN ");
-            query.Append("Customer AS c ON a.customer_id = c.customer_id ON t.minimum <= ch.amount ");
-            query.Append("WHERE (check_number LIKE @num + '%') AND (u.username = @username) AND (ch.verification <> 'BTA') AND (ch.bank_remarks = NULL OR ch.bank_remarks = ' ') ");
-            query.Append("ORDER BY ch.account_number");
-            using (cmd = new SqlCommand(query.ToString(), activeConnectionOpen()))
+            query = "VerificationSearch";
+            using (cmd = new SqlCommand(query, activeConnectionOpen()))
             {
 
                 cmd.Parameters.AddWithValue("@username", user);

@@ -17,7 +17,6 @@ namespace InwardClearingSystem
         DataTable dt;
         SqlDataAdapter da;
         GridViewRow row;
-        string query;
        
 
         protected void Page_Load(object sender, EventArgs e)
@@ -46,25 +45,6 @@ namespace InwardClearingSystem
             }
             activeConnectionClose();   
         }
-    
-        /// <summary>
-        /// Fills the DropDown control with the roles in the database.
-        /// </summary>
-        public void FillDropDown()
-        {
-            using (da = new SqlDataAdapter("FillRoleDropDown", activeConnectionOpen()))
-            {
-                
-                dt = new DataTable();
-                
-                da.Fill(dt);
-                RoleDrpDwn.DataSource = dt;
-                RoleDrpDwn.DataTextField = "role_desc";
-                RoleDrpDwn.DataValueField = "role_desc";
-                RoleDrpDwn.DataBind();
-                RoleDrpDwn.Items.Insert(0, new ListItem("<Select Role>", "None"));
-            }
-        }
 
         protected void RowSelect_CheckedChanged(Object sender, EventArgs e)
         {
@@ -85,23 +65,6 @@ namespace InwardClearingSystem
                 {
                     branchBtn.Visible = false;
                 }
-            }
-        }
-
-        /// <summary>
-        /// Fills the DataTable control with the information of all registered users in the database.
-        /// </summary>
-        /// <returns>Filled DataTable</returns>
-        public DataTable FillDataTable()
-        {
-            using (da = new SqlDataAdapter("FillUserDataTable", activeConnectionOpen()))
-            {
-                dt = new DataTable();
-
-                da.Fill(dt);
-                UserView.DataSource = dt;
-                UserView.DataBind();
-                return dt;
             }
         }
 
@@ -170,14 +133,50 @@ namespace InwardClearingSystem
             else
             {
                 row = UserView.Rows[i];
-                string user = row.Cells[2].Text;
-                StringBuilder query2 = new StringBuilder();
-                query2.Append("UPDATE Branch SET user_id = NULL FROM Branch b, [User] u WHERE u. user_id = b.user_id AND u.username = @name");
-                using (cmd = new SqlCommand(query2.ToString(), activeConnectionOpen()))
+                string user_id = row.Cells[2].Text;
+                
+                cmd = activeConnectionOpen().CreateCommand();
+                SqlTransaction transaction;
+
+                transaction = activeConnection.BeginTransaction("UserTermination");
+
+                cmd.Connection = activeConnection;
+                cmd.Transaction = transaction;
+
+                try
                 {
-                   
-                    cmd.Parameters.AddWithValue("@name", user);
+                    cmd.CommandText = "SeverUserTiesWithBranches";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@id", user_id);
                     cmd.ExecuteNonQuery();
+
+                    cmd.CommandText = "DeleteUser";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@id", user_id);
+                    cmd.ExecuteNonQuery();
+
+                    // Attempt to commit the transaction.
+                    transaction.Commit();
+                    Message("User successfully deleted.");
+                }
+                catch (Exception ex)
+                {
+                    Message("Commit Exception Type: " + ex.GetType());
+                    Message("  Message: " + ex.Message);
+
+                    // Attempt to roll back the transaction. 
+                    try
+                    {
+                        transaction.Rollback();
+                    }
+                    catch (Exception ex2)
+                    {
+                        // This catch block will handle any errors that may have occurred 
+                        // on the server that would cause the rollback to fail, such as 
+                        // a closed connection.
+                        Message("Rollback Exception Type: " + ex2.GetType());
+                        Message("  Message: " + ex2.Message);
+                    }
                 }
             }
         }
@@ -208,6 +207,7 @@ namespace InwardClearingSystem
                     SqlDataReader dr = cmd.ExecuteReader();
                     while (dr.Read())
                     {
+                        Session["TBEuserID"] = dr["user_id"];
                         Session["TBEusername"] = dr["username"];
                         Session["TBEfirstname"] = dr["f_name"];
                         Session["TBEmiddlename"] = dr["m_name"];
@@ -233,6 +233,42 @@ namespace InwardClearingSystem
                 da.Fill(dt);
                 UserView.DataSource = dt;
                 UserView.DataBind();
+            }
+        }
+
+        /// <summary>
+        /// Fills the DropDown control with the roles in the database.
+        /// </summary>
+        public void FillDropDown()
+        {
+            using (da = new SqlDataAdapter("FillRoleDropDown", activeConnectionOpen()))
+            {
+
+                dt = new DataTable();
+
+                da.Fill(dt);
+                RoleDrpDwn.DataSource = dt;
+                RoleDrpDwn.DataTextField = "role_desc";
+                RoleDrpDwn.DataValueField = "role_desc";
+                RoleDrpDwn.DataBind();
+                RoleDrpDwn.Items.Insert(0, new ListItem("<Select Role>", "None"));
+            }
+        }
+
+        /// <summary>
+        /// Fills the DataTable control with the information of all registered users in the database.
+        /// </summary>
+        /// <returns>Filled DataTable</returns>
+        public DataTable FillDataTable()
+        {
+            using (da = new SqlDataAdapter("FillUserDataTable", activeConnectionOpen()))
+            {
+                dt = new DataTable();
+
+                da.Fill(dt);
+                UserView.DataSource = dt;
+                UserView.DataBind();
+                return dt;
             }
         }
     }

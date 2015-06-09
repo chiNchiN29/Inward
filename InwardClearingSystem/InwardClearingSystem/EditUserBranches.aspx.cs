@@ -16,7 +16,6 @@ namespace InwardClearingSystem
         SqlCommand cmd;
         List<string> newBranch = new List<string>();
         DataTable dt;
-        StringBuilder query;
         SqlDataAdapter da;
         
         

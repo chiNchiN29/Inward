@@ -37,36 +37,6 @@ namespace InwardClearingSystem
             }
         }
 
-        /// <summary>
-        /// uploads check image to alfresco
-        /// </summary>
-        /// <param name="session">
-        /// CMIS session
-        /// </param>
-        /// <param name="ImageFile">
-        /// The Image File to be uploaded
-        /// </param>
-        /// <param name="fileName">
-        /// The filename of the file
-        /// </param>
-        private void UploadADocument(ISession session, byte[] ImageFile, string fileName)
-        {
-            IFolder folder = (IFolder)session.GetObjectByPath("/Uploads/" + DateTime.Now.Year.ToString() + "/" + DateTime.Now.ToString("MM") + "/" + DateTime.Now.ToString("dd"));
-            Dictionary<String, object> DocumentProperties = new Dictionary<string, object>();
-
-            DocumentProperties[PropertyIds.Name] = fileName;
-            DocumentProperties[PropertyIds.ObjectTypeId] = "cmis:document";
-            ContentStream contentStream = new ContentStream
-            {
-                MimeType = "image/jpeg",
-                Length = ImageFile.Length,
-                Stream = new MemoryStream(ImageFile)
-            };
-
-            folder.CreateDocument(DocumentProperties, contentStream, null);
-        }
-
-     
         protected void uploadImgBtn_Click(Object sender, EventArgs e)
         {
             try
@@ -94,24 +64,6 @@ namespace InwardClearingSystem
         }
 
         /// <summary>
-        /// convert image to byte
-        /// </summary>
-        /// <param name="imageIn">
-        /// Image to be converted
-        /// </param>
-        /// <returns>
-        /// The image in byte[] formate
-        /// </returns>
-        private static byte[] imageToByteArray(System.Drawing.Image imageIn)
-        {
-            using (MemoryStream ms = new MemoryStream())
-            {
-                imageIn.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
-                return ms.ToArray();
-            }
-        }
-
-        /// <summary>
         /// upload check data to database
         /// </summary>
         /// <param name="sender"></param>
@@ -131,11 +83,6 @@ namespace InwardClearingSystem
                         string line = sr.ReadLine();
                         string[] heart = line.Split(',');
                         string userID = Session["UserID"].ToString();
-                        query = new StringBuilder();
-                        query.Append("insert into Cheque(check_number, amount, check_date, branch_name, drawee_bank, drawee_bank_branch, funded, ");
-                        query.Append("verification, confirmed, bank_remarks, account_number, modified_by, modified_date) ");
-                        query.Append("values (@checknum, @amount, @date, @branch, @draweebank, @draweebranch, ");
-                        query.Append("@funded, @verified, @confirmed, @remarks, @acctnum, @modby, @moddate)");
 
                         using (SqlCommand validator = new SqlCommand("select check_number from Cheque where check_number = @checknum", activeConnection))
                         {
@@ -210,16 +157,6 @@ namespace InwardClearingSystem
         }
 
         /// <summary>
-        /// gets image count uploaded in alfresco
-        /// </summary>
-        public int ImageCount
-        {
-            get { return Convert.ToInt32(ViewState["ImageCount"].ToString()); }
-            set { ViewState["ImageCount"] = value; }
-        }
-
-
-        /// <summary>
         /// clear check data
         /// </summary>
         /// <param name="sender"></param>
@@ -242,18 +179,6 @@ namespace InwardClearingSystem
             dt.DefaultView.Sort = e.SortExpression + " " + GetSortDirection(e.SortExpression);
             ViewAllCheck.DataSource = dt;
             ViewAllCheck.DataBind();
-        }
-
-        public DataTable FillDataTable()
-        {
-            dt = new DataTable();
-            SqlDataAdapter da = new SqlDataAdapter("DefaultCheckDataTable", activeConnectionOpen());
-            da.Fill(dt);
-            ViewAllCheck.DataSource = dt;
-            ViewAllCheck.DataBind();
-            activeConnectionClose();
-
-            return dt;
         }
 
         //Generate List
@@ -304,39 +229,6 @@ namespace InwardClearingSystem
             Response.Flush();
             Response.End();
        
-        }
-
-        private DataTable GetData(String query)
-        {
-            activeConnectionOpen();
-            da = new SqlDataAdapter(query, activeConnection);
-            dt = new DataTable();          
-            da.Fill(dt);
-            activeConnectionClose();
-            return dt;
-        }
-
-        private string GetSortDirection(string column)
-        {
-            string sortDirection = "DESC";
-            string sortExpression = ViewState["SortExpression"] as string;
-
-            if (sortExpression != null)
-            {
-                if (sortExpression == column)
-                {
-                    string lastDirection = ViewState["SortDirection"] as string;
-                    if ((lastDirection != null) && (lastDirection == "DESC"))
-                    {
-                        sortDirection = "ASC";
-                    }
-                }
-            }
-
-            ViewState["SortDirection"] = sortDirection;
-            ViewState["SortExpression"] = column;
-
-            return sortDirection;
         }
 
         protected void ProduceFinalReport(object sender, EventArgs e)
@@ -419,5 +311,112 @@ namespace InwardClearingSystem
             ViewAllCheck.PageSize = Convert.ToInt32(pgSize.SelectedValue);
             FillDataTable();
         }
+
+        private DataTable GetData(String query)
+        {
+            activeConnectionOpen();
+            using (da = new SqlDataAdapter(query, activeConnection))
+            {
+                dt = new DataTable();
+                da.Fill(dt);
+                activeConnectionClose();
+                return dt;
+            }
+        }
+
+        /// <summary>
+        /// convert image to byte
+        /// </summary>
+        /// <param name="imageIn">
+        /// Image to be converted
+        /// </param>
+        /// <returns>
+        /// The image in byte[] formate
+        /// </returns>
+        private static byte[] imageToByteArray(System.Drawing.Image imageIn)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                imageIn.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+                return ms.ToArray();
+            }
+        }
+
+        private string GetSortDirection(string column)
+        {
+            string sortDirection = "DESC";
+            string sortExpression = ViewState["SortExpression"] as string;
+
+            if (sortExpression != null)
+            {
+                if (sortExpression == column)
+                {
+                    string lastDirection = ViewState["SortDirection"] as string;
+                    if ((lastDirection != null) && (lastDirection == "DESC"))
+                    {
+                        sortDirection = "ASC";
+                    }
+                }
+            }
+
+            ViewState["SortDirection"] = sortDirection;
+            ViewState["SortExpression"] = column;
+
+            return sortDirection;
+        }
+
+        /// <summary>
+        /// uploads check image to alfresco
+        /// </summary>
+        /// <param name="session">
+        /// CMIS session
+        /// </param>
+        /// <param name="ImageFile">
+        /// The Image File to be uploaded
+        /// </param>
+        /// <param name="fileName">
+        /// The filename of the file
+        /// </param>
+        private void UploadADocument(ISession session, byte[] ImageFile, string fileName)
+        {
+            IFolder folder = (IFolder)session.GetObjectByPath("/Uploads/" + DateTime.Now.Year.ToString() + "/" + DateTime.Now.ToString("MM") + "/" + DateTime.Now.ToString("dd"));
+            Dictionary<String, object> DocumentProperties = new Dictionary<string, object>();
+
+            DocumentProperties[PropertyIds.Name] = fileName;
+            DocumentProperties[PropertyIds.ObjectTypeId] = "cmis:document";
+            ContentStream contentStream = new ContentStream
+            {
+                MimeType = "image/jpeg",
+                Length = ImageFile.Length,
+                Stream = new MemoryStream(ImageFile)
+            };
+
+            folder.CreateDocument(DocumentProperties, contentStream, null);
+        }
+
+        public DataTable FillDataTable()
+        {
+            dt = new DataTable();
+            using (SqlDataAdapter da = new SqlDataAdapter("DefaultCheckDataTable", activeConnectionOpen()))
+            {
+                da.Fill(dt);
+                ViewAllCheck.DataSource = dt;
+                ViewAllCheck.DataBind();
+                activeConnectionClose();
+
+                return dt;
+            }
+        }
+
+        /// <summary>
+        /// gets image count uploaded in alfresco
+        /// </summary>
+        public int ImageCount
+        {
+            get { return Convert.ToInt32(ViewState["ImageCount"].ToString()); }
+            set { ViewState["ImageCount"] = value; }
+        }
+
+       
     }
 }

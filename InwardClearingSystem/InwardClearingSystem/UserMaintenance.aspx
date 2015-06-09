@@ -12,9 +12,9 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <br />
 <div class="maintenancePowers">
-    <asp:TextBox ID="searchBar" runat="server" placeholder="Enter User ID"></asp:TextBox>
+    <asp:TextBox ID="searchBar" runat="server" placeholder="Enter Username"></asp:TextBox>
         
-    <asp:Button ID="searchUser" runat="server" Text="Search User ID" CssClass="defaultButton" OnClick="searchUser_Click" />
+    <asp:Button ID="searchUser" runat="server" Text="Search User" CssClass="defaultButton" OnClick="searchUser_Click" />
     
     <asp:Button ID="addUser" runat="server" Text="Add User" CssClass="defaultButton" OnClick="addUser_Click" />
 

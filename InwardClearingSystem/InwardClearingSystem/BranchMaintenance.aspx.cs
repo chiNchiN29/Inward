@@ -48,10 +48,7 @@ namespace InwardClearingSystem
             TextBox bn = ((TextBox)BranchView.FooterRow.FindControl("txtBranchName"));
             bn.CausesValidation = true;
             string name = bn.Text;
-            query = new StringBuilder();
-            query.Append("insert into Branch(branch_name, modified_date) ");
-            query.Append("values(@name, @date)");
-            using (cmd = new SqlCommand(query.ToString(), activeConnectionOpen()))
+            using (cmd = new SqlCommand("InsertBranch", activeConnectionOpen()))
             {
                 cmd.Parameters.AddWithValue("@name", name);
                 cmd.Parameters.AddWithValue("@date", DateTime.Now);
@@ -169,11 +166,7 @@ namespace InwardClearingSystem
 
         protected void searchBtn_Click(object sender, EventArgs e)
         {
-            query = new StringBuilder();
-            query.Append("SELECT branch_id, branch_name ");
-            query.Append("FROM Branch ");
-            query.Append("WHERE branch_name LIKE '%' + @name + '%'");
-            using (cmd = new SqlCommand(query.ToString(), activeConnectionOpen()))
+            using (cmd = new SqlCommand("SearchBranch", activeConnectionOpen()))
             {
                 cmd.Parameters.AddWithValue("@name", txtSearch.Text);
                 cmd.ExecuteNonQuery();

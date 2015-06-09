@@ -13,13 +13,13 @@ namespace InwardClearingSystem {
     public partial class _Default {
         
         /// <summary>
-        /// lblLoadImg control.
+        /// Label1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblLoadImg;
+        protected global::System.Web.UI.WebControls.Label Label1;
         
         /// <summary>
         /// ImageUpload control.
@@ -31,22 +31,22 @@ namespace InwardClearingSystem {
         protected global::System.Web.UI.WebControls.FileUpload ImageUpload;
         
         /// <summary>
-        /// RegularExpressionValidator1 control.
+        /// RegularExpressionValidator2 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RegularExpressionValidator RegularExpressionValidator1;
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator RegularExpressionValidator2;
         
         /// <summary>
-        /// uploadImgBtn control.
+        /// Button1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button uploadImgBtn;
+        protected global::System.Web.UI.WebControls.Button Button1;
         
         /// <summary>
         /// lblCheckData control.
@@ -83,15 +83,6 @@ namespace InwardClearingSystem {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button uploadDoc0;
-        
-        /// <summary>
-        /// uploadDoc0_RoundedCornersExtender control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.RoundedCornersExtender uploadDoc0_RoundedCornersExtender;
         
         /// <summary>
         /// searchBtn control.

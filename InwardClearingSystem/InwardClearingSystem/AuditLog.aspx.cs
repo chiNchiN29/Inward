@@ -27,10 +27,7 @@ namespace InwardClearingSystem
 
         private DataTable FillDataTable()
         {
-            query = new StringBuilder();
-            query.Append("SELECT action, check_number, account_number, remarks, date_logged, username ");
-            query.Append("FROM Cheque_Log");
-            using (cmd = new SqlCommand(query.ToString(), activeConnectionOpen()))
+            using (cmd = new SqlCommand("FillAuditLogDataTable", activeConnectionOpen()))
             {
                 dt = new DataTable();
                 da = new SqlDataAdapter(cmd);
