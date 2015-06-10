@@ -94,7 +94,7 @@ namespace InwardClearingSystem
             try
             {
  
-                {
+                
                     int id = Convert.ToInt32(BranchView.DataKeys[Convert.ToInt32(editRow.Value)].Value);
                     string query = "delete from Branch where branch_id = @id";
                     using (cmd = new SqlCommand(query, activeConnectionOpen()))
@@ -103,7 +103,7 @@ namespace InwardClearingSystem
                         cmd.ExecuteNonQuery();
                     }
                     FillDataTable();
-                }
+                
             }
             catch
             {
