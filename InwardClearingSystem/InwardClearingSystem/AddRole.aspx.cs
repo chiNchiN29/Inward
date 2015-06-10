@@ -163,6 +163,15 @@ namespace InwardClearingSystem
                     cmd.ExecuteNonQuery();
                 }
 
+                //delete role in user table
+                query = new StringBuilder();
+                query.Append("Update [User] set role_id = NULL WHERE role_id = @roleId");
+                using (cmd = new SqlCommand(query.ToString(), activeConnection, transact))
+                {
+                    cmd.Parameters.AddWithValue("@roleId", roleID);
+                    cmd.ExecuteNonQuery();
+                }
+                    
                 //delete role
                 query = new StringBuilder();
                 query.Append("DELETE FROM Role WHERE role_id = @roleID");
@@ -195,11 +204,7 @@ namespace InwardClearingSystem
             try
             {
                 int chkBoxItems = 0;
-                query = new StringBuilder();
-                query.Append("SELECT role_desc FROM Role WHERE role_desc = @rolename");
-                cmd = new SqlCommand(query.ToString(), activeConnectionOpen());
-                cmd.Parameters.AddWithValue("@rolename", txtRoleName.Text);
-                if (cmd.ExecuteScalar() == null)
+                if (checkForDuplicateData("role_desc", "Role", txtRoleName.Text) == false)
                 {
                     foreach (ListItem item in chkBoxFunctions.Items)
                     {
@@ -271,7 +276,6 @@ namespace InwardClearingSystem
         {
             try
             {
-           
                 //get function id of function name
                 string query2 = "Select function_id FROM Functions WHERE function_name = @name";
                 SqlCommand check = new SqlCommand(query2, con, trans);

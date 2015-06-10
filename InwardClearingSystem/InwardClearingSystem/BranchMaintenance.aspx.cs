@@ -31,7 +31,7 @@ namespace InwardClearingSystem
         public DataTable FillDataTable()
         {
             activeConnectionOpen();
-            cmd = new SqlCommand("SELECT branch_id, branch_name FROM Branch", activeConnection);
+            cmd = new SqlCommand("SELECT branch_id, branch_name, branch_code, address FROM Branch", activeConnection);
             dt = new DataTable();
             da = new SqlDataAdapter(cmd);
             da.Fill(dt);
@@ -41,80 +41,73 @@ namespace InwardClearingSystem
             return dt;
         }
 
-        //add yung user id sa modified by and modified date
-        protected void addBranch_Click(object sender, EventArgs e)
+        protected void btnpopAdd_Click(object sender, EventArgs e)
         {
-
-            TextBox bn = ((TextBox)BranchView.FooterRow.FindControl("txtBranchName"));
-            bn.CausesValidation = true;
-            string name = bn.Text;
-            using (cmd = new SqlCommand("InsertBranch", activeConnectionOpen()))
+            try
             {
-                cmd.Parameters.AddWithValue("@name", name);
-                cmd.Parameters.AddWithValue("@date", DateTime.Now);
-                cmd.ExecuteNonQuery();
-                FillDataTable();
+                if (checkForDuplicateData("branch_name", "Branch", txtBranchName.Text) == false)
+                {
+                    if(checkForDuplicateData("branch_code", "Branch", txtBranchCode.Text) == false)
+                    {
+                        using (cmd = new SqlCommand())
+                        {
+                            cmd.CommandText = "InsertBranch";
+                            cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.Connection = activeConnectionOpen();
+                            cmd.Parameters.AddWithValue("@name", txtBranchName.Text);
+                            cmd.Parameters.AddWithValue("@date", DateTime.Now);
+                            cmd.Parameters.AddWithValue("@code", txtBranchCode.Text);
+                            cmd.Parameters.AddWithValue("@address", txtAddress.Text);
+                            cmd.Parameters.AddWithValue("@modby", Convert.ToInt32(Session["UserID"]));
+                            cmd.ExecuteNonQuery();
+                            FillDataTable();
+                        }
+                        txtBranchName.Text = "";
+                        txtBranchCode.Text = "";
+                        txtAddress.Text = "";
+                        Message("Successfully added Branch");
+                    }
+                    else
+                    {
+                        Message("Branch Code already exists");
+                    }
+                }
+                else
+                {
+                    Message("Branch Name already exists");
+                }
             }
-            bn.CausesValidation = false;
-        }
-
-        protected void RowSelect_CheckedChanged(Object sender, EventArgs e)
-        {
-            rb = (RadioButton)sender;
-            row = (GridViewRow)rb.NamingContainer;
-            int i = row.RowIndex;
-            ViewState["SelectRow"] = i; 
-        }
-
-        protected void EditBranch(object sender, GridViewEditEventArgs e)
-        {
-            BranchView.EditIndex = e.NewEditIndex;
-            FillDataTable();
-        }
-
-        protected void CancelEdit(object sender, GridViewCancelEditEventArgs e)
-        {
-            BranchView.EditIndex = -1;
-            FillDataTable();
-        }
-
-        protected void UpdateBranch(object sender, GridViewUpdateEventArgs e)
-        {
-            TextBox bn = ((TextBox)BranchView.Rows[e.RowIndex].FindControl("txtedBranchName"));
-            int id = Convert.ToInt32(BranchView.DataKeys[e.RowIndex].Value);
-       
-            string newname = bn.Text;
-            string query = "update Branch set branch_name = @name WHERE branch_id = @id";
-            using (cmd = new SqlCommand(query, activeConnectionOpen()))
+            catch
             {
-                cmd.Parameters.AddWithValue("@name", newname);
-                cmd.Parameters.AddWithValue("@id", id);
-                cmd.ExecuteNonQuery();
+                Message("Adding Branch has failed. Please try again.");
             }
-            BranchView.EditIndex = -1;
-            FillDataTable();
+        }
+
+        //this does something
+        protected void btnpopCancel_Click(object sender, EventArgs e)
+        {
+
         }
 
         protected void delBranch_Click(object sender, EventArgs e)
         {
-            int i = Convert.ToInt32(ViewState["SelectRow"].ToString());
-
-            if (i == -1)
+            try
             {
-                Message("Please select a branch");
-            }
-            else
-            {
-                int id = Convert.ToInt32(BranchView.DataKeys[i].Value);
-                string query = "delete from Branch where branch_id = @id";
-                using (cmd = new SqlCommand(query, activeConnectionOpen()))
+ 
                 {
-                    
-                    
-                    cmd.Parameters.AddWithValue("@id", id);
-                    cmd.ExecuteNonQuery();
+                    int id = Convert.ToInt32(BranchView.DataKeys[Convert.ToInt32(editRow.Value)].Value);
+                    string query = "delete from Branch where branch_id = @id";
+                    using (cmd = new SqlCommand(query, activeConnectionOpen()))
+                    {
+                        cmd.Parameters.AddWithValue("@id", id);
+                        cmd.ExecuteNonQuery();
+                    }
+                    FillDataTable();
                 }
-                FillDataTable();
+            }
+            catch
+            {
+                Message("Branch delete has failed. Please try again.");
             }
         }
 
@@ -188,6 +181,30 @@ namespace InwardClearingSystem
         {
             BranchView.PageSize = Convert.ToInt32(pgSizeDrpDwn.SelectedValue);
             FillDataTable();
+        }
+
+        protected void btnpopEdit_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                query = new StringBuilder();
+                query.Append("Update Branch set branch_name = @name, branch_code = @code, address = @ad ");
+                query.Append("WHERE branch_id = @id");
+                using (cmd = new SqlCommand(query.ToString(), activeConnectionOpen()))
+                {
+                    cmd.Parameters.AddWithValue("@name", txtBranchName.Text);
+                    cmd.Parameters.AddWithValue("@code", txtBranchCode.Text);
+                    cmd.Parameters.AddWithValue("@ad", txtAddress.Text);
+                    cmd.Parameters.AddWithValue("@id", editRow.Value);
+                    cmd.ExecuteNonQuery();
+                    FillDataTable();
+                }
+                Message("Successfully edited Branch");
+            }
+            catch
+            {
+                Message("Branch edit has failed. Please try again.");
+            }
         }
     }
 }

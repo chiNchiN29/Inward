@@ -3,7 +3,7 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     ROLE MAINTENANCE<br />
-    <asp:GridView ID="RoleView" runat="server" AutoGenerateColumns="false" CssClass="gridView2" 
+    <asp:GridView ID="RoleView" runat="server" AutoGenerateColumns="false" CssClass="gridView" 
     HeaderStyle-CssClass="GridHeader" DataKeyNames="role_id">
     <Columns>
         <asp:TemplateField>

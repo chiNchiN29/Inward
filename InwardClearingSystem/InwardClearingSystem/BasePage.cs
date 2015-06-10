@@ -375,5 +375,29 @@ namespace InwardClearingSystem
                 throw;
             }
         }
+
+        public bool checkForDuplicateData(string columnname, string tablename, string compare)
+        {
+            StringBuilder query;
+            SqlCommand cmd;
+            try
+            {
+                query = new StringBuilder();
+                query.Append("SELECT " + columnname + " ");
+                query.Append("FROM " + tablename + " ");
+                query.Append("WHERE " + columnname + " =  @comparison");
+                cmd = new SqlCommand(query.ToString(), activeConnectionOpen());
+                cmd.Parameters.AddWithValue("@comparison", compare);
+                if (cmd.ExecuteScalar() == null)
+                {
+                    return false;
+                }
+                return true;
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
 }

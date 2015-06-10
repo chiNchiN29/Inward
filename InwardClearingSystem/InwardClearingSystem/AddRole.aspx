@@ -4,8 +4,8 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <asp:Label ID="lblHeader" runat="server" Text="Label"></asp:Label>
     <br />
-    <br />
     <asp:Label ID="lblError" runat="server" ForeColor="Red" Visible="false"></asp:Label>
+    <br />
     Role Name:
     <asp:TextBox ID="txtRoleName" runat="server"></asp:TextBox>
     <asp:RequiredFieldValidator ID="roleNameValidator" runat="server" ErrorMessage="This field is required." ForeColor="Red"
@@ -27,7 +27,7 @@
         onclick="addBtn_Click" />
     <asp:Button ID="saveBtn" runat="server" Text="Save" CssClass="defaultButton" 
         onclick="saveBtn_Click" />
-    <asp:Button ID="backBtn" runat="server" Text="Back" 
+    <asp:Button ID="backBtn" runat="server" Text="Back" CausesValidation="false" 
         CssClass="defaultButton" onclick="backBtn_Click" />
     <asp:Button ID="delBtn" runat="server" Text="Delete Role" 
         CssClass="defaultButton" onclick="delBtn_Click" />
