@@ -93,17 +93,15 @@ namespace InwardClearingSystem
         {
             try
             {
- 
-                
-                    int id = Convert.ToInt32(BranchView.DataKeys[Convert.ToInt32(editRow.Value)].Value);
-                    string query = "delete from Branch where branch_id = @id";
-                    using (cmd = new SqlCommand(query, activeConnectionOpen()))
-                    {
-                        cmd.Parameters.AddWithValue("@id", id);
-                        cmd.ExecuteNonQuery();
-                    }
-                    FillDataTable();
-                
+                int id = Convert.ToInt32(BranchView.DataKeys[Convert.ToInt32(editRow.Value) - 1].Value);
+                string query = "delete from Branch where branch_id = @id";
+                using (cmd = new SqlCommand(query, activeConnectionOpen()))
+                {
+                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.ExecuteNonQuery();
+                }
+                FillDataTable();
+                Message("Successfully deleted Branch");
             }
             catch
             {
@@ -113,17 +111,24 @@ namespace InwardClearingSystem
 
         protected void BranchView_PageIndex(object sender, GridViewPageEventArgs e)
         {
-            BranchView.PageIndex = e.NewPageIndex;
-            if (ViewState["SortExpression"] == null)
+            try
             {
-                FillDataTable();
+                BranchView.PageIndex = e.NewPageIndex;
+                if (ViewState["SortExpression"] == null)
+                {
+                    FillDataTable();
+                }
+                else
+                {
+                    dt = ViewState["myDataTable"] as DataTable;
+                    dt.DefaultView.Sort = ViewState["SortExpression"].ToString() + " " + ViewState["SortDirection"].ToString();
+                    BranchView.DataSource = dt;
+                    BranchView.DataBind();
+                }
             }
-            else
+            catch
             {
-                dt = ViewState["myDataTable"] as DataTable;
-                dt.DefaultView.Sort = ViewState["SortExpression"].ToString() + " " + ViewState["SortDirection"].ToString();
-                BranchView.DataSource = dt;
-                BranchView.DataBind();
+                Message("An error has occurred. Please try again");
             }
         }
 
@@ -159,16 +164,22 @@ namespace InwardClearingSystem
 
         protected void searchBtn_Click(object sender, EventArgs e)
         {
-            using (cmd = new SqlCommand("SearchBranch", activeConnectionOpen()))
+            try
             {
-                cmd.Parameters.AddWithValue("@name", txtSearch.Text);
-                cmd.ExecuteNonQuery();
-                dt = new DataTable();
-                da = new SqlDataAdapter(cmd);
-                da.Fill(dt);
-                BranchView.DataSource = dt;
-                BranchView.DataBind();
-                
+                using (cmd = new SqlCommand("SearchBranch", activeConnectionOpen()))
+                {
+                    cmd.Parameters.AddWithValue("@name", txtSearch.Text);
+                    cmd.ExecuteNonQuery();
+                    dt = new DataTable();
+                    da = new SqlDataAdapter(cmd);
+                    da.Fill(dt);
+                    BranchView.DataSource = dt;
+                    BranchView.DataBind();
+                }
+            }
+            catch
+            {
+                Message("An error has occurred. Please try again.");
             }
         }
 
@@ -187,19 +198,26 @@ namespace InwardClearingSystem
         {
             try
             {
-                query = new StringBuilder();
-                query.Append("Update Branch set branch_name = @name, branch_code = @code, address = @ad ");
-                query.Append("WHERE branch_id = @id");
-                using (cmd = new SqlCommand(query.ToString(), activeConnectionOpen()))
+                if (String.IsNullOrWhiteSpace(txtSearch.Text))
                 {
-                    cmd.Parameters.AddWithValue("@name", txtBranchName.Text);
-                    cmd.Parameters.AddWithValue("@code", txtBranchCode.Text);
-                    cmd.Parameters.AddWithValue("@ad", txtAddress.Text);
-                    cmd.Parameters.AddWithValue("@id", editRow.Value);
-                    cmd.ExecuteNonQuery();
-                    FillDataTable();
+                    Message("Please input a branch name");
                 }
-                Message("Successfully edited Branch");
+                else
+                {
+                    query = new StringBuilder();
+                    query.Append("Update Branch set branch_name = @name, branch_code = @code, address = @ad ");
+                    query.Append("WHERE branch_id = @id");
+                    using (cmd = new SqlCommand(query.ToString(), activeConnectionOpen()))
+                    {
+                        cmd.Parameters.AddWithValue("@name", txtBranchName.Text);
+                        cmd.Parameters.AddWithValue("@code", txtBranchCode.Text);
+                        cmd.Parameters.AddWithValue("@ad", txtAddress.Text);
+                        cmd.Parameters.AddWithValue("@id", editRow.Value);
+                        cmd.ExecuteNonQuery();
+                        FillDataTable();
+                    }
+                    Message("Successfully edited Branch");
+                }
             }
             catch
             {
