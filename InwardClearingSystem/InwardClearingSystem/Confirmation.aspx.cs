@@ -73,9 +73,11 @@ namespace InwardClearingSystem
 
         private void UpdateConfirmCheckData(int i, string confirm)
         {
-            query = "UpdateCheckDataConfirmationStatus";
-            using (cmd = new SqlCommand(query, activeConnectionOpen()))
+            using (cmd = new SqlCommand())
             {
+                cmd.CommandText = "UpdateCheckDataConfirmationStatus";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Connection = activeConnectionOpen();
                 cmd.Parameters.AddWithValue("@acctnumber", ConfirmView.Rows[i].Cells[3].Text);
                 cmd.Parameters.AddWithValue("@chknumber", ConfirmView.Rows[i].Cells[1].Text);
                 cmd.Parameters.AddWithValue("@fund", confirm);
@@ -174,14 +176,14 @@ namespace InwardClearingSystem
             {
                 dt = new DataTable();
 
-            
-				da.Fill(dt);
-				ConfirmView.DataSource = dt;
-				ConfirmView.DataBind();
-				activeConnectionClose();
 
-				return dt;
-			]
+                da.Fill(dt);
+                ConfirmView.DataSource = dt;
+                ConfirmView.DataBind();
+                activeConnectionClose();
+
+                return dt;
+            }
             
         }
 
@@ -272,9 +274,11 @@ namespace InwardClearingSystem
 
         protected void searchBtn_Click(object sender, EventArgs e)
         {
-            query = "ConfirmationSearch";
-            using (cmd = new SqlCommand(query, activeConnectionOpen()))
+            using (cmd = new SqlCommand())
             {
+                cmd.CommandText = "ConfirmationSearch";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Connection = activeConnectionOpen();
                 cmd.Parameters.AddWithValue("@num", txtSearch.Text);
                 da = new SqlDataAdapter(cmd);
                 dt = new DataTable();

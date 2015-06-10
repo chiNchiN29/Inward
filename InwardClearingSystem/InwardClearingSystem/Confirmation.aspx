@@ -207,7 +207,7 @@
             if (/Firefox[\/\s](\d+)/.test(navigator.userAgent) && new Number(RegExp.$1) >= 4) {
                 if (totalCon < total) {
                     if (needToConfirm)
-                        return totalCon + "/" + total + " have been verified."
+                        return totalCon + "/" + total + " have been confirmed."
                 }
             }
             else {

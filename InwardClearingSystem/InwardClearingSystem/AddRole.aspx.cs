@@ -12,7 +12,7 @@ namespace InwardClearingSystem
     public partial class AddRole : BasePage
     {
         SqlCommand cmd;
-        string roleID;
+        String roleID;
         StringBuilder query;
         SqlDataReader dr;
         SqlTransaction transact;
@@ -225,21 +225,23 @@ namespace InwardClearingSystem
 
                         //get Role ID
                         string query2 = "SELECT role_id FROM Role WHERE role_desc = @rolename";
-                        SqlCommand getID = new SqlCommand(query2, activeConnection, transact);
-                        getID.Parameters.AddWithValue("@rolename", txtRoleName.Text);
-                        int newroleID = Convert.ToInt32(getID.ExecuteScalar());
-
-                        foreach (ListItem item in chkBoxFunctions.Items)
+                        using (SqlCommand getID = new SqlCommand(query2, activeConnection, transact))
                         {
-                            if (item.Selected)
+                            getID.Parameters.AddWithValue("@rolename", txtRoleName.Text);
+                            int newroleID = Convert.ToInt32(getID.ExecuteScalar());
+
+                            foreach (ListItem item in chkBoxFunctions.Items)
                             {
-                                string wew = item.Text;
-                                insertFunctionRole(newroleID, item.Text, activeConnection, transact);
+                                if (item.Selected)
+                                {
+                                    string wew = item.Text;
+                                    insertFunctionRole(newroleID, item.Text, activeConnection, transact);
+                                }
                             }
+                            transact.Commit();
+                            Message("Role successfully added");
+                            clearForm();
                         }
-                        transact.Commit();
-                        Message("Role successfully added");
-                        clearForm();
                     }
                     else
                     {

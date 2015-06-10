@@ -23,11 +23,18 @@ namespace InwardClearingSystem.Account
             using (connection)
             {
                 connection.Open();
-                using (SqlCommand usernameChecker = new SqlCommand("SELECT username FROM [User] WHERE username = @username", connection))
+                using (SqlCommand usernameChecker = new SqlCommand())
                 {
+                    usernameChecker.CommandText = "UsernameDuplicateChecker";
+                    usernameChecker.CommandType = CommandType.StoredProcedure;
+                    usernameChecker.Connection = connection;
                     usernameChecker.Parameters.AddWithValue("@username", unTxtBx.Text);
-                    using (SqlCommand emailChecker = new SqlCommand("SELECT email FROM [User] WHERE email = @email", connection))
+
+                    using (SqlCommand emailChecker = new SqlCommand())
                     {
+                        emailChecker.CommandText = "EMailDuplicateChecker";
+                        emailChecker.CommandType = CommandType.StoredProcedure;
+                        emailChecker.Connection = connection;
                         emailChecker.Parameters.AddWithValue("@email", emTxtBx.Text);
                         if (usernameChecker.ExecuteScalar() != null)
                         {

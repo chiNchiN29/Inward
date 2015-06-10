@@ -38,7 +38,6 @@
         } 
         div.buttonHolder
         {
-            padding-top:15px;
             text-align:right;
         }
         div.dataLoad
@@ -74,7 +73,9 @@
         div.gridWindow
         {
             width:100%;
+            height:70%;
             float:left;   
+            border:2px solid #aa3333;
         }
         div.imageLoad
         {
@@ -100,8 +101,29 @@
             width: 100%;
             height: 100px;
         }
-        .style1
-        {}
+        div.viewFunctions
+        {
+            padding-bottom:30px;   
+            display:inline;
+        }
+        div.viewBar
+        {
+            width:50%;
+            float:left;
+        }
+        div.viewOptions
+        {
+            width:50%;
+            float:right;
+            text-align:right;
+            padding-top:20px;
+        }
+        fieldset.loader
+        {
+            width: 60%;
+            border:1px solid #990000; 
+            border-radius: 10px;  
+        }
         </style>
 </asp:Content>
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
@@ -124,7 +146,7 @@
             <br />
             <asp:Button ID="Button1" runat="server" Text="Upload Image" 
             OnClick="uploadImgBtn_Click" OnClientClick="skm_LockScreen('Uploading Images');" 
-                CssClass="defaultButton" />   
+                CssClass="defaultButton"/>   
             <div id="Div1" class="LockOff"></div> 
         </div>
         </fieldset>
@@ -153,15 +175,14 @@
     
 </div>
 <br />
-    <div class="gridWindow">
-        <div class="viewFunctions" style="display:inline">
+        <div class="viewFunctions">
             <div class="viewBar">
                 <asp:Button ID="searchBtn" runat="server" Text="Search Check#" 
                     CssClass="defaultButton" onclick="searchBtn_Click" />
                 <asp:TextBox ID="txtSearch" runat="server"></asp:TextBox>
                 <asp:Button ID="viewAllBtn" runat="server" onclick="viewAllBtn_Click" Text="View All" CssClass="defaultButton" />
             </div>
-            <div class="viewOptions" style="float:right">
+            <div class="viewOptions">
             Show
             <asp:DropDownList ID="pgSize" runat="server" CssClass="style1" Height="20px" AutoPostBack="true" OnSelectedIndexChanged="ViewAllCheck_PageSizeChange"
                 Width="50px">
@@ -179,12 +200,13 @@
         </div>
         </div>
     <br />
+    <div class="gridWindow">
     <div class="gridTitleBar" style="width:99.4%">
         All Cheques
     </div>
     <asp:GridView ID="ViewAllCheck" runat="server" CssClass="gridView" AutoGenerateColumns="false"
     AllowSorting="true" OnSorting="ViewAllCheck_Sorting" AllowPaging="true" OnPageIndexChanging="ViewAllCheck_PageIndex" PagerStyle-CssClass="paging" 
-            HeaderStyle-CssClass="GridHeader" AlternatingRowStyle-BackColor="#F8E7E7">
+            HeaderStyle-CssClass="GridHeader" AlternatingRowStyle-BackColor="#FFEFEF">
         <Columns>
             <asp:BoundField DataField="check_number" SortExpression="check_number" HeaderText="Check Number" />
             <asp:BoundField DataField="customer_name" SortExpression="customer_name" HeaderText="Name" />
@@ -209,6 +231,7 @@
             <asp:Button ID="clearCheck" runat="server" onclientclick="return DeleteItem()" 
                 Text="Clear Check Data" onclick="clearCheck_Click1" CssClass="defaultButton" />  
         </div>
+        <div class="whiteSpace">&nbsp;</div>
     </div>
 
 

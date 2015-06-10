@@ -47,7 +47,7 @@ namespace InwardClearingSystem
                 }
             }
              
-            session = CreateSession("admin", "092095", "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom");
+            session = CreateSession("admin", "admin", "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom");
         }
 
         public void Message(string message)
@@ -348,21 +348,20 @@ namespace InwardClearingSystem
         public int checkAccess(int roleID, string function)
         {
             SqlCommand cmd;
-            StringBuilder query;
             try
             {
                 //get function ID
-                query = new StringBuilder();
-                query.Append("SELECT function_id FROM Functions WHERE function_name = @fname");
-                cmd = new SqlCommand(query.ToString(), activeConnectionOpen());
+                cmd = new SqlCommand();
+                cmd.CommandText = "SearchFunctionID";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Connection = activeConnectionOpen();
                 cmd.Parameters.AddWithValue("@fname", function);
                 string functionID = cmd.ExecuteScalar().ToString();
 
-                query = new StringBuilder();
-                query.Append("SELECT role_id ");
-                query.Append("FROM Role_Function rf ");
-                query.Append("WHERE rf.role_id = @roleID AND rf.function_id = @functionID");
-                cmd = new SqlCommand(query.ToString(), activeConnectionOpen());
+                cmd = new SqlCommand();
+                cmd.CommandText = "CrossCheckAccess";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Connection = activeConnectionOpen();
                 cmd.Parameters.AddWithValue("@roleID", roleID);
                 cmd.Parameters.AddWithValue("@functionID", functionID);
                 if (cmd.ExecuteScalar() == null)

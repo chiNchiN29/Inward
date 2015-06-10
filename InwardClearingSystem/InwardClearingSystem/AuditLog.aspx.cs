@@ -27,8 +27,11 @@ namespace InwardClearingSystem
 
         private DataTable FillDataTable()
         {
-            using (cmd = new SqlCommand("FillAuditLogDataTable", activeConnectionOpen()))
+            using (cmd = new SqlCommand())
             {
+                cmd.CommandText = "FillAuditLogDataTable";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Connection = activeConnectionOpen();
                 dt = new DataTable();
                 da = new SqlDataAdapter(cmd);
                 da.Fill(dt);

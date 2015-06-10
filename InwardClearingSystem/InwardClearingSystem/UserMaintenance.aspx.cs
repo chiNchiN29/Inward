@@ -133,7 +133,7 @@ namespace InwardClearingSystem
             else
             {
                 row = UserView.Rows[i];
-                string user_id = row.Cells[2].Text;
+                string user_id = row.Cells[1].Text;
                 
                 cmd = activeConnectionOpen().CreateCommand();
                 SqlTransaction transaction;
@@ -145,19 +145,25 @@ namespace InwardClearingSystem
 
                 try
                 {
-                    cmd.CommandText = "SeverUserTiesWithBranches";
+                    cmd.CommandText = "CheckUserTiesWithBranches";
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@id", user_id);
-                    cmd.ExecuteNonQuery();
+
+                    if (cmd.ExecuteNonQuery() > 0)
+                    {
+                        cmd.CommandText = "SeverUserTiesWithBranches";
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.ExecuteNonQuery();
+                    }
 
                     cmd.CommandText = "DeleteUser";
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@id", user_id);
                     cmd.ExecuteNonQuery();
 
                     // Attempt to commit the transaction.
                     transaction.Commit();
                     Message("User successfully deleted.");
+                    Server.Transfer("~/UserMaintenance.aspx");
                 }
                 catch (Exception ex)
                 {

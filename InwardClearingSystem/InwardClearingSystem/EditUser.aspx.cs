@@ -67,5 +67,10 @@ namespace InwardClearingSystem
                 }
             }
         }
+
+        protected void canceBtn_Click(object sender, EventArgs e)
+        {
+            Server.Transfer("~/UserMaintenance.aspx");
+        }
     }
 }

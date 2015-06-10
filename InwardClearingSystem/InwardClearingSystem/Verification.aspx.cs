@@ -123,9 +123,11 @@ namespace InwardClearingSystem
 
         private void UpdateCheckData(int i, string verify, string remarks )
         {
-            query = "UpdateCheckDataVerificationStatus";
             using (cmd = new SqlCommand(query, activeConnectionOpen()))
             {
+                cmd.CommandText = "UpdateCheckDataVerificationStatus";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Connection = activeConnectionOpen();
                 cmd.Parameters.AddWithValue("@acctnumber", VerifyView.Rows[i].Cells[3].Text);
                 cmd.Parameters.AddWithValue("@chknumber", VerifyView.Rows[i].Cells[1].Text);
                 cmd.Parameters.AddWithValue("@verify", verify);
@@ -223,10 +225,11 @@ namespace InwardClearingSystem
         public DataTable FillDataTable()
         {
             string user = Session["UserName"].ToString();
-            query = "FillVerificationDataTable";
-            using (cmd = new SqlCommand(query, activeConnectionOpen()))
+            using (cmd = new SqlCommand())
             {
-                
+                cmd.CommandText = "FillVerificationDataTable";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Connection = activeConnectionOpen();
                 cmd.Parameters.AddWithValue("@username", user); 
                 dt = new DataTable();
                 da = new SqlDataAdapter(cmd);
@@ -291,10 +294,11 @@ namespace InwardClearingSystem
         protected void searchBtn_Click(object sender, EventArgs e)
         {
             string user = Session["UserName"].ToString();
-            query = "VerificationSearch";
-            using (cmd = new SqlCommand(query, activeConnectionOpen()))
+            using (cmd = new SqlCommand())
             {
-
+                cmd.CommandText = "VerificationSearch";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Connection = activeConnectionOpen();
                 cmd.Parameters.AddWithValue("@username", user);
                 cmd.Parameters.AddWithValue("@num", txtSearch.Text);
                 dt = new DataTable();

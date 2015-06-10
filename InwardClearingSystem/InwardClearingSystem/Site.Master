@@ -57,15 +57,21 @@
 			<asp:Menu ID="NavigationMenu" runat="server" CssClass="menu"
                      IncludeStyleBlock="false" Orientation="Horizontal" 
                     onmenuitemclick="NavigationMenu_MenuItemClick">
+
+                    <staticselectedstyle backcolor="LightBlue"
+                      borderstyle="Solid"
+                      bordercolor="Black"
+                      borderwidth="1"/>
+
                     <Items>
-                        <asp:MenuItem NavigateUrl="~/Default.aspx" Text="Main Menu"/>
+                        <asp:MenuItem NavigateUrl="~/Default.aspx" Text="Main Menu" />
                         <asp:MenuItem NavigateUrl="~/Verification.aspx" Text="Signature Verification"/>
                         <asp:MenuItem NavigateUrl="~/Confirmation.aspx" Text="Confirmation" />
-                        <asp:MenuItem NavigateUrl="~/UpdateThreshold.aspx" Text="Update Thresholds"/> 
+                        <asp:MenuItem NavigateUrl="~/UpdateThreshold.aspx" Text="Update Thresholds" /> 
                         <asp:MenuItem NavigateUrl="~/UserMaintenance.aspx" Text="User Maintenance"/> 
-                        <asp:MenuItem NavigateUrl="~/BranchMaintenance.aspx" Text="Branch Maintenance" />
+                        <asp:MenuItem NavigateUrl="~/BranchMaintenance.aspx" Text="Branch Maintenance"  />
                         <asp:MenuItem NavigateUrl="~/AuditLog.aspx" Text="Audit Log" />
-                        <asp:MenuItem NavigateUrl="~/RoleMaintenance.aspx" Text="Role Maintenance" />
+                        <asp:MenuItem NavigateUrl="~/RoleMaintenance.aspx" Text="Role Maintenance"  />
                     </Items>
                 </asp:Menu>
             </div>

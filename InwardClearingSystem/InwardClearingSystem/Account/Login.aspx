@@ -115,9 +115,9 @@
                             
                             <tr>
                                 <td align="right" colspan="2" style="padding-right:50px">
-                                    <asp:Button ID="LoginButton" runat="server" BackColor="#990000" 
+                                    <asp:Button ID="LoginButton" runat="server"  
                                         CommandName="Login" 
-                                        Font-Size="1.0em" ForeColor="#FFFFFF" Text="Login" 
+                                        Font-Size="1.0em" Text="Login" 
                                         ValidationGroup="Login1" Height="35px" Width="90px" CssClass="defaultButton"/>
                                 </td>
                             </tr>

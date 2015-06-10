@@ -273,8 +273,11 @@ namespace InwardClearingSystem
 
         protected void searchBtn_Click(object sender, EventArgs e)
         {
-            using (cmd = new SqlCommand("SearchCheckNumber", activeConnectionOpen()))
+            using (cmd = new SqlCommand())
             {
+                cmd.CommandText = "SearchCheckNumber";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Connection = activeConnectionOpen();
                 cmd.Parameters.AddWithValue("@num", txtSearch.Text);
                 da = new SqlDataAdapter(cmd);
                 dt = new DataTable();

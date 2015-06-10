@@ -17,7 +17,7 @@
         height:250px;
         margin: auto;
         background-color: #f1f1f1;
-        border:2px solid #990000;
+        border:2px solid #aa3333;
     }
     div.max
     {
@@ -26,7 +26,7 @@
         font-family:Segoe UI;
         font-size:larger;
         padding-top:20px;
-        color:#990000;
+        color:#aa3333;
         width: 300px;
         float: right;
         height: 130px;
@@ -37,7 +37,7 @@
         font-family:Segoe UI;
         font-size:larger;
         padding-top:20px;
-        color:#990000;
+        color:#aa3333;
         width: 300px;
         float: left;
         height: 130px;
@@ -47,7 +47,7 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <div class="whiteSpace">&nbsp;</div>
     <div class="container">
-        <div class="gridTitleBar" style="background-color:#990000; border:1px solid #990000; width:98.9%">Set New Thresholds</div>
+        <div class="gridTitleBar" style="background-color:#aa3333; border:1px solid ##aa3333; width:98.9%">Set New Thresholds</div>
         <div class="min">
             <asp:Label ID="Label1" runat="server" Text="Current <strong>Minimum</strong> Threshold Amount:"></asp:Label>
             <br />
