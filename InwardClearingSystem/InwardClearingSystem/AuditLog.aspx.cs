@@ -92,5 +92,10 @@ namespace InwardClearingSystem
             LogView.PageSize = Convert.ToInt32(pgSizeDrpDwn.SelectedValue);
             FillDataTable();
         }
+
+        protected void btnSearch_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

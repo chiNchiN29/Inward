@@ -1,13 +1,16 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="AuditLog.aspx.cs" Inherits="InwardClearingSystem.AuditLog" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
-    <style type="text/css">
-        .style1
-        {}
-    </style>
-</asp:Content>
+    </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
     AUDIT LOG<br />
+    <asp:Button ID="btnSearch" runat="server" onclick="btnSearch_Click" 
+        Text="Search" />
+    <asp:DropDownList ID="DropDownList1" runat="server" DataSourceID="auditLogUser">
+    </asp:DropDownList>
+    <asp:SqlDataSource ID="auditLogUser" runat="server" 
+        ConnectionString="<%$ ConnectionStrings:ConnectionString %>" 
+        SelectCommand="SELECT [username] FROM [User]"></asp:SqlDataSource>
     Show
     <asp:DropDownList ID="pgSizeDrpDwn" runat="server" AutoPostBack="true" OnSelectedIndexChanged="LogView_PageSize"
         Height="20px" Width="50px">
@@ -23,9 +26,9 @@
     </asp:DropDownList>
 &nbsp;entries<br />
 
-    <asp:GridView ID="LogView" runat="server" CssClass="gridView2" HeaderStyle-CssClass="GridHeader" 
+    <asp:GridView ID="LogView" runat="server" CssClass="gridView" HeaderStyle-CssClass="GridHeader" 
     AutoGenerateColumns="false" AllowSorting="true" OnSorting="LogView_Sorting" AllowPaging="true" ShowFooter="true"
-    OnPageIndexChanging="LogView_PageIndex" PagerStyle-CssClass="paging">
+    OnPageIndexChanging="LogView_PageIndex" PagerStyle-CssClass="paging" ShowHeaderWhenEmpty="true">
         <Columns>
             <asp:BoundField DataField="action" SortExpression="action" HeaderText="Action" />
             <asp:BoundField DataField="check_number" SortExpression="check_number" HeaderText="Check Number" />
