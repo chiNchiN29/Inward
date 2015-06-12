@@ -20,10 +20,10 @@ namespace InwardClearingSystem
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            //if (checkAccess(Convert.ToInt32(Session["RoleID"]), function) == 1)
-            //{
-            //    Response.Redirect("~/FailurePage.aspx");
-            //}
+            if (checkAccess(Convert.ToInt32(Session["RoleID"]), function) == false)
+            {
+                Response.Redirect("~/NoAccess.aspx");
+            }
             if (!Page.IsPostBack)
             {
                 FillDataTable();

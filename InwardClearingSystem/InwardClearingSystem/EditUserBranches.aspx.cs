@@ -17,32 +17,23 @@ namespace InwardClearingSystem
         List<string> newBranch = new List<string>();
         DataTable dt;
         SqlDataAdapter da;
-        
+        string function = "User Maintenance";
         
         protected void Page_Load(object sender, EventArgs e)
         {
-            using (cmd = new SqlCommand())
+            if (checkAccess(Convert.ToInt32(Session["RoleID"]), function) == false)
             {
-                cmd.CommandText = "CheckUserRole";
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Connection = activeConnectionOpen();
-                cmd.Parameters.AddWithValue("@username", Session["UserName"]);
-                if (cmd.ExecuteScalar().ToString() != "BANK BRANCH" && cmd.ExecuteScalar().ToString() != "OVERSEER")
-                {
-                    Message("You are not authorized to view this page");
-                    Response.Redirect("Default.aspx");
-                }
-                else
-                {
-                    if (!Page.IsPostBack)
-                    {
-                        ViewState["myDataTable"] = FillDataTable();
-                        ViewState["Branches"] = Branches;
-
-                        FillDropDown();
-                    }
-                }
+                Response.Redirect("~/NoAccess.aspx");
             }
+
+            if (!Page.IsPostBack)
+            {
+                ViewState["myDataTable"] = FillDataTable();
+                ViewState["Branches"] = Branches;
+
+                FillDropDown();
+            }
+           
         }
 
         protected void backBtn_Click(object sender, EventArgs e)
@@ -72,15 +63,22 @@ namespace InwardClearingSystem
 
         protected void chkBox_CheckedChanged(object sender, EventArgs e)
         {
-            CheckBox cb = (CheckBox)sender;
-            GridViewRow row = (GridViewRow)cb.NamingContainer;
-            if (cb.Checked == true)
+            try
             {
-                Branches.Add(row.Cells[1].Text);
+                CheckBox cb = (CheckBox)sender;
+                GridViewRow row = (GridViewRow)cb.NamingContainer;
+                if (cb.Checked == true)
+                {
+                    Branches.Add(row.Cells[1].Text);
+                }
+                else
+                {
+                    Branches.Remove(row.Cells[1].Text);
+                }
             }
-            else
+            catch
             {
-                Branches.Remove(row.Cells[1].Text);
+                Message("An error has occurred. Please try again");
             }
             
         }
@@ -119,9 +117,9 @@ namespace InwardClearingSystem
                         Branches.Clear();
                     }
                 }
-                catch (Exception b)
+                catch
                 {
-                    Response.Write(b);
+                    Message("An error has occurred. Please try again.");
                 }
             }
         }

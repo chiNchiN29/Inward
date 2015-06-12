@@ -28,11 +28,11 @@
 </div>
 <div class="gridDiv" style="width:50%; border:2px solid #333333">
     <div class="gridTitleBar"><strong>User Maintenance</strong></div>
-    <asp:GridView ID="UserView" runat="server" DataKeyNames="user_id" AutoGenerateColumns="false" HeaderStyle-CssClass="GridHeader" CssClass="gridView2">
+    <asp:GridView ID="UserView" runat="server" DataKeyNames="user_id" AutoGenerateColumns="false" HeaderStyle-CssClass="GridHeader" CssClass="gridView">
         <Columns>
             <asp:TemplateField>
                <ItemTemplate>
-                    <asp:RadioButton ID="RowSelect" runat="server" OnClick="javascript:CheckOtherIsCheckedByGVID(this);" AutoPostBack="true" OnCheckedChanged="RowSelect_CheckedChanged"/>
+                    <asp:RadioButton ID="RowSelect" runat="server" OnClick="javascript:CheckOtherIsCheckedByGVID(this);" OnCheckedChanged="RowSelect_CheckedChanged"/>
                </ItemTemplate>
             </asp:TemplateField>
             <asp:BoundField DataField="user_id" HeaderText="ID" />

@@ -14,74 +14,72 @@ namespace InwardClearingSystem.Account
     public partial class SignUp : System.Web.UI.Page
     {
         SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+        BasePage bp = new BasePage();
+        string function = "User Maintenance";
+
         protected void Page_Load(object sender, EventArgs e)
         {
+
+            if (bp.checkAccess(Convert.ToInt32(Session["RoleID"]), function) == false)
+            {
+                Response.Redirect("~/NoAccess.aspx");
+            }
+
         }
 
         protected void regBtn_Click(object sender, EventArgs e)
         {
-            using (connection)
+            try
             {
-                connection.Open();
-                using (SqlCommand usernameChecker = new SqlCommand())
+                if (bp.checkForDuplicateData("username", "[User]", unTxtBx.Text) == true)
                 {
-                    usernameChecker.CommandText = "UsernameDuplicateChecker";
-                    usernameChecker.CommandType = CommandType.StoredProcedure;
-                    usernameChecker.Connection = connection;
-                    usernameChecker.Parameters.AddWithValue("@username", unTxtBx.Text);
-
-                    using (SqlCommand emailChecker = new SqlCommand())
+                    lblError.Visible = true;
+                    lblError.Text = "The username already exists. Please choose another.";
+                }
+                else if (bp.checkForDuplicateData("email", "[User]", emTxtBx.Text) == true)
+                {
+                    lblError.Visible = true;
+                    lblError.Text = "The email is taken. Please choose another.";
+                }
+                else if (passTxtBx.Text != cpassTxtBx.Text)
+                {
+                    lblError.Visible = true;
+                    lblError.Text = "Passwords do not match.";
+                }
+                else if (passTxtBx.Text.Count() < 8)
+                {
+                    lblError.Visible = true;
+                    lblError.Text = "Password must have at least 8 characters.";
+                }
+                else
+                {
+                    using (connection)
                     {
-                        emailChecker.CommandText = "EMailDuplicateChecker";
-                        emailChecker.CommandType = CommandType.StoredProcedure;
-                        emailChecker.Connection = connection;
-                        emailChecker.Parameters.AddWithValue("@email", emTxtBx.Text);
-                        if (usernameChecker.ExecuteScalar() != null)
-                        {
-                            Response.Write("The username is taken. Please choose another.");
-                        }
-                        else
-                        {
-                            if (emailChecker.ExecuteScalar() != null)
-                            {
-                                Response.Write("The email is taken. Please choose another.");
-                            }
-                            else
-                            {
-                                if (passTxtBx.Text == cpassTxtBx.Text)
-                                {
-                                    if (passTxtBx.Text.Count() < 8)
-                                    {
-                                        Label4.Visible = true;
-                                        Label4.Text = "You must have at least 8 characters for your password.";
-                                    }
-                                    else
-                                    {
-                                        using (SqlCommand insert = new SqlCommand())
-                                        {
-                                            insert.CommandText = "InsertUser";
-                                            insert.CommandType = CommandType.StoredProcedure;
-                                            insert.Connection = connection;
-                                            insert.Parameters.AddWithValue("@username", unTxtBx.Text);
-                                            insert.Parameters.AddWithValue("@password", passTxtBx.Text);
-                                            insert.Parameters.AddWithValue("@f_name", fnTxtBx.Text);
-                                            insert.Parameters.AddWithValue("@m_name", mnTxtBx.Text);
-                                            insert.Parameters.AddWithValue("@l_name", lnTxtBx.Text);
-                                            insert.Parameters.AddWithValue("@email", emTxtBx.Text);
-                                            insert.ExecuteNonQuery();
-                                            Response.Redirect("~/UserMaintenance.aspx");
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    Response.Write("The passwords do not match. Please try again.");
-                                }
-                            }
-                        }
+                        connection.Open();
+                        SqlCommand insert = new SqlCommand();
+                        insert.CommandText = "InsertUser";
+                        insert.CommandType = CommandType.StoredProcedure;
+                        insert.Connection = connection;
+                        insert.Parameters.AddWithValue("@username", unTxtBx.Text);
+                        insert.Parameters.AddWithValue("@password", passTxtBx.Text);
+                        insert.Parameters.AddWithValue("@f_name", fnTxtBx.Text);
+                        insert.Parameters.AddWithValue("@m_name", mnTxtBx.Text);
+                        insert.Parameters.AddWithValue("@l_name", lnTxtBx.Text);
+                        insert.Parameters.AddWithValue("@email", emTxtBx.Text);
+                        insert.ExecuteNonQuery();
+                        Response.Redirect("~/UserMaintenance.aspx");
                     }
                 }
             }
+            catch
+            {
+                bp.Message("An error has occurred. Please try again.");
+            }
+        }
+
+        protected void canceBtn_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("~/UserMaintenance.aspx");
         }
     }
 }

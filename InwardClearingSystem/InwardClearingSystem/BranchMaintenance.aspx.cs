@@ -18,9 +18,15 @@ namespace InwardClearingSystem
         StringBuilder query;
         RadioButton rb;
         GridViewRow row;
+        string function = "Branch Maintenance";
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (checkAccess(Convert.ToInt32(Session["RoleID"]), function) == false)
+            {
+                Response.Redirect("~/NoAccess.aspx");
+            }
+
             if (!Page.IsPostBack)
             {
                 ViewState["myDataTable"] = FillDataTable();
@@ -30,15 +36,22 @@ namespace InwardClearingSystem
 
         public DataTable FillDataTable()
         {
-            activeConnectionOpen();
-            cmd = new SqlCommand("SELECT branch_id, branch_name, branch_code, address FROM Branch", activeConnection);
-            dt = new DataTable();
-            da = new SqlDataAdapter(cmd);
-            da.Fill(dt);
-            BranchView.DataSource = dt;
-            BranchView.DataBind();
-            activeConnectionClose();
-            return dt;
+            try
+            {
+                activeConnectionOpen();
+                cmd = new SqlCommand("SELECT branch_id, branch_name, branch_code, address FROM Branch", activeConnection);
+                dt = new DataTable();
+                da = new SqlDataAdapter(cmd);
+                da.Fill(dt);
+                BranchView.DataSource = dt;
+                BranchView.DataBind();
+                activeConnectionClose();
+                return dt;
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         protected void btnpopAdd_Click(object sender, EventArgs e)
@@ -162,27 +175,6 @@ namespace InwardClearingSystem
             return sortDirection;
         }
 
-        protected void searchBtn_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                using (cmd = new SqlCommand("SearchBranch", activeConnectionOpen()))
-                {
-                    cmd.Parameters.AddWithValue("@name", txtSearch.Text);
-                    cmd.ExecuteNonQuery();
-                    dt = new DataTable();
-                    da = new SqlDataAdapter(cmd);
-                    da.Fill(dt);
-                    BranchView.DataSource = dt;
-                    BranchView.DataBind();
-                }
-            }
-            catch
-            {
-                Message("An error has occurred. Please try again.");
-            }
-        }
-
         protected void viewAllBtn_Click(object sender, EventArgs e)
         {
             FillDataTable();
@@ -223,6 +215,50 @@ namespace InwardClearingSystem
             {
                 Message("Branch edit has failed. Please try again.");
             }
+        }
+
+        protected void searchBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!String.IsNullOrWhiteSpace(txtSearch.Text))
+                {
+                    using (cmd = new SqlCommand())
+                    {
+                        cmd.CommandText = "SearchBranch";
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = activeConnectionOpen();
+                        cmd.Parameters.AddWithValue("@name", txtSearch.Text);
+                        if (cmd.ExecuteScalar() == null)
+                        {
+                            Message("No results found");
+                        }
+                        else
+                        {
+                            cmd.ExecuteNonQuery();
+                            dt = new DataTable();
+                            da = new SqlDataAdapter(cmd);
+                            da.Fill(dt);
+                            BranchView.DataSource = dt;
+                            BranchView.DataBind();
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                Message("An error has occurred. Please try again.");
+            }
+        }
+
+        //di pa tapos
+        private void InsertBranchHistory(string name, string userid,)
+        {
+            query = new StringBuilder();
+            query.Append("Update Branch_History set branch_name = @name, modified_date = @date, modified_by = @id, ");
+            query.Append("terminal = @ip, history_tag = @tag, changes = @changes, history_message = @message");
+            cmd = new SqlCommand(query.ToString(), activeConnectionOpen());
+            cmd.Parameters.AddWithValue("@name", )
         }
     }
 }

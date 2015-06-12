@@ -163,13 +163,20 @@ namespace InwardClearingSystem
         /// <param name="e"></param>
         protected void clearCheck_Click1(object sender, EventArgs e)
         {
-            using (cmd = new SqlCommand())
+            try
             {
-                cmd.CommandText = "ClearCheckData";
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Connection = activeConnectionOpen();
-                cmd.ExecuteNonQuery();
-                ViewAllCheck.DataBind();
+                using (cmd = new SqlCommand())
+                {
+                    cmd.CommandText = "ClearCheckData";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Connection = activeConnectionOpen();
+                    cmd.ExecuteNonQuery();
+                    ViewAllCheck.DataBind();
+                }
+            }
+            catch
+            {
+                Message("An error has occurred. Please try again");
             }
         }
 
@@ -273,17 +280,27 @@ namespace InwardClearingSystem
 
         protected void searchBtn_Click(object sender, EventArgs e)
         {
-            using (cmd = new SqlCommand())
+            try
             {
-                cmd.CommandText = "SearchCheckNumber";
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Connection = activeConnectionOpen();
-                cmd.Parameters.AddWithValue("@num", txtSearch.Text);
-                da = new SqlDataAdapter(cmd);
-                dt = new DataTable();
-                da.Fill(dt);
-                ViewAllCheck.DataSource = dt;
-                ViewAllCheck.DataBind();
+                if (!String.IsNullOrWhiteSpace(txtSearch.Text))
+                {
+                    using (cmd = new SqlCommand())
+                    {
+                        cmd.CommandText = "SearchCheckNumber";
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = activeConnectionOpen();
+                        cmd.Parameters.AddWithValue("@num", txtSearch.Text);
+                        da = new SqlDataAdapter(cmd);
+                        dt = new DataTable();
+                        da.Fill(dt);
+                        ViewAllCheck.DataSource = dt;
+                        ViewAllCheck.DataBind();
+                    }
+                }
+            }
+            catch
+            {
+                Message("An error has occurred");
             }
         }
 
@@ -382,19 +399,26 @@ namespace InwardClearingSystem
         /// </param>
         private void UploadADocument(ISession session, byte[] ImageFile, string fileName)
         {
-            IFolder folder = (IFolder)session.GetObjectByPath("/Uploads/" + DateTime.Now.Year.ToString() + "/" + DateTime.Now.ToString("MM") + "/" + DateTime.Now.ToString("dd"));
-            Dictionary<String, object> DocumentProperties = new Dictionary<string, object>();
-
-            DocumentProperties[PropertyIds.Name] = fileName;
-            DocumentProperties[PropertyIds.ObjectTypeId] = "cmis:document";
-            ContentStream contentStream = new ContentStream
+            try
             {
-                MimeType = "image/jpeg",
-                Length = ImageFile.Length,
-                Stream = new MemoryStream(ImageFile)
-            };
+                IFolder folder = (IFolder)session.GetObjectByPath("/Uploads/" + DateTime.Now.Year.ToString() + "/" + DateTime.Now.ToString("MM") + "/" + DateTime.Now.ToString("dd"));
+                Dictionary<String, object> DocumentProperties = new Dictionary<string, object>();
 
-            folder.CreateDocument(DocumentProperties, contentStream, null);
+                DocumentProperties[PropertyIds.Name] = fileName;
+                DocumentProperties[PropertyIds.ObjectTypeId] = "cmis:document";
+                ContentStream contentStream = new ContentStream
+                {
+                    MimeType = "image/jpeg",
+                    Length = ImageFile.Length,
+                    Stream = new MemoryStream(ImageFile)
+                };
+
+                folder.CreateDocument(DocumentProperties, contentStream, null);
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         public DataTable FillDataTable()

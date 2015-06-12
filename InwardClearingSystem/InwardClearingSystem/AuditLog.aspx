@@ -1,16 +1,31 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="AuditLog.aspx.cs" Inherits="InwardClearingSystem.AuditLog" %>
+<%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="cc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
     </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
     AUDIT LOG<br />
-    <asp:Button ID="btnSearch" runat="server" onclick="btnSearch_Click" 
+    <asp:Button ID="btnSearch" runat="server" onclick="btnSearch_Click" CssClass="defaultButton" 
         Text="Search" />
-    <asp:DropDownList ID="DropDownList1" runat="server" DataSourceID="auditLogUser">
+    <asp:TextBox ID="txtBxDateFrom" runat="server"></asp:TextBox>
+    <asp:ImageButton ID="imgPopup1" ImageUrl="~/Resources/calendar.png" Width=20px Height=15px ImageAlign=Bottom
+    runat="server" />
+<cc1:CalendarExtender ID="Calendar1" PopupButtonID="imgPopup1" runat="server" TargetControlID="txtBxDateFrom"
+    Format="M/d/yyyy">
+</cc1:CalendarExtender>
+    to
+    <asp:TextBox ID="txtBxDateTo" runat="server"></asp:TextBox>
+    <asp:ImageButton ID="imgPopup2" ImageUrl="~/Resources/calendar.png" Width=20px Height=15px ImageAlign=Bottom
+    runat="server" />
+<cc1:CalendarExtender ID="CalendarExtender2" PopupButtonID="imgPopup2" runat="server" TargetControlID="txtBxDateTo"
+    Format="M/d/yyyy">
+</cc1:CalendarExtender>
+<br />
+    <asp:CheckBox ID="chkBxUser" runat="server" />
+    <asp:DropDownList ID="drpDwnUserSearch" runat="server">
     </asp:DropDownList>
-    <asp:SqlDataSource ID="auditLogUser" runat="server" 
-        ConnectionString="<%$ ConnectionStrings:ConnectionString %>" 
-        SelectCommand="SELECT [username] FROM [User]"></asp:SqlDataSource>
+    <asp:Button ID="btnViewAll" runat="server" onclick="btnViewAll_Click" CssClass="defaultButton" 
+        Text="View All" />
     Show
     <asp:DropDownList ID="pgSizeDrpDwn" runat="server" AutoPostBack="true" OnSelectedIndexChanged="LogView_PageSize"
         Height="20px" Width="50px">
@@ -27,7 +42,7 @@
 &nbsp;entries<br />
 
     <asp:GridView ID="LogView" runat="server" CssClass="gridView" HeaderStyle-CssClass="GridHeader" 
-    AutoGenerateColumns="false" AllowSorting="true" OnSorting="LogView_Sorting" AllowPaging="true" ShowFooter="true"
+    AutoGenerateColumns="false" AllowSorting="true" OnSorting="LogView_Sorting" AllowPaging="true"
     OnPageIndexChanging="LogView_PageIndex" PagerStyle-CssClass="paging" ShowHeaderWhenEmpty="true">
         <Columns>
             <asp:BoundField DataField="action" SortExpression="action" HeaderText="Action" />

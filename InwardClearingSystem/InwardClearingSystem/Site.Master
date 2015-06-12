@@ -1,5 +1,5 @@
 ﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="InwardClearingSystem.SiteMaster" %>
-
+<%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="cc1" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head runat="server">
@@ -14,8 +14,8 @@
         <div class="header" style="color: #FF0000">
             <div class="loginDisplay">
                 <div class="dateBox">
-                 <asp:ScriptManager ID="ScriptManager1" runat="server">
-		            </asp:ScriptManager>
+                 <cc1:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server">
+                 </cc1:ToolkitScriptManager>
 		            <script type="text/javascript">
 		                var prm = Sys.WebForms.PageRequestManager.getInstance();
 		                prm.add_beginRequest(beginRequest);

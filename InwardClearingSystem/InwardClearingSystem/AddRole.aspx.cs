@@ -16,10 +16,16 @@ namespace InwardClearingSystem
         StringBuilder query;
         SqlDataReader dr;
         SqlTransaction transact;
+        string function = "User Maintenance";
 
         protected void Page_Load(object sender, EventArgs e)
         {
             roleID = Request.QueryString["Role"];
+
+            if (checkAccess(Convert.ToInt32(Session["RoleID"]), function) == false)
+            {
+                Response.Redirect("~/NoAccess.aspx");
+            }
 
             if (!Page.IsPostBack)
             {

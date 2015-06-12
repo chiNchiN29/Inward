@@ -13,45 +13,44 @@ namespace InwardClearingSystem
     public partial class EditUser : System.Web.UI.Page
     {
         SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
-        int idPH;
-        string usernamePH;
-        string firstPH;
-        string middlePH;
-        string lastPH;
-        string emailPH;
-        string passwordPH;
+        BasePage bp = new BasePage();
+        string function = "User Maintenance";
+
         protected void Page_Load(object sender, EventArgs e)
         {
-            idPH = Convert.ToInt32(Session["TBEuserID"]);
-            usernamePH = Session["TBEusername"].ToString();
-            firstPH = Session["TBEfirstname"].ToString();
-            middlePH = Session["TBEmiddlename"].ToString();
-            lastPH = Session["TBElastname"].ToString();
-            emailPH = Session["TBEemail"].ToString();
-            passwordPH = Session["TBEpassword"].ToString();
-            try
+            if (bp.checkAccess(Convert.ToInt32(Session["RoleID"]), function) == false)
             {
-                unTxtBx.Text = usernamePH;
-                fnTxtBx.Text = firstPH;
-                mnTxtBx.Text = middlePH;
-                lnTxtBx.Text = lastPH;
-                emTxtBx.Text = emailPH;
-                passTxtBx.Text = passwordPH;
+                Response.Redirect("~/NoAccess.aspx");
             }
-            catch
+
+            if (!Page.IsPostBack)
             {
-                Server.Transfer("~/UserMaintenance.aspx");
+                try
+                {
+                    unTxtBx.Text = Session["TBEusername"].ToString();
+                    fnTxtBx.Text = Session["TBEfirstname"].ToString();
+                    mnTxtBx.Text = Session["TBEmiddlename"].ToString();
+                    lnTxtBx.Text = Session["TBElastname"].ToString();
+                    emTxtBx.Text = Session["TBEemail"].ToString();
+                    passTxtBx.Text =Session["TBEpassword"].ToString();
+                }
+                catch
+                {
+                    Server.Transfer("~/UserMaintenance.aspx");
+                }
             }
         }
 
         protected void editBtn_Click(object sender, EventArgs e)
         {
-            using (connection)
+            try
             {
-                connection.Open();
-   
-                using (SqlCommand update = new SqlCommand())
+                using (connection)
                 {
+                    connection.Open();
+
+                    SqlCommand update = new SqlCommand();
+
                     update.CommandText = "UpdateUser";
                     update.CommandType = CommandType.StoredProcedure;
                     update.Connection = connection;
@@ -61,10 +60,15 @@ namespace InwardClearingSystem
                     update.Parameters.AddWithValue("@m_name", mnTxtBx.Text);
                     update.Parameters.AddWithValue("@l_name", lnTxtBx.Text);
                     update.Parameters.AddWithValue("@email", emTxtBx.Text);
-                    update.Parameters.AddWithValue("@referenceID", idPH);
+                    update.Parameters.AddWithValue("@referenceID", Convert.ToInt32(Session["TBEuserID"]));
                     update.ExecuteNonQuery();
                     Response.Redirect("~/UserMaintenance.aspx");
+
                 }
+            }
+            catch
+            {
+                throw;
             }
         }
 

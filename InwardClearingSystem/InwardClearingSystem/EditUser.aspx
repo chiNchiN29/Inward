@@ -138,7 +138,7 @@
                 runat="server" Text="Update" onclick="editBtn_Click" CssClass="defaultButton"/>
         </td>
         <td id="Td1" align="center">
-            <asp:Button ID="cancelBtn" 
+            <asp:Button ID="cancelBtn" CausesValidation="false" 
                 runat="server" Text="Cancel" onclick="canceBtn_Click" CssClass="defaultButton"/>
         </td>
         <td>&nbsp</td>

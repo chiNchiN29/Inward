@@ -14,104 +14,100 @@ namespace InwardClearingSystem
 {
     public partial class UpdateThreshold : BasePage
     {
+        string function = "Update Threshold";
    
         protected void Page_Load(object sender, EventArgs e)
         {
-            activeConnectionOpen();
-            using (SqlCommand cmd = new SqlCommand())
+            if (checkAccess(Convert.ToInt32(Session["RoleID"]), function) == false)
             {
-                cmd.CommandText = "CheckUserRole";
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Connection = activeConnection;
-                cmd.Parameters.AddWithValue("@username", Session["UserName"]);
-                if (cmd.ExecuteScalar().ToString() != "ADMIN" && cmd.ExecuteScalar().ToString() != "OVERSEER")
+                Response.Redirect("~/NoAccess.aspx");
+            }
+
+            if (!Page.IsPostBack)
+            {
+                using (SqlCommand select = new SqlCommand())
                 {
-                    Message("You are not authorized to view this page");
-                    Response.Redirect("~/Default.aspx");
+                    select.CommandText = "GetBypassValueStandard";
+                    select.CommandType = CommandType.StoredProcedure;
+                    select.Connection = activeConnection;
+                    Thread.CurrentThread.CurrentCulture = new CultureInfo("en-PH", false);
+                    Label2.Text = String.Format("{0:C}", select.ExecuteScalar());
                 }
-                else
+                using (SqlCommand select2 = new SqlCommand())
                 {
-                    using (SqlCommand select = new SqlCommand())
-                    {
-                        select.CommandText = "GetBypassValueStandard";
-                        select.CommandType = CommandType.StoredProcedure;
-                        select.Connection = activeConnection;
-                        Thread.CurrentThread.CurrentCulture = new CultureInfo("en-PH", false);
-                        Label2.Text = String.Format("{0:C}", select.ExecuteScalar());
-                    }
-                    using (SqlCommand select2 = new SqlCommand())
-                    {
-                        select2.CommandText = "GetHighValueStandard";
-                        select2.CommandType = CommandType.StoredProcedure;
-                        select2.Connection = activeConnection;
-                        Label5.Text = String.Format("{0:C}", select2.ExecuteScalar());
-                    }
+                    select2.CommandText = "GetHighValueStandard";
+                    select2.CommandType = CommandType.StoredProcedure;
+                    select2.Connection = activeConnection;
+                    Label5.Text = String.Format("{0:C}", select2.ExecuteScalar());
                 }
             }
-            activeConnectionClose();
+     
         }
 
         protected void SetThresholds(object sender, EventArgs e)
         {
-            if (TextBox1.Text != "" || TextBox2.Text != "")
+            try
             {
-                int num1;
-                if (TextBox1.Text != "")
+                if (TextBox1.Text != "" || TextBox2.Text != "")
                 {
-                    bool boop = int.TryParse(TextBox1.Text, out num1);
-                    if (boop == true)
+                    int num1;
+                    if (TextBox1.Text != "")
                     {
-                        using (activeConnectionOpen())
+                        bool boop = int.TryParse(TextBox1.Text, out num1);
+                        if (boop == true)
                         {
-                            using (SqlCommand updateMin = new SqlCommand())
+                            using (activeConnectionOpen())
                             {
+                                SqlCommand updateMin = new SqlCommand();
                                 updateMin.CommandText = "UpdateBypassValueStandard";
                                 updateMin.CommandType = CommandType.StoredProcedure;
                                 updateMin.Connection = activeConnection;
                                 updateMin.Parameters.AddWithValue("@thresh", TextBox1.Text);
                                 updateMin.ExecuteNonQuery();
-                            }
-                            using (SqlCommand select = new SqlCommand())
-                            {
+
+                                SqlCommand select = new SqlCommand();
                                 select.CommandText = "GetBypassValueStandard";
                                 select.CommandType = CommandType.StoredProcedure;
                                 select.Connection = activeConnection;
                                 Label2.Text = String.Format("{0:C}", select.ExecuteScalar());
+
                             }
                         }
                     }
-                }
 
-                if (TextBox2.Text != "")
-                {
-                    bool poob = int.TryParse(TextBox2.Text, out num1);
-                    if (poob == true)
+                    if (TextBox2.Text != "")
                     {
-                        using (activeConnectionOpen())
+                        bool poob = int.TryParse(TextBox2.Text, out num1);
+                        if (poob == true)
                         {
-                            using (SqlCommand updateMax = new SqlCommand())
+                            using (activeConnectionOpen())
                             {
+                                SqlCommand updateMax = new SqlCommand();
                                 updateMax.CommandText = "UpdateHighValueStandard";
                                 updateMax.CommandType = CommandType.StoredProcedure;
                                 updateMax.Connection = activeConnection;
                                 updateMax.Parameters.AddWithValue("@thresh", TextBox2.Text);
                                 updateMax.ExecuteNonQuery();
-                            }
-                            using (SqlCommand select2 = new SqlCommand())
-                            {
+
+                                SqlCommand select2 = new SqlCommand();
                                 select2.CommandText = "GetHighValueStandard";
                                 select2.CommandType = CommandType.StoredProcedure;
                                 select2.Connection = activeConnection;
                                 Label5.Text = String.Format("{0:C}", select2.ExecuteScalar());
+
                             }
                         }
                     }
+
                 }
-                    
+                else
+                {
+                    Response.Redirect("~/Default.aspx");
+                }
             }
-            else
+            catch
             {
-                Response.Redirect("~/Default.aspx");
+                Message("An error has occurred. Please try again");
             }
         }
     }

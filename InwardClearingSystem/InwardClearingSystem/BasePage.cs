@@ -21,33 +21,39 @@ namespace InwardClearingSystem
     {
         public SqlConnection activeConnection = new SqlConnection();
         public ISession session;
-      
-  
+
+
         protected override void OnInit(EventArgs e)
         {
-
-            base.OnInit(e);
-       
-            bool login = System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
-            if (login == false)
-                Response.Redirect("~/Account/Login.aspx");
-            Session["UserName"] = System.Web.HttpContext.Current.User.Identity.Name;
-            using (SqlCommand cmd = new SqlCommand("select user_id, role_id from [User] where username = @username", activeConnectionOpen()))
+            try
             {
-                cmd.CommandText = "GetCurrentUser";
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Connection = activeConnectionOpen();
-                cmd.Parameters.AddWithValue("@username", Session["UserName"].ToString());
-                SqlDataReader dr;
-                dr = cmd.ExecuteReader();
-                while (dr.Read())
+                base.OnInit(e);
+
+                bool login = System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+                if (login == false)
+                    Response.Redirect("~/Account/Login.aspx");
+                Session["UserName"] = System.Web.HttpContext.Current.User.Identity.Name;
+                using (SqlCommand cmd = new SqlCommand("select user_id, role_id from [User] where username = @username", activeConnectionOpen()))
                 {
-                    Session["UserID"] = Convert.ToInt32(dr["user_id"]);
-                    Session["RoleID"] = Convert.ToInt32(dr["role_id"]);
+                    //cmd.CommandText = "GetCurrentUser";
+                    //cmd.CommandType = CommandType.StoredProcedure;
+                    //cmd.Connection = activeConnectionOpen();
+                    cmd.Parameters.AddWithValue("@username", Session["UserName"].ToString());
+                    SqlDataReader dr = cmd.ExecuteReader();
+                    while (dr.Read())
+                    {
+                        Session["UserID"] = Convert.ToInt32(dr["user_id"]);
+                        Session["RoleID"] = Convert.ToInt32(dr["role_id"]);
+                    }
+                    dr.Close();
                 }
+
+                //session = CreateSession("admin", "admin", "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom");
             }
-             
-            session = CreateSession("admin", "admin", "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom");
+            catch
+            {
+                Response.Redirect("~/FailurePage.aspx");
+            }
         }
 
         public void Message(string message)
@@ -345,7 +351,7 @@ namespace InwardClearingSystem
             }
         }
 
-        public int checkAccess(int roleID, string function)
+        public bool checkAccess(int roleID, string function)
         {
             SqlCommand cmd;
             try
@@ -366,9 +372,9 @@ namespace InwardClearingSystem
                 cmd.Parameters.AddWithValue("@functionID", functionID);
                 if (cmd.ExecuteScalar() == null)
                 {
-                    return 1;
+                    return false;
                 }
-                return 0;
+                return true;
             }
             catch
             {
@@ -382,17 +388,20 @@ namespace InwardClearingSystem
             SqlCommand cmd;
             try
             {
-                query = new StringBuilder();
-                query.Append("SELECT " + columnname + " ");
-                query.Append("FROM " + tablename + " ");
-                query.Append("WHERE " + columnname + " =  @comparison");
-                cmd = new SqlCommand(query.ToString(), activeConnectionOpen());
-                cmd.Parameters.AddWithValue("@comparison", compare);
-                if (cmd.ExecuteScalar() == null)
+                using (activeConnectionOpen())
                 {
-                    return false;
+                    query = new StringBuilder();
+                    query.Append("SELECT " + columnname + " ");
+                    query.Append("FROM " + tablename + " ");
+                    query.Append("WHERE " + columnname + " =  @comparison");
+                    cmd = new SqlCommand(query.ToString(), activeConnectionOpen());
+                    cmd.Parameters.AddWithValue("@comparison", compare);
+                    if (cmd.ExecuteScalar() == null)
+                    {
+                        return false;
+                    }
+                    return true;
                 }
-                return true;
             }
             catch
             {

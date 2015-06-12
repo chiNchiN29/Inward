@@ -27,85 +27,99 @@ namespace InwardClearingSystem
         int totalConfirmed = 0;
         RadioButton rb;
         String query;
+        string function = "Confirmation";
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            activeConnectionOpen();
-            cmd = new SqlCommand("SELECT role_desc FROM [User] u, Role r WHERE username = @username AND u.role_id = r.role_id", activeConnection);
-            cmd.Parameters.AddWithValue("@username", Session["UserName"]);
-            string role = cmd.ExecuteScalar().ToString();
-            activeConnectionClose();
-            if (role != "BANK BRANCH" && role != "OVERSEER")
+            if (checkAccess(Convert.ToInt32(Session["RoleID"]), function) == false)
             {
-                Message("You are not authorized to view this page");
-                Response.Redirect("~/Default.aspx");
+                Response.Redirect("~/NoAccess.aspx");
             }
-            else
+            
+            if (!IsPostBack)
             {
-                if (!IsPostBack)
-                {
-                    ViewState["myDataTable"] = FillDataTable();
-                    ViewState["SelectRow"] = -1;
-                }
+                ViewState["myDataTable"] = FillDataTable();
+                ViewState["SelectRow"] = -1;
             }
+            
         }
 
         protected void fundButton_Click(object sender, EventArgs e)
         {
-            int i = Convert.ToInt32(ViewState["SelectRow"].ToString());
-            if (i == -1)
+            try
             {
-                Message("Please select a customer");
+                int i = Convert.ToInt32(ViewState["SelectRow"].ToString());
+                if (i == -1)
+                {
+                    Message("Please select a customer");
+                }
+                else if (String.IsNullOrWhiteSpace(confirmRemarks.Text))
+                {
+                    Message("Please input remarks");
+                }
+                else
+                {
+                    UpdateConfirmCheckData(i, "YES");
+                    insertCheckLog(i, "Confirmation", "Successfully confirmed yes", ConfirmView);
+                    FillDataTable();
+                    NextRow(ConfirmView, i);
+                }
             }
-            else if (String.IsNullOrWhiteSpace(confirmRemarks.Text))
+            catch
             {
-                Message("Please input remarks");
-            }
-            else
-            {    
-                UpdateConfirmCheckData(i, "YES");
-                insertCheckLog(i, "Confirmation", "Successfully confirmed yes", ConfirmView);
-                FillDataTable();
-                NextRow(ConfirmView, i);
-   
+                Message("An error has occurred. Please try again");
             }
         }
 
         private void UpdateConfirmCheckData(int i, string confirm)
         {
-            using (cmd = new SqlCommand())
+            try
             {
-                cmd.CommandText = "UpdateCheckDataConfirmationStatus";
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Connection = activeConnectionOpen();
-                cmd.Parameters.AddWithValue("@acctnumber", ConfirmView.Rows[i].Cells[3].Text);
-                cmd.Parameters.AddWithValue("@chknumber", ConfirmView.Rows[i].Cells[1].Text);
-                cmd.Parameters.AddWithValue("@fund", confirm);
-                cmd.Parameters.AddWithValue("@modby", Session["UserID"]);
-                cmd.Parameters.AddWithValue("@moddate", DateTime.Now);
-                cmd.Parameters.AddWithValue("@conremarks", confirmRemarks.Text);
-                cmd.ExecuteNonQuery();
+                using (cmd = new SqlCommand())
+                {
+                    cmd.CommandText = "UpdateCheckDataConfirmationStatus";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Connection = activeConnectionOpen();
+                    cmd.Parameters.AddWithValue("@acctnumber", ConfirmView.Rows[i].Cells[3].Text);
+                    cmd.Parameters.AddWithValue("@chknumber", ConfirmView.Rows[i].Cells[1].Text);
+                    cmd.Parameters.AddWithValue("@fund", confirm);
+                    cmd.Parameters.AddWithValue("@modby", Session["UserID"]);
+                    cmd.Parameters.AddWithValue("@moddate", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@conremarks", confirmRemarks.Text);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch
+            {
+                throw;
             }
         }
 
         protected void unfundButton_Click(object sender, EventArgs e)
         {
-            int i = Convert.ToInt32(ViewState["SelectRow"].ToString());
-            if (i == -1)
+            try
             {
-                Message("Please select a customer");   
-            }
-            else if (String.IsNullOrWhiteSpace(confirmRemarks.Text))
-            {
-                Message("Please input remarks");
-            }
-            else
-            {
-                UpdateConfirmCheckData(i, "NO");
-                insertCheckLog(i, "Confirmation", "Successfully confirmed no", ConfirmView);
-                FillDataTable();
-                NextRow(ConfirmView, i);
+                int i = Convert.ToInt32(ViewState["SelectRow"].ToString());
+                if (i == -1)
+                {
+                    Message("Please select a customer");
+                }
+                else if (String.IsNullOrWhiteSpace(confirmRemarks.Text))
+                {
+                    Message("Please input remarks");
+                }
+                else
+                {
+                    UpdateConfirmCheckData(i, "NO");
+                    insertCheckLog(i, "Confirmation", "Successfully confirmed no", ConfirmView);
+                    FillDataTable();
+                    NextRow(ConfirmView, i);
 
+                }
+            }
+            catch
+            {
+                Message("An error has occurred. Please try again");
             }
         }
 
@@ -171,24 +185,32 @@ namespace InwardClearingSystem
 
         public DataTable FillDataTable()
         {
-            query = "FillConfirmationDataTable";
-            using (da = new SqlDataAdapter(query, activeConnectionOpen()))
+            try
             {
-                dt = new DataTable();
+                query = "FillConfirmationDataTable";
+                using (da = new SqlDataAdapter(query, activeConnectionOpen()))
+                {
+                    dt = new DataTable();
 
 
-                da.Fill(dt);
-                ConfirmView.DataSource = dt;
-                ConfirmView.DataBind();
-                activeConnectionClose();
+                    da.Fill(dt);
+                    ConfirmView.DataSource = dt;
+                    ConfirmView.DataBind();
+                    activeConnectionClose();
 
-                return dt;
+                    return dt;
+                }
+            }
+            catch
+            {
+                throw;
             }
             
         }
 
         private string GetSortDirection(string column)
         {
+
             string sortDirection = "DESC";
             string sortExpression = ViewState["SortExpression"] as string;
 
@@ -211,32 +233,37 @@ namespace InwardClearingSystem
 
         protected void RowSelect_CheckedChanged(Object sender, EventArgs e)
         {
-            int previousRow = Convert.ToInt32(ViewState["SelectRow"].ToString());
-            if (previousRow != -1)
+            try
             {
-                row = ConfirmView.Rows[previousRow];
-                row.BackColor = Color.White;
+                int previousRow = Convert.ToInt32(ViewState["SelectRow"].ToString());
+                if (previousRow != -1)
+                {
+                    row = ConfirmView.Rows[previousRow];
+                    row.BackColor = Color.White;
+                }
+
+                rb = (RadioButton)sender;
+                row = (GridViewRow)rb.NamingContainer;
+                int i = row.RowIndex;
+                ViewState["SelectRow"] = i;
+
+                if (i != -1)
+                {
+                    row = ConfirmView.Rows[i];
+                    row.BackColor = ColorTranslator.FromHtml("#FF7272");
+                    row = ConfirmView.Rows[i];
+
+                    string im = row.Cells[3].Text;
+                    string age = row.Cells[1].Text;
+                    string image = im + "_" + age;
+                    ShowChequeImage(session, image, checkImage);
+                    ShowSigDTImage(row.RowIndex, cmd, ConfirmView, sigImage);
+                }
             }
-
-            rb = (RadioButton)sender;
-            row = (GridViewRow)rb.NamingContainer;
-            int i = row.RowIndex;
-            ViewState["SelectRow"] = i;
-
-            if (i != -1)
+            catch
             {
-
-                row = ConfirmView.Rows[i];
-                row.BackColor = ColorTranslator.FromHtml("#FF7272");
-                row = ConfirmView.Rows[i];
-
-                string im = row.Cells[3].Text;
-                string age = row.Cells[1].Text;
-                string image = im + "_" + age;
-                ShowChequeImage(session, image, checkImage);
-                ShowSigDTImage(row.RowIndex, cmd, ConfirmView, sigImage);
+                Message("An error has occurred. Please try again.");
             }
-
         }
 
         protected void ConfirmView_RowDataBound(Object sender, GridViewRowEventArgs e)
@@ -274,17 +301,27 @@ namespace InwardClearingSystem
 
         protected void searchBtn_Click(object sender, EventArgs e)
         {
-            using (cmd = new SqlCommand())
+            try
             {
-                cmd.CommandText = "ConfirmationSearch";
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Connection = activeConnectionOpen();
-                cmd.Parameters.AddWithValue("@num", txtSearch.Text);
-                da = new SqlDataAdapter(cmd);
-                dt = new DataTable();
-                da.Fill(dt);
-                ConfirmView.DataSource = dt;
-                ConfirmView.DataBind();
+                if (!String.IsNullOrWhiteSpace(txtSearch.Text))
+                {
+                    using (cmd = new SqlCommand())
+                    {
+                        cmd.CommandText = "ConfirmationSearch";
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = activeConnectionOpen();
+                        cmd.Parameters.AddWithValue("@num", txtSearch.Text);
+                        da = new SqlDataAdapter(cmd);
+                        dt = new DataTable();
+                        da.Fill(dt);
+                        ConfirmView.DataSource = dt;
+                        ConfirmView.DataBind();
+                    }
+                }
+            }
+            catch
+            {
+                Message("An error has occurred. Please try again.");
             }
         }
 

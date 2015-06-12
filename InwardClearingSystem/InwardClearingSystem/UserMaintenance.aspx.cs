@@ -17,33 +17,22 @@ namespace InwardClearingSystem
         DataTable dt;
         SqlDataAdapter da;
         GridViewRow row;
-       
+        SqlTransaction transaction;
+        string function = "User Maintenance";
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            cmd = new SqlCommand();
-            cmd.CommandText = "CheckUserRole";
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Connection = activeConnectionOpen();
-            cmd.Parameters.AddWithValue("@username", Session["UserName"]);
-            if (cmd.ExecuteScalar().ToString() != "ADMIN" && cmd.ExecuteScalar().ToString() != "OVERSEER")
+            if (checkAccess(Convert.ToInt32(Session["RoleID"]), function) == false)
             {
-                Message("You are not authorized to view this page");
-                Response.Redirect("Default.aspx");
+                Response.Redirect("~/NoAccess.aspx");
             }
             
-            else
+            if (!IsPostBack)
             {
-                
-                if (!IsPostBack)
-                {
-                    ViewState["myDataTable"] = FillDataTable();
-                    ViewState["SelectRow"] = -1;
-                    FillDropDown();
-                }
-                
-            }
-            activeConnectionClose();   
+                ViewState["myDataTable"] = FillDataTable();
+                ViewState["SelectRow"] = -1;
+                FillDropDown();
+            }            
         }
 
         protected void RowSelect_CheckedChanged(Object sender, EventArgs e)
@@ -52,20 +41,6 @@ namespace InwardClearingSystem
             row = (GridViewRow)rb.NamingContainer;
             int i = row.RowIndex;
             ViewState["SelectRow"] = i;
-
-            if (i != -1)
-            {
-                row = UserView.Rows[i];
-                string role = row.Cells[4].Text;
-                if (role.Equals("CLEARING DEPT") || role.Equals("OVERSEER"))
-                {
-                    branchBtn.Visible = true;
-                }
-                else
-                {
-                    branchBtn.Visible = false;
-                }
-            }
         }
 
         protected void assignBtn_Click(object sender, EventArgs e)
@@ -93,18 +68,19 @@ namespace InwardClearingSystem
                         select.CommandType = CommandType.StoredProcedure;
                         select.Connection = activeConnectionOpen();
                         select.Parameters.AddWithValue("@role_desc", RoleDrpDwn.Text);
+                        
 
-                        using (cmd = new SqlCommand())
-                        {
-                            cmd.CommandText = "UpdateUserRole";
-                            cmd.CommandType = CommandType.StoredProcedure;
-                            cmd.Connection = activeConnection;
-                            cmd.Parameters.AddWithValue("@id", select.ExecuteScalar());
-                            cmd.Parameters.AddWithValue("@username", user);
-                            cmd.ExecuteNonQuery();
+                        cmd = new SqlCommand();
+                        
+                        cmd.CommandText = "UpdateUserRole";
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = activeConnectionOpen();
+                        cmd.Parameters.AddWithValue("@id", select.ExecuteScalar());
+                        cmd.Parameters.AddWithValue("@username", user);
+                        cmd.ExecuteNonQuery();
 
-                            FillDataTable();
-                        }
+                        FillDataTable();
+                        
                     }
                     
                 }
@@ -114,37 +90,32 @@ namespace InwardClearingSystem
 
         protected void branchBtn_Click(object sender, EventArgs e)
         {
-            //int i = Convert.ToInt32(ViewState["SelectRow"].ToString());
-            //if (i != -1)
-            //{
-            //    string userId = UserView.DataKeys[i].Value.ToString();
-                Response.Redirect("~/EditUserBranches.aspx");     
-            //}
+            Response.Redirect("~/EditUserBranches.aspx");    
         }
 
         protected void deleteUser_Click(object sender, EventArgs e)
         {
-            int i = Convert.ToInt32(ViewState["SelectRow"].ToString());
-
-            if (i == -1)
+            try
             {
-                Message("Please select a user");
-            }
-            else
-            {
-                row = UserView.Rows[i];
-                string user_id = row.Cells[1].Text;
-                
-                cmd = activeConnectionOpen().CreateCommand();
-                SqlTransaction transaction;
+                int i = Convert.ToInt32(ViewState["SelectRow"].ToString());
 
-                transaction = activeConnection.BeginTransaction("UserTermination");
-
-                cmd.Connection = activeConnection;
-                cmd.Transaction = transaction;
-
-                try
+                if (i == -1)
                 {
+                    Message("Please select a user");
+                }
+                else
+                {
+                    row = UserView.Rows[i];
+                    string user_id = row.Cells[1].Text;
+
+                    cmd = activeConnectionOpen().CreateCommand();
+                  
+
+                    transaction = activeConnection.BeginTransaction("UserTermination");
+
+                    cmd.Connection = activeConnection;
+                    cmd.Transaction = transaction;
+
                     cmd.CommandText = "CheckUserTiesWithBranches";
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@id", user_id);
@@ -160,85 +131,85 @@ namespace InwardClearingSystem
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.ExecuteNonQuery();
 
-                    // Attempt to commit the transaction.
+
                     transaction.Commit();
                     Message("User successfully deleted.");
                     Server.Transfer("~/UserMaintenance.aspx");
                 }
-                catch (Exception ex)
-                {
-                    Message("Commit Exception Type: " + ex.GetType());
-                    Message("  Message: " + ex.Message);
-
-                    // Attempt to roll back the transaction. 
-                    try
-                    {
-                        transaction.Rollback();
-                    }
-                    catch (Exception ex2)
-                    {
-                        // This catch block will handle any errors that may have occurred 
-                        // on the server that would cause the rollback to fail, such as 
-                        // a closed connection.
-                        Message("Rollback Exception Type: " + ex2.GetType());
-                        Message("  Message: " + ex2.Message);
-                    }
-                }
+            }
+            catch
+            {
+                transaction.Rollback();
+                Message("User Delete has failed. Please try again");
             }
         }
 
         protected void addUser_Click(object sender, EventArgs e)
         {
-            Server.Transfer("~/AddUser.aspx");
+            Response.Redirect("~/AddUser.aspx");
         }
 
         protected void editUser_Click(object sender, EventArgs e)
         {
-            int i = Convert.ToInt32(ViewState["SelectRow"].ToString());
+            try
+            {
+                int i = Convert.ToInt32(ViewState["SelectRow"].ToString());
 
-            if (i == -1)
-            {
-                Message("Please select a user");
-            }
-            else
-            {
-                row = UserView.Rows[i];
-                string user = row.Cells[2].Text;
-                using (activeConnectionOpen())
+                if (i == -1)
                 {
-
-                    cmd = new SqlCommand("SELECT * FROM [User] u WHERE u.username = @username", activeConnection);
-                    cmd.Parameters.AddWithValue("@username", user);
-                    cmd.ExecuteNonQuery();
-                    SqlDataReader dr = cmd.ExecuteReader();
-                    while (dr.Read())
+                    Message("Please select a user");
+                }
+                else
+                {
+                    row = UserView.Rows[i];
+                    string user = row.Cells[2].Text;
+                    using (activeConnectionOpen())
                     {
-                        Session["TBEuserID"] = dr["user_id"];
-                        Session["TBEusername"] = dr["username"];
-                        Session["TBEfirstname"] = dr["f_name"];
-                        Session["TBEmiddlename"] = dr["m_name"];
-                        Session["TBElastname"] = dr["l_name"];
-                        Session["TBEemail"] = dr["email"];
-                        Session["TBEpassword"] = dr["password"];
-                        Server.Transfer("~/EditUser.aspx");
+
+                        cmd = new SqlCommand("SELECT * FROM [User] u WHERE u.username = @username", activeConnection);
+                        cmd.Parameters.AddWithValue("@username", user);
+                        cmd.ExecuteNonQuery();
+                        SqlDataReader dr = cmd.ExecuteReader();
+                        while (dr.Read())
+                        {
+                            Session["TBEuserID"] = dr["user_id"];
+                            Session["TBEusername"] = dr["username"];
+                            Session["TBEfirstname"] = dr["f_name"];
+                            Session["TBEmiddlename"] = dr["m_name"];
+                            Session["TBElastname"] = dr["l_name"];
+                            Session["TBEemail"] = dr["email"];
+                            Session["TBEpassword"] = dr["password"];
+                            Server.Transfer("~/EditUser.aspx");
+                        }
                     }
                 }
+            }
+            catch
+            {
+                Message("An error has occurred. Please try again");
             }
         }
 
         protected void searchUser_Click(object sender, EventArgs e)
         {
-            using (cmd = new SqlCommand())
+            try
             {
-                cmd.CommandText = "SearchUser";
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Connection = activeConnection;
-                cmd.Parameters.AddWithValue("@search", searchBar.Text);
-                da = new SqlDataAdapter(cmd);
-                dt = new DataTable();
-                da.Fill(dt);
-                UserView.DataSource = dt;
-                UserView.DataBind();
+                using (cmd = new SqlCommand())
+                {
+                    cmd.CommandText = "SearchUser";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Connection = activeConnection;
+                    cmd.Parameters.AddWithValue("@search", searchBar.Text);
+                    da = new SqlDataAdapter(cmd);
+                    dt = new DataTable();
+                    da.Fill(dt);
+                    UserView.DataSource = dt;
+                    UserView.DataBind();
+                }
+            }
+            catch
+            {
+                Message("An error has occrred. Please try again.");
             }
         }
 

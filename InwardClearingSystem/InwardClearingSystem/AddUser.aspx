@@ -21,6 +21,16 @@
             font-size:x-large;
             padding-left:10px; 
         }
+        .style1
+        {
+            font-family: Segoe UI;
+            color: Black;
+            width: 186px;
+        }
+        .style2
+        {
+            width: 186px;
+        }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
@@ -30,7 +40,7 @@
     </tr>
     <tr>
         <td colspan="5">
-            <asp:Label ID="Label4" runat="server" ForeColor="Red" Text="Label" 
+            <asp:Label ID="lblError" runat="server" ForeColor="Red" Text="Label" 
             Visible="False"></asp:Label>
         </td>
     </tr>
@@ -38,7 +48,7 @@
         <td colspan="5">&nbsp;</td>
     </tr>
     <tr>
-        <td class="label">Username:</td>
+        <td class="style1">Username:</td>
         <td><asp:TextBox ID="unTxtBx" runat="server" ToolTip="This field is REQUIRED." CssClass="textbox"></asp:TextBox>
             <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" 
                 ErrorMessage="This field is required." ForeColor="Red" 
@@ -47,7 +57,7 @@
             &nbsp;</td>
     </tr>
     <tr>
-        <td class="label">First Name:</td>
+        <td class="style1">First Name:</td>
         <td><asp:TextBox ID="fnTxtBx" runat="server" ToolTip="This field is REQUIRED." 
                 CssClass="textbox"></asp:TextBox>
             <asp:RequiredFieldValidator ID="RequiredFieldValidator4" runat="server" 
@@ -57,7 +67,7 @@
             &nbsp;</td>
     </tr>
     <tr>
-        <td class="label">Middle Name:</td>
+        <td class="style1">Middle Name:</td>
         <td><asp:TextBox ID="mnTxtBx" runat="server" ToolTip="This field is REQUIRED." CssClass="textbox"></asp:TextBox>
             <asp:RequiredFieldValidator ID="RequiredFieldValidator7" runat="server" 
                 ErrorMessage="This field is required." ForeColor="Red" 
@@ -66,7 +76,7 @@
             &nbsp;</td>
     </tr>
     <tr>
-        <td class="label">Last Name:</td>
+        <td class="style1">Last Name:</td>
         <td><asp:TextBox ID="lnTxtBx" runat="server" ToolTip="This field is REQUIRED." CssClass="textbox"></asp:TextBox>
             <asp:RequiredFieldValidator ID="RequiredFieldValidator5" runat="server" 
                 ErrorMessage="This field is required." ForeColor="Red" 
@@ -75,7 +85,7 @@
             &nbsp;</td>
     </tr>
     <tr>
-        <td class="label">E-mail:</td>
+        <td class="style1">E-mail:</td>
         <td><asp:TextBox ID="emTxtBx" runat="server" TextMode="Email" 
                 ToolTip="This field is REQUIRED." CssClass="textbox"></asp:TextBox>
             <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" 
@@ -84,7 +94,7 @@
         <td>&nbsp;</td>
     </tr>
     <tr>
-        <td class="label">Password:</td>
+        <td class="style1">Password:</td>
         <td>
             <asp:TextBox ID="passTxtBx" runat="server" TextMode="Password" 
                 ToolTip="Requires at least 8 characters." CssClass="textbox"></asp:TextBox>
@@ -112,7 +122,7 @@
         </td>
     </tr>
     <tr>
-        <td class="label">Confirm Password:</td>
+        <td class="style1">Confirm Password:</td>
         <td><asp:TextBox ID="cpassTxtBx" runat="server" TextMode="Password" CssClass="textbox"></asp:TextBox>
         <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" 
                 ErrorMessage="This field is required." ForeColor="Red" 
@@ -124,10 +134,15 @@
         ErrorMessage="The passwords do not match." ForeColor="Red"></asp:CompareValidator>
         </tr>
     <tr>
-        <td id="buttonstuff" colspan='3' align="center">
+        <td id="buttonstuff" align="center" class="style2">
             <asp:Button ID="regBtn" 
                 runat="server" Text="Register" onclick="regBtn_Click" CssClass="defaultButton"/>
+           
         </td>
+         <td id="Td1" align="center">
+             <asp:Button ID="cancelBtn" CausesValidation="false" 
+                runat="server" Text="Cancel" onclick="canceBtn_Click" CssClass="defaultButton"/>
+         </td>
     </tr>
     <tr>
         <td colspan='3'>

@@ -131,12 +131,12 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
     <p>BRANCH MAINTENANCE</p>
-        <asp:Button ID="searchBtn" runat="server" onclick="searchBtn_Click" 
-        Text="Search" />
+        <asp:Button ID="searchBtn" runat="server" CausesValidation="false"
+        Text="Search" onclick="searchBtn_Click" CssClass="defaultButton" />
     <asp:TextBox ID="txtSearch" runat="server"></asp:TextBox>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <asp:Button ID="viewAllBtn" runat="server" onclick="viewAllBtn_Click" 
-        Text="View All" />
+    <asp:Button ID="viewAllBtn" runat="server" onclick="viewAllBtn_Click" CausesValidation="false"
+        Text="View All" CssClass="defaultButton" />
     <br />
     Show&nbsp;
     <asp:DropDownList ID="pgSizeDrpDwn" runat="server" CssClass="style1" AutoPostBack="true" OnSelectedIndexChanged="BranchView_PageSize" 
@@ -154,7 +154,7 @@
     <br />
         <asp:GridView ID="BranchView" runat="server" AutoGenerateColumns="false" CssClass="gridView" DataKeyNames="branch_id" 
         HeaderStyle-CssClass="GridHeader" AllowPaging="true" OnPageIndexChanging="BranchView_PageIndex" 
-        PagerStyle-CssClass="paging" AllowSorting="true" OnSorting="BranchView_Sorting" >
+        PagerStyle-CssClass="paging" AllowSorting="true" OnSorting="BranchView_Sorting" ShowHeaderWhenEmpty="true" >
             <Columns>
              <asp:TemplateField>
                 <ItemTemplate>
@@ -162,8 +162,8 @@
                 </ItemTemplate>
              </asp:TemplateField>
              <asp:BoundField DataField="branch_id" Visible="false" />
-             <asp:BoundField DataField="branch_name" HeaderText="Branch Name" />
-             <asp:BoundField DataField="branch_code" HeaderText="Branch Code" />
+             <asp:BoundField DataField="branch_name" SortExpression="branch_name" HeaderText="Branch Name" />
+             <asp:BoundField DataField="branch_code" SortExpression="branch_code" HeaderText="Branch Code" />
              <asp:BoundField DataField="address" HeaderText="Address" />
             </Columns>
         </asp:GridView>

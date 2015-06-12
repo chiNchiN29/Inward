@@ -29,112 +29,131 @@ namespace InwardClearingSystem
         int totalVerified = 0;
         RadioButton rb;
         String query;
-     
+        string function = "Signature Verification";
         protected void Page_Load(object sender, EventArgs e)
         {
-            activeConnectionOpen();
-            cmd = new SqlCommand("SELECT role_desc FROM [User] u, Role r WHERE username = @username AND u.role_id = r.role_id", activeConnection);
-            cmd.Parameters.AddWithValue("@username", Session["UserName"]);
-            string role = cmd.ExecuteScalar().ToString();
-            activeConnectionClose();
-            if (role != "CLEARING DEPT" && role != "OVERSEER")
+            if (checkAccess(Convert.ToInt32(Session["RoleID"]), function) == false)
             {
-                Message("You are not authorized to view this page");
-                Response.Redirect("~/Default.aspx");
-                
-            }                   
-            else
+                Response.Redirect("~/NoAccess.aspx");
+            }
+
+            if (!Page.IsPostBack)
             {
-                if (!Page.IsPostBack)
-                {
-                    ViewState["myDataTable"] = FillDataTable();
-                    ViewState["SelectRow"] = -1;
-                }
+                ViewState["myDataTable"] = FillDataTable();
+                ViewState["SelectRow"] = -1;
             }
            
         }
 
         private static byte[] imageToByteArray(System.Drawing.Image imageIn)
         {
-            using (MemoryStream ms = new MemoryStream())
+            try
             {
-                imageIn.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
-                return ms.ToArray();
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    imageIn.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+                    return ms.ToArray();
+                }
+            }
+            catch
+            {
+                throw;
             }
         }
 
        
         protected void RowSelect_CheckedChanged(Object sender, EventArgs e)
         {
-            int previousRow = Convert.ToInt32(ViewState["SelectRow"].ToString());
-            if (previousRow != -1)
+            try
             {
-                row = VerifyView.Rows[previousRow];
-                row.BackColor = Color.White;
+                int previousRow = Convert.ToInt32(ViewState["SelectRow"].ToString());
+                if (previousRow != -1)
+                {
+                    row = VerifyView.Rows[previousRow];
+                    row.BackColor = Color.White;
+                }
+
+                rb = (RadioButton)sender;
+                row = (GridViewRow)rb.NamingContainer;
+                int i = row.RowIndex;
+                ViewState["SelectRow"] = i;
+
+                if (i != -1)
+                {
+
+                    row = VerifyView.Rows[i];
+                    row.BackColor = ColorTranslator.FromHtml("#FF7272");
+                    row = VerifyView.Rows[i];
+
+                    string im = row.Cells[3].Text;
+                    string age = row.Cells[1].Text;
+                    string image = im + "_" + age;
+                    ShowChequeImage(session, image, checkImage);
+                    ShowSigDTImage(row.RowIndex, cmd, VerifyView, sigImage);
+                }
             }
-
-            rb = (RadioButton)sender;
-            row = (GridViewRow)rb.NamingContainer;
-            int i = row.RowIndex;
-            ViewState["SelectRow"] = i; 
-
-            if (i != -1)
+            catch
             {
-
-                row = VerifyView.Rows[i];
-                row.BackColor = ColorTranslator.FromHtml("#FF7272");
-                row = VerifyView.Rows[i];
-          
-                string im = row.Cells[3].Text;
-                string age = row.Cells[1].Text;
-                string image = im + "_" + age;
-                ShowChequeImage(session, image, checkImage);
-                ShowSigDTImage(row.RowIndex, cmd, VerifyView, sigImage);
+                Message("An error has occurred. Please try again");
             }
         }
 
         protected void acceptButton_Click(object sender, EventArgs e)
         {
-             int i = Convert.ToInt32(ViewState["SelectRow"].ToString());
+            try
+            {
+                int i = Convert.ToInt32(ViewState["SelectRow"].ToString());
 
-           if (i == -1)
-           {
-               Message("Please select a check");
-           }
-           else
-           {
-               //if (checkImage.ImageUrl == "~/Resources/H2DefaultImage.jpg" || sigImage.ImageUrl == "~/Resources/H2DefaultImage.jpg")
-               //{
-               //    Message("Cannot validate because there is no existing check or signature");
-               //}
-               //else
-               //{
-                       
+                if (i == -1)
+                {
+                    Message("Please select a check");
+                }
+                else
+                {
+                    //if (checkImage.ImageUrl == "~/Resources/H2DefaultImage.jpg" || sigImage.ImageUrl == "~/Resources/H2DefaultImage.jpg")
+                    //{
+                    //    Message("Cannot validate because there is no existing check or signature");
+                    //}
+                    //else
+                    //{
+
                     UpdateCheckData(i, "YES", "");
                     insertCheckLog(i, "Verification", "Successfully verified yes", VerifyView);
                     FillDataTable();
                     NextRow(VerifyView, i);
-                       
-               //}
-           }
+
+                    //}
+                }
+            }
+            catch
+            {
+                Message("An error has occurred. Please try again.");
+            }
         }
 
         
 
         private void UpdateCheckData(int i, string verify, string remarks )
         {
-            using (cmd = new SqlCommand(query, activeConnectionOpen()))
+            try
             {
-                cmd.CommandText = "UpdateCheckDataVerificationStatus";
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Connection = activeConnectionOpen();
-                cmd.Parameters.AddWithValue("@acctnumber", VerifyView.Rows[i].Cells[3].Text);
-                cmd.Parameters.AddWithValue("@chknumber", VerifyView.Rows[i].Cells[1].Text);
-                cmd.Parameters.AddWithValue("@verify", verify);
-                cmd.Parameters.AddWithValue("@modby", Session["UserID"]);
-                cmd.Parameters.AddWithValue("@moddate", DateTime.Now);
-                cmd.Parameters.AddWithValue("@veremarks", remarks);
-                cmd.ExecuteNonQuery();
+                using (cmd = new SqlCommand(query, activeConnectionOpen()))
+                {
+                    cmd.CommandText = "UpdateCheckDataVerificationStatus";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Connection = activeConnectionOpen();
+                    cmd.Parameters.AddWithValue("@acctnumber", VerifyView.Rows[i].Cells[3].Text);
+                    cmd.Parameters.AddWithValue("@chknumber", VerifyView.Rows[i].Cells[1].Text);
+                    cmd.Parameters.AddWithValue("@verify", verify);
+                    cmd.Parameters.AddWithValue("@modby", Session["UserID"]);
+                    cmd.Parameters.AddWithValue("@moddate", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@veremarks", remarks);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch
+            {
+                throw;
             }
         }
 
@@ -199,7 +218,6 @@ namespace InwardClearingSystem
             cmd.Parameters.AddWithValue("@moddate", DateTime.Now);
             cmd.ExecuteNonQuery();
             activeConnectionClose();
-
         }
 
         private DataTable GetData()
@@ -293,20 +311,27 @@ namespace InwardClearingSystem
 
         protected void searchBtn_Click(object sender, EventArgs e)
         {
-            string user = Session["UserName"].ToString();
-            using (cmd = new SqlCommand())
+            try
             {
-                cmd.CommandText = "VerificationSearch";
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Connection = activeConnectionOpen();
-                cmd.Parameters.AddWithValue("@username", user);
-                cmd.Parameters.AddWithValue("@num", txtSearch.Text);
-                dt = new DataTable();
-                da = new SqlDataAdapter(cmd);
+                string user = Session["UserName"].ToString();
+                using (cmd = new SqlCommand())
+                {
+                    cmd.CommandText = "VerificationSearch";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Connection = activeConnectionOpen();
+                    cmd.Parameters.AddWithValue("@username", user);
+                    cmd.Parameters.AddWithValue("@num", txtSearch.Text);
+                    dt = new DataTable();
+                    da = new SqlDataAdapter(cmd);
 
-                da.Fill(dt);
-                VerifyView.DataSource = dt;
-                VerifyView.DataBind();
+                    da.Fill(dt);
+                    VerifyView.DataSource = dt;
+                    VerifyView.DataBind();
+                }
+            }
+            catch
+            {
+                Message("An error has occurred. Please try again");
             }
         }
 

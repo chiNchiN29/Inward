@@ -23,7 +23,7 @@
                 <asp:CheckBox ID="chkBoxAll" runat="server" onclick="GridSelectAllColumn(this);" />
             </HeaderTemplate>
             <ItemTemplate>
-                <asp:CheckBox ID="chkBox" runat="server" OnCheckedChanged="chkBox_CheckedChanged" AutoPostBack="true" />
+                <asp:CheckBox ID="chkBox" runat="server" OnCheckedChanged="chkBox_CheckedChanged" />
             </ItemTemplate>
         </asp:TemplateField>
     <asp:BoundField DataField="branch_name" SortExpression="branch_name" HeaderText="Branch Name" ItemStyle-Width="100px" /> 
