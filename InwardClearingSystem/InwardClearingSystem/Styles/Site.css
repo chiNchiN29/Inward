@@ -217,7 +217,7 @@ first child of the left and right table columns */
 div.hideSkiplink
 {
 	border-color: #dddddd;
-    border-style: groove hidden groove hidden;
+    border-style: hidden hidden groove hidden;
     background-color: #f1f1f1;
     width: 100%;
     height:auto;
