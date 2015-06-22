@@ -143,8 +143,7 @@ namespace InwardClearingSystem
                     else
                     {
                         lblError.Visible = true;
-                        lblError.Text = "Please select a function";
-                       
+                        lblError.Text = "Please select a function";  
                     }
                 }
                 else
@@ -220,6 +219,7 @@ namespace InwardClearingSystem
             catch
             {
                 transact.Rollback();
+                InsertRoleHistory(roleID.ToString(), txtRoleName.Text, txtRoleType.Text, "Delete", "Failed Role Delete", "No change", activeConnection, transact);
                 lblError.Visible = true;
                 lblError.Text = "Role delete has failed. Please try again";
             }
@@ -282,11 +282,17 @@ namespace InwardClearingSystem
                     transact.Commit();
                     Message("Successfully updated Role");
                 }
+                else
+                {
+                    lblError.Visible = true;
+                    lblError.Text = "Please select a function";
+                }
             }
             catch
             {
                 transact.Rollback();
                 lblError.Visible = true;
+                InsertRoleHistory(roleID.ToString(), txtRoleName.Text, txtRoleType.Text, "Edit", "Failed Role Edit", "No change", activeConnection, transact);
                 lblError.Text = "Role Update has failed. Please try again.";
             }
             finally
