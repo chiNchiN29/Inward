@@ -31,7 +31,7 @@ namespace InwardClearingSystem
         protected void Page_Load(object sender, EventArgs e)
         {
             activeConnection.Close();
-            session = cmsCon.CreateSession("admin", "092095", "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom"); 
+            session = cmsCon.CreateSession(); 
             if (!IsPostBack)
             {
                 ViewState["myDataTable"] = FillDataTable("DefaultCheckDataTable", activeConnectionOpen(), ViewAllCheck);

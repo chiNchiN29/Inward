@@ -122,28 +122,29 @@ namespace InwardClearingSystem
 
                         //get Role ID
                         string query2 = "SELECT role_id FROM Role WHERE role_desc = @rolename";
-                        using (SqlCommand getID = new SqlCommand(query2, activeConnection, transact))
-                        {
-                            getID.Parameters.AddWithValue("@rolename", txtRoleName.Text);
-                            int newroleID = Convert.ToInt32(getID.ExecuteScalar());
+                        SqlCommand getID = new SqlCommand(query2, activeConnection, transact);
+                        getID.Parameters.AddWithValue("@rolename", txtRoleName.Text);
+                        int newroleID = Convert.ToInt32(getID.ExecuteScalar());
 
-                            foreach (ListItem item in chkBoxFunctions.Items)
+                        foreach (ListItem item in chkBoxFunctions.Items)
+                        {
+                            if (item.Selected)
                             {
-                                if (item.Selected)
-                                {
-                                    string wew = item.Text;
-                                    insertFunctionRole(newroleID, item.Text, activeConnection, transact);
-                                }
+                                string wew = item.Text;
+                                insertFunctionRole(newroleID, item.Text, activeConnection, transact);
                             }
-                            transact.Commit();
-                            Message("Role successfully added");
-                            clearForm();
                         }
+
+                        InsertRoleHistory(newroleID.ToString(), txtRoleName.Text, txtRoleType.Text, "Add", "Successful Role Add", "Role (added row)", activeConnection, transact);
+                        transact.Commit();
+                        Message("Role successfully added");
+                        clearForm();
                     }
                     else
                     {
                         lblError.Visible = true;
                         lblError.Text = "Please select a function";
+                       
                     }
                 }
                 else
@@ -209,6 +210,7 @@ namespace InwardClearingSystem
                     cmd.ExecuteNonQuery();
                 }
 
+                InsertRoleHistory(roleID.ToString(), txtRoleName.Text, txtRoleType.Text, "Delete", "Successful Role Delete", "Role (deleted row)", activeConnection, transact);
                 transact.Commit();
                 Message("Successfully deleted Role");
                 clearForm();
@@ -275,6 +277,8 @@ namespace InwardClearingSystem
                             insertFunctionRole(int.Parse(roleID), item.Text, activeConnection, transact);
                         }
                     }
+
+                    InsertRoleHistory(roleID.ToString(), txtRoleName.Text, txtRoleType.Text, "Edit", "Successful Role Edit", "Role (row updated)", activeConnection, transact);
                     transact.Commit();
                     Message("Successfully updated Role");
                 }
@@ -336,6 +340,34 @@ namespace InwardClearingSystem
             foreach (ListItem item in chkBoxFunctions.Items)
             {
                 item.Selected = false;
+            }
+        }
+
+        //problem with ip address
+        private void InsertRoleHistory(string roleid, string desc, string type, string tag, string message, string changes, SqlConnection con, SqlTransaction trans)
+        {
+            try
+            {
+                string ip = Request.ServerVariables["REMOTE_ADDR"].ToString();
+                StringBuilder query = new StringBuilder();
+                query.Append("Insert into Role_History (role_id, role_desc, role_type, modified_date, modified_by, ");
+                query.Append("terminal, history_tag, changes, history_message) ");
+                query.Append("values (@roleid, @desc, @type, @date, @id, @ip, @tag, @changes, @message)");
+                cmd = new SqlCommand(query.ToString(), con, trans);
+                cmd.Parameters.AddWithValue("@roleid", roleid);
+                cmd.Parameters.AddWithValue("@desc", desc);
+                cmd.Parameters.AddWithValue("@type", type);
+                cmd.Parameters.AddWithValue("@date", DateTime.Now);
+                cmd.Parameters.AddWithValue("@id", Convert.ToInt32(Session["UserID"]));
+                cmd.Parameters.AddWithValue("@ip", ip);
+                cmd.Parameters.AddWithValue("@tag", tag);
+                cmd.Parameters.AddWithValue("@changes", changes);
+                cmd.Parameters.AddWithValue("@message", message);
+                cmd.ExecuteNonQuery();
+            }
+            catch
+            {
+                throw;
             }
         }
     }

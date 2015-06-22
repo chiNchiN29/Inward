@@ -35,7 +35,7 @@ namespace InwardClearingSystem
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            session = CmsConnect.CreateSession("admin", "092095", "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom");
+            session = CmsConnect.CreateSession();
             if (checkAccess(Convert.ToInt32(Session["RoleID"]), function) == false)
             {
                 if (this.Context != null)

@@ -14,6 +14,7 @@ namespace InwardClearingSystem
     {
         SqlCommand cmd;
         String function = "Branch Maintenance";
+        SqlTransaction transact; 
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -36,27 +37,29 @@ namespace InwardClearingSystem
         {
             try
             {
+                transact = activeConnectionOpen().BeginTransaction("BranchAdd");
                 if (checkForDuplicateData("branch_name", "Branch", txtBranchName.Text) == false)
                 {
                     if(checkForDuplicateData("branch_code", "Branch", txtBranchCode.Text) == false)
-                    {
+                    { 
                         using (cmd = new SqlCommand())
                         {
                             cmd.CommandText = "InsertBranch";
                             cmd.CommandType = CommandType.StoredProcedure;
-                            cmd.Connection = activeConnectionOpen();
+                            cmd.Connection = activeConnection;
+                            cmd.Transaction = transact;
                             cmd.Parameters.AddWithValue("@name", txtBranchName.Text);
                             cmd.Parameters.AddWithValue("@date", DateTime.Now);
                             cmd.Parameters.AddWithValue("@code", txtBranchCode.Text);
                             cmd.Parameters.AddWithValue("@address", txtAddress.Text);
                             cmd.Parameters.AddWithValue("@modby", Convert.ToInt32(Session["UserID"]));
                             cmd.ExecuteNonQuery();
-                            FillDataTable("FillBranchMaintenanceDataTable", activeConnectionOpen(), BranchView);
                             InsertBranchHistory(txtBranchName.Text, "Add", "Successful Branch Add", "Branch (added row)");
                         }
                         txtBranchName.Text = "";
                         txtBranchCode.Text = "";
                         txtAddress.Text = "";
+                        FillDataTable("FillBranchMaintenanceDataTable", activeConnectionOpen(), BranchView);
                         Message("Successfully added Branch");
                     }
                     else
@@ -74,6 +77,7 @@ namespace InwardClearingSystem
             catch
             {
                 InsertBranchHistory(txtBranchName.Text, "Add", "Failed Branch Add", "No change");
+            
                 Message("Adding Branch has failed. Please try again.");
             }
         }
@@ -88,32 +92,35 @@ namespace InwardClearingSystem
         {
             try
             {
+                transact = activeConnectionOpen().BeginTransaction("BranchEdit");
                 using (cmd = new SqlCommand())
                 {
                     cmd.CommandText = "UpdateBranch";
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Connection = activeConnectionOpen();
+                    cmd.Connection = activeConnection;
+                    cmd.Transaction = transact;
                     cmd.Parameters.AddWithValue("@name", txtBranchName.Text);
                     cmd.Parameters.AddWithValue("@code", txtBranchCode.Text);
                     cmd.Parameters.AddWithValue("@ad", txtAddress.Text);
                     cmd.Parameters.AddWithValue("@id", editRow.Value);
                     cmd.ExecuteNonQuery();
-                    FillDataTable("FillBranchMaintenanceDataTable", activeConnectionOpen(), BranchView);
                 }
                 InsertBranchHistory(txtBranchName.Text, "Edit", "Successful Branch Edit", "Branch (updated row)");
+                FillDataTable("FillBranchMaintenanceDataTable", activeConnectionOpen(), BranchView);
                 Message("Successfully edited Branch");         
             }
             catch
             {
                 InsertBranchHistory(txtBranchName.Text, "Edit", "Failed Branch Edit", "No changes");
+                transact.Rollback();
                 Message("Branch edit has failed. Please try again.");
             }
         }
 
         protected void delBranch_Click(object sender, EventArgs e)
         {
-            //try
-            //{
+            try
+            {
                 int id = Convert.ToInt32(BranchView.DataKeys[Convert.ToInt32(editRow.Value) - 1].Value);
                 using (cmd = new SqlCommand())
                 {
@@ -123,15 +130,16 @@ namespace InwardClearingSystem
                     cmd.Parameters.AddWithValue("@id", id);
                     cmd.ExecuteNonQuery();
                 }
-                FillDataTable("FillBranchMaintenanceDataTable", activeConnectionOpen(), BranchView);
+
                 InsertBranchHistory(txtBranchName.Text, "Delete", "Successful Branch Delete", "Branch (deleted row)");
+                FillDataTable("FillBranchMaintenanceDataTable", activeConnectionOpen(), BranchView);
                 Message("Successfully deleted Branch");
-            //}
-            //catch
-            //{
-            //    InsertBranchHistory(txtBranchName.Text, "Delete", "Failed Branch Delete", "No changes");
-            //    Message("Branch delete has failed. Please try again.");
-            //}
+            }
+            catch
+            {
+                InsertBranchHistory(txtBranchName.Text, "Delete", "Failed Branch Delete", "No changes");
+                Message("Branch delete has failed. Please try again.");
+            }
         }
 
         protected void searchBtn_Click(object sender, EventArgs e)

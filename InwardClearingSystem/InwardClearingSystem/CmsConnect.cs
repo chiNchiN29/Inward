@@ -21,15 +21,15 @@ namespace InwardClearingSystem
         /// <param name="password">Password used to access the CMS.</param>
         /// <param name="url">URL the chosen CMS provides for remote usage.</param>
         /// <returns></returns>
-        public ISession CreateSession(string username, string password, string url)
+        public ISession CreateSession()
         {
             try
             {
                 Dictionary<string, string> parameters = new Dictionary<string, string>();
-                parameters[DotCMIS.SessionParameter.User] = username;
-                parameters[DotCMIS.SessionParameter.Password] = password;
+                parameters[DotCMIS.SessionParameter.User] = "admin";
+                parameters[DotCMIS.SessionParameter.Password] = "admin";
                 parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
-                parameters[DotCMIS.SessionParameter.AtomPubUrl] = url;
+                parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
                 //parameters[DotCMIS.SessionParameter.AtomPubUrl] = "http://192.168.0.133:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom";
                 SessionFactory factory = SessionFactory.NewInstance();
 
