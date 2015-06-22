@@ -35,6 +35,7 @@ namespace InwardClearingSystem
                     Response.Redirect("~/Login.aspx");
                 }
             }
+
             Session["UserName"] = System.Web.HttpContext.Current.User.Identity.Name;
             using (SqlCommand cmd = new SqlCommand())
             {
