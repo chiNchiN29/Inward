@@ -13,51 +13,33 @@ namespace InwardClearingSystem
 {
     public partial class EditUserBranches : BasePage
     {
-        SqlCommand cmd;
         List<string> newBranch = new List<string>();
-        DataTable dt;
-        SqlDataAdapter da;
-        string function = "User Maintenance";
+        SqlCommand cmd;
+        String function = "User Maintenance";
         
         protected void Page_Load(object sender, EventArgs e)
         {
             if (checkAccess(Convert.ToInt32(Session["RoleID"]), function) == false)
             {
-                Response.Redirect("~/NoAccess.aspx");
+                if (this.Context != null)
+                {
+                    Response.Redirect("~/NoAccess.aspx");
+                }
             }
 
             if (!Page.IsPostBack)
             {
-                ViewState["myDataTable"] = FillDataTable();
+                ViewState["myDataTable"] = FillDataTable("FillEditUserBranchesDataTable", activeConnectionOpen(), branchView);
                 ViewState["Branches"] = Branches;
-
-                FillDropDown();
             }
            
         }
 
         protected void backBtn_Click(object sender, EventArgs e)
         {
-            Response.Redirect("~/UserMaintenance.aspx");
-        }
-
-        public DataTable FillDataTable()
-        {
-
-            using (cmd = new SqlCommand())
+            if (this.Context != null)
             {
-                cmd.CommandText = "FillEditUserBranchesDataTable";
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Connection = activeConnectionOpen();
-                dt = new DataTable();
-                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                {
-                    da.Fill(dt);
-                    branchView.DataSource = dt;
-                    branchView.DataBind();
-                    activeConnectionClose();
-                    return dt;
-                }
+                Response.Redirect("~/UserMaintenance.aspx");
             }
         }
 
@@ -90,14 +72,13 @@ namespace InwardClearingSystem
                 try
                 {
                     List<string> mybranches = Branches;
-                    if (UserDrpDwn.SelectedValue.Equals("None"))
+                    if (UserDrpDwn.SelectedValue.Equals(0))
                     {
                         Message("Please select a user");
                     }
                     else if (mybranches.Count == 0)
                     {
                         Message("Please select a branch");
-
                     }
                     else
                     {
@@ -113,7 +94,7 @@ namespace InwardClearingSystem
                                 cmd.ExecuteNonQuery();
                             }
                         }
-                        FillDataTable();
+                        FillDataTable("FillEditUserBranchesDataTable", activeConnectionOpen(), branchView);
                         Branches.Clear();
                     }
                 }
@@ -122,6 +103,21 @@ namespace InwardClearingSystem
                     Message("An error has occurred. Please try again.");
                 }
             }
+        }
+
+        protected void branchView_PageIndex(object sender, GridViewPageEventArgs e)
+        {
+            branchView.PageIndex = e.NewPageIndex;
+            Branches.Clear();
+            FillDataTable("FillEditUserBranchesDataTable", activeConnectionOpen(), branchView);
+        }
+
+        protected void BranchView_Sorting(Object sender, GridViewSortEventArgs e)
+        {
+            dt = ViewState["myDataTable"] as DataTable;
+            dt.DefaultView.Sort = e.SortExpression + " " + GetSortDirection(e.SortExpression);
+            branchView.DataSource = dt;
+            branchView.DataBind();
         }
 
         public List<string> Branches
@@ -134,58 +130,6 @@ namespace InwardClearingSystem
                 }
                 return (List<string>)(this.ViewState["Branches"]);
             }
-        }
-
-        protected void branchView_PageIndex(object sender, GridViewPageEventArgs e)
-        {
-            branchView.PageIndex = e.NewPageIndex;
-            Branches.Clear();
-            FillDataTable();
-        }
-
-        public void FillDropDown()
-        {
-            using (da = new SqlDataAdapter("FillUserDropDown", activeConnectionOpen()))
-            {
-                dt = new DataTable();
-                
-                da.Fill(dt);
-                UserDrpDwn.DataSource = dt;
-                UserDrpDwn.DataTextField = "username";
-                UserDrpDwn.DataValueField = "user_id";
-                UserDrpDwn.DataBind();
-                UserDrpDwn.Items.Insert(0, new ListItem("<Select User>", "None"));
-            }
-        }
-
-        protected void BranchView_Sorting(Object sender, GridViewSortEventArgs e)
-        {
-            dt = ViewState["myDataTable"] as DataTable;
-            dt.DefaultView.Sort = e.SortExpression + " " + GetSortDirection(e.SortExpression);
-            branchView.DataSource = dt;
-            branchView.DataBind();
-        }
-
-        private string GetSortDirection(string column)
-        {
-            string sortDirection = "DESC";
-            string sortExpression = ViewState["SortExpression"] as string;
-
-            if (sortExpression != null)
-            {
-                if (sortExpression == column)
-                {
-                    string lastDirection = ViewState["SortDirection"] as string;
-                    if ((lastDirection != null) && (lastDirection == "DESC"))
-                    {
-                        sortDirection = "ASC";
-                    }
-                }
-            }
-            ViewState["SortDirection"] = sortDirection;
-            ViewState["SortExpression"] = column;
-
-            return sortDirection;
         }
     }
 }

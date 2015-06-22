@@ -125,19 +125,33 @@
             {
                text-align: right;
             }
-
+            div.viewFunctions
+            {
+                float:left;
+            }
+            div.showNumber
+            {
+                width:50%;
+                float:right;
+                text-align:right;
+                padding-top:20px;
+            }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
     <p>BRANCH MAINTENANCE</p>
+    <div class="gridWindow">
+    <div class="gridTitleBar">Branches</div>
+    <div class="viewFunctions">
         <asp:Button ID="searchBtn" runat="server" CausesValidation="false"
         Text="Search" onclick="searchBtn_Click" CssClass="defaultButton" />
     <asp:TextBox ID="txtSearch" runat="server"></asp:TextBox>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <asp:Button ID="viewAllBtn" runat="server" onclick="viewAllBtn_Click" CausesValidation="false"
         Text="View All" CssClass="defaultButton" />
-    <br />
+        </div>
+    <div class="showNumber">
     Show&nbsp;
     <asp:DropDownList ID="pgSizeDrpDwn" runat="server" CssClass="style1" AutoPostBack="true" OnSelectedIndexChanged="BranchView_PageSize" 
         Height="20px" Width="50px">
@@ -151,10 +165,11 @@
         <asp:ListItem>170</asp:ListItem>
         <asp:ListItem>200</asp:ListItem>
     </asp:DropDownList>
-    <br />
+    </div>
         <asp:GridView ID="BranchView" runat="server" AutoGenerateColumns="false" CssClass="gridView" DataKeyNames="branch_id" 
         HeaderStyle-CssClass="GridHeader" AllowPaging="true" OnPageIndexChanging="BranchView_PageIndex" 
-        PagerStyle-CssClass="paging" AllowSorting="true" OnSorting="BranchView_Sorting" ShowHeaderWhenEmpty="true" >
+        PagerStyle-CssClass="paging" AllowSorting="true" OnSorting="BranchView_Sorting" ShowHeaderWhenEmpty="true" 
+        AlternatingRowStyle-BackColor="#FFEFEF">
             <Columns>
              <asp:TemplateField>
                 <ItemTemplate>
@@ -167,6 +182,7 @@
              <asp:BoundField DataField="address" HeaderText="Address" />
             </Columns>
         </asp:GridView>
+        </div>
 
     <asp:Button ID="addBranch" runat="server" Text="Add" CssClass="defaultButton" CausesValidation="false" /> 
     <asp:Button ID="editBranch" runat="server" Text="Edit" CssClass="defaultButton" CausesValidation="false" />

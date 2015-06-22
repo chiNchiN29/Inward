@@ -76,22 +76,13 @@ namespace InwardClearingSystem {
         protected global::System.Web.UI.WebControls.RegularExpressionValidator regexValidator;
         
         /// <summary>
-        /// uploadDoc0 control.
+        /// uploadCheckData control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button uploadDoc0;
-        
-        /// <summary>
-        /// searchBtn control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button searchBtn;
+        protected global::System.Web.UI.WebControls.Button uploadCheckData;
         
         /// <summary>
         /// txtSearch control.
@@ -103,6 +94,15 @@ namespace InwardClearingSystem {
         protected global::System.Web.UI.WebControls.TextBox txtSearch;
         
         /// <summary>
+        /// searchBtn control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button searchBtn;
+        
+        /// <summary>
         /// viewAllBtn control.
         /// </summary>
         /// <remarks>
@@ -110,24 +110,6 @@ namespace InwardClearingSystem {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button viewAllBtn;
-        
-        /// <summary>
-        /// pgSize control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList pgSize;
-        
-        /// <summary>
-        /// ViewAllCheck control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView ViewAllCheck;
         
         /// <summary>
         /// genListBtn control.
@@ -155,6 +137,24 @@ namespace InwardClearingSystem {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button clearCheck;
+        
+        /// <summary>
+        /// pgSize control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList pgSize;
+        
+        /// <summary>
+        /// ViewAllCheck control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView ViewAllCheck;
         
         /// <summary>
         /// ImgCount control.

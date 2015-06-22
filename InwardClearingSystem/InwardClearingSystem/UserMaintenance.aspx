@@ -1,4 +1,4 @@
-﻿<%@ Page Title="User Maintenance" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="UserMaintenance.aspx.cs" Inherits="InwardClearingSystem.UserMaintenance" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="UserMaintenance.aspx.cs" Inherits="InwardClearingSystem.UserMaintenance" %>
 <%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="cc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
     <style type="text/css">
@@ -22,13 +22,28 @@
 
     <asp:Button ID="deleteUser" runat="server" onclick="deleteUser_Click" Text="Delete User" CssClass="defaultButton"/>
 
+    Assign Role:
+
+    <asp:DropDownList ID="RoleDrpDwn"  runat="server" DataSourceID="SqlDataSource1" 
+        DataTextField="role_desc" DataValueField="role_id">
+    </asp:DropDownList>
+    <asp:SqlDataSource ID="SqlDataSource1" runat="server" 
+        ConnectionString="<%$ ConnectionStrings:ConnectionString %>" 
+        SelectCommand="SELECT [role_id], [role_desc] FROM [Role]">
+    </asp:SqlDataSource>
+
+    <asp:Button ID="assignBtn" runat="server" Text="Assign" 
+        onclick="assignBtn_Click" CssClass="defaultButton" />
+
+    <asp:Button ID="branchBtn" runat="server" Text="Assign Branches" 
+        onclick="branchBtn_Click" CssClass="defaultButton" />
 </div>
 <div class="whiteSpace">
     &nbsp;
 </div>
-<div class="gridDiv" style="width:50%; border:2px solid #333333">
+<div class="gridWindow" style="width:100%;">
     <div class="gridTitleBar"><strong>User Maintenance</strong></div>
-    <asp:GridView ID="UserView" runat="server" DataKeyNames="user_id" AutoGenerateColumns="false" HeaderStyle-CssClass="GridHeader" CssClass="gridView">
+    <asp:GridView ID="UserView" runat="server" DataKeyNames="user_id" AutoGenerateColumns="false" HeaderStyle-CssClass="GridHeader" CssClass="gridView" AlternatingRowStyle-BackColor="#FFEFEF">
         <Columns>
             <asp:TemplateField>
                <ItemTemplate>
@@ -46,7 +61,7 @@
     </asp:GridView>
 </div>
 <br />
-    Assign Role:<br />
+    
 
      <script type="text/javascript">
             function CheckOtherIsCheckedByGVID(spanChk) {
@@ -69,14 +84,11 @@
                 }
             }
     </script>
-    <asp:DropDownList ID="RoleDrpDwn"  runat="server">
-    </asp:DropDownList>
+    
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
-    <asp:Button ID="branchBtn" runat="server" Text="Assign Branches" 
-        onclick="branchBtn_Click" CssClass="defaultButton" />
+    
     <br />
     <br />
-    <asp:Button ID="assignBtn" runat="server" Text="Assign" 
-        onclick="assignBtn_Click" CssClass="defaultButton" />
+    
     </asp:Content>

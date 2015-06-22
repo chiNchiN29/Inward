@@ -1,4 +1,4 @@
-﻿<%@ Page Title="User Branches" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="EditUserBranches.aspx.cs" Inherits="InwardClearingSystem.EditUserBranches" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="EditUserBranches.aspx.cs" Inherits="InwardClearingSystem.EditUserBranches" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
@@ -8,15 +8,20 @@
     Edit User Branches<br />
     <br />
     Choose User:<br />
-    <asp:DropDownList ID="UserDrpDwn" runat="server">
+    <asp:DropDownList ID="UserDrpDwn" runat="server" DataSourceID="SqlDataSource1" 
+        DataTextField="username" DataValueField="user_id">
     </asp:DropDownList>
+    <asp:SqlDataSource ID="SqlDataSource1" runat="server" 
+        ConnectionString="<%$ ConnectionStrings:ConnectionString %>" 
+        SelectCommand="SELECT [user_id], [username] FROM [User]">
+    </asp:SqlDataSource>
     <br />
  
  
     
     <asp:GridView ID="branchView" runat="server" AutoGenerateColumns="false" CssClass="gridView2" HeaderStyle-CssClass="GridHeader" 
     OnPageIndexChanging="branchView_PageIndex" AllowPaging="true" PagerStyle-CssClass="paging" AllowSorting="true" OnSorting="BranchView_Sorting"
-     ShowHeaderWhenEmpty="true" >
+     ShowHeaderWhenEmpty="true" AlternatingRowStyle-BackColor="#FFEFEF">
     <Columns>
         <asp:TemplateField>
             <HeaderTemplate>

@@ -10,15 +10,24 @@
 namespace InwardClearingSystem.Account {
     
     
-    public partial class ChangePassword {
+    public partial class Login {
         
         /// <summary>
-        /// ChangeUserPassword control.
+        /// Login1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ChangePassword ChangeUserPassword;
+        protected global::System.Web.UI.WebControls.Login Login1;
+        
+        /// <summary>
+        /// Login1_DropShadowExtender control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.DropShadowExtender Login1_DropShadowExtender;
     }
 }

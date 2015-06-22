@@ -11,22 +11,38 @@ using System.Data;
 
 namespace InwardClearingSystem.Account
 {
-    public partial class SignUp : System.Web.UI.Page
+    public partial class SignUp : BasePage
     {
-        SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
         BasePage bp = new BasePage();
-        string function = "User Maintenance";
+        String function = "User Maintenance";
 
         protected void Page_Load(object sender, EventArgs e)
         {
 
             if (bp.checkAccess(Convert.ToInt32(Session["RoleID"]), function) == false)
             {
-                Response.Redirect("~/NoAccess.aspx");
+                if (this.Context != null)
+                {
+                    Response.Redirect("~/NoAccess.aspx");
+                }
             }
 
         }
 
+        /// <summary>
+        /// Cancels the add user operation.
+        /// </summary>
+        protected void canceBtn_Click(object sender, EventArgs e)
+        {
+            if (this.Context != null)
+            {
+                Response.Redirect("~/UserMaintenance.aspx");
+            }
+        }
+
+        /// <summary>
+        /// Registers the new user.
+        /// </summary>
         protected void regBtn_Click(object sender, EventArgs e)
         {
             try
@@ -53,13 +69,12 @@ namespace InwardClearingSystem.Account
                 }
                 else
                 {
-                    using (connection)
+                    using (activeConnectionOpen())
                     {
-                        connection.Open();
                         SqlCommand insert = new SqlCommand();
                         insert.CommandText = "InsertUser";
                         insert.CommandType = CommandType.StoredProcedure;
-                        insert.Connection = connection;
+                        insert.Connection = activeConnection;
                         insert.Parameters.AddWithValue("@username", unTxtBx.Text);
                         insert.Parameters.AddWithValue("@password", passTxtBx.Text);
                         insert.Parameters.AddWithValue("@f_name", fnTxtBx.Text);
@@ -67,7 +82,10 @@ namespace InwardClearingSystem.Account
                         insert.Parameters.AddWithValue("@l_name", lnTxtBx.Text);
                         insert.Parameters.AddWithValue("@email", emTxtBx.Text);
                         insert.ExecuteNonQuery();
-                        Response.Redirect("~/UserMaintenance.aspx");
+                        if (this.Context != null)
+                        {
+                            Response.Redirect("~/UserMaintenance.aspx");
+                        }
                     }
                 }
             }
@@ -75,11 +93,6 @@ namespace InwardClearingSystem.Account
             {
                 bp.Message("An error has occurred. Please try again.");
             }
-        }
-
-        protected void canceBtn_Click(object sender, EventArgs e)
-        {
-            Response.Redirect("~/UserMaintenance.aspx");
         }
     }
 }

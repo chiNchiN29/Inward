@@ -133,12 +133,12 @@ first child of the left and right table columns */
 {
     background: -webkit-linear-gradient(top, rgba(237,237,237,1) 0%,rgba(196,196,196,1) 100%);
     background: -moz-linear-gradient(top, rgba(237,237,237,1) 0%, rgba(196,196,196,1) 100%);
-    height:30px;
-    width:130px;
+    height:25px;
+    width:110px;
     border: 1px solid Black;
     color:Black;
     font-family:Segoe UI;
-    border-radius: 10px;
+    border-radius: 7px;
 }
 
 .defaultButton:hover
@@ -340,6 +340,14 @@ div.gridTitleBar
     width: auto;
     height: 20px;
     padding-left: 8px;
+}
+
+div.gridWindow
+{
+    width:100%;
+    height:70%;
+    float:left;   
+    border:2px solid #aa3333;
 }
 
 .gridView

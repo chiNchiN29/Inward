@@ -6,17 +6,18 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data.SqlClient;
 using System.Text;
+using System.Data;
 
 namespace InwardClearingSystem
 {
     public partial class AddRole : BasePage
     {
         SqlCommand cmd;
-        String roleID;
-        StringBuilder query;
         SqlDataReader dr;
         SqlTransaction transact;
-        string function = "User Maintenance";
+        String function = "User Maintenance";
+        String roleID;
+        StringBuilder query;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -24,7 +25,10 @@ namespace InwardClearingSystem
 
             if (checkAccess(Convert.ToInt32(Session["RoleID"]), function) == false)
             {
-                Response.Redirect("~/NoAccess.aspx");
+                if (this.Context != null)
+                {
+                    Response.Redirect("~/NoAccess.aspx");
+                }
             }
 
             if (!Page.IsPostBack)
@@ -84,124 +88,6 @@ namespace InwardClearingSystem
                         }
                     }
                 }
-            }
-        }
-
-        protected void backBtn_Click(object sender, EventArgs e)
-        {
-            Response.Redirect("~/RoleMaintenance.aspx");
-        }
-
-        protected void saveBtn_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                int chkBoxItems = 0;
-
-                foreach (ListItem item in chkBoxFunctions.Items)
-                {
-                    if (item.Selected)
-                    {
-                        chkBoxItems++;
-                    }
-                }
-                if (chkBoxItems > 0)
-                {
-                    //update role name and role type
-                    transact = activeConnectionOpen().BeginTransaction("RoleUpdate");
-
-                    query = new StringBuilder();
-                    query.Append("Update Role set role_desc = @rolename, role_type = @type ");
-                    query.Append("WHERE role_id = @roleID");
-                    using (cmd = new SqlCommand(query.ToString(), activeConnection, transact))
-                    {
-                        cmd.Parameters.AddWithValue("@rolename", txtRoleName.Text);
-                        cmd.Parameters.AddWithValue("@type", txtRoleType.Text);
-                        cmd.Parameters.AddWithValue("@roleID", roleID);
-                        cmd.ExecuteNonQuery();
-                    }
-
-                    //delete from role function
-                    query = new StringBuilder();
-                    query.Append("DELETE FROM Role_Function WHERE role_id = @roleID");
-                    using (cmd = new SqlCommand(query.ToString(), activeConnection, transact))
-                    {
-                        cmd.Parameters.AddWithValue("@roleID", roleID);
-                        cmd.ExecuteNonQuery();
-                    }
-
-                    //insert new functions in role function
-                    foreach (ListItem item in chkBoxFunctions.Items)
-                    {
-                        if (item.Selected)
-                        {
-                            insertFunctionRole(int.Parse(roleID), item.Text, activeConnection, transact);
-                        }
-                    }
-                    transact.Commit();
-                    Message("Successfully updated role");
-                }
-            }
-            catch
-            {
-                transact.Rollback();
-                lblError.Visible = true;
-                lblError.Text = "Role Update has failed. Please try again.";
-            }
-            finally
-            {
-                activeConnectionClose();
-            }
-        }
-
-        protected void delBtn_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                transact = activeConnectionOpen().BeginTransaction("RoleDelete");
-
-                //delete from role function
-                query = new StringBuilder();
-                query.Append("DELETE FROM Role_Function WHERE role_id = @roleID");
-                using (cmd = new SqlCommand(query.ToString(), activeConnection, transact))
-                {
-                    cmd.Parameters.AddWithValue("@roleID", roleID);
-                    cmd.ExecuteNonQuery();
-                }
-
-                //delete role in user table
-                query = new StringBuilder();
-                query.Append("Update [User] set role_id = NULL WHERE role_id = @roleId");
-                using (cmd = new SqlCommand(query.ToString(), activeConnection, transact))
-                {
-                    cmd.Parameters.AddWithValue("@roleId", roleID);
-                    cmd.ExecuteNonQuery();
-                }
-                    
-                //delete role
-                query = new StringBuilder();
-                query.Append("DELETE FROM Role WHERE role_id = @roleID");
-                using (cmd = new SqlCommand(query.ToString(), activeConnection, transact))
-                {
-                    cmd.Parameters.AddWithValue("@roleID", roleID);
-                    cmd.ExecuteNonQuery();
-                }
-
-                transact.Commit();
-                Message("Successfully delete Role");
-                clearForm();
-                saveBtn.Visible = false;
-                delBtn.Visible = false;
-            }
-            catch
-            {
-                transact.Rollback();
-                lblError.Visible = true;
-                lblError.Text = "Role delete has failed. Please try again";
-            }
-            finally
-            {
-                activeConnectionClose();
             }
         }
 
@@ -278,6 +164,140 @@ namespace InwardClearingSystem
             }
         }
 
+        protected void backBtn_Click(object sender, EventArgs e)
+        {
+            if (this.Context != null)
+            {
+                Response.Redirect("~/RoleMaintenance.aspx");
+            }
+        }
+
+        protected void delBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                transact = activeConnectionOpen().BeginTransaction("RoleDelete");
+
+                //delete from role function
+                using (cmd = new SqlCommand())
+                {
+                    cmd.CommandText = "SeverRoleFunctionAssociation";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Connection = activeConnection;
+                    cmd.Transaction = transact;
+                    cmd.Parameters.AddWithValue("@roleID", roleID);
+                    cmd.ExecuteNonQuery();
+                }
+
+                //delete role in user table
+                using (cmd = new SqlCommand())
+                {
+                    cmd.CommandText = "SeverUserRoleAssociation";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Connection = activeConnection;
+                    cmd.Transaction = transact;
+                    cmd.ExecuteNonQuery();
+                }
+
+                //delete role
+                using (cmd = new SqlCommand())
+                {
+                    cmd.CommandText = "DeleteRole";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Connection = activeConnection;
+                    cmd.Transaction = transact;
+                    cmd.ExecuteNonQuery();
+                }
+
+                transact.Commit();
+                Message("Successfully deleted Role");
+                clearForm();
+                saveBtn.Visible = false;
+                delBtn.Visible = false;
+            }
+            catch
+            {
+                transact.Rollback();
+                lblError.Visible = true;
+                lblError.Text = "Role delete has failed. Please try again";
+            }
+            finally
+            {
+                activeConnectionClose();
+            }
+        }
+
+        protected void saveBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                int chkBoxItems = 0;
+
+                foreach (ListItem item in chkBoxFunctions.Items)
+                {
+                    if (item.Selected)
+                    {
+                        chkBoxItems++;
+                    }
+                }
+                if (chkBoxItems > 0)
+                {
+                    //update role name and role type
+                    transact = activeConnectionOpen().BeginTransaction("RoleUpdate");
+                    using (cmd = new SqlCommand())
+                    {
+                        cmd.CommandText = "UpdateRole";
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = activeConnection;
+                        cmd.Transaction = transact;
+                        cmd.Parameters.AddWithValue("@rolename", txtRoleName.Text);
+                        cmd.Parameters.AddWithValue("@type", txtRoleType.Text);
+                        cmd.Parameters.AddWithValue("@roleID", roleID);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    //delete from role function
+                    using (cmd = new SqlCommand())
+                    {
+                        cmd.CommandText = "SeverRoleFunctionAssociation";
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = activeConnection;
+                        cmd.Transaction = transact;
+                        cmd.Parameters.AddWithValue("@roleID", roleID);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    //insert new functions in role function
+                    foreach (ListItem item in chkBoxFunctions.Items)
+                    {
+                        if (item.Selected)
+                        {
+                            insertFunctionRole(int.Parse(roleID), item.Text, activeConnection, transact);
+                        }
+                    }
+                    transact.Commit();
+                    Message("Successfully updated Role");
+                }
+            }
+            catch
+            {
+                transact.Rollback();
+                lblError.Visible = true;
+                lblError.Text = "Role Update has failed. Please try again.";
+            }
+            finally
+            {
+                activeConnectionClose();
+            }
+        }
+
+        /// <summary>
+        /// Attaches selected functionalities to a chosen role. 
+        /// </summary>
+        /// <param name="inroleID">The chosen role's ID.</param>
+        /// <param name="fName">The function name.</param>
+        /// <param name="con">The required SqlConnection.</param>
+        /// <param name="trans">KULANG PA DITO</param>
         protected void insertFunctionRole(int inroleID, string fName, SqlConnection con, SqlTransaction trans)
         {
             try
@@ -288,21 +308,27 @@ namespace InwardClearingSystem
                 check.Parameters.AddWithValue("@name", fName);
                 int functionID = Convert.ToInt32(check.ExecuteScalar());
 
-                query = new StringBuilder();
-                query.Append("Insert into Role_Function(role_id, function_id) ");
-                query.Append("Values(@roleID, @functionID)");
-                cmd = new SqlCommand(query.ToString(), con, trans);
-                cmd.Parameters.AddWithValue("@roleID", inroleID);
-                cmd.Parameters.AddWithValue("@functionID", functionID);
-                cmd.ExecuteNonQuery();
-                
+                //Adds a new entry under Role_Function.
+                using (cmd = new SqlCommand())
+                {
+                    cmd.CommandText = "InsertRoleFunction";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Connection = con;
+                    cmd.Transaction = trans;
+                    cmd.Parameters.AddWithValue("@roleID", inroleID);
+                    cmd.Parameters.AddWithValue("@functionID", functionID);
+                    cmd.ExecuteNonQuery();
+                }
             }
             catch
             {
                 throw;
             }
         }
-
+        
+        /// <summary>
+        /// Clears the form of all input.
+        /// </summary>
         private void clearForm()
         {
             txtRoleName.Text = "";

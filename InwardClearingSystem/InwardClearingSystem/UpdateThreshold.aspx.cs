@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
 using System.Linq;
@@ -8,7 +9,6 @@ using System.Threading;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Data;
 
 namespace InwardClearingSystem
 {
@@ -20,7 +20,10 @@ namespace InwardClearingSystem
         {
             if (checkAccess(Convert.ToInt32(Session["RoleID"]), function) == false)
             {
-                Response.Redirect("~/NoAccess.aspx");
+                if (this.Context != null)
+                {
+                    Response.Redirect("~/NoAccess.aspx");
+                }
             }
 
             if (!Page.IsPostBack)
@@ -44,7 +47,7 @@ namespace InwardClearingSystem
      
         }
 
-        protected void SetThresholds(object sender, EventArgs e)
+        protected void setThresholds_Click(object sender, EventArgs e)
         {
             try
             {
@@ -102,7 +105,10 @@ namespace InwardClearingSystem
                 }
                 else
                 {
-                    Response.Redirect("~/Default.aspx");
+                    if (this.Context != null)
+                    {
+                        Response.Redirect("~/Default.aspx");
+                    }
                 }
             }
             catch

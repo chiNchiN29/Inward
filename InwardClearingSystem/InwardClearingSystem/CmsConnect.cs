@@ -14,6 +14,13 @@ namespace InwardClearingSystem
     {
         public ISession session;
 
+        /// <summary>
+        /// Creates a session with a CMS given certain parameters.
+        /// </summary>
+        /// <param name="username">Username used to access the CMS.</param>
+        /// <param name="password">Password used to access the CMS.</param>
+        /// <param name="url">URL the chosen CMS provides for remote usage.</param>
+        /// <returns></returns>
         public ISession CreateSession(string username, string password, string url)
         {
             try
@@ -114,12 +121,21 @@ namespace InwardClearingSystem
             }
             catch
             {
-                Response.Redirect("FailurePage.aspx");
+                if (this.Context != null)
+                {
+                    Response.Redirect("FailurePage.aspx");
+                }
             }
 
             return session;
         }
 
+        /// <summary>
+        /// Checks if a folder already exists in the file path given.
+        /// </summary>
+        /// <param name="session">Session created upon accessing the selected CMIS.</param>
+        /// <param name="FolderPath">Folder path to be checked.</param>
+        /// <returns></returns>
         private static Boolean isFolderExist(ISession session, String FolderPath)
         {
             IFolder folder;
@@ -134,7 +150,11 @@ namespace InwardClearingSystem
             }
         }
 
-
+        /// <summary>
+        /// Creates a new folder in the selected CMIS.
+        /// </summary>
+        /// <param name="session">Session created upon accessing the selected CMIS.</param>
+        /// <param name="FolderName">The name given to the newly created folder.</param>
         private static void CreateAFolder(ISession session, String FolderName)
         {
             Dictionary<String, object> FolderProperties = new Dictionary<string, object>();
@@ -143,6 +163,12 @@ namespace InwardClearingSystem
             session.GetRootFolder().CreateFolder(FolderProperties);
         }
 
+        /// <summary>
+        /// Creates a sub-folder within a given folder.
+        /// </summary>
+        /// <param name="session">Session created upon accessing the CMIS.</param>
+        /// <param name="FolderName">Name of the new sub-folder.</param>
+        /// <param name="ParentFolderPath">Path that leads inside the parent folder.</param>
         private static void CreateASubFolder(ISession session, String FolderName, String ParentFolderPath)
         {
             Dictionary<String, object> FolderProperties = new Dictionary<string, object>();
@@ -152,6 +178,12 @@ namespace InwardClearingSystem
             newFolder.CreateFolder(FolderProperties);
         }
 
+        /// <summary>
+        /// Retrieves the cheque image from the CMS currently used.
+        /// </summary>
+        /// <param name="session">The session created to access the CMS.</param>
+        /// <param name="fileName">The filename of the image corresponding to the selected cheque.</param>
+        /// <param name="image">The control wherein the image will appear.</param>
         public void ShowChequeImage(ISession session, string fileName, System.Web.UI.WebControls.Image image)
         {
             try
@@ -172,13 +204,18 @@ namespace InwardClearingSystem
             }
             catch
             {
-                image.ImageUrl = "~/Resources/H2DefaultImage.jpg";
+                image.ImageUrl = "~/Resources/No_image_available.jpg";
                 image.Visible = true;
             }
 
         }
 
-        //Signature image in Alfresco
+        /// <summary>
+        /// Retrieves the signature image from the CMS currently used.
+        /// </summary>
+        /// <param name="session">The session created to access the CMS.</param>
+        /// <param name="fileName">The filename of the image corresponding to the selected cheque.</param>
+        /// <param name="image">The control wherein the image will appear.</param>
         public void ShowSigImage(ISession session, string fileName, System.Web.UI.WebControls.Image image)
         {
             IDocument doc2 = (IDocument)session.GetObjectByPath("/Uploads/" + DateTime.Now.Year.ToString() + "/" + DateTime.Now.ToString("MM") + "/" + DateTime.Now.ToString("dd") + "/" + fileName + ".jpg");

@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Data.SqlClient;
-using System.Configuration;
-using System.Data;
-using System.Text;
 
 namespace InwardClearingSystem
 {
     public partial class UserMaintenance : BasePage
     {
         SqlCommand cmd;
-        DataTable dt;
-        SqlDataAdapter da;
         GridViewRow row;
         SqlTransaction transaction;
         string function = "User Maintenance";
@@ -24,14 +22,16 @@ namespace InwardClearingSystem
         {
             if (checkAccess(Convert.ToInt32(Session["RoleID"]), function) == false)
             {
-                Response.Redirect("~/NoAccess.aspx");
+                if (this.Context != null)
+                {
+                    Response.Redirect("~/NoAccess.aspx");
+                }
             }
             
             if (!IsPostBack)
             {
-                ViewState["myDataTable"] = FillDataTable();
+                ViewState["myDataTable"] = FillDataTable("FillUserDataTable", activeConnectionOpen(), UserView);
                 ViewState["SelectRow"] = -1;
-                FillDropDown();
             }            
         }
 
@@ -53,7 +53,7 @@ namespace InwardClearingSystem
             }
             else
             {
-                if (RoleDrpDwn.SelectedValue.Equals("None"))
+                if (RoleDrpDwn.SelectedValue.Equals(0))
                 {
                     Message("Please select a role");
                 }
@@ -61,28 +61,17 @@ namespace InwardClearingSystem
                 {
                     row = UserView.Rows[i];
                     string user = row.Cells[2].Text;
-                  
-                    using (SqlCommand select = new SqlCommand())
+                    using (cmd = new SqlCommand())
                     {
-                        select.CommandText = "PickRoleFromDropDown";
-                        select.CommandType = CommandType.StoredProcedure;
-                        select.Connection = activeConnectionOpen();
-                        select.Parameters.AddWithValue("@role_desc", RoleDrpDwn.Text);
-                        
-
-                        cmd = new SqlCommand();
-                        
                         cmd.CommandText = "UpdateUserRole";
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Connection = activeConnectionOpen();
-                        cmd.Parameters.AddWithValue("@id", select.ExecuteScalar());
+                        cmd.Parameters.AddWithValue("@id", RoleDrpDwn.SelectedValue);
                         cmd.Parameters.AddWithValue("@username", user);
                         cmd.ExecuteNonQuery();
 
-                        FillDataTable();
-                        
+                        FillDataTable("FillUserDataTable", activeConnectionOpen(), UserView);
                     }
-                    
                 }
             }
             ViewState["SelectRow"] = -1;
@@ -90,7 +79,18 @@ namespace InwardClearingSystem
 
         protected void branchBtn_Click(object sender, EventArgs e)
         {
-            Response.Redirect("~/EditUserBranches.aspx");    
+            if (this.Context != null)
+            {
+                Response.Redirect("~/EditUserBranches.aspx");
+            }
+        }
+
+        protected void addUser_Click(object sender, EventArgs e)
+        {
+            if (this.Context != null)
+            {
+                Response.Redirect("~/AddUser.aspx");
+            }
         }
 
         protected void deleteUser_Click(object sender, EventArgs e)
@@ -109,19 +109,21 @@ namespace InwardClearingSystem
                     string user_id = row.Cells[1].Text;
 
                     cmd = activeConnectionOpen().CreateCommand();
-                  
+
 
                     transaction = activeConnection.BeginTransaction("UserTermination");
 
                     cmd.Connection = activeConnection;
                     cmd.Transaction = transaction;
 
+                    //Check for any branches that may be connected to the user to be deleted.
                     cmd.CommandText = "CheckUserTiesWithBranches";
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@id", user_id);
 
                     if (cmd.ExecuteNonQuery() > 0)
                     {
+                        //Sever any connections to the user, allowing for user termination.
                         cmd.CommandText = "SeverUserTiesWithBranches";
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.ExecuteNonQuery();
@@ -142,11 +144,6 @@ namespace InwardClearingSystem
                 transaction.Rollback();
                 Message("User Delete has failed. Please try again");
             }
-        }
-
-        protected void addUser_Click(object sender, EventArgs e)
-        {
-            Response.Redirect("~/AddUser.aspx");
         }
 
         protected void editUser_Click(object sender, EventArgs e)
@@ -210,42 +207,6 @@ namespace InwardClearingSystem
             catch
             {
                 Message("An error has occrred. Please try again.");
-            }
-        }
-
-        /// <summary>
-        /// Fills the DropDown control with the roles in the database.
-        /// </summary>
-        public void FillDropDown()
-        {
-            using (da = new SqlDataAdapter("FillRoleDropDown", activeConnectionOpen()))
-            {
-
-                dt = new DataTable();
-
-                da.Fill(dt);
-                RoleDrpDwn.DataSource = dt;
-                RoleDrpDwn.DataTextField = "role_desc";
-                RoleDrpDwn.DataValueField = "role_desc";
-                RoleDrpDwn.DataBind();
-                RoleDrpDwn.Items.Insert(0, new ListItem("<Select Role>", "None"));
-            }
-        }
-
-        /// <summary>
-        /// Fills the DataTable control with the information of all registered users in the database.
-        /// </summary>
-        /// <returns>Filled DataTable</returns>
-        public DataTable FillDataTable()
-        {
-            using (da = new SqlDataAdapter("FillUserDataTable", activeConnectionOpen()))
-            {
-                dt = new DataTable();
-
-                da.Fill(dt);
-                UserView.DataSource = dt;
-                UserView.DataBind();
-                return dt;
             }
         }
     }

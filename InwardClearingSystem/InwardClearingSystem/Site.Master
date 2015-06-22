@@ -3,7 +3,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head runat="server">
-    <title></title>
+    <title>Inward Clearing System</title>
+    <link rel="shortcut icon" type="image/x-icon" href="~/Resources/h2icon.ico" />
     <link href="~/Styles/Site.css" rel="stylesheet" type="text/css" />
     <asp:ContentPlaceHolder ID="HeadContent" runat="server">
     </asp:ContentPlaceHolder>
@@ -14,8 +15,8 @@
         <div class="header" style="color: #FF0000">
             <div class="loginDisplay">
                 <div class="dateBox">
-                 <cc1:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server">
-                 </cc1:ToolkitScriptManager>
+                    <asp:ScriptManager ID="ScriptManager1" runat="server">
+                    </asp:ScriptManager>
 		            <script type="text/javascript">
 		                var prm = Sys.WebForms.PageRequestManager.getInstance();
 		                prm.add_beginRequest(beginRequest);
@@ -41,12 +42,12 @@
 
                 <asp:LoginView ID="HeadLoginView" runat="server" EnableViewState="false">
                     <AnonymousTemplate>
-                        [ <a href="~/Account/Login.aspx" ID="HeadLoginStatus0" runat="server">Log In</a> ]
+                        [ <a href="~/Login.aspx" ID="HeadLoginStatus0" runat="server">Log In</a> ]
                     </AnonymousTemplate>
                     <LoggedInTemplate>
                         Welcome, <span class="bold"><asp:LoginName ID="HeadLoginName" runat="server" /></span>!
-                        [ <asp:HyperLink ID="linkChangePassword" runat="server" NavigateUrl="~/Account/ChangePassword.aspx" Text="Change Password" /> ]
-                        [ <asp:LoginStatus ID="HeadLoginStatus" runat="server" LogoutAction="Redirect" LogoutText="Log Out" LogoutPageUrl="~/Account/Login.aspx"/> ]
+                        [ <asp:HyperLink ID="linkChangePassword" runat="server" NavigateUrl="~/ChangePassword.aspx" Text="Change Password" /> ]
+                        [ <asp:LoginStatus ID="HeadLoginStatus" runat="server" LogoutAction="Redirect" LogoutText="Log Out" LogoutPageUrl="~/Login.aspx"/> ]
                     </LoggedInTemplate>
                 </asp:LoginView>
             </div>
@@ -55,13 +56,9 @@
                 <img src="Resources/H2ics2.png" style="height: 52px; width: 272px" />
             </div>
 			<asp:Menu ID="NavigationMenu" runat="server" CssClass="menu"
-                     IncludeStyleBlock="false" Orientation="Horizontal" 
-                    onmenuitemclick="NavigationMenu_MenuItemClick">
-
-                    <staticselectedstyle backcolor="LightBlue"
-                      borderstyle="Solid"
-                      bordercolor="Black"
-                      borderwidth="1"/>
+                     IncludeStyleBlock="False" Orientation="Horizontal" 
+                    onmenuitemclick="NavigationMenu_MenuItemClick" 
+                    OnMenuItemDataBound="OnMenuItemDataBound">
 
                     <Items>
                         <asp:MenuItem NavigateUrl="~/Default.aspx" Text="Main Menu" />

@@ -1,10 +1,11 @@
-﻿<%@ Page Title="Update Thresholds" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="UpdateThreshold.aspx.cs" Inherits="InwardClearingSystem.UpdateThreshold" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="UpdateThreshold.aspx.cs" Inherits="InwardClearingSystem.UpdateThreshold" %>
 <%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="cc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
     <style type="text/css">
     .money
     {
-        color:#C19132;
+        color:Black;
+        font-weight:bold;
     }
     div.clear
     {
@@ -45,6 +46,7 @@
 </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
+<p>UPDATE THRESHOLDS</p>
     <div class="whiteSpace">&nbsp;</div>
     <div class="container">
         <div class="gridTitleBar" style="background-color:#aa3333; border:1px solid ##aa3333; width:98.9%">Set New Thresholds</div>
@@ -74,7 +76,7 @@
         </div>
 
         <div class="clear">
-        <asp:Button ID="Button1" runat="server" onclick="SetThresholds" Text="Set" OnClientClick="return ConfirmSettings();"
+        <asp:Button ID="setThresholds" runat="server" onclick="setThresholds_Click" Text="Set" OnClientClick="return ConfirmSettings();"
         Width="91px" CssClass="defaultButton"/>
         </div>
 </div>

@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Confirmation" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Confirmation.aspx.cs" Inherits="InwardClearingSystem.Confirmation" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Confirmation.aspx.cs" Inherits="InwardClearingSystem.Confirmation" %>
 <%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="cc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
      <script src="Scripts/jquery-1.8.3.min.js" type="text/javascript"></script>
@@ -11,20 +11,14 @@
         .grid_scroll
         {  
             overflow: scroll;
-            height: 300px;
+            height: 40%;
             border: solid 2px black;
-            width: 100%;        
+            width: auto;        
             margin: 0px  
         }
         .imageBox
         {
-             border: solid 2px black;
-        }
-        div.confirmOptions
-        {
-            width:65%;
-            margin:0 auto;
-            font-family:Segoe UI;
+             border: solid 2px #990000;
         }
         div.fundBtnDiv
         {
@@ -45,25 +39,19 @@
         }
         div.imageLeft
         {
-            width:50%;
+            width:40%;
             float:left;
             text-align:center;
         }
         div.imageRight
         {
-            width:50%;
+            width:40%;
             float:right;
             text-align:center;
         }
-		div.images
-        {
-            width:80%;
-            height:auto;
-            margin:0 auto;
-        }
         div.remarksBox
         {
-             text-align: center;   
+            float:left; 
         }
         div.unfundBtnDiv
         {
@@ -71,22 +59,31 @@
             float:right;
             text-align:center;
         }
+        div.bottom_half
+        {
+            display:inline;
+            height:50%;
+            width:100%;
+        }
 </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-    <div class="grid_scroll">
-        <br />
+<p>CONFIRMATION</p>
+    <div class="gridWindow">
+    <div class="gridTitleBar">Checks for Confirmation</div>
         <asp:Button ID="searchBtn" runat="server" Text="Search Check#" 
             CssClass="defaultButton" onclick="searchBtn_Click" />
         <asp:TextBox ID="txtSearch" runat="server"></asp:TextBox>
         <asp:Button ID="viewAllBtn" runat="server" Text="View All" 
             CssClass="defaultButton" onclick="viewAllBtn_Click" />
+    <div class="grid_scroll">
     <asp:GridView ID="ConfirmView" runat="server" AutoGenerateColumns="false" 
             BorderColor="Black"
     AllowSorting="true" OnSorting="ConfirmView_Sorting" 
     HeaderStyle-CssClass="GridHeader"
             FooterStyle-CssClass="gridViewFooterStyle" 
-            OnRowDataBound="ConfirmView_RowDataBound" Width="100%">
+            OnRowDataBound="ConfirmView_RowDataBound" Width="100%"
+            AlternatingRowStyle-BackColor="#FFEFEF">
     <Columns>
         <asp:TemplateField>
             <ItemTemplate>
@@ -108,6 +105,7 @@
     </Columns>
     </asp:GridView>
     </div>
+</div>
     <div class="gridDetails">
     Confirmed:
     <asp:Label ID="totalCon" runat="server" Text="0" ForeColor="Black"></asp:Label>
@@ -115,61 +113,54 @@
     <asp:Label ID="totalCount" runat="server" Text="0" ForeColor="Black"></asp:Label>
     </div>
     <br />
-    <div class="confirmOptions">
-        <div class="fundBtnDiv">
-            <asp:Button ID="fundButton" runat="server" Text="Validate" 
-            onclick="fundButton_Click" OnClientClick="needToConfirm = false;"  
-            CssClass="yesButton"/>
-        </div>
-        <div class="unfundBtnDiv">
-            <asp:Button ID="unfundButton" runat="server" Text="Revoke" 
-            onclick="unfundButton_Click" OnClientClick="needToConfirm = false;"  
-            CssClass="noButton"/>
-        </div>
-    </div>
     <br />
-    &nbsp;<div class="remarksBox">
-        <asp:Label ID="confirmRemarkLabel" runat="server" Text="Remarks"></asp:Label>
-        <br />
-        <asp:TextBox ID="confirmRemarks" runat="server" TextMode="MultiLine" 
-            Height="34px" Width="206px"></asp:TextBox>
-    </div>
-    <br />
-    <div class="images">
+    <div class="bottom_half">
         <div class="imageLeft">
             <asp:Label ID="Label1" runat="server" AssociatedControlID="checkImage" 
             BorderStyle="None" Text="Image"></asp:Label>
             <br />
             <asp:Image ID="checkImage" runat="server" CssClass="imageBox" Height="180px" 
-            Width="450px" ImageAlign="Left" 
-            ImageUrl="~/Resources/No_image_available.jpg"/>
+            Width="450px"  ImageAlign="Left" ImageUrl="~/Resources/No_image_available.jpg" />
             <script type="text/javascript">
                 $(function () {
                     $("#<%=checkImage.ClientID %>").elevateZoom({ scrollZoom: true, zoomWindowWidth: 450, zoomWindowHeight: 180, zoomWindowPosition: 2 });
                 });
             </script>
+   
         </div>
+
+        <div class="remarksBox">
+            <div class="confirmOptions">
+                <div class="fundBtnDiv">
+                    <asp:Button ID="fundButton" runat="server" CssClass="yesButton"
+                    Text="Validate" onclick="fundButton_Click" OnClientClick="needToConfirm = false;" />
+                </div>
+                <div class="unfundBtnDiv">
+                    <asp:Button ID="unfundButton" runat="server" CssClass="noButton" Text="Revoke" 
+                    onclick="unfundButton_Click" OnClientClick="needToConfirm = false;" />
+                </div>
+            </div>
+                <asp:Label ID="verifyRemarkLabel" runat="server" Text="Remarks"></asp:Label>
+                <br />
+                <asp:TextBox ID="confirmRemarks" runat="server" TextMode="MultiLine" Width="242px" Height="32px" style="resize: none" ></asp:TextBox>
+            </div>
+
         <div class="imageRight">
             <asp:Label ID="Label2" runat="server" AssociatedControlID="sigImage" 
             Text="Signature"></asp:Label>
             <br />
             <asp:Image ID="sigImage" runat="server" CssClass="imageBox" Height="180px" 
-            Width="450px" ImageAlign="Right" 
-            ImageUrl="~/Resources/No_image_available.jpg"/>
+            Width="450px" ImageAlign="Right" ImageUrl="~/Resources/No_image_available.jpg"/>
             <script type="text/javascript">
                 $(function () {
                     $("#<%=sigImage.ClientID %>").elevateZoom({ scrollZoom: true, zoomWindowWidth: 450, zoomWindowHeight: 180, zoomWindowPosition: 2 });
                 });
                  </script>
         </div>
+     </div>
         <div class="whiteSpace">
             
         </div>
-        <div class="genBtnHolder">
-            <asp:Button ID="genListBtn" runat="server" onclick="genListBtn_Click" OnClientClick="return GenerateList(); needToConfirm = false;" 
-            Text="Generate List" CssClass="defaultButton"/>
-        </div>
-    </div>
     <br />
 
     <script type="text/javascript">

@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Sign Up" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="AddUser.aspx.cs" Inherits="InwardClearingSystem.Account.SignUp" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="AddUser.aspx.cs" Inherits="InwardClearingSystem.Account.SignUp" %>
 <%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="cc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
     <style type="text/css">
@@ -36,7 +36,7 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 <table class="table">
     <tr>
-        <td class="title" colspan="5">Register New User</td>
+        <td class="title" colspan="5">Register User</td>
     </tr>
     <tr>
         <td colspan="5">

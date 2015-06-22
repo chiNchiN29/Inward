@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Home Page" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true"
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true"
     CodeBehind="Default.aspx.cs" Inherits="InwardClearingSystem._Default" %>
 
 <%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="cc1" %>
@@ -33,12 +33,17 @@
              background-size: 150px;
              background-repeat: no-repeat;
              background-position: center;
-             
-          
         } 
+        div.showNumber
+        {
+            float:right;
+            text-align:right;
+        }
         div.buttonHolder
         {
+            float:left;
             text-align:right;
+            padding-bottom:5px;
         }
         div.dataLoad
         {
@@ -69,13 +74,6 @@
             height: 300px;
             border: solid 2px black;
             width: auto;        
-        }
-        div.gridWindow
-        {
-            width:100%;
-            height:70%;
-            float:left;   
-            border:2px solid #aa3333;
         }
         div.imageLoad
         {
@@ -108,16 +106,10 @@
         }
         div.viewBar
         {
-            width:50%;
             float:left;
+            padding-right:5px;
         }
-        div.viewOptions
-        {
-            width:50%;
-            float:right;
-            text-align:right;
-            padding-top:20px;
-        }
+        
         fieldset.loader
         {
             width: 60%;
@@ -164,8 +156,8 @@
                 ErrorMessage="Only csv files are allowed"  
                 ValidationExpression="(.*\.([cC][sS][vV])$)" ForeColor="Red"></asp:RegularExpressionValidator> 
                 <br />
-                <asp:Button ID="uploadDoc0" runat="server" Text="Load" 
-                OnClick="UploadCheckData" CssClass="defaultButton"/>
+                <asp:Button ID="uploadCheckData" runat="server" Text="Load" 
+                OnClick="uploadCheckData_Click" CssClass="defaultButton"/>
         </div>
         </fieldset>
         </div>
@@ -177,12 +169,19 @@
 <br />
         <div class="viewFunctions">
             <div class="viewBar">
+                <asp:TextBox ID="txtSearch" runat="server" placeholder="Enter Check #" CssClass="textbox"></asp:TextBox>
                 <asp:Button ID="searchBtn" runat="server" Text="Search Check#" 
                     CssClass="defaultButton" onclick="searchBtn_Click" />
-                <asp:TextBox ID="txtSearch" runat="server"></asp:TextBox>
                 <asp:Button ID="viewAllBtn" runat="server" onclick="viewAllBtn_Click" Text="View All" CssClass="defaultButton" />
             </div>
-            <div class="viewOptions">
+        <div class="buttonHolder">
+            <asp:Button ID="genListBtn" runat="server" onclick="genListBtn_Click" OnClientClick="return GenerateList(); needToConfirm = false;"
+                Text="Generate List" CssClass="defaultButton"/>
+            <asp:Button ID="produceReport" runat="server" Text="Produce Report" OnClick="produceReport_Click" CssClass="defaultButton" />
+            <asp:Button ID="clearCheck" runat="server" onclientclick="return DeleteItem()" 
+                Text="Clear Check Data" onclick="clearCheck_Click" CssClass="defaultButton" />  
+        </div>
+            <div class="showNumber">
             Show
             <asp:DropDownList ID="pgSize" runat="server" CssClass="style1" Height="20px" AutoPostBack="true" OnSelectedIndexChanged="ViewAllCheck_PageSizeChange"
                 Width="50px">
@@ -224,15 +223,10 @@
             <asp:BoundField DataField="modified_date" SortExpression="modified_date" HeaderText="Modified Date" />
         </Columns>
     </asp:GridView>
-        <div class="buttonHolder">
-            <asp:Button ID="genListBtn" runat="server" onclick="genListBtn_Click" OnClientClick="return GenerateList(); needToConfirm = false;"
-                Text="Generate List" CssClass="defaultButton"/>
-            <asp:Button ID="produceReport" runat="server" Text="Produce Report" OnClick="ProduceFinalReport" CssClass="defaultButton" />
-            <asp:Button ID="clearCheck" runat="server" onclientclick="return DeleteItem()" 
-                Text="Clear Check Data" onclick="clearCheck_Click1" CssClass="defaultButton" />  
-        </div>
-        <div class="whiteSpace">&nbsp;</div>
     </div>
+        
+        <div class="whiteSpace">&nbsp;</div>
+    
 
 
     <br />

@@ -23,8 +23,6 @@ namespace InwardClearingSystem
 
     public partial class _Default : BasePage
     {
-        DataTable dt;
-        SqlDataAdapter da;
         SqlCommand cmd;
         StringBuilder query;
         
@@ -33,7 +31,7 @@ namespace InwardClearingSystem
             activeConnection.Close();
             if (!IsPostBack)
             {
-                ViewState["myDataTable"] = FillDataTable();
+                ViewState["myDataTable"] = FillDataTable("DefaultCheckDataTable", activeConnectionOpen(), ViewAllCheck);
             }
         }
 
@@ -63,182 +61,7 @@ namespace InwardClearingSystem
             }
         }
 
-        /// <summary>
-        /// upload check data to database
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        protected void UploadCheckData(object sender, EventArgs e)
-        {
-            try
-            {
-                //string filepath = FileUpload2.PostedFile.FileName;
-                StreamReader sr = new StreamReader(DataUpload.PostedFile.InputStream);
-                int lineCount = 0;
-
-                using (activeConnectionOpen())
-                {
-                    while (!sr.EndOfStream)
-                    {
-                        string line = sr.ReadLine();
-                        string[] heart = line.Split(',');
-                        string userID = Session["UserID"].ToString();
-
-                        using (SqlCommand validator = new SqlCommand("select check_number from Cheque where check_number = @checknum", activeConnection))
-                        {
-                            validator.Parameters.AddWithValue("@checknum", heart[0]);
-                            if (validator.ExecuteScalar() == null)
-                            {
-                                using (SqlCommand insert = new SqlCommand())
-                                {
-                                    insert.CommandText = "InsertCheckData";
-                                    insert.CommandType = CommandType.StoredProcedure;
-                                    insert.Connection = activeConnection;
-
-                                    using (SqlCommand checker = new SqlCommand())
-                                    {
-                                        checker.CommandText = "FilterBTA";
-                                        checker.CommandType = CommandType.StoredProcedure;
-                                        checker.Connection = activeConnection;
-
-                                        insert.Parameters.AddWithValue("@checknum", heart[0]);
-                                        insert.Parameters.AddWithValue("@amount", heart[1]);
-                                        insert.Parameters.AddWithValue("@date", heart[2]);
-                                        insert.Parameters.AddWithValue("@branch", heart[3]);
-                                        insert.Parameters.AddWithValue("@draweebank", heart[4]);
-                                        insert.Parameters.AddWithValue("@draweebranch", heart[5]);
-                                        insert.Parameters.AddWithValue("@funded", heart[6]);
-                                        if (decimal.Parse(heart[1]) < decimal.Parse(checker.ExecuteScalar().ToString()))
-                                        {
-                                            insert.Parameters.AddWithValue("@verified", "BTA");
-                                        }
-                                        else
-                                        {
-                                            insert.Parameters.AddWithValue("@verified", heart[7]);
-                                        }
-                                        insert.Parameters.AddWithValue("@confirmed", heart[8]);
-                                        insert.Parameters.AddWithValue("@remarks", heart[9]);
-                                        insert.Parameters.AddWithValue("@acctnum", heart[10]);
-                                        insert.Parameters.AddWithValue("@modby", userID);
-                                        insert.Parameters.AddWithValue("@moddate", DateTime.Now);
-                                        insert.ExecuteNonQuery();
-                                        lineCount++;
-                                    }
-                                }
-                            }
-                            //else
-                            //{
-                            //    Message("Check Data Upload interrupted. A duplicate check number has been discovered.");
-
-                            //}
-                        }
-
-                    }
-                    sr.Close();
-                }
-                    FillDataTable();
-                    ImgCount.Value = ViewState["ImageCount"].ToString();
-                    DataCount.Value = lineCount.ToString();
-                    bool uploadClicked = bool.Parse(ViewState["UploadImageClicked"].ToString());
-                    if (uploadClicked)
-                    {
-
-                        ClientScript.RegisterStartupScript(this.GetType(), "script", "CompareData();", true);
-                    }
-
-                    
-            }
-            catch (Exception b)
-            {
-                Response.Write(b);
-                //Response.Write("Please re-check the format of the data for any missing fields.")
-            }
-
-        }
-
-        /// <summary>
-        /// clear check data
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        protected void clearCheck_Click1(object sender, EventArgs e)
-        {
-            try
-            {
-                using (cmd = new SqlCommand())
-                {
-                    cmd.CommandText = "ClearCheckData";
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Connection = activeConnectionOpen();
-                    cmd.ExecuteNonQuery();
-                    ViewAllCheck.DataBind();
-                }
-            }
-            catch
-            {
-                Message("An error has occurred. Please try again");
-            }
-        }
-
-        protected void ViewAllCheck_Sorting(object sender, GridViewSortEventArgs e)
-        {
-            dt = ViewState["myDataTable"] as DataTable;
-            dt.DefaultView.Sort = e.SortExpression + " " + GetSortDirection(e.SortExpression);
-            ViewAllCheck.DataSource = dt;
-            ViewAllCheck.DataBind();
-        }
-
-        //Generate List
-        protected void genListBtn_Click(object sender, EventArgs e)
-        {
-            query = new StringBuilder();
-            query.Append("SELECT check_number, amount, CONVERT(VARCHAR(10), check_date, 101), branch_name, drawee_bank, drawee_bank_branch, ");
-            query.Append("drawee_bank, drawee_bank_branch, funded, verification, verify_remarks, ch.account_number ");
-            query.Append("FROM Cheque ch, Customer c, Account a ");
-            query.Append("WHERE ch.account_number = a.account_number AND a.customer_id = c.customer_id ");
-            query.Append("AND verification = 'NO' ORDER BY ch.account_number");
-
-            // Retrieves the schema of the table.
-            dt = new DataTable();
-            dt.Clear();
-            dt = GetData(query.ToString());
-
-            // set the resulting file attachment name to the name of the report...
-            string fileName = "test";
-
-            //Response.Write(dtSchema.Rows.Count);
-
-            Response.Clear();
-            Response.Buffer = true;
-            Response.AddHeader("content-disposition", "attachment;filename=" + fileName + ".xls");
-            Response.Charset = "";
-
-            Response.ContentType = "application/vnd.xls";
-
-            System.Text.StringBuilder sb = new System.Text.StringBuilder();
-
-            foreach (DataRow datar in dt.Rows)
-            {
-                for (int i = 0; i < dt.Columns.Count; i++)
-                {
-                    if (!Convert.IsDBNull(datar[i]))
-                    {
-                        sb.Append(datar[i].ToString());
-                    }
-                    if (i < dt.Columns.Count - 1)
-                    {
-                        sb.Append(",");
-                    }
-                }
-                sb.Append("\r\n");
-            }
-            Response.Output.Write(sb.ToString());
-            Response.Flush();
-            Response.End();
-       
-        }
-
-        protected void ProduceFinalReport(object sender, EventArgs e)
+        protected void produceReport_Click(object sender, EventArgs e)
         {
             query = new StringBuilder();
             query.Append("SELECT * ");
@@ -306,8 +129,183 @@ namespace InwardClearingSystem
 
         protected void viewAllBtn_Click(object sender, EventArgs e)
         {
-            FillDataTable();
+            FillDataTable("DefaultCheckDataTable", activeConnectionOpen(), ViewAllCheck);
             txtSearch.Text = "";
+        }
+
+        //Generate List
+        protected void genListBtn_Click(object sender, EventArgs e)
+        {
+            query = new StringBuilder();
+            query.Append("SELECT check_number, amount, CONVERT(VARCHAR(10), check_date, 101), branch_name, drawee_bank, drawee_bank_branch, ");
+            query.Append("drawee_bank, drawee_bank_branch, funded, verification, verify_remarks, ch.account_number ");
+            query.Append("FROM Cheque ch, Customer c, Account a ");
+            query.Append("WHERE ch.account_number = a.account_number AND a.customer_id = c.customer_id ");
+            query.Append("AND verification = 'NO' ORDER BY ch.account_number");
+
+            // Retrieves the schema of the table.
+            dt = new DataTable();
+            dt.Clear();
+            dt = GetData(query.ToString());
+
+            // set the resulting file attachment name to the name of the report...
+            string fileName = "test";
+
+            //Response.Write(dtSchema.Rows.Count);
+
+            Response.Clear();
+            Response.Buffer = true;
+            Response.AddHeader("content-disposition", "attachment;filename=" + fileName + ".xls");
+            Response.Charset = "";
+
+            Response.ContentType = "application/vnd.xls";
+
+            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+
+            foreach (DataRow datar in dt.Rows)
+            {
+                for (int i = 0; i < dt.Columns.Count; i++)
+                {
+                    if (!Convert.IsDBNull(datar[i]))
+                    {
+                        sb.Append(datar[i].ToString());
+                    }
+                    if (i < dt.Columns.Count - 1)
+                    {
+                        sb.Append(",");
+                    }
+                }
+                sb.Append("\r\n");
+            }
+            Response.Output.Write(sb.ToString());
+            Response.Flush();
+            Response.End();
+
+        }
+
+        /// <summary>
+        /// upload check data to database
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected void uploadCheckData_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                //string filepath = FileUpload2.PostedFile.FileName;
+                StreamReader sr = new StreamReader(DataUpload.PostedFile.InputStream);
+                int lineCount = 0;
+
+                using (activeConnectionOpen())
+                {
+                    while (!sr.EndOfStream)
+                    {
+                        string line = sr.ReadLine();
+                        string[] heart = line.Split(',');
+                        string userID = Session["UserID"].ToString();
+
+                        using (SqlCommand validator = new SqlCommand("select check_number from Cheque where check_number = @checknum", activeConnection))
+                        {
+                            validator.Parameters.AddWithValue("@checknum", heart[0]);
+                            if (validator.ExecuteScalar() == null)
+                            {
+                                using (SqlCommand insert = new SqlCommand())
+                                {
+                                    insert.CommandText = "InsertCheckData";
+                                    insert.CommandType = CommandType.StoredProcedure;
+                                    insert.Connection = activeConnection;
+
+                                    using (SqlCommand checker = new SqlCommand())
+                                    {
+                                        checker.CommandText = "FilterBTA";
+                                        checker.CommandType = CommandType.StoredProcedure;
+                                        checker.Connection = activeConnection;
+
+                                        insert.Parameters.AddWithValue("@checknum", heart[0]);
+                                        insert.Parameters.AddWithValue("@amount", heart[1]);
+                                        insert.Parameters.AddWithValue("@date", heart[2]);
+                                        insert.Parameters.AddWithValue("@branch", heart[3]);
+                                        insert.Parameters.AddWithValue("@draweebank", heart[4]);
+                                        insert.Parameters.AddWithValue("@draweebranch", heart[5]);
+                                        insert.Parameters.AddWithValue("@funded", heart[6]);
+                                        if (decimal.Parse(heart[1]) < decimal.Parse(checker.ExecuteScalar().ToString()))
+                                        {
+                                            insert.Parameters.AddWithValue("@verified", "BTA");
+                                        }
+                                        else
+                                        {
+                                            insert.Parameters.AddWithValue("@verified", heart[7]);
+                                        }
+                                        insert.Parameters.AddWithValue("@confirmed", heart[8]);
+                                        insert.Parameters.AddWithValue("@remarks", heart[9]);
+                                        insert.Parameters.AddWithValue("@acctnum", heart[10]);
+                                        insert.Parameters.AddWithValue("@modby", userID);
+                                        insert.Parameters.AddWithValue("@moddate", DateTime.Now);
+                                        insert.ExecuteNonQuery();
+                                        lineCount++;
+                                    }
+                                }
+                            }
+                            //else
+                            //{
+                            //    Message("Check Data Upload interrupted. A duplicate check number has been discovered.");
+
+                            //}
+                        }
+
+                    }
+                    sr.Close();
+                }
+                    FillDataTable("DefaultCheckDataTable", activeConnectionOpen(), ViewAllCheck);
+                    ImgCount.Value = ViewState["ImageCount"].ToString();
+                    DataCount.Value = lineCount.ToString();
+                    bool uploadClicked = bool.Parse(ViewState["UploadImageClicked"].ToString());
+                    if (uploadClicked)
+                    {
+
+                        ClientScript.RegisterStartupScript(this.GetType(), "script", "CompareData();", true);
+                    }
+
+                    
+            }
+            catch (Exception b)
+            {
+                Response.Write(b);
+                //Response.Write("Please re-check the format of the data for any missing fields.")
+            }
+
+        }
+
+        /// <summary>
+        /// Clears check data
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected void clearCheck_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                using (cmd = new SqlCommand())
+                {
+                    cmd.CommandText = "ClearCheckData";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Connection = activeConnectionOpen();
+                    cmd.ExecuteNonQuery();
+                    ViewAllCheck.DataBind();
+                }
+            }
+            catch
+            {
+                Message("An error has occurred. Please try again");
+            }
+        }
+
+        protected void ViewAllCheck_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            dt = ViewState["myDataTable"] as DataTable;
+            dt.DefaultView.Sort = e.SortExpression + " " + GetSortDirection(e.SortExpression);
+            ViewAllCheck.DataSource = dt;
+            ViewAllCheck.DataBind();
         }
 
         protected void ViewAllCheck_PageIndex(object sender, GridViewPageEventArgs e)
@@ -315,7 +313,7 @@ namespace InwardClearingSystem
             ViewAllCheck.PageIndex = e.NewPageIndex;
             if (ViewState["SortExpression"] == null)
             {
-                FillDataTable();
+                FillDataTable("DefaultCheckDataTable", activeConnectionOpen(), ViewAllCheck);
             }
             else
             {
@@ -329,9 +327,14 @@ namespace InwardClearingSystem
         protected void ViewAllCheck_PageSizeChange(object sender, EventArgs e)
         {
             ViewAllCheck.PageSize = Convert.ToInt32(pgSize.SelectedValue);
-            FillDataTable();
+            FillDataTable("DefaultCheckDataTable", activeConnectionOpen(), ViewAllCheck);
         }
 
+        /// <summary>
+        /// Fills up a DataTable with the results from the SQL query made to the database.
+        /// </summary>
+        /// <param name="query">SQL query to be made to the database.</param>
+        /// <returns>Filled DataTable</returns>
         private DataTable GetData(String query)
         {
             activeConnectionOpen();
@@ -360,29 +363,6 @@ namespace InwardClearingSystem
                 imageIn.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
                 return ms.ToArray();
             }
-        }
-
-        private string GetSortDirection(string column)
-        {
-            string sortDirection = "DESC";
-            string sortExpression = ViewState["SortExpression"] as string;
-
-            if (sortExpression != null)
-            {
-                if (sortExpression == column)
-                {
-                    string lastDirection = ViewState["SortDirection"] as string;
-                    if ((lastDirection != null) && (lastDirection == "DESC"))
-                    {
-                        sortDirection = "ASC";
-                    }
-                }
-            }
-
-            ViewState["SortDirection"] = sortDirection;
-            ViewState["SortExpression"] = column;
-
-            return sortDirection;
         }
 
         /// <summary>
@@ -418,20 +398,6 @@ namespace InwardClearingSystem
             catch
             {
                 throw;
-            }
-        }
-
-        public DataTable FillDataTable()
-        {
-            dt = new DataTable();
-            using (SqlDataAdapter da = new SqlDataAdapter("DefaultCheckDataTable", activeConnectionOpen()))
-            {
-                da.Fill(dt);
-                ViewAllCheck.DataSource = dt;
-                ViewAllCheck.DataBind();
-                activeConnectionClose();
-
-                return dt;
             }
         }
 

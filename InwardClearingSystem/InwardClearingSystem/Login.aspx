@@ -17,6 +17,7 @@
             float: right;
             font-family:Segoe UI;
             background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #FFFFFF), color-stop(1, #B5B5B5)) !important;
+            border-radius:10px;
         }
         .textBoxPositions
         {
@@ -62,7 +63,7 @@
             <img src="../Resources/H2ics.png">
         </div>
     </div>
-    <asp:Login ID="Login1" runat="server" onauthenticate="Button1_Click" 
+    <asp:Login ID="Login1" runat="server" onauthenticate="authenticate_Click" 
         BackColor="White" Font-Size="1.2em" 
         ForeColor="#333333" CssClass="loginScreen">
         <InstructionTextStyle Font-Italic="True" ForeColor="Black" />
@@ -131,8 +132,7 @@
         <TitleTextStyle BackColor="#5D7B9D" Font-Bold="True" Font-Size="0.9em" 
             ForeColor="White" />
     </asp:Login>
-        <cc1:RoundedCornersExtender ID="Login1_RoundedCornersExtender" runat="server" 
-            BehaviorID="Login1_RoundedCornersExtender" TargetControlID="Login1" BorderColor="#990000">
-        </cc1:RoundedCornersExtender>
+        <cc1:DropShadowExtender ID="Login1_DropShadowExtender" runat="server" 
+            BehaviorID="Login1_DropShadowExtender" TargetControlID="Login1" />
     </div>
 </asp:Content>

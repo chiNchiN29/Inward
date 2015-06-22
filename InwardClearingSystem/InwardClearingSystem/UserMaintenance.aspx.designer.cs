@@ -58,15 +58,6 @@ namespace InwardClearingSystem {
         protected global::System.Web.UI.WebControls.Button deleteUser;
         
         /// <summary>
-        /// UserView control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView UserView;
-        
-        /// <summary>
         /// RoleDrpDwn control.
         /// </summary>
         /// <remarks>
@@ -74,6 +65,24 @@ namespace InwardClearingSystem {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList RoleDrpDwn;
+        
+        /// <summary>
+        /// SqlDataSource1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.SqlDataSource SqlDataSource1;
+        
+        /// <summary>
+        /// assignBtn control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button assignBtn;
         
         /// <summary>
         /// branchBtn control.
@@ -85,12 +94,12 @@ namespace InwardClearingSystem {
         protected global::System.Web.UI.WebControls.Button branchBtn;
         
         /// <summary>
-        /// assignBtn control.
+        /// UserView control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button assignBtn;
+        protected global::System.Web.UI.WebControls.GridView UserView;
     }
 }

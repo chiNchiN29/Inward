@@ -22,19 +22,24 @@ namespace InwardClearingSystem
 {
     public partial class Verification : BasePage
     {
-        SqlDataAdapter da;
-        SqlCommand cmd;
-        GridViewRow row;
+        CmsConnect CmsConnect = new CmsConnect();
         DataTable dt;
-        int totalVerified = 0;
+        GridViewRow row;
+        Int32 totalVerified = 0;
         RadioButton rb;
+        SqlCommand cmd;
+        SqlDataAdapter da;
+        String function = "Signature Verification";
         String query;
-        string function = "Signature Verification";
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (checkAccess(Convert.ToInt32(Session["RoleID"]), function) == false)
             {
-                Response.Redirect("~/NoAccess.aspx");
+                if (this.Context != null)
+                {
+                    Response.Redirect("~/NoAccess.aspx");
+                }
             }
 
             if (!Page.IsPostBack)
@@ -45,24 +50,7 @@ namespace InwardClearingSystem
            
         }
 
-        private static byte[] imageToByteArray(System.Drawing.Image imageIn)
-        {
-            try
-            {
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    imageIn.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
-                    return ms.ToArray();
-                }
-            }
-            catch
-            {
-                throw;
-            }
-        }
-
-       
-        protected void RowSelect_CheckedChanged(Object sender, EventArgs e)
+        protected void RowSelect_CheckedChanged(object sender, EventArgs e)
         {
             try
             {
@@ -88,7 +76,7 @@ namespace InwardClearingSystem
                     string im = row.Cells[3].Text;
                     string age = row.Cells[1].Text;
                     string image = im + "_" + age;
-                    ShowChequeImage(session, image, checkImage);
+                    CmsConnect.ShowChequeImage(session, image, checkImage);
                     ShowSigDTImage(row.RowIndex, cmd, VerifyView, sigImage);
                 }
             }
@@ -131,30 +119,18 @@ namespace InwardClearingSystem
             }
         }
 
-        
-
-        private void UpdateCheckData(int i, string verify, string remarks )
+        //insert signatures in database
+        protected void insertSig_Click(object sender, EventArgs e)
         {
-            try
-            {
-                using (cmd = new SqlCommand(query, activeConnectionOpen()))
-                {
-                    cmd.CommandText = "UpdateCheckDataVerificationStatus";
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Connection = activeConnectionOpen();
-                    cmd.Parameters.AddWithValue("@acctnumber", VerifyView.Rows[i].Cells[3].Text);
-                    cmd.Parameters.AddWithValue("@chknumber", VerifyView.Rows[i].Cells[1].Text);
-                    cmd.Parameters.AddWithValue("@verify", verify);
-                    cmd.Parameters.AddWithValue("@modby", Session["UserID"]);
-                    cmd.Parameters.AddWithValue("@moddate", DateTime.Now);
-                    cmd.Parameters.AddWithValue("@veremarks", remarks);
-                    cmd.ExecuteNonQuery();
-                }
-            }
-            catch
-            {
-                throw;
-            }
+            activeConnectionOpen();
+            int userID = Convert.ToInt32(Session["UserID"]);
+            cmd = new SqlCommand("insert into Signature(signature_image, account_number, modified_by, modified_date) values (@Sig, @ID, @modby, @moddate)", activeConnection);
+            cmd.Parameters.AddWithValue("@Sig", imageToByteArray(System.Drawing.Image.FromStream(FileUpload1.PostedFile.InputStream)));
+            cmd.Parameters.AddWithValue("@ID", TextBox1.Text);
+            cmd.Parameters.AddWithValue("@modby", userID);
+            cmd.Parameters.AddWithValue("@moddate", DateTime.Now);
+            cmd.ExecuteNonQuery();
+            activeConnectionClose();
         }
 
         protected void rejectButton_Click(object sender, EventArgs e)
@@ -178,135 +154,32 @@ namespace InwardClearingSystem
                 }
                 else
                 {
-                        List<string> selected = new List<string>();
-                        foreach (ListItem item in verifyChoice.Items)
+                    List<string> selected = new List<string>();
+                    foreach (ListItem item in verifyChoice.Items)
+                    {
+                        if (item.Selected)
                         {
-                            if (item.Selected)
+                            if (remarks == "")
                             {
-                                if (remarks == "")
-                                {
-                                    remarks = item.Text;
-                                }
-                                else
-                                {
-                                    remarks += ". " + item.Text;
-                                }
+                                remarks = item.Text;
+                            }
+                            else
+                            {
+                                remarks += ". " + item.Text;
                             }
                         }
-
-                        UpdateCheckData(i, "NO", remarks + ". " + verifyRemarks.Text);
-                        insertCheckLog(i, "Verification", "Successfully verified no", VerifyView);
-                        FillDataTable();
-                        verifyChoice.Items.Add(verifyRemarks.Text);
-
-
-                        NextRow(VerifyView, i);
                     }
-                    verifyChoice.ClearSelection();
-            }
-        }
 
-        //insert signatures in database
-        protected void insertSig_Click(object sender, EventArgs e)
-        {
-            activeConnectionOpen();
-            int userID = Convert.ToInt32(Session["UserID"]);
-            cmd = new SqlCommand("insert into Signature(signature_image, account_number, modified_by, modified_date) values (@Sig, @ID, @modby, @moddate)", activeConnection);
-            cmd.Parameters.AddWithValue("@Sig", imageToByteArray(System.Drawing.Image.FromStream(FileUpload1.PostedFile.InputStream)));
-            cmd.Parameters.AddWithValue("@ID", TextBox1.Text);
-            cmd.Parameters.AddWithValue("@modby", userID);
-            cmd.Parameters.AddWithValue("@moddate", DateTime.Now);
-            cmd.ExecuteNonQuery();
-            activeConnectionClose();
-        }
+                    UpdateCheckData(i, "NO", remarks + ". " + verifyRemarks.Text);
+                    insertCheckLog(i, "Verification", "Successfully verified no", VerifyView);
+                    FillDataTable();
+                    verifyChoice.Items.Add(verifyRemarks.Text);
 
-        private DataTable GetData()
-        {
-            query = "FilterForVerificationGenerateList";
 
-            activeConnectionOpen();
-            da = new SqlDataAdapter(query.ToString(), activeConnection);
-            dt = new DataTable();
-            da.Fill(dt);
-            activeConnectionClose();
-            return dt; 
-        }
-            
-        protected void VerifyView_Sorting(Object sender, GridViewSortEventArgs e)
-        {
-            dt = ViewState["myDataTable"] as DataTable;
-            dt.DefaultView.Sort = e.SortExpression + " " + GetSortDirection(e.SortExpression);
-            VerifyView.DataSource = dt;
-            VerifyView.DataBind();
-        }
-
-        public DataTable FillDataTable()
-        {
-            string user = Session["UserName"].ToString();
-            using (cmd = new SqlCommand())
-            {
-                cmd.CommandText = "FillVerificationDataTable";
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Connection = activeConnectionOpen();
-                cmd.Parameters.AddWithValue("@username", user); 
-                dt = new DataTable();
-                da = new SqlDataAdapter(cmd);
-
-                da.Fill(dt);
-                VerifyView.DataSource = dt;
-                VerifyView.DataBind();
-                activeConnectionClose();
-                return dt;
-            }
-
-     
-        }
-
-        private string GetSortDirection(string column)
-        {
-            string sortDirection = "DESC";
-            string sortExpression = ViewState["SortExpression"] as string;
-
-            if (sortExpression != null)
-            {
-                if (sortExpression == column)
-                {
-                    string lastDirection = ViewState["SortDirection"] as string;
-                    if ((lastDirection != null) && (lastDirection == "DESC"))
-                    {
-                        sortDirection = "ASC";
-                    }
+                    NextRow(VerifyView, i);
                 }
+                verifyChoice.ClearSelection();
             }
-            ViewState["SortDirection"] = sortDirection;
-            ViewState["SortExpression"] = column;
-
-            return sortDirection;
-        }
-
-        protected void VerifyView_RowDataBound(Object sender, GridViewRowEventArgs e)
-        {
-            int total = VerifyView.Rows.Count;
-            if (e.Row.RowType == DataControlRowType.DataRow)
-            {
-                string verified = e.Row.Cells[10].Text;
-                if (verified.Equals("YES"))
-                {
-                    e.Row.CssClass = "YesVer";
-                    rb = (RadioButton)e.Row.FindControl("RowSelect");
-                    rb.Enabled = false;
-                    totalVerified++;
-                }
-                if (verified.Equals("NO"))
-                {
-                    e.Row.CssClass = "NoVer";
-                    rb = (RadioButton)e.Row.FindControl("RowSelect");
-                    rb.Enabled = false;
-                    totalVerified++;
-                }
-            }
-            totalVer.Text = totalVerified.ToString();
-            totalCount.Text = total.ToString();
         }
 
         protected void searchBtn_Click(object sender, EventArgs e)
@@ -341,6 +214,126 @@ namespace InwardClearingSystem
             txtSearch.Text = "";
         }
 
+        protected void VerifyView_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            int total = VerifyView.Rows.Count;
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                string verified = e.Row.Cells[10].Text;
+                if (verified.Equals("YES"))
+                {
+                    e.Row.CssClass = "YesVer";
+                    rb = (RadioButton)e.Row.FindControl("RowSelect");
+                    rb.Enabled = false;
+                    totalVerified++;
+                }
+                if (verified.Equals("NO"))
+                {
+                    e.Row.CssClass = "NoVer";
+                    rb = (RadioButton)e.Row.FindControl("RowSelect");
+                    rb.Enabled = false;
+                    totalVerified++;
+                }
+            }
+            totalVer.Text = totalVerified.ToString();
+            totalCount.Text = total.ToString();
+        }
+
+        protected void VerifyView_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            dt = ViewState["myDataTable"] as DataTable;
+            dt.DefaultView.Sort = e.SortExpression + " " + GetSortDirection(e.SortExpression);
+            VerifyView.DataSource = dt;
+            VerifyView.DataBind();
+        }
+
+        /// <summary>
+        /// Fills the DataTable with check data for Signature Verification. 
+        /// This method is specific to Verification as the query requires a parameter.
+        /// </summary>
+        /// <returns>Filled DataTable</returns>
+        public DataTable FillDataTable()
+        {
+            string user = Session["UserName"].ToString();
+            using (cmd = new SqlCommand())
+            {
+                cmd.CommandText = "FillVerificationDataTable";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Connection = activeConnectionOpen();
+                cmd.Parameters.AddWithValue("@username", user);
+                dt = new DataTable();
+                da = new SqlDataAdapter(cmd);
+
+                da.Fill(dt);
+                VerifyView.DataSource = dt;
+                VerifyView.DataBind();
+                activeConnectionClose();
+                return dt;
+            }
+        }
+
+        private DataTable GetData()
+        {
+            query = "FilterForVerificationGenerateList";
+            activeConnectionOpen();
+            da = new SqlDataAdapter(query.ToString(), activeConnection);
+            dt = new DataTable();
+            da.Fill(dt);
+            activeConnectionClose();
+            return dt;
+        }
+
+        /// <summary>
+        /// Converts System.Drawing.Image to a byte array.
+        /// </summary>
+        /// <param name="imageIn">Image to be converted.</param>
+        /// <returns>The image in the byte array type.</returns>
+        private static byte[] imageToByteArray(System.Drawing.Image imageIn)
+        {
+            try
+            {
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    imageIn.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+                    return ms.ToArray();
+                }
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Updates the check data with values with status regarding verification 
+        /// with corresponding remarks.
+        /// </summary>
+        /// <param name="i">Row index that contains the check data to be updated.</param>
+        /// <param name="verify">New verfication status of the check data.</param>
+        /// <param name="remarks">Corresponding remarks to the change in verification status.</param>
+        private void UpdateCheckData(int i, string verify, string remarks)
+        {
+            try
+            {
+                using (cmd = new SqlCommand(query, activeConnectionOpen()))
+                {
+                    cmd.CommandText = "UpdateCheckDataVerificationStatus";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Connection = activeConnectionOpen();
+                    cmd.Parameters.AddWithValue("@acctnumber", VerifyView.Rows[i].Cells[3].Text);
+                    cmd.Parameters.AddWithValue("@chknumber", VerifyView.Rows[i].Cells[1].Text);
+                    cmd.Parameters.AddWithValue("@verify", verify);
+                    cmd.Parameters.AddWithValue("@modby", Session["UserID"]);
+                    cmd.Parameters.AddWithValue("@moddate", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@veremarks", remarks);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch
+            {
+                throw;
+            }
+        }
 
         //protected void VerifyView_RowCreated(object sender, GridViewRowEventArgs e)
         //{

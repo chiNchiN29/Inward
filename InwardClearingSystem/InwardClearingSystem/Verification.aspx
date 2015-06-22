@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Signature Verification" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Verification.aspx.cs" Inherits="InwardClearingSystem.Verification" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Verification.aspx.cs" Inherits="InwardClearingSystem.Verification" %>
 <%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="cc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
     
@@ -11,21 +11,20 @@
         }
         .imageBox
         {
-             border: solid 2px black;
+             border: solid 2px #990000;
         }
         div.acceptBox
         {
             width:50%;
             float:left;
             text-align:center;
-            height:110px;
         }
         div.grid_scroll
         {  
             overflow: scroll;
             height: 200px;
             border: solid 2px black;
-            width: 100%;        
+            width: auto;        
             margin: 0px  
         }
         div.gridDetails
@@ -37,43 +36,34 @@
         }
         div.imageLeft
         {
-            width:50%;
+            width:40%;
             float:left;
             text-align:center;
         }
+        div.remarksBox
+        {
+            float: left;
+        }
         div.imageRight
         {
-            width:50%;
+            width:40%;
             float:right;
             text-align:center;
-        }
-        div.images
-        {
-            width:80%;
-            margin:0 auto;
         }
         div.rejectBox
         {
             width:50%;
             float:right;   
             text-align:center;
-            height:110px;
         }
-        div.remarksBox
-        {
-            width:50%;
-            margin: 0 auto;
-            height: 85px;
-        }
+        
         div.verifyOptions
         {
-            width: 100%;
-            height:100px;
-            display:inline-block;
+            padding-bottom:10px;
         }
         div.verifyOptionsPositioning
         {
-            width:30%;
+            width:20%;
             text-align:center;
             padding-top:200px;
             margin:0 auto;
@@ -90,80 +80,15 @@
         }
         </style>
 </asp:Content>
-<asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-    <div class="whiteSpace">&nbsp;</div>
-
-    <div class="images">
-        <div class="imageLeft">
-            <asp:Label ID="Label1" runat="server" AssociatedControlID="checkImage" 
-            BorderStyle="None" Text="Image"></asp:Label>
-            <br />
-            <asp:Image ID="checkImage" runat="server" CssClass="imageBox" Height="180px" 
-            Width="450px"  ImageAlign="Left" ImageUrl="~/Resources/No_image_available.jpg" />
-            <script type="text/javascript">
-                $(function () {
-                    $("#<%=checkImage.ClientID %>").elevateZoom({ scrollZoom: true, zoomWindowWidth: 450, zoomWindowHeight: 180, zoomWindowPosition: 2 });
-                });
-            </script>
-   
-        </div>
-        <div class="imageRight">
-            <asp:Label ID="Label2" runat="server" AssociatedControlID="sigImage" 
-            Text="Signature"></asp:Label>
-            <br />
-            <asp:Image ID="sigImage" runat="server" CssClass="imageBox" Height="180px" 
-            Width="450px" ImageAlign="Right" ImageUrl="~/Resources/No_image_available.jpg"/>
-            <script type="text/javascript">
-                $(function () {
-                     $("#<%=sigImage.ClientID %>").elevateZoom({ scrollZoom: true, zoomWindowWidth: 450, zoomWindowHeight: 180, zoomWindowPosition: 2, zoomout: false });
-                 });
-                 </script>
-        </div>
-
-    </div>
-    <div class="whiteSpace">
-     
-    </div>
-    <div class="verifyOptionsPositioning">
-        <div class="remarksBox">
-                <asp:Label ID="verifyRemarkLabel" runat="server" Text="Remarks"></asp:Label>
-                <br />
-                <asp:TextBox ID="verifyRemarks" runat="server" TextMode="MultiLine" Width="242px" Height="32px" style="resize: none" ></asp:TextBox>
-                <div class="chkBoxScroll" style="overflow-y: scroll; width: 250px; height: 60px; text-align:left;">
-                    <asp:CheckBoxList ID="verifyChoice" runat="server" >
-                        <asp:ListItem>SIGNATURE DIFFERS</asp:ListItem>
-                        <asp:ListItem>AMOUNT DOES NOT MATCH</asp:ListItem>
-                        <asp:ListItem>STALE CHECK</asp:ListItem>
-                        <asp:ListItem>POST-DATED CHECK</asp:ListItem>
-                    </asp:CheckBoxList>
-                </div>
-            </div>
-            <div class="whiteSpace">
-    </div>
-    <br />
-    <br />
-        <div class="verifyOptions">
-            <div class="acceptBox">
-                <asp:Button ID="acceptButton" runat="server" CssClass="yesButton"
-                Text="Accept" onclick="acceptButton_Click" OnClientClick="needToConfirm = false;" />
-            
-            </div>
-            
-            <div class="rejectBox">
-                <asp:Button ID="rejectButton" runat="server" CssClass="noButton" Text="Reject" 
-                onclick="rejectButton_Click" OnClientClick="needToConfirm = false;" />
-            
-            </div>
-        </div>
-    </div>
-    <br />
-    
-
+<asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">  
+<p>SIGNATURE VERIFICATION</p> 
     <asp:FileUpload ID="FileUpload1" runat="server" AllowMultiple="true"/>
    
     <asp:Button ID="insertSig" runat="server" Text="Insert Signature" OnClick="insertSig_Click" />
     <asp:TextBox ID="TextBox1" runat="server"></asp:TextBox>
     <br />
+    <div class="gridWindow">
+    <div class="gridTitleBar">Checks for Verification</div>
     <asp:Button ID="searchBtn" runat="server" onclick="searchBtn_Click"  CssClass="defaultButton"
         Text="Search Check#" />
     <asp:TextBox ID="txtSearch" runat="server"></asp:TextBox>
@@ -175,7 +100,8 @@
             BorderColor="Black"
               AllowSorting="true" OnSorting="VerifyView_Sorting" HeaderStyle-CssClass="GridHeader" 
              OnRowDataBound="VerifyView_RowDataBound"
-            FooterStyle-CssClass="gridViewFooterStyle" Width="100%">
+            FooterStyle-CssClass="gridViewFooterStyle" Width="100%"
+            AlternatingRowStyle-BackColor="#FFEFEF">
                  <Columns>
                     <asp:TemplateField>
                     <ItemTemplate>
@@ -195,6 +121,7 @@
                  </Columns>
                   </asp:GridView>
 </div>
+</div>
     <div class="gridDetails">
     Verified:
     <asp:Label ID="totalVer" runat="server" Text="0" ForeColor="Black"></asp:Label>
@@ -202,8 +129,64 @@
     <asp:Label ID="totalCount" runat="server" Text="0" ForeColor="Black"></asp:Label>
     </div>
     <br />
+    <div class="verifyOptionsPositioning">
     
+    <br />
+    <br />
+        
+    </div>
+    <br />
+        <div class="imageLeft">
+            <asp:Label ID="Label1" runat="server" AssociatedControlID="checkImage" 
+            BorderStyle="None" Text="Image"></asp:Label>
+            <br />
+            <asp:Image ID="checkImage" runat="server" CssClass="imageBox" Height="180px" 
+            Width="450px"  ImageAlign="Left" ImageUrl="~/Resources/No_image_available.jpg" />
+            <script type="text/javascript">
+                $(function () {
+                    $("#<%=checkImage.ClientID %>").elevateZoom({ scrollZoom: true, zoomWindowWidth: 450, zoomWindowHeight: 180, zoomWindowPosition: 2 });
+                });
+            </script>
+   
+        </div>
 
+        <div class="remarksBox">
+            <div class="verifyOptions">
+                <div class="acceptBox">
+                    <asp:Button ID="acceptButton" runat="server" CssClass="yesButton"
+                    Text="Accept" onclick="acceptButton_Click" OnClientClick="needToConfirm = false;" />
+                </div>
+                <div class="rejectBox">
+                    <asp:Button ID="rejectButton" runat="server" CssClass="noButton" Text="Reject" 
+                    onclick="rejectButton_Click" OnClientClick="needToConfirm = false;" />
+                </div>
+            </div>
+                <asp:Label ID="verifyRemarkLabel" runat="server" Text="Remarks"></asp:Label>
+                <br />
+                <asp:TextBox ID="verifyRemarks" runat="server" TextMode="MultiLine" Width="242px" Height="32px" style="resize: none" ></asp:TextBox>
+                <div class="chkBoxScroll" style="overflow-y: scroll; width: 250px; height: 100px; text-align:left; margin: 0 auto;">
+                    <asp:CheckBoxList ID="verifyChoice" runat="server" >
+                        <asp:ListItem>SIGNATURE DIFFERS</asp:ListItem>
+                        <asp:ListItem>AMOUNT DOES NOT MATCH</asp:ListItem>
+                        <asp:ListItem>STALE CHECK</asp:ListItem>
+                        <asp:ListItem>POST-DATED CHECK</asp:ListItem>
+                    </asp:CheckBoxList>
+                </div>
+            </div>
+
+        <div class="imageRight">
+            <asp:Label ID="Label2" runat="server" AssociatedControlID="sigImage" 
+            Text="Signature"></asp:Label>
+            <br />
+            <asp:Image ID="sigImage" runat="server" CssClass="imageBox" Height="180px" 
+            Width="450px" ImageAlign="Right" ImageUrl="~/Resources/No_image_available.jpg"/>
+            <script type="text/javascript">
+                $(function () {
+                    $("#<%=sigImage.ClientID %>").elevateZoom({ scrollZoom: true, zoomWindowWidth: 450, zoomWindowHeight: 180, zoomWindowPosition: 2, zoomout: false });
+                });
+                 </script>
+        </div>
+    
         <script type="text/javascript">
 
             function CheckOtherIsCheckedByGVID(spanChk) {

@@ -20,25 +20,27 @@ namespace InwardClearingSystem
 
     public partial class Confirmation : BasePage
     {
-        SqlCommand cmd;
-        DataTable dt;
-        SqlDataAdapter da;
+        CmsConnect CmsConnect = new CmsConnect();
         GridViewRow row;
-        int totalConfirmed = 0;
+        Int32 totalConfirmed = 0;
         RadioButton rb;
+        SqlCommand cmd;
+        String function = "Confirmation";
         String query;
-        string function = "Confirmation";
 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (checkAccess(Convert.ToInt32(Session["RoleID"]), function) == false)
             {
-                Response.Redirect("~/NoAccess.aspx");
+                if (this.Context != null)
+                {
+                    Response.Redirect("~/NoAccess.aspx");
+                }
             }
             
             if (!IsPostBack)
             {
-                ViewState["myDataTable"] = FillDataTable();
+                ViewState["myDataTable"] = FillDataTable("FillConfirmationDataTable", activeConnectionOpen(), ConfirmView);
                 ViewState["SelectRow"] = -1;
             }
             
@@ -60,38 +62,14 @@ namespace InwardClearingSystem
                 else
                 {
                     UpdateConfirmCheckData(i, "YES");
-                    insertCheckLog(i, "Confirmation", "Successfully confirmed yes", ConfirmView);
-                    FillDataTable();
+                    insertCheckLog(i, "Confirmation", "Successfully confirmed as: YES", ConfirmView);
+                    FillDataTable("FillConfirmationDataTable", activeConnectionOpen(), ConfirmView);
                     NextRow(ConfirmView, i);
                 }
             }
             catch
             {
                 Message("An error has occurred. Please try again");
-            }
-        }
-
-        private void UpdateConfirmCheckData(int i, string confirm)
-        {
-            try
-            {
-                using (cmd = new SqlCommand())
-                {
-                    cmd.CommandText = "UpdateCheckDataConfirmationStatus";
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Connection = activeConnectionOpen();
-                    cmd.Parameters.AddWithValue("@acctnumber", ConfirmView.Rows[i].Cells[3].Text);
-                    cmd.Parameters.AddWithValue("@chknumber", ConfirmView.Rows[i].Cells[1].Text);
-                    cmd.Parameters.AddWithValue("@fund", confirm);
-                    cmd.Parameters.AddWithValue("@modby", Session["UserID"]);
-                    cmd.Parameters.AddWithValue("@moddate", DateTime.Now);
-                    cmd.Parameters.AddWithValue("@conremarks", confirmRemarks.Text);
-                    cmd.ExecuteNonQuery();
-                }
-            }
-            catch
-            {
-                throw;
             }
         }
 
@@ -111,8 +89,8 @@ namespace InwardClearingSystem
                 else
                 {
                     UpdateConfirmCheckData(i, "NO");
-                    insertCheckLog(i, "Confirmation", "Successfully confirmed no", ConfirmView);
-                    FillDataTable();
+                    insertCheckLog(i, "Confirmation", "Successfully confirmed as: NO", ConfirmView);
+                    FillDataTable("FillConfirmationDataTable", activeConnectionOpen(), ConfirmView);
                     NextRow(ConfirmView, i);
 
                 }
@@ -164,15 +142,35 @@ namespace InwardClearingSystem
             Response.End();
         }
 
-        private DataTable GetData()
+        protected void searchBtn_Click(object sender, EventArgs e)
         {
-            query = "FilterForConfirmationGenerateList";
-            activeConnectionOpen();
-            da = new SqlDataAdapter(query, activeConnection);
-            dt = new DataTable();                        
-            da.Fill(dt);
-            activeConnectionClose();
-            return dt;      
+            try
+            {
+                if (!String.IsNullOrWhiteSpace(txtSearch.Text))
+                {
+                    using (cmd = new SqlCommand())
+                    {
+                        cmd.CommandText = "ConfirmationSearch";
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = activeConnectionOpen();
+                        cmd.Parameters.AddWithValue("@num", txtSearch.Text);
+                        da = new SqlDataAdapter(cmd);
+                        dt = new DataTable();
+                        da.Fill(dt);
+                        ConfirmView.DataSource = dt;
+                        ConfirmView.DataBind();
+                    }
+                }
+            }
+            catch
+            {
+                Message("An error has occurred. Please try again.");
+            }
+        }
+
+        protected void viewAllBtn_Click(object sender, EventArgs e)
+        {
+            FillDataTable("FillConfirmationDataTable", activeConnectionOpen(), ConfirmView);
         }
 
         protected void ConfirmView_Sorting(Object sender, GridViewSortEventArgs e)
@@ -181,54 +179,6 @@ namespace InwardClearingSystem
             dt.DefaultView.Sort = e.SortExpression + " " + GetSortDirection(e.SortExpression);
             ConfirmView.DataSource = dt;
             ConfirmView.DataBind();
-        }
-
-        public DataTable FillDataTable()
-        {
-            try
-            {
-                query = "FillConfirmationDataTable";
-                using (da = new SqlDataAdapter(query, activeConnectionOpen()))
-                {
-                    dt = new DataTable();
-
-
-                    da.Fill(dt);
-                    ConfirmView.DataSource = dt;
-                    ConfirmView.DataBind();
-                    activeConnectionClose();
-
-                    return dt;
-                }
-            }
-            catch
-            {
-                throw;
-            }
-            
-        }
-
-        private string GetSortDirection(string column)
-        {
-
-            string sortDirection = "DESC";
-            string sortExpression = ViewState["SortExpression"] as string;
-
-            if (sortExpression != null)
-            {
-                if (sortExpression == column)
-                {
-                    string lastDirection = ViewState["SortDirection"] as string;
-                    if ((lastDirection != null) && (lastDirection == "DESC"))
-                    {
-                        sortDirection = "ASC";
-                    }
-                }
-            }
-            ViewState["SortDirection"] = sortDirection;
-            ViewState["SortExpression"] = column;
-
-            return sortDirection;
         }
 
         protected void RowSelect_CheckedChanged(Object sender, EventArgs e)
@@ -256,7 +206,7 @@ namespace InwardClearingSystem
                     string im = row.Cells[3].Text;
                     string age = row.Cells[1].Text;
                     string image = im + "_" + age;
-                    ShowChequeImage(session, image, checkImage);
+                    CmsConnect.ShowChequeImage(session, image, checkImage);
                     ShowSigDTImage(row.RowIndex, cmd, ConfirmView, sigImage);
                 }
             }
@@ -299,35 +249,44 @@ namespace InwardClearingSystem
             }
         }
 
-        protected void searchBtn_Click(object sender, EventArgs e)
+        private DataTable GetData()
+        {
+            query = "FilterForConfirmationGenerateList";
+            activeConnectionOpen();
+            da = new SqlDataAdapter(query, activeConnection);
+            dt = new DataTable();
+            da.Fill(dt);
+            activeConnectionClose();
+            return dt;
+        }
+
+        /// <summary>
+        /// Updates check data with a new confirmation status and remarks.
+        /// </summary>
+        /// <param name="i">Row index indicating the check data to be updated.</param>
+        /// <param name="confirm">Confirmation status the check data is updated with.</param>
+        private void UpdateConfirmCheckData(int i, string confirm)
         {
             try
             {
-                if (!String.IsNullOrWhiteSpace(txtSearch.Text))
+                using (cmd = new SqlCommand())
                 {
-                    using (cmd = new SqlCommand())
-                    {
-                        cmd.CommandText = "ConfirmationSearch";
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Connection = activeConnectionOpen();
-                        cmd.Parameters.AddWithValue("@num", txtSearch.Text);
-                        da = new SqlDataAdapter(cmd);
-                        dt = new DataTable();
-                        da.Fill(dt);
-                        ConfirmView.DataSource = dt;
-                        ConfirmView.DataBind();
-                    }
+                    cmd.CommandText = "UpdateCheckDataConfirmationStatus";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Connection = activeConnectionOpen();
+                    cmd.Parameters.AddWithValue("@acctnumber", ConfirmView.Rows[i].Cells[3].Text);
+                    cmd.Parameters.AddWithValue("@chknumber", ConfirmView.Rows[i].Cells[1].Text);
+                    cmd.Parameters.AddWithValue("@fund", confirm);
+                    cmd.Parameters.AddWithValue("@modby", Session["UserID"]);
+                    cmd.Parameters.AddWithValue("@moddate", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@conremarks", confirmRemarks.Text);
+                    cmd.ExecuteNonQuery();
                 }
             }
             catch
             {
-                Message("An error has occurred. Please try again.");
+                throw;
             }
-        }
-
-        protected void viewAllBtn_Click(object sender, EventArgs e)
-        {
-            FillDataTable();
         }
     }
 }

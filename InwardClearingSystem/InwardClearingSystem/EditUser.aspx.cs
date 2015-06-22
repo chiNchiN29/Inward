@@ -12,15 +12,18 @@ namespace InwardClearingSystem
 {
     public partial class EditUser : System.Web.UI.Page
     {
-        SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
         BasePage bp = new BasePage();
-        string function = "User Maintenance";
+        SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+        String function = "User Maintenance";
 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (bp.checkAccess(Convert.ToInt32(Session["RoleID"]), function) == false)
             {
-                Response.Redirect("~/NoAccess.aspx");
+                if (this.Context != null)
+                {
+                    Response.Redirect("~/NoAccess.aspx");
+                }
             }
 
             if (!Page.IsPostBack)
@@ -62,7 +65,10 @@ namespace InwardClearingSystem
                     update.Parameters.AddWithValue("@email", emTxtBx.Text);
                     update.Parameters.AddWithValue("@referenceID", Convert.ToInt32(Session["TBEuserID"]));
                     update.ExecuteNonQuery();
-                    Response.Redirect("~/UserMaintenance.aspx");
+                    if (this.Context != null)
+                    {
+                        Response.Redirect("~/UserMaintenance.aspx");
+                    }
 
                 }
             }

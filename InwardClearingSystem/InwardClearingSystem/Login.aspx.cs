@@ -13,8 +13,9 @@ namespace InwardClearingSystem.Account
 {
     public partial class Login : System.Web.UI.Page
     {
-        SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
         HttpCookie UserCookie = new HttpCookie("Username");
+        SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+        
         protected void Page_Load(object sender, EventArgs e)
         {
             try
@@ -34,7 +35,7 @@ namespace InwardClearingSystem.Account
             }
         }
 
-        protected void Button1_Click(object sender, AuthenticateEventArgs e)
+        protected void authenticate_Click(object sender, AuthenticateEventArgs e)
         {
             int role_id;
             using (connection)

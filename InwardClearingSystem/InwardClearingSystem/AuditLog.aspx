@@ -22,8 +22,13 @@
 </cc1:CalendarExtender>
 <br />
     <asp:CheckBox ID="chkBxUser" runat="server" />
-    <asp:DropDownList ID="drpDwnUserSearch" runat="server">
+    <asp:DropDownList ID="drpDwnUserSearch" runat="server" 
+        DataSourceID="SqlDataSource1" DataTextField="username" DataValueField="user_id">
     </asp:DropDownList>
+    <asp:SqlDataSource ID="SqlDataSource1" runat="server" 
+        ConnectionString="<%$ ConnectionStrings:ConnectionString %>" 
+        SelectCommand="SELECT [user_id], [username] FROM [User]">
+    </asp:SqlDataSource>
     <asp:Button ID="btnViewAll" runat="server" onclick="btnViewAll_Click" CssClass="defaultButton" 
         Text="View All" />
     Show
@@ -43,7 +48,8 @@
 
     <asp:GridView ID="LogView" runat="server" CssClass="gridView" HeaderStyle-CssClass="GridHeader" 
     AutoGenerateColumns="false" AllowSorting="true" OnSorting="LogView_Sorting" AllowPaging="true"
-    OnPageIndexChanging="LogView_PageIndex" PagerStyle-CssClass="paging" ShowHeaderWhenEmpty="true">
+    OnPageIndexChanging="LogView_PageIndex" PagerStyle-CssClass="paging" ShowHeaderWhenEmpty="true"
+    AlternatingRowStyle-BackColor="#FFEFEF">
         <Columns>
             <asp:BoundField DataField="action" SortExpression="action" HeaderText="Action" />
             <asp:BoundField DataField="check_number" SortExpression="check_number" HeaderText="Check Number" />

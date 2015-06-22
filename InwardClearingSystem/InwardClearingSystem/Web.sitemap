@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<siteMap xmlns="http://schemas.microsoft.com/AspNet/SiteMap-File-1.0" >
+    <siteMapNode url="" title="Inward Clearing System"  description="">
+        <siteMapNode url="Default.aspx" title="Main Menu"  description="Main Menu" />
+        <siteMapNode url="Verification.aspx" title="Signature Verification"  description="Signature Verification" />
+        <siteMapNode url="Confirmation.aspx" title="Confirmation"  description="Confirmation" />
+        <siteMapNode url="UpdateThreshold.aspx" title="Update Thresholds"  description="Update Thresholds" />
+        <siteMapNode url="javascript:;" title="Maintenance"  description="Maintenance" />
+          <siteMapNode url="BranchMaintenance.aspx" title="Branch"  description="Branch Maintenance" />
+          <siteMapNode url="RoleMaintenance.aspx" title="Role"  description="Role Maintenance" />
+          <siteMapNode url="UserMaintenance.aspx" title="User"  description="User Maintenance" />
+        <siteMapNode url="AuditLog.aspx" title="Audit Logs"  description="Audit Logs" />
+    </siteMapNode>
+</siteMap>
