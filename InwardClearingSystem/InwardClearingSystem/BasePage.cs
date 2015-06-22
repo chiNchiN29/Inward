@@ -20,10 +20,9 @@ namespace InwardClearingSystem
     public class BasePage : System.Web.UI.Page
     {
         public DataTable dt;
-        public ISession session;
         public SqlConnection activeConnection = new SqlConnection();
         public SqlDataAdapter da;
-
+        
         protected override void OnInit(EventArgs e)
         {
             try

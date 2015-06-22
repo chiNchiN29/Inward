@@ -121,10 +121,10 @@ namespace InwardClearingSystem
             }
             catch
             {
-                if (this.Context != null)
-                {
+                //if (this.Context != null)
+                //{
                     Response.Redirect("FailurePage.aspx");
-                }
+                //}
             }
 
             return session;

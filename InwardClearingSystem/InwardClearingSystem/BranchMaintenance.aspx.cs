@@ -52,6 +52,7 @@ namespace InwardClearingSystem
                             cmd.Parameters.AddWithValue("@modby", Convert.ToInt32(Session["UserID"]));
                             cmd.ExecuteNonQuery();
                             FillDataTable("FillBranchMaintenanceDataTable", activeConnectionOpen(), BranchView);
+                            InsertBranchHistory(txtBranchName.Text, "Add", "Successful Branch Add", "Added new branch");
                         }
                         txtBranchName.Text = "";
                         txtBranchCode.Text = "";
@@ -209,22 +210,28 @@ namespace InwardClearingSystem
             BranchView.DataBind();
         }
 
-        /*
-        //di pa tapos
-        private void InsertBranchHistory(string name, string userid,)
+        private void InsertBranchHistory(string name, string tag, string message, string changes)
         {
-            query = new StringBuilder();
-            query.Append("Update Branch_History set branch_name = @name, modified_date = @date, modified_by = @id, ");
-            query.Append("terminal = @ip, history_tag = @tag, changes = @changes, history_message = @message");
-            cmd = new SqlCommand(query.ToString(), activeConnectionOpen());
-            cmd.Parameters.AddWithValue("@name", );
-            cmd.Parameters.AddWithValue("@date", );
-            cmd.Parameters.AddWithValue("@id", );
-            cmd.Parameters.AddWithValue("@ip", );
-            cmd.Parameters.AddWithValue("@tag", );
-            cmd.Parameters.AddWithValue("@changes", );
-            cmd.Parameters.AddWithValue("@message", );
+            try
+            {
+                string ip = Request.UserHostAddress;
+                StringBuilder query = new StringBuilder();
+                query.Append("Update Branch_History set branch_name = @name, modified_date = @date, modified_by = @id, ");
+                query.Append("terminal = @ip, history_tag = @tag, changes = @changes, history_message = @message");
+                cmd = new SqlCommand(query.ToString(), activeConnectionOpen());
+                cmd.Parameters.AddWithValue("@name", name);
+                cmd.Parameters.AddWithValue("@date", DateTime.Now);
+                cmd.Parameters.AddWithValue("@id", Convert.ToInt32(Session["UserID"]));
+                cmd.Parameters.AddWithValue("@ip", ip);
+                cmd.Parameters.AddWithValue("@tag", tag);
+                cmd.Parameters.AddWithValue("@changes", changes);
+                cmd.Parameters.AddWithValue("@message", message);
+                cmd.ExecuteNonQuery();
+            }
+            catch
+            {
+                throw;
+            }
         }
-        */
     }
 }

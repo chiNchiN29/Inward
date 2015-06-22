@@ -31,9 +31,12 @@ namespace InwardClearingSystem
         SqlDataAdapter da;
         String function = "Signature Verification";
         String query;
+        ISession session;
+        CmsConnect cmsCon = new CmsConnect();
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            session = cmsCon.CreateSession("admin", "admin", "http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.0/atom");
             if (checkAccess(Convert.ToInt32(Session["RoleID"]), function) == false)
             {
                 if (this.Context != null)
