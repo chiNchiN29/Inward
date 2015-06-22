@@ -71,9 +71,9 @@
 <p>CONFIRMATION</p>
     <div class="gridWindow">
     <div class="gridTitleBar">Checks for Confirmation</div>
+        <asp:TextBox ID="txtSearch" runat="server" placeholder="Enter Check#" CssClass="textbox"></asp:TextBox>
         <asp:Button ID="searchBtn" runat="server" Text="Search Check#" 
             CssClass="defaultButton" onclick="searchBtn_Click" />
-        <asp:TextBox ID="txtSearch" runat="server"></asp:TextBox>
         <asp:Button ID="viewAllBtn" runat="server" Text="View All" 
             CssClass="defaultButton" onclick="viewAllBtn_Click" />
     <div class="grid_scroll">

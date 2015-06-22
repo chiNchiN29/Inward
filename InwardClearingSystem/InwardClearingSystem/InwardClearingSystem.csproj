@@ -77,7 +77,6 @@
     <Content Include="App_Data\icsdb_log.ldf">
       <DependentUpon>icsdb.mdf</DependentUpon>
     </Content>
-    <Content Include="Archiving.aspx" />
     <Content Include="Confirmation.aspx" />
     <Content Include="Default.aspx" />
     <Content Include="EditUserBranches.aspx" />
@@ -165,13 +164,6 @@
     </Compile>
     <Compile Include="EditUser.aspx.designer.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Archiving.aspx.cs">
-      <DependentUpon>Archiving.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Archiving.aspx.designer.cs">
-      <DependentUpon>Archiving.aspx</DependentUpon>
     </Compile>
     <Compile Include="BasePage.cs">
       <SubType>ASPXCodeBehind</SubType>

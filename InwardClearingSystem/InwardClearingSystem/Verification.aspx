@@ -89,9 +89,9 @@
     <br />
     <div class="gridWindow">
     <div class="gridTitleBar">Checks for Verification</div>
+    <asp:TextBox ID="txtSearch" runat="server" placeholder="Enter Check#" CssClass="textbox"></asp:TextBox>
     <asp:Button ID="searchBtn" runat="server" onclick="searchBtn_Click"  CssClass="defaultButton"
         Text="Search Check#" />
-    <asp:TextBox ID="txtSearch" runat="server"></asp:TextBox>
     <asp:Button ID="ViewAll" runat="server" onclick="ViewAll_Click" CssClass="defaultButton"
         Text="View All" />
     <br/>

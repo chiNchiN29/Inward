@@ -46,7 +46,6 @@
 </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-<p>UPDATE THRESHOLDS</p>
     <div class="whiteSpace">&nbsp;</div>
     <div class="container">
         <div class="gridTitleBar" style="background-color:#aa3333; border:1px solid ##aa3333; width:98.9%">Set New Thresholds</div>
