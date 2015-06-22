@@ -146,7 +146,7 @@
     <div class="viewFunctions">
         <asp:Button ID="searchBtn" runat="server" CausesValidation="false"
         Text="Search" onclick="searchBtn_Click" CssClass="defaultButton" />
-    <asp:TextBox ID="txtSearch" runat="server"></asp:TextBox>
+    <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox" placeholder="Enter Branch Name"></asp:TextBox>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <asp:Button ID="viewAllBtn" runat="server" onclick="viewAllBtn_Click" CausesValidation="false"
         Text="View All" CssClass="defaultButton" />

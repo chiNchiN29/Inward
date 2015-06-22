@@ -14,7 +14,6 @@ namespace InwardClearingSystem
     public partial class SiteMaster : System.Web.UI.MasterPage
     {
         SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
-        
         protected void Page_Load(object sender, EventArgs e)
         {
             dateToday.Text = DateTime.Today.ToString("D");
@@ -30,6 +29,13 @@ namespace InwardClearingSystem
                 {
                     Label3.Text = System.DateTime.Now.ToLongTimeString();
                     //string pool = Session["UserName"].ToString();
+                    foreach (MenuItem item in NavigationMenu.Items)
+                    {
+                        if (Request.Url.AbsoluteUri.ToLower().Contains(Page.ResolveUrl(item.NavigateUrl.ToLower())))
+                        {
+                            item.Selected = true;
+                        }
+                    }
                 }
                 catch(Exception b)
                 {

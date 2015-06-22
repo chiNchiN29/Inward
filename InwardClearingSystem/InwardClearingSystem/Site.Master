@@ -58,7 +58,12 @@
 			<asp:Menu ID="NavigationMenu" runat="server" CssClass="menu"
                      IncludeStyleBlock="False" Orientation="Horizontal" 
                     onmenuitemclick="NavigationMenu_MenuItemClick" 
-                    OnMenuItemDataBound="OnMenuItemDataBound">
+                    OnMenuItemDataBound="OnMenuItemDataBound" EnableViewState="true">
+
+                    <staticselectedstyle backcolor="LightBlue"
+                      borderstyle="Solid"
+                      bordercolor="Black"
+                      borderwidth="1"/>
 
                     <Items>
                         <asp:MenuItem NavigateUrl="~/Default.aspx" Text="Main Menu" />

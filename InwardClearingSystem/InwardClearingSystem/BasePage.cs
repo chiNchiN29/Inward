@@ -25,42 +25,30 @@ namespace InwardClearingSystem
         
         protected override void OnInit(EventArgs e)
         {
-            try
-            {
-                base.OnInit(e);
+            base.OnInit(e);
 
-                bool login = System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
-                if (login == false)
-                {
-                    if (this.Context != null)
-                    {
-                        Response.Redirect("~/Login.aspx");
-                    }
-                }
-                Page.
-
-                Session["UserName"] = System.Web.HttpContext.Current.User.Identity.Name;
-                using (SqlCommand cmd = new SqlCommand())
-                {
-                    cmd.CommandText = "GetCurrentUser";
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Connection = activeConnectionOpen();
-                    cmd.Parameters.AddWithValue("@username", Session["UserName"].ToString());
-                    SqlDataReader dr = cmd.ExecuteReader();
-                    while (dr.Read())
-                    {
-                        Session["UserID"] = Convert.ToInt32(dr["user_id"]);
-                        Session["RoleID"] = Convert.ToInt32(dr["role_id"]);
-                    }
-                    dr.Close();
-                }
-            }
-            catch
+            bool login = System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
+            if (login == false)
             {
                 if (this.Context != null)
                 {
-                    Response.Redirect("~/FailurePage.aspx");
+                    Response.Redirect("~/Login.aspx");
                 }
+            }
+            Session["UserName"] = System.Web.HttpContext.Current.User.Identity.Name;
+            using (SqlCommand cmd = new SqlCommand())
+            {
+                cmd.CommandText = "GetCurrentUser";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Connection = activeConnectionOpen();
+                cmd.Parameters.AddWithValue("@username", Session["UserName"].ToString());
+                SqlDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    Session["UserID"] = Convert.ToInt32(dr["user_id"]);
+                    Session["RoleID"] = Convert.ToInt32(dr["role_id"]);
+                }
+                dr.Close();
             }
         }
 
