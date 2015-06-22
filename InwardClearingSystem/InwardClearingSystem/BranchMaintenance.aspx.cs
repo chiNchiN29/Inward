@@ -52,7 +52,7 @@ namespace InwardClearingSystem
                             cmd.Parameters.AddWithValue("@modby", Convert.ToInt32(Session["UserID"]));
                             cmd.ExecuteNonQuery();
                             FillDataTable("FillBranchMaintenanceDataTable", activeConnectionOpen(), BranchView);
-                            InsertBranchHistory(txtBranchName.Text, "Add", "Successful Branch Add", "Added new branch");
+                            InsertBranchHistory(txtBranchName.Text, "Add", "Successful Branch Add", "Branch (added row)");
                         }
                         txtBranchName.Text = "";
                         txtBranchCode.Text = "";
@@ -61,16 +61,19 @@ namespace InwardClearingSystem
                     }
                     else
                     {
+                        InsertBranchHistory(txtBranchName.Text, "Add", "Branch Code already exists", "No change");
                         Message("Branch Code already exists");
                     }
                 }
                 else
                 {
+                    InsertBranchHistory(txtBranchName.Text, "Add", "Branch Name already exists", "No change");
                     Message("Branch Name already exists");
                 }
             }
             catch
             {
+                InsertBranchHistory(txtBranchName.Text, "Add", "Failed Branch Add", "No change");
                 Message("Adding Branch has failed. Please try again.");
             }
         }
@@ -85,37 +88,32 @@ namespace InwardClearingSystem
         {
             try
             {
-                if (String.IsNullOrWhiteSpace(txtSearch.Text))
+                using (cmd = new SqlCommand())
                 {
-                    Message("Please input a branch name");
+                    cmd.CommandText = "UpdateBranch";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Connection = activeConnectionOpen();
+                    cmd.Parameters.AddWithValue("@name", txtBranchName.Text);
+                    cmd.Parameters.AddWithValue("@code", txtBranchCode.Text);
+                    cmd.Parameters.AddWithValue("@ad", txtAddress.Text);
+                    cmd.Parameters.AddWithValue("@id", editRow.Value);
+                    cmd.ExecuteNonQuery();
+                    FillDataTable("FillBranchMaintenanceDataTable", activeConnectionOpen(), BranchView);
                 }
-                else
-                {
-                    using (cmd = new SqlCommand())
-                    {
-                        cmd.CommandText = "UpdateBranch";
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Connection = activeConnectionOpen();
-                        cmd.Parameters.AddWithValue("@name", txtBranchName.Text);
-                        cmd.Parameters.AddWithValue("@code", txtBranchCode.Text);
-                        cmd.Parameters.AddWithValue("@ad", txtAddress.Text);
-                        cmd.Parameters.AddWithValue("@id", editRow.Value);
-                        cmd.ExecuteNonQuery();
-                        FillDataTable("FillBranchMaintenanceDataTable", activeConnectionOpen(), BranchView);
-                    }
-                    Message("Successfully edited Branch");
-                }
+                InsertBranchHistory(txtBranchName.Text, "Edit", "Successful Branch Edit", "Branch (updated row)");
+                Message("Successfully edited Branch");         
             }
             catch
             {
+                InsertBranchHistory(txtBranchName.Text, "Edit", "Failed Branch Edit", "No changes");
                 Message("Branch edit has failed. Please try again.");
             }
         }
 
         protected void delBranch_Click(object sender, EventArgs e)
         {
-            try
-            {
+            //try
+            //{
                 int id = Convert.ToInt32(BranchView.DataKeys[Convert.ToInt32(editRow.Value) - 1].Value);
                 using (cmd = new SqlCommand())
                 {
@@ -126,12 +124,14 @@ namespace InwardClearingSystem
                     cmd.ExecuteNonQuery();
                 }
                 FillDataTable("FillBranchMaintenanceDataTable", activeConnectionOpen(), BranchView);
+                InsertBranchHistory(txtBranchName.Text, "Delete", "Successful Branch Delete", "Branch (deleted row)");
                 Message("Successfully deleted Branch");
-            }
-            catch
-            {
-                Message("Branch delete has failed. Please try again.");
-            }
+            //}
+            //catch
+            //{
+            //    InsertBranchHistory(txtBranchName.Text, "Delete", "Failed Branch Delete", "No changes");
+            //    Message("Branch delete has failed. Please try again.");
+            //}
         }
 
         protected void searchBtn_Click(object sender, EventArgs e)
@@ -210,14 +210,16 @@ namespace InwardClearingSystem
             BranchView.DataBind();
         }
 
+        //problem with ip address
         private void InsertBranchHistory(string name, string tag, string message, string changes)
         {
             try
             {
-                string ip = Request.UserHostAddress;
+                string ip = Request.ServerVariables["REMOTE_ADDR"].ToString(); 
                 StringBuilder query = new StringBuilder();
-                query.Append("Update Branch_History set branch_name = @name, modified_date = @date, modified_by = @id, ");
-                query.Append("terminal = @ip, history_tag = @tag, changes = @changes, history_message = @message");
+                query.Append("Insert into Branch_History (branch_name, modified_date, modified_by, terminal, ");
+                query.Append("history_tag, changes, history_message) ");
+                query.Append("values (@name, @date, @id, @ip, @tag, @changes, @message)");
                 cmd = new SqlCommand(query.ToString(), activeConnectionOpen());
                 cmd.Parameters.AddWithValue("@name", name);
                 cmd.Parameters.AddWithValue("@date", DateTime.Now);
