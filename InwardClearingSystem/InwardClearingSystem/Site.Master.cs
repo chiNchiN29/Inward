@@ -29,13 +29,6 @@ namespace InwardClearingSystem
                 {
                     Label3.Text = System.DateTime.Now.ToLongTimeString();
                     //string pool = Session["UserName"].ToString();
-                    foreach (MenuItem item in NavigationMenu.Items)
-                    {
-                        if (Request.Url.AbsoluteUri.ToLower().Contains(Page.ResolveUrl(item.NavigateUrl.ToLower())))
-                        {
-                            item.Selected = true;
-                        }
-                    }
                 }
                 catch(Exception b)
                 {

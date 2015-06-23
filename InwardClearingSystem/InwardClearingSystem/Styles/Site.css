@@ -14,20 +14,10 @@ body
     border: 0px;
 }
 
-a:link, a:visited
-{
-    color: #034af3;
-}
-
 a:hover
 {
     color: #1d60ff;
     text-decoration: none;
-}
-
-a:active
-{
-    color: #034af3;
 }
 
 p
@@ -36,6 +26,57 @@ p
     line-height: 1.6em;
 }
 
+ul
+{
+    padding: 0;
+    list-style: none;
+    background: #f2f2f2;
+}
+ul li
+{
+    display: inline-block;
+    position: relative;
+    line-height: 21px;
+    text-align: left;
+    vertical-align: text-bottom;
+    top: 35px;
+    left: -9px;
+    margin-top: 21px;
+}
+ul li a
+{
+    display: block;
+    padding: 8px 25px;
+    color: #333;
+    text-decoration: none;
+}
+ul li a:hover
+{
+    color: #fff;
+    background: #939393;
+}
+ul li a:active
+{
+    background: #b84dff;
+    color: white;
+}
+ul li ul.dropdown
+{
+    min-width: 133.5px; /* Set width of the dropdown */
+    background: #f2f2f2;
+    display: none;
+    position: absolute;
+    z-index: 999;
+    left: 0;
+}
+ul li:hover ul.dropdown
+{
+    display: block;	/* Display the dropdown */
+}
+ul li ul.dropdown li
+{
+    display: block;
+}
 
 /* HEADINGS   
 ----------------------------------------------------------*/
@@ -221,6 +262,7 @@ div.hideSkiplink
     background-color: #f1f1f1;
     width: 100%;
     height:auto;
+    text-align:right;
 }
 
 div.logo
@@ -274,6 +316,12 @@ div.menu ul li a:active
     color: #cfdbe6;
     text-decoration: none;
 }
+
+/* ALTERNATE TAB MENU   
+----------------------------------------------------------*/
+
+    
+
 
 
 /* FORM ELEMENTS   
