@@ -54,99 +54,92 @@ namespace InwardClearingSystem
         {
             try
             {
-                transact = activeConnectionOpen().BeginTransaction("SetThreshold"); 
-                if (txtBoxMin.Text != "" || txtBoxMax.Text != "" )
+                transact = activeConnectionOpen().BeginTransaction("SetThreshold");
+                if (txtBoxMin.Text != "" || txtBoxMax.Text != "")
                 {
                     int num1;
                     if (txtBoxMin.Text != "")
                     {
-                        bool inputIsPositive = int.TryParse(txtBoxMin.Text, out num1);
-                        if (inputIsPositive == true)
+                        bool inputIsNumber = int.TryParse(txtBoxMin.Text, out num1);
+                        if (inputIsNumber == true && num1 >= 0)
                         {
-                            if (num1 >= 0)
+                            using (SqlCommand updateMin = new SqlCommand())
                             {
-                                using (SqlCommand updateMin = new SqlCommand())
-                                {
-                                    updateMin.CommandText = "UpdateBypassValueStandard";
-                                    updateMin.CommandType = CommandType.StoredProcedure;
-                                    updateMin.Connection = activeConnection;
-                                    updateMin.Transaction = transact;
-                                    updateMin.Parameters.AddWithValue("@thresh", txtBoxMin.Text);
-                                    updateMin.ExecuteNonQuery();
-                                }
-
-                                string max = lblMax.Text;
-                                max = max.Replace("Php", String.Empty);
-                                max = max.Replace(",", String.Empty);
-                                InsertThresholdHistory(txtBoxMin.Text, max, "Set", "Successful Threshold Update", "role_minimum (column updated)", activeConnection, transact);
-
-                                using (SqlCommand select = new SqlCommand())
-                                {
-                                    select.CommandText = "GetBypassValueStandard";
-                                    select.CommandType = CommandType.StoredProcedure;
-                                    select.Connection = activeConnection;
-                                    select.Transaction = transact;
-                                    lblMin.Text = String.Format("{0:C}", select.ExecuteScalar());
-                                }
+                                updateMin.CommandText = "UpdateBypassValueStandard";
+                                updateMin.CommandType = CommandType.StoredProcedure;
+                                updateMin.Connection = activeConnection;
+                                updateMin.Transaction = transact;
+                                updateMin.Parameters.AddWithValue("@thresh", txtBoxMin.Text);
+                                updateMin.ExecuteNonQuery();
                             }
-                            else
+
+                            string max = getMaxValueLbl();
+                            
+                            InsertThresholdHistory(txtBoxMin.Text, max, "Update Threshold", "Successful Threshold Update", "role_minimum (column updated)", activeConnection, transact);
+
+                            using (SqlCommand select = new SqlCommand())
                             {
-                                Message("Bypass value must be a positive value.");
+                                select.CommandText = "GetBypassValueStandard";
+                                select.CommandType = CommandType.StoredProcedure;
+                                select.Connection = activeConnection;
+                                select.Transaction = transact;
+                                lblMin.Text = String.Format("{0:C}", select.ExecuteScalar());
                             }
                         }
                         else
                         {
-                            Message("Bypass value must be a numerical value.");
+                            string min = getMinValueLbl();
+                            string max = getMaxValueLbl();
+                            InsertThresholdHistory(min, max, "Update Threshold", "Failed Threshold Update", "No change", activeConnection, transact);
+                            Message("Minimum value input is invalid");
                         }
                     }
-        
+
                     if (txtBoxMax.Text != "")
                     {
-                        bool inputIsPositive = int.TryParse(txtBoxMax.Text, out num1);
-                        if (inputIsPositive == true)
+                        bool inputIsNumber = int.TryParse(txtBoxMax.Text, out num1);
+                        if (inputIsNumber == true && num1 >= 0)
                         {
-                            if (num1 >= 0)
+                            using (SqlCommand updateMax = new SqlCommand())
                             {
-                                using (SqlCommand updateMax = new SqlCommand())
-                                {
-                                    updateMax.CommandText = "UpdateHighValueStandard";
-                                    updateMax.CommandType = CommandType.StoredProcedure;
-                                    updateMax.Connection = activeConnection;
-                                    updateMax.Transaction = transact;
-                                    updateMax.Parameters.AddWithValue("@thresh", txtBoxMax.Text);
-                                    updateMax.ExecuteNonQuery();
-                                }
-
-                                string min = lblMin.Text;
-                                min = min.Replace("Php", String.Empty);
-                                min = min.Replace(",", String.Empty);
-                                InsertThresholdHistory(min, txtBoxMax.Text, "Set", "Successful Threshold Update", "role_maximum (column updated)", activeConnection, transact);
-
-                                using (SqlCommand select2 = new SqlCommand())
-                                {
-                                    select2.CommandText = "GetHighValueStandard";
-                                    select2.CommandType = CommandType.StoredProcedure;
-                                    select2.Connection = activeConnection;
-                                    select2.Transaction = transact;
-                                    lblMax.Text = String.Format("{0:C}", select2.ExecuteScalar());
-                                }
+                                updateMax.CommandText = "UpdateHighValueStandard";
+                                updateMax.CommandType = CommandType.StoredProcedure;
+                                updateMax.Connection = activeConnection;
+                                updateMax.Transaction = transact;
+                                updateMax.Parameters.AddWithValue("@thresh", txtBoxMax.Text);
+                                updateMax.ExecuteNonQuery();
                             }
-                            else
+
+                            string min = getMinValueLbl();
+                            InsertThresholdHistory(min, txtBoxMax.Text, "Update Threshold", "Successful Threshold Update", "role_maximum (column updated)", activeConnection, transact);
+
+                            using (SqlCommand select2 = new SqlCommand())
                             {
-                                Message("High-value standard must be a positive value.");
+                                select2.CommandText = "GetHighValueStandard";
+                                select2.CommandType = CommandType.StoredProcedure;
+                                select2.Connection = activeConnection;
+                                select2.Transaction = transact;
+                                lblMax.Text = String.Format("{0:C}", select2.ExecuteScalar());
                             }
                         }
                         else
                         {
-                            Message("High-value standard must be a numerical value.");
+                            string min = getMinValueLbl();
+                            string max = getMaxValueLbl();
+
+                            InsertThresholdHistory(min, max, "Update Threshold", "Failed Threshold Update", "No change", activeConnection, transact);
+                            Message("High Value input is invalid");
                         }
+                        transact.Commit();
                     }
-                    transact.Commit();
                 }
             }
             catch
             {
                 transact.Rollback();
+                string min = getMinValueLbl();
+                string max = getMaxValueLbl();
+                InsertThresholdHistory(min, max, "Update Threshold", "Failed Threshold Update", "No change", activeConnection, transact);
                 Message("An error has occurred. Please try again");
             }
             finally
@@ -155,7 +148,54 @@ namespace InwardClearingSystem
             }
         }
 
-        //problem with ip address
+        /// <summary>
+        /// Gets Maximum Value Label
+        /// </summary>
+        /// <returns></returns>
+        private string getMaxValueLbl()
+        {
+            try
+            {
+                string max = lblMax.Text;
+                max = max.Replace("Php", String.Empty);
+                max = max.Replace(",", String.Empty);
+                return max;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Gets Minimum Value Label
+        /// </summary>
+        /// <returns></returns>
+        private string getMinValueLbl()
+        {
+            try
+            {
+                string min = lblMin.Text;
+                min = min.Replace("Php", String.Empty);
+                min = min.Replace(",", String.Empty);
+                return min;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Inserts Threshold history
+        /// </summary>
+        /// <param name="min"> minimum value</param>
+        /// <param name="max">maximum value</param>
+        /// <param name="tag">history tag</param>
+        /// <param name="message">history message</param>
+        /// <param name="changes">changes made</param>
+        /// <param name="con">sql connection</param>
+        /// <param name="trans">sql transaction</param>
         private void InsertThresholdHistory(string min, string max, string tag, string message, string changes, SqlConnection con, SqlTransaction trans)
         {
             try

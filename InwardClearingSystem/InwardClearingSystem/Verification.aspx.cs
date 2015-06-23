@@ -65,6 +65,8 @@ namespace InwardClearingSystem
 
                 rb = (RadioButton)sender;
                 row = (GridViewRow)rb.NamingContainer;
+                
+                
                 int i = row.RowIndex;
                 ViewState["SelectRow"] = i;
 

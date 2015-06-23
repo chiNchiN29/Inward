@@ -42,7 +42,6 @@ namespace InwardClearingSystem
         {
             try
             {
-              
                 ViewState["UploadImageClicked"] = "false";
                 HttpFileCollection hfc = Request.Files;
                 for (int i = 0; i < hfc.Count; i++)
@@ -66,42 +65,49 @@ namespace InwardClearingSystem
 
         protected void produceReport_Click(object sender, EventArgs e)
         {
-            query = new StringBuilder();
-            query.Append("SELECT * ");
-            query.Append("FROM Cheque ");
-            query.Append("WHERE (verification = 'NO' ");
-            query.Append("OR confirmed = 'NO') ");
-            query.Append("OR (confirm_remarks <> '&nbsp;' ");
-            query.Append("AND confirm_remarks <> NULL ");
-            query.Append("AND confirm_remarks <> '') ");
-            query.Append("OR (verify_remarks <> '&nbsp;' ");
-            query.Append("AND verify_remarks <> NULL ");
-            query.Append("AND verify_remarks <> '') ");
-            DataTable dt = GetData(query.ToString());
-            string attachment = "attachment; filename=trial.xls";
-            Response.ClearContent();
-            Response.AddHeader("content-disposition", attachment);
-            Response.ContentType = "application/vnd.ms-excel";
-            string tab = "";
-            foreach (DataColumn dc in dt.Columns)
+            try
             {
-                Response.Write(tab + dc.ColumnName);
-                tab = "\t";
-            }
-            Response.Write("\n");
-
-            int i;
-            foreach (DataRow dr in dt.Rows)
-            {
-                tab = "";
-                for (i = 0; i < dt.Columns.Count; i++)
+                query = new StringBuilder();
+                query.Append("SELECT * ");
+                query.Append("FROM Cheque ");
+                query.Append("WHERE (verification = 'NO' ");
+                query.Append("OR confirmed = 'NO') ");
+                query.Append("OR (confirm_remarks <> '&nbsp;' ");
+                query.Append("AND confirm_remarks <> NULL ");
+                query.Append("AND confirm_remarks <> '') ");
+                query.Append("OR (verify_remarks <> '&nbsp;' ");
+                query.Append("AND verify_remarks <> NULL ");
+                query.Append("AND verify_remarks <> '') ");
+                DataTable dt = GetData(query.ToString());
+                string attachment = "attachment; filename=trial.xls";
+                Response.ClearContent();
+                Response.AddHeader("content-disposition", attachment);
+                Response.ContentType = "application/vnd.ms-excel";
+                string tab = "";
+                foreach (DataColumn dc in dt.Columns)
                 {
-                    Response.Write(tab + dr[i].ToString());
+                    Response.Write(tab + dc.ColumnName);
                     tab = "\t";
                 }
                 Response.Write("\n");
+
+                int i;
+                foreach (DataRow dr in dt.Rows)
+                {
+                    tab = "";
+                    for (i = 0; i < dt.Columns.Count; i++)
+                    {
+                        Response.Write(tab + dr[i].ToString());
+                        tab = "\t";
+                    }
+                    Response.Write("\n");
+                }
+                Response.End();
             }
-            Response.End();
+            catch
+            {
+                Message("An error has occurred. Please try again");
+            }
         }
 
         protected void searchBtn_Click(object sender, EventArgs e)
@@ -132,58 +138,71 @@ namespace InwardClearingSystem
 
         protected void viewAllBtn_Click(object sender, EventArgs e)
         {
-            FillDataTable("DefaultCheckDataTable", activeConnectionOpen(), ViewAllCheck);
-            txtSearch.Text = "";
+            try
+            {
+                FillDataTable("DefaultCheckDataTable", activeConnectionOpen(), ViewAllCheck);
+                txtSearch.Text = "";
+            }
+            catch
+            {
+
+            }
         }
 
         //Generate List
         protected void genListBtn_Click(object sender, EventArgs e)
         {
-            query = new StringBuilder();
-            query.Append("SELECT check_number, amount, CONVERT(VARCHAR(10), check_date, 101), branch_name, drawee_bank, drawee_bank_branch, ");
-            query.Append("drawee_bank, drawee_bank_branch, funded, verification, verify_remarks, ch.account_number ");
-            query.Append("FROM Cheque ch, Customer c, Account a ");
-            query.Append("WHERE ch.account_number = a.account_number AND a.customer_id = c.customer_id ");
-            query.Append("AND verification = 'NO' ORDER BY ch.account_number");
-
-            // Retrieves the schema of the table.
-            dt = new DataTable();
-            dt.Clear();
-            dt = GetData(query.ToString());
-
-            // set the resulting file attachment name to the name of the report...
-            string fileName = "test";
-
-            //Response.Write(dtSchema.Rows.Count);
-
-            Response.Clear();
-            Response.Buffer = true;
-            Response.AddHeader("content-disposition", "attachment;filename=" + fileName + ".xls");
-            Response.Charset = "";
-
-            Response.ContentType = "application/vnd.xls";
-
-            System.Text.StringBuilder sb = new System.Text.StringBuilder();
-
-            foreach (DataRow datar in dt.Rows)
+            try
             {
-                for (int i = 0; i < dt.Columns.Count; i++)
-                {
-                    if (!Convert.IsDBNull(datar[i]))
-                    {
-                        sb.Append(datar[i].ToString());
-                    }
-                    if (i < dt.Columns.Count - 1)
-                    {
-                        sb.Append(",");
-                    }
-                }
-                sb.Append("\r\n");
-            }
-            Response.Output.Write(sb.ToString());
-            Response.Flush();
-            Response.End();
+                query = new StringBuilder();
+                query.Append("SELECT check_number, amount, CONVERT(VARCHAR(10), check_date, 101), branch_name, drawee_bank, drawee_bank_branch, ");
+                query.Append("drawee_bank, drawee_bank_branch, funded, verification, verify_remarks, ch.account_number ");
+                query.Append("FROM Cheque ch, Customer c, Account a ");
+                query.Append("WHERE ch.account_number = a.account_number AND a.customer_id = c.customer_id ");
+                query.Append("AND verification = 'NO' ORDER BY ch.account_number");
 
+                // Retrieves the schema of the table.
+                dt = new DataTable();
+                dt.Clear();
+                dt = GetData(query.ToString());
+
+                // set the resulting file attachment name to the name of the report...
+                string fileName = "test";
+
+                //Response.Write(dtSchema.Rows.Count);
+
+                Response.Clear();
+                Response.Buffer = true;
+                Response.AddHeader("content-disposition", "attachment;filename=" + fileName + ".xls");
+                Response.Charset = "";
+
+                Response.ContentType = "application/vnd.xls";
+
+                System.Text.StringBuilder sb = new System.Text.StringBuilder();
+
+                foreach (DataRow datar in dt.Rows)
+                {
+                    for (int i = 0; i < dt.Columns.Count; i++)
+                    {
+                        if (!Convert.IsDBNull(datar[i]))
+                        {
+                            sb.Append(datar[i].ToString());
+                        }
+                        if (i < dt.Columns.Count - 1)
+                        {
+                            sb.Append(",");
+                        }
+                    }
+                    sb.Append("\r\n");
+                }
+                Response.Output.Write(sb.ToString());
+                Response.Flush();
+                Response.End();
+            }
+            catch
+            {
+                Message("An error has occurred. Please try again.");
+            }
         }
 
         /// <summary>
@@ -195,7 +214,6 @@ namespace InwardClearingSystem
         {
             try
             {
-                //string filepath = FileUpload2.PostedFile.FileName;
                 StreamReader sr = new StreamReader(DataUpload.PostedFile.InputStream);
                 int lineCount = 0;
 
@@ -357,15 +375,22 @@ namespace InwardClearingSystem
         /// Image to be converted
         /// </param>
         /// <returns>
-        /// The image in byte[] formate
+        /// The image in byte[] format
         /// </returns>
         private static byte[] imageToByteArray(System.Drawing.Image imageIn)
         {
-            using (MemoryStream ms = new MemoryStream())
+            try
             {
-                imageIn.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
-                return ms.ToArray();
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    imageIn.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+                    return ms.ToArray();
+                }
             }
+            catch
+            {
+                throw;
+            }       
         }
 
         /// <summary>
@@ -411,8 +436,6 @@ namespace InwardClearingSystem
         {
             get { return Convert.ToInt32(ViewState["ImageCount"].ToString()); }
             set { ViewState["ImageCount"] = value; }
-        }
-
-       
+        }  
     }
 }
