@@ -58,7 +58,7 @@
 			<asp:Menu ID="NavigationMenu" runat="server" CssClass="menu"
                      IncludeStyleBlock="False" Orientation="Horizontal" 
                     onmenuitemclick="NavigationMenu_MenuItemClick" 
-                    OnMenuItemDataBound="OnMenuItemDataBound" EnableViewState="true">
+                    EnableViewState="true">
 
                     <staticselectedstyle backcolor="LightBlue"
                       borderstyle="Solid"

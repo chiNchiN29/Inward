@@ -52,12 +52,12 @@
         <div class="min">
             <asp:Label ID="Label1" runat="server" Text="Current <strong>Minimum</strong> Threshold Amount:"></asp:Label>
             <br />
-            <asp:Label ID="Label2" runat="server" Text="Label" CssClass="money"></asp:Label>
+            <asp:Label ID="lblMin" runat="server" Text="Label" CssClass="money"></asp:Label>
             <br />
             <br />
             <asp:Label ID="Label3" runat="server" Text="New Minimum Threshold Amount:"></asp:Label>
             <br />
-            <asp:TextBox ID="TextBox1" runat="server" TextMode="Number" CssClass="textbox"></asp:TextBox>
+            <asp:TextBox ID="txtBoxMin" runat="server" TextMode="Number" CssClass="textbox"></asp:TextBox>
             <br />
         </div>
     
@@ -65,12 +65,12 @@
         <div class="max">
             <asp:Label ID="Label4" runat="server" Text="Current <strong>Maximum</strong> Threshold Amount:"></asp:Label>
             <br />
-            <asp:Label ID="Label5" runat="server" Text="Label" CssClass="money"></asp:Label>
+            <asp:Label ID="lblMax" runat="server" Text="Label" CssClass="money"></asp:Label>
             <br />
             <br />
             <asp:Label ID="Label6" runat="server" Text="New Maximum Threshold Amount:"></asp:Label>
             <br />
-            <asp:TextBox ID="TextBox2" runat="server" TextMode="Number" CssClass="textbox"></asp:TextBox>
+            <asp:TextBox ID="txtBoxMax" runat="server" TextMode="Number" CssClass="textbox"></asp:TextBox>
             <br />
         </div>
 

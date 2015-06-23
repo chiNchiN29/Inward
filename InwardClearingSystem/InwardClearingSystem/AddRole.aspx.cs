@@ -196,6 +196,7 @@ namespace InwardClearingSystem
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Connection = activeConnection;
                     cmd.Transaction = transact;
+                    cmd.Parameters.AddWithValue("@roleID", roleID);
                     cmd.ExecuteNonQuery();
                 }
 
@@ -206,6 +207,7 @@ namespace InwardClearingSystem
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Connection = activeConnection;
                     cmd.Transaction = transact;
+                    cmd.Parameters.AddWithValue("@roleID", roleID);
                     cmd.ExecuteNonQuery();
                 }
 
