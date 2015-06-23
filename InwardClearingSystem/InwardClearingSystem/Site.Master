@@ -55,27 +55,37 @@
             <div class="logo">
                 <img src="Resources/H2ics2.png" style="height: 52px; width: 272px" />
             </div>
-			<asp:Menu ID="NavigationMenu" runat="server" CssClass="menu"
-                     IncludeStyleBlock="False" Orientation="Horizontal" 
-                    onmenuitemclick="NavigationMenu_MenuItemClick" 
-                    OnMenuItemDataBound="OnMenuItemDataBound" EnableViewState="true">
 
-                    <staticselectedstyle backcolor="LightBlue"
-                      borderstyle="Solid"
-                      bordercolor="Black"
-                      borderwidth="1"/>
+            <script type="text/javascript">
+                $("ul.tabs li").click(function () {
 
-                    <Items>
-                        <asp:MenuItem NavigateUrl="~/Default.aspx" Text="Main Menu" />
-                        <asp:MenuItem NavigateUrl="~/Verification.aspx" Text="Signature Verification"/>
-                        <asp:MenuItem NavigateUrl="~/Confirmation.aspx" Text="Confirmation" />
-                        <asp:MenuItem NavigateUrl="~/UpdateThreshold.aspx" Text="Update Thresholds" /> 
-                        <asp:MenuItem NavigateUrl="~/UserMaintenance.aspx" Text="User Maintenance"/> 
-                        <asp:MenuItem NavigateUrl="~/BranchMaintenance.aspx" Text="Branch Maintenance"  />
-                        <asp:MenuItem NavigateUrl="~/AuditLog.aspx" Text="Audit Log" />
-                        <asp:MenuItem NavigateUrl="~/RoleMaintenance.aspx" Text="Role Maintenance"  />
-                    </Items>
-                </asp:Menu>
+                    $("ul.tabs li").removeClass("active");
+                    $(this).addClass("active");
+
+                    $("div.tab").hide();
+                    $("div." + $(this).find("div").attr("id") + "-section").show();
+
+                });
+            </script>
+
+			<ul class="tabs">
+                <li runat="server"><a href="Default.aspx">Home</a></li>
+                <li runat="server"><a href="Verification.aspx">Signature Verification</a></li>
+                <li runat="server"><a href="Confirmation.aspx">Confirmation</a></li>
+                <li runat="server"><a href="UpdateThreshold.aspx">Update Thresholds</a></li>
+                <li runat="server">
+                    <a href="#">Maintenance &#9662;</a>
+                    <ul class="dropdown" runat="server">
+                        <li runat="server"><a href="BranchMaintenance.aspx">Branch</a></li>
+                        <li runat="server"><a href="RoleMaintenance.aspx">Role</a></li>
+                        <li runat="server"><a href="UserMaintenance.aspx">User</a></li>
+                    </ul>
+                </li>
+                <li runat="server"><a href="AuditLog.aspx">Audit Logs</a></li>
+            </ul>
+
+            
+
             </div>
         </div>
         <div class="main">
